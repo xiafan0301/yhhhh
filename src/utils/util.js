@@ -1,35 +1,4 @@
 /* 工具类 */
-const getRem = () => {
-  let iRem = 12, iWidth = $(window).width();
-  if (iWidth > 1920 && iWidth <= 2200) {
-    iRem = 13;
-  } else if (iWidth > 2200 && iWidth <= 2500) {
-    iRem = 14;
-  } else if (iWidth > 2500 && iWidth <= 2700) {
-    iRem = 15;
-  } else if (iWidth > 2700 && iWidth <= 2900) {
-    iRem = 16;
-  } else if (iWidth > 2900 && iWidth <= 3100) {
-    iRem = 17;
-  } else if (iWidth > 3100 && iWidth <= 3300) {
-    iRem = 18;
-  } else if (iWidth > 3300 && iWidth <= 3500) {
-    iRem = 19;
-  } else if (iWidth > 3500 && iWidth <= 3700) {
-    iRem = 20;
-  } else if (iWidth > 3700 && iWidth <= 3900) {
-    iRem = 21;
-  } else if (iWidth > 3900 && iWidth <= 4100) {
-    iRem = 22;
-  } else if (iWidth > 4100 && iWidth <= 4300) {
-    iRem = 23;
-  } else if (iWidth > 4300) {
-    iRem = 24;
-  }
-  console.log('getRem', 'width：' + iWidth + '，rem：' + iRem);
-  return iRem;
-};
-export const intRem = getRem();
 
 /**
  * @summary 根据时间及格式获取时间的字符串

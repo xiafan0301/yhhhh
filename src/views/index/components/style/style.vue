@@ -1,5 +1,5 @@
 <template>
-  <div>aafaew</div>
+  <div>样式管理</div>
 </template>
 <script>
 export default {

@@ -1,5 +1,5 @@
 <template>
-  <div>aafaew</div>
+  <div>数据维护</div>
 </template>
 <script>
 export default {
