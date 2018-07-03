@@ -1,0 +1,6 @@
+
+/* reset element ui style */
+.el-table thead th {
+  background-color: #F6F9FC;
+  color: #333; font-weight: 600;
+}

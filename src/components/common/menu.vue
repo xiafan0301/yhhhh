@@ -9,7 +9,7 @@
       </li>
       <li>
         <router-link :to="{ name: 'plate'}" class="as-ellipsis">
-          <i class="bg-mu-icon bg-mu-icon2"></i>模块管理
+          <i class="bg-mu-icon bg-mu-icon2"></i>板块管理
         </router-link>
       </li>
       <li>
@@ -79,6 +79,12 @@ export default {
       &.bg-mu-icon2 { background-image: url(../../assets/img/icons/bg-icon-012.png); }
       &.bg-mu-icon3 { background-image: url(../../assets/img/icons/bg-icon-013.png); }
       &.bg-mu-icon4 { background-image: url(../../assets/img/icons/bg-icon-014.png); }
+    }
+    .router-link-exact-active, .bg-mu-u > li > a:hover{
+      .bg-mu-icon1 { background-image: url(../../assets/img/icons/bg-icon-011s.png); }
+      .bg-mu-icon2 { background-image: url(../../assets/img/icons/bg-icon-012s.png); }
+      .bg-mu-icon3 { background-image: url(../../assets/img/icons/bg-icon-013s.png); }
+      .bg-mu-icon4 { background-image: url(../../assets/img/icons/bg-icon-014s.png); }
     }
   }
 </style>
