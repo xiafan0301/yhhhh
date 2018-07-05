@@ -50,6 +50,7 @@
         width="">
         <template slot-scope="scope">
           <el-button @click="handleClick(scope.row)" type="text" size="small">管理模块</el-button>
+          <el-button @click="handleClick(scope.row)" type="text" size="small">添加模块</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -63,7 +64,7 @@
         </template>
       </el-table-column>
   </el-table>
-      <div class="block" style="float: right; margin-top:20px">
+      <div class="block" style="float:right; margin-top:20px">
         <el-pagination
           background
           @size-change="handleSizeChange"
@@ -83,6 +84,7 @@ export default {
     return {
       tableData: [{
         date: '1',
+        type: 1,
         name: '王小虎',
         number: 1518,
         details: '脱贫攻坚 / 社会民生 / 经济发展 / 公共资源…'
@@ -110,6 +112,7 @@ export default {
         date: '4',
         name: '王小虎',
         number: 8,
+        type: 2,
         details: '/'
       }, {
         date: '4',
