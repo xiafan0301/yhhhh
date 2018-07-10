@@ -7,7 +7,10 @@ import mainDefault from '@/views/index/components/default.vue'
 // page
 import data from '@/views/index/components/data/data.vue'
 import page from '@/views/index/components/page/page.vue'
+// plate
 import plate from '@/views/index/components/plate/plate.vue'
+import plateList from '@/views/index/components/plate/list.vue'
+import plateEdit from '@/views/index/components/plate/edit.vue'
 import style from '@/views/index/components/style/style.vue'
 // data
 import selectData from '@/views/index/components/data/select-data.vue'
@@ -25,7 +28,14 @@ export default new Router({
         {path: '', component: mainDefault},
         {path: 'data', name: 'data', component: data},
         {path: 'page', name: 'page', component: page},
-        {path: 'plate', name: 'plate', component: plate},
+        {
+          path: 'plate',
+          component: plate,
+          children: [
+            {path: '', name: 'plate-list', component: plateList},
+            {path: 'edit/:plateId', name: 'plate-edit', component: plateEdit}
+          ]
+        },
         {path: 'style', name: 'style', component: style},
         // 数据维护
         {
