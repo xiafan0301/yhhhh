@@ -1,28 +1,38 @@
 <template>
   <div class="bg-plate-tb">
     <!--贫困村表格-->
-    <el-table :data="plateList"  highlight-current-row style="width: 100%;" >
+    <el-table :data="plateList.slice((pager.pageNum-1)*pager.pageSize,pager.pageNum*pager.pageSize)"  highlight-current-row style="width: 100%;" >
       <el-table-column type="index" width="100" label="序号"></el-table-column>
-      <el-table-column prop="plateName" label="村名" min-width="180"></el-table-column>
-      <el-table-column prop="serialNumber" label="坐标" min-width="100">
-        <template slot-scope="scope">
-          {{scope.row.serialNumber | filterPagePosition}}
-        </template>
+      <el-table-column prop="locationName" label="村名" min-width="180"></el-table-column>
+      <el-table-column prop="longitude" label="坐标" min-width="100">
       </el-table-column>
-      <el-table-column prop="" label="贫困户数" min-width="180"></el-table-column>
-      <el-table-column prop="pageName" label="贫困人数" min-width="120"></el-table-column>
-      <el-table-column prop="" label="地址" min-width="100">
-        <template slot-scope="scope">
-          <el-switch
-            @change="showTypeChange(scope.row)"
-            v-model="scope.row.active">
-          </el-switch>
-        </template>
+      <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数" min-width="180"></el-table-column>
+      <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数" min-width="120"></el-table-column>
+      <el-table-column prop="dataExtendList[2].valueContent" label="地址" min-width="100">
       </el-table-column>
       <el-table-column label="操作" min-width="120">
         <template slot-scope="scope">
-          <el-button type="text">修改</el-button>
-          <!-- <el-button type="text" :disabled="scope.$index == 0">删除</el-button> -->
+          <el-button type="text" @click="modify(scope)">修改</el-button>
+          <el-dialog title="修改" :visible.sync="dialogFormVisible" width="500px">
+            <el-form :model="form" ref ="form">
+              <el-form-item label="村名" :label-width="formLabelWidth">
+                <el-input v-model="form.name" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="贫困户数" :label-width="formLabelWidth">
+                <el-input v-model="form.households" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="贫困人数" :label-width="formLabelWidth">
+                <el-input v-model="form.pople" auto-complete="off"></el-input>
+              </el-form-item>
+              <el-form-item label="地址" :label-width="formLabelWidth">
+                <el-input v-model="form.addrs" auto-complete="off"></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">取 消</el-button>
+              <el-button type="primary" @click="sure()">确 定</el-button>
+            </div>
+          </el-dialog>
           <el-button type="text">删除</el-button>
         </template>
       </el-table-column>
@@ -47,13 +57,19 @@ export default {
       plateList: [],
       pager: { total: 0, pageSize: 10, pageNum: 1 },
       pageList: [
-        {uid: '001', pageName: '首页'},
-        {uid: '002', pageName: '脱贫攻坚'}
       ],
       searchForm: {
         pageId: ''
       },
-      editDialogVisible: false
+      dialogFormVisible: false,
+      formLabelWidth: '100px',
+      form: {
+        name: '',
+        households: '',
+        pople: '',
+        addrs: ''
+      },
+      obj: {}
     }
   },
   computed: {
@@ -70,6 +86,7 @@ export default {
     },
     searchFormReset () {
     },
+    // 分页
     pagerSizeChange (val) {
       this.pager.pageNum = 1;
       this.pager.pageSize = val;
@@ -79,11 +96,40 @@ export default {
       this.pager.pageNum = val;
       this.getPlateList();
     },
+    // 获取数据
     getPlateList () {
-      setTimeout(() => {
-        this.pager.total = 1;
-        this.plateList = getTestData();
-      }, 100);
+      this.axios.get('/vis/mapServices/datas?where.dataTypeId=4fce5edb-7092-4455-971b-6f8526d6a827')
+        .then(res => {
+          this.plateList = res.data.list;
+          this.total = res.data.total;
+        })
+    },
+    // 修改数据
+    modify (scope) {
+      this.dialogFormVisible = true;
+      this.obj = {
+        dataExtendList: [
+          {dataId: scope.row.dataExtendList[0].dataId, valueContent: scope.row.dataExtendList[0].valueContent}
+          // {dataId: scope.row.dataExtendList[1].dataId, valueContent: scope.row.dataExtendList[1].valueContent}
+        ],
+        dataId: scope.row.dataId,
+        dataTypeId: scope.row.dataTypeId
+      };
+      console.log(this.obj)
+    },
+    sure () {
+      // console.log(this.obj.dataExtendList[0].valueContent);
+      // console.log(this.obj);
+      // this.dialogFormVisible = false;
+      // this.obj.locationName = this.form.name;
+      this.obj.dataExtendList[0].valueContent = this.form.households;
+      console.log(this.obj)
+      // this.obj.valueContent1 = this.form.pople;
+      // this.obj.valueContent2 = this.form.addrs;
+      this.axios.put('/vis/mapServices/datas', this.obj)
+        .then(res => {
+          this.getPlateList();
+        })
     },
     showEditDialog (flag) {
       this.editDialogVisible = flag;

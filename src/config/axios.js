@@ -30,7 +30,7 @@ axios.interceptors.response.use(function (response) {
   // console.log('response', response)
   if (response && response.data) {
     let _data = response.data;
-    if (_data.code === 0 || _data.code === '0') {
+    if (_data.code === '00000000') {
       return _data;
     } else {
       let msg = '访问出错';

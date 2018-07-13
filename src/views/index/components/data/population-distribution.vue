@@ -3,22 +3,10 @@
     <!--人口分布表格-->
     <el-table :data="plateList"  highlight-current-row style="width: 100%;">
       <el-table-column type="index" width="100" label="序号"></el-table-column>
-      <el-table-column prop="plateName" label="镇名" min-width="180"></el-table-column>
-      <el-table-column prop="serialNumber" label="坐标" min-width="100">
-        <template slot-scope="scope">
-          {{scope.row.serialNumber | filterPagePosition}}
-        </template>
+      <el-table-column prop="locationName" label="镇名" min-width="180"></el-table-column>
+      <el-table-column prop="longitude" label="坐标" min-width="100">
       </el-table-column>
-      <el-table-column prop="" label="样式编码" min-width="180"></el-table-column>
-      <el-table-column prop="pageName" label="所属页面" min-width="120"></el-table-column>
-      <el-table-column prop="" label="展示状态" min-width="100">
-        <template slot-scope="scope">
-          <el-switch
-            @change="showTypeChange(scope.row)"
-            v-model="scope.row.active">
-          </el-switch>
-        </template>
-      </el-table-column>
+      <el-table-column prop="dataExtendList[0].valueContent" label="人口数量" min-width="180"></el-table-column>
       <el-table-column label="操作" min-width="120">
         <template slot-scope="scope">
           <el-button type="text">修改</el-button>
@@ -80,10 +68,10 @@ export default {
       this.getPlateList();
     },
     getPlateList () {
-      setTimeout(() => {
-        this.pager.total = 1;
-        this.plateList = getTestData();
-      }, 100);
+      this.axios.get('/vis/mapServices/datas?where.dataTypeId=e46c60f2-b1ea-46b7-9f83-51c51a5738b2')
+        .then(res => {
+          this.plateList = res.data.list;
+        })
     },
     showEditDialog (flag) {
       this.editDialogVisible = flag;

@@ -9,34 +9,26 @@
     <div class="bg-plate-sf">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item label="地图组件">
-          <el-select v-model="searchForm.pageId" placeholder="选择数据" style="width: 160px;" @change="getValue">
-            <el-option  v-for="(item, index) in pageList" :label="item.pageName" :value="item.uid" :key="'spl_' + index"></el-option>
+          <el-select v-model="searchForm.dataTypeId" placeholder="选择数据" style="width: 160px;" @change="getValue">
+            <el-option  v-for="(item, index) in pageList" :label="item.typeName" :value="item.dataTypeId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" @click="query">查询</el-button>
         </el-form-item>
       </el-form>
-      <el-button type="primary" size="small" @click.native="showEditDialog(true)" class="add-plate-btn" icon="el-icon-plus">添加</el-button>
-      <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf">一键导入</el-button>
-      <el-button style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns">模块下载</el-button>
+      <!--贫困村添加-->
+      <el-button
+        type="primary" size="small"
+        class="add-plate-btn" icon="el-icon-plus"
+        v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'" @click="dialogFormVisible = true">添加</el-button>
+      <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf" >一键导入</el-button>
+      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '4fce5edb-7092-4455-971b-6f8526d6a827'" href="http://10.16.3.40:8080/api/vis/mapServices/template/download/4fce5edb-7092-4455-971b-6f8526d6a827">模块下载</a>
+      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" href="http://10.16.3.40:8080/api/vis/mapServices/template/download/e46c60f2-b1ea-46b7-9f83-51c51a5738b2">模块下载</a>
     </div>
     <div class="bg-plate-tb">
       <router-view></router-view>
     </div>
-    <!-- 新增/修改板块 dialog :close-on-click-modal="false" -->
-    <el-dialog
-      title="新增/修改板块"
-      :visible.sync="editDialogVisible"
-      width="800px">
-      <div>
-        <el-steps :space="200" :active="1" finish-status="success" align-center>
-          <el-step title="已完成"></el-step>
-          <el-step title="进行中"></el-step>
-          <el-step title="步骤 3"></el-step>
-        </el-steps>
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -46,14 +38,11 @@ export default {
       plateList: [],
       pager: { total: 0, pageSize: 10, pageNum: 1 },
       pageList: [
-        {uid: '001', pageName: '人口分布'},
-        {uid: '002', pageName: '贫困村'},
-        {uid: '003', pageName: '选择数据'}
+        {dataTypeId: '001', typeName: '选择数据'}
       ],
       searchForm: {
-        pageId: ''
-      },
-      editDialogVisible: false
+        dataTypeId: ''
+      }
     }
   },
   computed: {
@@ -64,12 +53,15 @@ export default {
   mounted () {
   },
   methods: {
+    getValue: function (scope) {
+      console.log(scope)
+    },
     // 点击事件
     query: function () {
-      let scope = this.searchForm.pageId;
-      if (scope === '002') {
+      let scope = this.searchForm.dataTypeId;
+      if (scope === '4fce5edb-7092-4455-971b-6f8526d6a827') {
         this.$router.push({name: 'poor-village'});
-      } else if (scope === '001') {
+      } else if (scope === 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2') {
         this.$router.push({name: 'population-distribution'});
       }
     },
@@ -88,14 +80,12 @@ export default {
       this.pager.pageNum = val;
       this.getPlateList();
     },
+    // 查询地图应用类型
     getPlateList () {
-      setTimeout(() => {
-        this.pager.total = 1;
-        this.plateList = getTestData();
-      }, 100);
-    },
-    showEditDialog (flag) {
-      this.editDialogVisible = flag;
+      this.axios.get('/vis/mapServices/dataTypes')
+        .then(res => {
+          this.pageList = res.data;
+        })
     },
     showTypeChange (item) {
       // console.log(item)
@@ -128,8 +118,9 @@ function getTestData () {
       position: absolute; top: 23px; right: 95px
     }
     .add-plate-btns{
-      position: absolute; top: 23px; right: 9px;
+      position: absolute; top: 26px; right: 20px;
       border: none;
+      display: inline-block;
     }
   }
 </style>
