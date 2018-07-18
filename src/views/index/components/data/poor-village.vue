@@ -1,7 +1,7 @@
 <template>
   <div class="bg-plate-tb">
     <!--贫困村表格-->
-    <el-table :data="plateList.slice((pager.pageNum-1)*pager.pageSize,pager.pageNum*pager.pageSize)"  highlight-current-row style="width: 100%;" >
+    <el-table :data="plateList.slice((currentPage-1)*pageSize,currentPage*pageSize)"  highlight-current-row style="width: 100%;" >
       <el-table-column type="index" width="100" label="序号"></el-table-column>
       <el-table-column prop="locationName" label="村名" min-width="180"></el-table-column>
       <el-table-column prop="longitude" label="坐标" min-width="100">
@@ -41,11 +41,11 @@
       <el-pagination
         @size-change="pagerSizeChange"
         @current-change="pagerCurrChange"
-        :current-page="pager.pageNum"
+        :current-page="currentPage"
         :page-sizes="[10, 20, 50, 100]"
-        :page-size="pager.pageSize"
+        :page-size="pageSize"
         layout="total, prev, pager, next, sizes, jumper"
-        :total="pager.total">
+        :total="total">
       </el-pagination>
     </div>
   </div>
@@ -55,12 +55,11 @@ export default {
   data () {
     return {
       plateList: [],
-      pager: { total: 0, pageSize: 10, pageNum: 1 },
+      currentPage: 1,
+      pageSize: 10,
+      total: 0,
       pageList: [
       ],
-      searchForm: {
-        pageId: ''
-      },
       dialogFormVisible: false,
       formLabelWidth: '100px',
       form: {
@@ -80,12 +79,6 @@ export default {
   mounted () {
   },
   methods: {
-    pageChange () {
-    },
-    searchFormSubmit () {
-    },
-    searchFormReset () {
-    },
     // 分页
     pagerSizeChange (val) {
       this.pager.pageNum = 1;
@@ -93,7 +86,7 @@ export default {
       this.getPlateList();
     },
     pagerCurrChange (val) {
-      this.pager.pageNum = val;
+      this.pageNum = val;
       this.getPlateList();
     },
     // 获取数据
@@ -109,24 +102,70 @@ export default {
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
-          {dataId: scope.row.dataExtendList[0].dataId, valueContent: scope.row.dataExtendList[0].valueContent}
-          // {dataId: scope.row.dataExtendList[1].dataId, valueContent: scope.row.dataExtendList[1].valueContent}
+          {
+            extendId: scope.row.dataExtendList[0].extendId,
+            dataId: scope.row.dataExtendList[0].dataId,
+            contentName: scope.row.dataExtendList[0].contentName,
+            valueContent: scope.row.dataExtendList[0].valueContent,
+            valueUnit: scope.row.dataExtendList[0].valueUnit,
+            serialNumber: scope.row.dataExtendList[0].serialNumber,
+            createTime: scope.row.dataExtendList[0].createTime,
+            updateTime: scope.row.dataExtendList[0].updateTime,
+            delFlag: scope.row.dataExtendList[0].delFlag,
+            ownerGroupId: scope.row.dataExtendList[0].ownerGroupId,
+            ownerOrgId: scope.row.dataExtendList[0].ownerOrgId,
+            authUserId: scope.row.dataExtendList[0].authUserId,
+            opUserId: scope.row.dataExtendList[0].opUserId
+          },
+          {
+            extendId: scope.row.dataExtendList[1].extendId,
+            dataId: scope.row.dataExtendList[1].dataId,
+            contentName: scope.row.dataExtendList[1].contentName,
+            valueContent: scope.row.dataExtendList[1].valueContent,
+            valueUnit: scope.row.dataExtendList[1].valueUnit,
+            serialNumber: scope.row.dataExtendList[1].serialNumber,
+            createTime: scope.row.dataExtendList[1].createTime,
+            updateTime: scope.row.dataExtendList[1].updateTime,
+            delFlag: scope.row.dataExtendList[1].delFlag,
+            ownerGroupId: scope.row.dataExtendList[1].ownerGroupId,
+            ownerOrgId: scope.row.dataExtendList[1].ownerOrgId,
+            authUserId: scope.row.dataExtendList[1].authUserId,
+            opUserId: scope.row.dataExtendList[1].opUserId
+          },
+          {
+            extendId: scope.row.dataExtendList[2].extendId,
+            dataId: scope.row.dataExtendList[2].dataId,
+            contentName: scope.row.dataExtendList[2].contentName,
+            valueContent: scope.row.dataExtendList[2].valueContent,
+            valueUnit: scope.row.dataExtendList[2].valueUnit,
+            serialNumber: scope.row.dataExtendList[2].serialNumber,
+            createTime: scope.row.dataExtendList[2].createTime,
+            updateTime: scope.row.dataExtendList[2].updateTime,
+            delFlag: scope.row.dataExtendList[2].delFlag,
+            ownerGroupId: scope.row.dataExtendList[2].ownerGroupId,
+            ownerOrgId: scope.row.dataExtendList[2].ownerOrgId,
+            authUserId: scope.row.dataExtendList[2].authUserId,
+            opUserId: scope.row.dataExtendList[2].opUserId
+          }
         ],
         dataId: scope.row.dataId,
-        dataTypeId: scope.row.dataTypeId
+        dataTypeId: scope.row.dataTypeId,
+        iconType: scope.row.iconType,
+        latitude: scope.row.latitude,
+        locationName: scope.row.locationName,
+        locationTag: scope.row.locationTag,
+        longitude: scope.row.longitude
       };
       console.log(this.obj)
     },
     sure () {
-      // console.log(this.obj.dataExtendList[0].valueContent);
-      // console.log(this.obj);
-      // this.dialogFormVisible = false;
-      // this.obj.locationName = this.form.name;
-      this.obj.dataExtendList[0].valueContent = this.form.households;
-      console.log(this.obj)
-      // this.obj.valueContent1 = this.form.pople;
-      // this.obj.valueContent2 = this.form.addrs;
-      this.axios.put('/vis/mapServices/datas', this.obj)
+      this.dialogFormVisible = false;
+      let params = this.obj;
+      params.locationName = this.form.name;
+      params.dataExtendList[0].valueContent = this.form.households;
+      params.dataExtendList[1].valueContent = this.form.pople;
+      params.dataExtendList[2].valueContent = this.form.addrs;
+      this.axios.put('/vis/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         })
