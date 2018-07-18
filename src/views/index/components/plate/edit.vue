@@ -41,13 +41,18 @@
           </div>
           <div class="plate-ecl1-c">
             <ul v-show="styleType === 1" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
-              <li v-for="item in 42" :key="item">
-                <img @click="setStyleRadio(item)" src="../../../../assets/img/temp/temp-t032.png" alt="">
-                <p><el-radio v-model="styleRadio" :label="item">样式{{item}}</el-radio></p>
+              <li v-for="item in allPlateList" :key="item.configId">
+                <img v-bind:src="item.thumbnailUrl" alt="">
+                <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)"  :label="item">{{item.configName}}</el-radio></p>
               </li>
             </ul>
-            <div v-show="styleType === 2">
-              地图区域
+            <div class="plate-ecl1-c">
+              <ul v-show="styleType === 2" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
+                <li v-for="item in allPlateList" :key="item.configId">
+                  <img v-bind:src="item.thumbnailUrl" alt="">
+                  <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)" :label="item" >{{item.configName}}</el-radio></p>
+                </li>
+              </ul>
             </div>
           </div>
           <div class="plate-ecl-b">
@@ -56,31 +61,7 @@
         </div>
 
         <div class="bg-plate-ecl bg-plate-ecl2" v-show="progressIndex === 2">
-          <div class="plate-ecl2-c clearfix">
-            <div class="plate-ecl2-cl">
-              <img src="../../../../assets/img/temp/temp-t032.png" alt="">
-              <ul>
-                <li>
-                  <div>板块名称：</div>
-                  <div>贫困类型</div>
-                </li>
-                <li>
-                  <div>注释：</div>
-                  <div>2017年数据</div>
-                </li>
-                <li>
-                  <div>图表：</div>
-                  <div>项：一般户、低保户、五保户
-                    值1：数值（1870、520、1870）
-                    值2：同比（-1.2、-1.2、-1.2）
-                    值3：占比（40、20、40）</div>
-                </li>
-              </ul>
-            </div>
-            <div class="plate-ecl2-cr">
-              <div is="plateData"></div>
-            </div>
-          </div>
+          <div is='plate008' :plateConfigInfo="plateConfigInfo" :markUrl="plateInfo.markUrl"></div>
           <div class="plate-ecl-b">
             <el-button @click.native="nextStep(1)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
             <el-button @click.native="nextStep(3)" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
@@ -88,35 +69,49 @@
         </div>
 
         <div class="bg-plate-ecl bg-plate-ecl3" v-show="progressIndex === 3">
+          <div is="plateRelation"></div>
           <div class="plate-ecl-b">
             <el-button @click.native="nextStep(2)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
             <el-button type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
           </div>
         </div>
-
       </div>
     </div>
   </div>
 </template>
 <script>
 import plateData from './plateData.vue';
+import plate008 from './plate008.vue';
+import plateRelation from './plateRelation.vue';
 export default {
-  components: {plateData},
+  components: {plateData, plate008, plateRelation},
   data () {
     return {
       // 进度
       progressIndex: 1,
       // 选择样式
       styleType: 1, // 1 所有两侧 2 地图区域
-      styleRadio: ''
+      styleRadio: '',
+      allPlateList: [], // 所有的板块
+      plateInfo: {
+        configId: '',
+        markUrl: ''
+      }, // 新增板块信息
+      plateConfigInfo: [] // 根据configId获取的板块配置信息
     }
+  },
+  created () {
+    this.getAllPlateList()
   },
   methods: {
     changeStyleType (type) {
       this.styleType = type;
+      this.getAllPlateList();
     },
     setStyleRadio (val) {
       this.styleRadio = val;
+      this.plateInfo.configId = val.configId;
+      this.plateInfo.markUrl = val.markUrl;
     },
     editProject (flag, index) {
       if (flag) { // 新增
@@ -132,6 +127,31 @@ export default {
     // 下一步
     nextStep (iNext) {
       this.progressIndex = iNext;
+      const param = this.plateInfo.configId;
+      if (iNext === 2) {
+        this.axios.get('/plateServices/areaInfos/' + param + '')
+          .then((res) => {
+            if (res) {
+              this.plateConfigInfo = res.data;
+            }
+          })
+          .catch(() => {})
+      } else if (iNext === 3) {
+
+      }
+    },
+    // 获取所有的板块
+    getAllPlateList () {
+      let params = {
+        configType: this.styleType
+      };
+      this.axios.get('/plateStyleServices/configs', {params})
+        .then((res) => {
+          if (res) {
+            this.allPlateList = res.data
+          }
+        })
+        .catch(() => {})
     }
   }
 }

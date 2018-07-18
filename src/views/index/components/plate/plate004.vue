@@ -1,0 +1,223 @@
+<template>
+<div class="plate-ecl2-c clearfix">
+  <h2>饼图数据</h2>
+  <div class="plate-ecl2-cl">
+    <img src="../../../../assets/img/temp/temp-t032.png" alt="" style="width:75%">
+    <!--<div class="plate-body-left">
+      <p>参考对应位置</p>
+      <div class="plate-ul">
+        <ul class="plate-first">
+          <li>位置1</li>
+          <li>位置2</li>
+          <li>位置3</li>
+        </ul>
+        <ul class="plate-detail">
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+        </ul>
+        <ul class="plate-detail">
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+        </ul>
+        <ul class="plate-detail">
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+          <li>
+            <span class='title-left'>a1</span><span class='title-right'>全社会用电量</span>
+          </li>
+        </ul>
+      </div>
+    </div>-->
+  </div>
+  <div class="plate-ecl2-cr">
+    <div>
+      <el-form :inline="true" :model="dataForm" class="demo-form-inline" size="small">
+        <el-form-item label="板块名称" required>
+          <el-input v-model="dataForm.plateName" placeholder="板块名称"></el-input>
+        </el-form-item>
+        <el-form-item label="注释">
+          <el-input v-model="dataForm.remark" placeholder="注释"></el-input>
+        </el-form-item>
+      </el-form>
+      <div class="ecl2-cr-list">
+        <p class="list-title">第一步：添加项</p>
+        <table class="plate-table" style="width: 100%;">
+          <thead>
+          <tr>
+            <th>项</th>
+            <th>值</th>
+            <th>单位</th>
+            <th>同比值(%)</th>
+            <th>操作</th>
+          </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in projectList" :key="'wwa' + index">
+              <td><input type="text" v-model="item.name" placeholder="请填项名称"></td>
+              <td><input type="text" v-model="item.value" placeholder="请填值"></td>
+              <td>
+                <input type="text" v-model="item.danwei" placeholder="请填单位">
+              </td>
+              <td><input type="text" v-model="item.percent" placeholder="请填同比值"></td>
+              <td>
+                <i v-if="projectList.length > 1" style="font-size: 16px; cursor: pointer; color: #000;" class="el-icon-minus" @click="editProject(false, index)" title="删除此项"></i>
+                <i style="font-size: 16px; cursor: pointer;  color: #000;" class="el-icon-plus" @click="editProject(true, index)" title="新增项"></i>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="ecl2-cr-list" style="margin-top: 40px;">
+        <p class="list-title">第二步：添加数值</p>
+        <table class="plate-table" style="width: 100%;">
+          <thead>
+          <tr>
+            <th>项名称</th>
+            <th>值(对应单位)</th>
+            <th>同比值(%)</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr v-for="(item, index) in projectList" :key="'wwa2' + index">
+            <td class="plate-table-td-dis">{{item.name}}</td>
+            <!--<td v-for="(sitem, sindex) in valueSize" :key="'mdzz2' + sitem">
+              <input type="text" v-model="item['value' + (sindex + 1)]" placeholder="添加数据">
+            </td>-->
+            <td>
+              <input type="text" v-model="value1" placeholder="添加数据">
+            </td>
+            <td>
+              <input type="text" v-model="value2" placeholder="添加数据">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+<script>
+export default {
+  data () {
+    return {
+      dataForm: {
+        plateName: '',
+        remark: ''
+      },
+      projectList: [
+        {
+          name: '测试的项目名',
+          value: 9.68,
+          danwei: '亿千瓦时',
+          percent: '0.2%'
+        },
+        {
+          name: '测试的项目名',
+          value: 9.68,
+          danwei: '亿千瓦时',
+          percent: '0.2%'
+        },
+        {
+          name: '测试的项目名',
+          value: 9.68,
+          danwei: '亿千瓦时',
+          percent: '0.2%'
+        }
+      ],
+      valueSize: 2
+    }
+  }
+}
+</script>
+<style lang='scss' scoped>
+.plate-ecl2-c {
+  display:flex;
+  width:100%;
+  flex-wrap: wrap;
+  h2 {
+    color: #333333;
+    font-size: 18px;
+    font-weight: bold;
+    padding-bottom: 1%;
+    width: 100%;
+  }
+  >div {
+    width: 50%;
+  }
+}
+.plate-body-left {
+  margin: 5% 0;
+  p {
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .plate-ul {
+    margin-top: 3%;
+    .plate-first {
+      color: #333333;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    ul {
+      display: flex;
+      li {
+        width:33.3%;
+      }
+    }
+    .plate-detail {
+      margin-top: 2%;
+      .title-left {
+        color: #666666;
+        font-size: 14px;
+        margin-right: 3%;
+      }
+      .title-right {
+        color: #999999;
+        font-size: 12px;
+      }
+      li {
+        height: 1.1em;
+      }
+    }
+  }
+}
+.plate-ecl2-cr {
+  .ecl2-cr-list {
+    margin-top: 3%;
+    .list-title {
+      color: #333333;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 2% 0;
+    }
+  }
+}
+
+.el-form-item--small {
+  .el-form-item__label {
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+</style>
