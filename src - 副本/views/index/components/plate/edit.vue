@@ -10,21 +10,21 @@
       </div>
       <!-- 进度控制 -->
       <div class="pb-plate-pro">
-        <div class="plate-pro-i plate-pro-i1" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 1}">
+        <div class="plate-pro-i plate-pro-i1" :class="{'plate-pro-ised': progressIndex >= 1}">
           <div class="plate-pro-ilr"></div>
           <p>选择样式</p>
         </div>
-        <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 2}">
+        <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': progressIndex >= 2}">
           <div class="plate-pro-ill"></div>
           <div class="plate-pro-ilr"></div>
           <p>填充数据</p>
         </div>
-        <div class="plate-pro-i plate-pro-i3" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 3}">
+        <div class="plate-pro-i plate-pro-i3" :class="{'plate-pro-ised': progressIndex >= 3}">
           <div class="plate-pro-ill"></div>
           <div class="plate-pro-ilr"></div>
           <p>关联页面/位置</p>
         </div>
-        <div class="plate-pro-i plate-pro-i4" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 4}">
+        <div class="plate-pro-i plate-pro-i4" :class="{'plate-pro-ised': progressIndex >= 4}">
           <div class="plate-pro-ill"></div>
           <p>完成</p>
         </div>
@@ -32,26 +32,144 @@
     </div>
     <div class="bg-plate-ec">
       <div class="bg-plate-ecc">
-        <div is='plate009'></div>
-        <div is='plate008'></div>
-        <div is='plateRelation'></div>
+        <div class="bg-plate-ecl bg-plate-ecl1" v-show="progressIndex === 1">
+          <div class="plate-ecl1-tab">
+            <div>
+              <span :class="{'ecl1-tab-sed': styleType === 1}" @click="changeStyleType(1)">左右两侧</span>
+              <span :class="{'ecl1-tab-sed': styleType === 2}" @click="changeStyleType(2)">地图区域</span>
+            </div>
+          </div>
+          <div class="plate-ecl1-c">
+            <ul v-show="styleType === 1" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
+              <li v-for="item in allPlateList" :key="item.configId">
+                <img v-bind:src="item.thumbnailUrl" alt="">
+                <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)"  :label="item">{{item.configName}}</el-radio></p>
+              </li>
+            </ul>
+            <div class="plate-ecl1-c">
+              <ul v-show="styleType === 2" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
+                <li v-for="item in allPlateList" :key="item.configId">
+                  <img v-bind:src="item.thumbnailUrl" alt="">
+                  <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)" :label="item" >{{item.configName}}</el-radio></p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="plate-ecl-b">
+            <el-button :disabled="!styleRadio" @click.native="nextStep(2)" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+          </div>
+        </div>
+
+        <div class="bg-plate-ecl bg-plate-ecl2" v-show="progressIndex === 2">
+          <div is='plate008' :plateConfigInfo="plateConfigInfo" :markUrl="plateInfo.markUrl" @savedata='getData'></div>
+          <div class="plate-ecl-b">
+            <el-button @click.native="nextStep(1)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+            <el-button @click.native="nextStep(3)" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+          </div>
+        </div>
+
+        <div class="bg-plate-ecl bg-plate-ecl3" v-show="progressIndex === 3">
+          <div is="plateRelation" :allPageList="allPageList"></div>
+          <div class="plate-ecl-b">
+            <el-button @click.native="nextStep(2)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+            <el-button type="primary" @click.native='commitData'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import store from '../../../../store/store.js';
 import plateData from './plateData.vue';
 import plate008 from './plate008.vue';
-import plate009 from './plate009.vue';
 import plateRelation from './plateRelation.vue';
 export default {
-  components: {plateData, plate008, plate009, plateRelation},
+  components: {plateData, plate008, plateRelation},
   data () {
     return {
+      // 进度
+      progressIndex: 1,
+      // 选择样式
+      styleType: 1, // 1 所有两侧 2 地图区域
+      styleRadio: '',
+      dataList: [], // 要提交的数据
+      allPlateList: [], // 所有的板块
+      plateInfo: {
+        configId: '',
+        markUrl: ''
+      }, // 新增板块信息
+      plateConfigInfo: [], // 根据configId获取的板块配置信息
+      allPageList: [] // 所有的页面
     }
   },
+  created () {
+    this.getAllPlateList();
+  },
   methods: {
+    changeStyleType (type) {
+      this.styleType = type;
+      this.getAllPlateList();
+    },
+    setStyleRadio (val) {
+      this.styleRadio = val;
+      this.plateInfo.configId = val.configId;
+      this.plateInfo.markUrl = val.markUrl;
+    },
+    editProject (flag, index) {
+      if (flag) { // 新增
+        this.projectList.splice(index + 1, 0, {
+          name: ''
+        });
+      } else {
+        if (this.projectList.length > 1) {
+          this.projectList.splice(index, 1);
+        }
+      }
+    },
+    // 下一步
+    nextStep (iNext) {
+      this.progressIndex = iNext;
+      const param = this.plateInfo.configId;
+      const pageNum = -1;
+      if (iNext === 2) {
+        this.axios.get('/plateServices/areaInfos/' + param + '')
+          .then((res) => {
+            if (res) {
+              this.plateConfigInfo = res.data;
+            }
+          })
+          .catch(() => {});
+      } else if (iNext === 3) {
+        // this.dataList = data;
+        this.axios.get('/pageServices/pages', {params: pageNum})
+          .then((res) => {
+            if (res) {
+              this.allPageList = res.data.list;
+            }
+          })
+          .catch(() => {});
+      }
+    },
+    // 获取所有的板块
+    getAllPlateList () {
+      let params = {
+        configType: this.styleType
+      };
+      this.axios.get('/plateStyleServices/configs', {params})
+        .then((res) => {
+          if (res) {
+            this.allPlateList = res.data
+          }
+        })
+        .catch(() => {});
+    },
+    getData (data) {
+      this.dataList = data;
+    },
+    commitData () {
+
+      console.log(this.dataList);
+    }
   }
 }
 </script>
@@ -239,126 +357,5 @@ export default {
 
   .bg-plate-ecl3 {
     padding-bottom: 80px;
-  }
-  .plate-ecl2-c {
-    display:flex;
-    width:100%;
-    flex-wrap: wrap;
-    h2 {
-      color: #333333;
-      font-size: 18px;
-      font-weight: bold !important;
-      padding-bottom: 1%;
-      width: 100%;
-    }
-    >div {
-      width: 50%;
-    }
-    .plate-explain {
-      margin-top: 3%;
-      .explain-title {
-        margin-bottom: 2%;
-        color: #333333;
-        font-size: 14px;
-        font-weight: bold;
-      }
-      .explain-ul {
-        li {
-          height: 1.8em;
-        }
-        .explain-title-left {
-          font-size: 14px;
-          color: #333333;
-        }
-        .explain-title-right {
-          color: #666666;
-          font-size: 12px;
-        }
-      }
-    }
-  }
-  .plate-body-left {
-    margin: 5% 0;
-    p {
-      color: #333333;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .plate-ul {
-      margin-top: 3%;
-      .plate-first {
-        color: #333333;
-        font-size: 12px;
-        font-weight: bold;
-      }
-      ul {
-        display: flex;
-        li {
-          width:33.3%;
-        }
-      }
-      .plate-detail {
-        margin-top: 2%;
-        .title-left {
-          color: #666666;
-          font-size: 14px;
-          margin-right: 3%;
-        }
-        .title-right {
-          color: #999999;
-          font-size: 12px;
-        }
-        li {
-          height: 1.1em;
-        }
-      }
-    }
-  }
-  .plate-ecl2-cr {
-    .ecl2-cr-list {
-      margin-top: 3%;
-      .list-title {
-        color: #333333;
-        font-size: 14px;
-        font-weight: bold;
-        margin: 2% 0;
-      }
-    }
-    .checkbox {
-      margin-top: 2%;
-      color: #e3e3e3;
-    }
-  }
-
-  .el-form-item--small {
-    .el-form-item__label {
-      color: #333333;
-      font-size: 14px;
-      font-weight: bold;
-    }
-  }
-  .plate-table {
-    border: 0;
-    thead th, tbody tr, thead tr th, tbody tr td {
-      text-align: center;
-      border: 1px solid #cccccc;
-    }
-    .unactive {
-      color: #cccccc !important;
-    }
-    .active {
-      color: #0785FD !important;
-    }
-    .mergetr {
-      color: #ffffff;
-      td {
-        background-color: #666666;
-        border-color: #fff;
-      }
-      input {
-        background:transparent;
-        color:#fff;
-      }
-    }
   }
 </style>

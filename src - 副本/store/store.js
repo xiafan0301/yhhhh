@@ -11,11 +11,7 @@ const state = {
   // 登录token
   token: null,
   // 面包屑
-  breadcrumb: [],
-  progressIndex: 1, // 添加板块的进度条索引
-  plateConfigInfo: [], // 根据configId获取的板块配置信息
-  plateInfo: {}, // 板块信息
-  allPageList: [] // 所有的页面
+  breadcrumb: []
 };
 
 export default new Vuex.Store({

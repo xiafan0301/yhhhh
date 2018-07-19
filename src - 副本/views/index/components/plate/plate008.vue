@@ -1,553 +1,547 @@
 <template>
-<div class="bg-plate-ecl bg-plate-ecl2" v-show="this.$store.state.progressIndex === 2" style='width:100%'>
-  <div class="plate-ecl2-c clearfix">
-    <h2>图表数据</h2>
-    <div class="plate-ecl2-cl">
-      <img :src="this.$store.state.plateInfo.markUrl" alt="" style="width:75%">
-    </div>
-    <div class="plate-ecl2-cr">
-      <div>
-        <el-form :inline="true" :model="dataForm" class="demo-form-inline" size="small">
-          <el-form-item label="板块名称" required>
-            <el-input v-model="dataForm.plateName" placeholder="板块名称" maxlength='20'></el-input>
-          </el-form-item>
-          <el-form-item label="注释">
-            <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
-          </el-form-item>
-        </el-form>
-        <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
-          <span v-show='false'>{{dataObjTwo[0].configId=info.configId}}</span>
-          <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
-          <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
-          <template v-if="info.areaDataType === 1">
-            <div style="margin-top:3%;">
+<div class="plate-ecl2-c clearfix">
+  <h2>图表数据</h2>
+  <div class="plate-ecl2-cl">
+    <img :src="markUrl" alt="" style="width:75%">
+  </div>
+  <div class="plate-ecl2-cr">
+    <div>
+      <el-form :inline="true" :model="dataForm" class="demo-form-inline" size="small">
+        <el-form-item label="板块名称" required>
+          <el-input v-model="dataForm.plateName" placeholder="板块名称" maxlength='20'></el-input>
+        </el-form-item>
+        <el-form-item label="注释">
+          <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
+        </el-form-item>
+      </el-form>
+      <div v-for="(info, index) in plateConfigInfo" :key="'info'+index">
+        <span v-show='false'>{{dataObjTwo[0].configId=info.configId}}</span>
+        <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
+        <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
+        <template v-if="info.areaDataType === 1">
+          <div style="margin-top:3%;">
+            <h2>位置{{info.serialNumber}}</h2>
+            <template v-if="info.areaDataType === 2 || info.areaDataType === 3">
+              <div>
+                <span>关联图表主项数：</span>
+                <el-select v-model="value" placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </div>
+            </template>
+            <div class="ecl2-cr-list">
+              <table class="plate-table" style="width: 100%;">
+                <thead>
+                <tr>
+                  <th>项</th>
+                  <th>值</th>
+                  <th>单位</th>
+                  <th>同比值(%)</th>
+                </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(item, index) in projectList" :key="'wwa' + index">
+                    <td><input type="text" v-model="item.name" placeholder="请填项名称"></td>
+                    <td><input type="text" v-model="item.value" placeholder="请填值"></td>
+                    <td>
+                      <input type="text" v-model="item.danwei" placeholder="请填单位">
+                    </td>
+                    <td><input type="text" v-model="item.percent" placeholder="请填同比值"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
+        <template v-if="info.areaDataType !== 1">
+          <template v-if="info.areaDataType === 3">
+            <div style="margin-top:5%;">
               <h2>位置{{info.serialNumber}}</h2>
-              <template v-if="info.areaDataType === 2 || info.areaDataType === 3">
-                <div>
-                  <span>关联图表主项数：</span>
-                  <el-select v-model="value" placeholder="请选择">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                  </el-select>
-                </div>
-              </template>
               <div class="ecl2-cr-list">
+                <p class="list-title">第一步：添加主项</p>
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th>项</th>
-                    <th>值</th>
-                    <th>单位</th>
-                    <th>同比值(%)</th>
+                    <th>主项名称</th>
+                    <th>操作</th>
                   </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, index) in projectList" :key="'wwa' + index">
-                      <td><input type="text" v-model="item.name" placeholder="请填项名称"></td>
-                      <td><input type="text" v-model="item.value" placeholder="请填值"></td>
-                      <td>
-                        <input type="text" v-model="item.danwei" placeholder="请填单位">
+                    <tr v-for="(item, index) in parentDataListThree" :key="'item'+index">
+                      <span v-show='false'>{{item.plateAreaId = info.plateAreaId}}</span>
+                      <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
+                      <td><input type="text" v-model="item.itemName" placeholder="请填主项名称"></td>
+                      <td width='15%'>
+                        <template v-if="parentDataListThree.length > 1">
+                          <i
+                            style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                            class="active el-icon-remove-outline"
+                            @click="deleteParentDataThree(item.itemName, index)"
+                            title="删除此项"
+                          ></i>
+                        </template>
+                        <i
+                          style="font-size: 25px; cursor: pointer; color: #0785FD;"
+                          class="addParentThree el-icon-circle-plus-outline"
+                          @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
+                          title="新增项"
+                        ></i>
                       </td>
-                      <td><input type="text" v-model="item.percent" placeholder="请填同比值"></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="tip" style="color:red;">{{tip}}</p>
+              </div>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第二步：添加子项</p>
+                <table class="plate-table" style="width: 100%;" >
+                  <thead>
+                  <tr>
+                    <th>子项名称</th>
+                    <th>单位</th>
+                    <th>直接显示</th>
+                    <th>浮层显示</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
+                    <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
+                    <template v-if='item.isMerge === true'>
+                      <tr class="mergetr">
+                        <td>
+                          合计(<input type="text" v-model="item.contentName">)
+                        </td>
+                        <td>{{item.valueUnit}}</td>
+                        <td></td>
+                        <td>
+                          <el-switch
+                            v-model="item.supernatantFieldFlag"
+                            disabled
+                          />
+                        </td>
+                        <td width='15%'></td>
+                      </tr>
+                    </template>
+                    <template v-else>
+                      <tr>
+                        <td>
+                          <input type="text" v-model="item.contentName" placeholder="请填子项名称">
+                        </td>
+                        <td>
+                          <input type="text" v-model="item.valueUnit" placeholder="请填单位" class='childUnitThree'>
+                        </td>
+                        <td>
+                          <template v-if='childCheckBox === true'>
+                            <el-switch
+                              v-model="item.graphicFieldFlag"
+                              @change="changeGrapFlagThree($event, index)"
+                            />
+                          </template>
+                          <template v-else>
+                            <el-switch
+                              v-model="item.graphicFieldFlag"
+                              disabled
+                            />
+                          </template>
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="item.supernatantFieldFlag"
+                            @change="changeSuperFlagThree($event, index)"
+                          />
+                        </td>
+                        <td width='15%'>
+                          <template v-if='checkedLayerMerge === true'>
+                            <template v-if="childDataListThree.length > 2">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteContentListThree(item.contentName, index)"
+                                title="删除此项"
+                              ></i>
+                            </template>
+                          </template>
+                          <template v-else>
+                            <template v-if="childDataListThree.length > 1">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteContentListThree(item.contentName, index)"
+                                title="删除此项"
+                              ></i>
+                            </template>
+                          </template>
+                          <i
+                            style="font-size: 25px; cursor: pointer; color: #0785FD;"
+                            class="addChildThree el-icon-circle-plus-outline"
+                            @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
+                            title="新增项"
+                          ></i>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第三步：添加浮层并列项</p>
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>子项名称</th>
+                    <th>浮层并列项名称</th>
+                    <th>单位</th>
+                  </tr>
+                  </thead>
+                  <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
+                    <template v-if='item.isMerge === true'>
+                      <tr class='mergetr'>
+                        <td>合计（{{childDataListThree[index].contentName}}）</td>
+                        <td>
+                          合计(<input type="text" v-model="item.contentName">)
+                        </td>
+                        <td>{{item.valueUnit}}</td>
+                      </tr>
+                    </template>
+                    <template v-else>
+                      <tr>
+                        <td>{{childDataListThree[index].contentName}}</td>
+                        <td>
+                          <input type="text" v-model="item.contentName" placeholder="请填浮层并列项名称">
+                        </td>
+                        <td>
+                          <input type="text" v-model="item.valueUnit" placeholder="请填单位" class='layerUnitThree'>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+                <div class="checkbox">
+                  <template v-if='checkBoxThree === true'>
+                    <el-checkbox
+                      v-model="checkedLayerMerge"
+                      @change="changeLayerMerge"
+                    >
+                      添加浮层子项合计项
+                    </el-checkbox>
+                  </template>
+                  <template v-else>
+                    <el-checkbox
+                      disabled
+                      v-model="checkedLayerMerge"
+                    >
+                      添加浮层子项合计项（<span style="color:red;">{{checkBoxTip}}</span>）
+                    </el-checkbox>
+                  </template>
+                </div>
+              </div>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第四步：添加数值</p>
+                <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
+                  <thead>
+                  <tr>
+                    <th rowspan='2'>主项</th>
+                    <th colspan='3'>子项</th>
+                    <th colspan='3'>浮层并列项</th>
+                  </tr>
+                  <tr>
+                    <th>子项名称</th>
+                    <th>值</th>
+                    <th>单位</th>
+                    <th>浮层并列项名称</th>
+                    <th>值</th>
+                    <th>单位</th>
+                  </tr>
+                  </thead>
+                  <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
+                    <tr v-for="(list, idx) in items.contentSubItemList" :key="'list'+idx">
+                      <template v-if='list.isMerge === true'>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{items.itemName}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{list.contentName}}）</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.valueContent}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.valueUnit}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.contnetSubItemExtendList[0].valueContent}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                      </template>
+                      <template v-else>
+                        <td>{{items.itemName}}</td>
+                        <td>{{list.contentName}}</td>
+                        <td><input type="text" v-model="numberObjThree[index + '_' + idx]" placeholder="请填值"></td>
+                        <td>{{list.valueUnit}}</td>
+                        <td>{{list.contnetSubItemExtendList[0].contentName}}</td>
+                        <td><input type="text" v-model="numberLayerObjThree[idx]" placeholder="请填值"></td>
+                        <td>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                      </template>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
           </template>
-          <template v-if="info.areaDataType !== 1">
-            <template v-if="info.areaDataType === 3">
-              <div style="margin-top:5%;">
-                <h2 class='stepH2'>位置{{info.serialNumber}}</h2>
-                <div class="ecl2-cr-list">
-                  <p class="list-title">第一步：添加主项</p>
-                  <table class="plate-table" style="width: 100%;">
-                    <thead>
-                    <tr>
-                      <th>主项名称</th>
-                      <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item, index) in parentDataListThree" :key="'item'+index">
-                        <span v-show='false'>{{item.plateAreaId = info.plateAreaId}}</span>
-                        <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
-                        <td><input type="text" v-model="item.itemName" placeholder="请填主项名称"></td>
-                        <td width='15%'>
-                          <template v-if="parentDataListThree.length > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
-                              @click="deleteParentDataThree(item.itemName, index)"
-                              title="删除此项"
-                            ></i>
-                          </template>
+          <template v-if="info.areaDataType === 2">
+            <div style="margin-top:5%;">
+              <h2>位置{{info.serialNumber}}</h2>
+              <div class="ecl2-cr-list">
+                <p class="list-title">第一步：添加主项</p>
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>主项名称</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item,idx) in parentDataListTwo" :key="'item'+idx">
+                      <td>
+                        <input type="text" v-model="item.itemName" placeholder="请填主项名称">
+                      </td>
+                      <td width='15%'>
+                        <template v-if="parentDataListTwo.length>1">
                           <i
-                            style="font-size: 25px; cursor: pointer; color: #0785FD;"
-                            class="addParentThree el-icon-circle-plus-outline"
-                            @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
-                            title="新增项"
+                            style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                            class="delparent active el-icon-remove-outline"
+                            @click="deleteParentDataTwo(item.itemName, idx)" title="删除此项"
                           ></i>
+                        </template>
+                        <i
+                          style="font-size: 25px; cursor: pointer;  color: #0785FD;"
+                          class="addparent el-icon-circle-plus-outline"
+                          @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)" title="新增项"
+                        ></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p class="tip" style="color:red;">{{tip}}</p>
+              </div>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第二步：添加子项</p>
+                <table class="plate-table" style="width: 100%;" >
+                  <thead>
+                  <tr>
+                    <th>子项名称</th>
+                    <th>单位</th>
+                    <th>直接显示</th>
+                    <th>浮层显示</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
+                    <template v-if="item.isMerge === true">
+                      <tr class='mergetr'>
+                        <td>合计(<input v-model='item.contentName' type='text' style="padding-left:3%;" />)</td>
+                        <td>{{item.valueUnit}}</td>
+                        <td></td>
+                        <td>
+                          <el-switch
+                            v-model="item.supernatantFieldFlag"
+                            class='superFlag'
+                            disabled
+                          />
                         </td>
+                        <td width='15%'></td>
                       </tr>
-                    </tbody>
-                  </table>
-                  <p class="tip" style="color:red;">{{tip}}</p>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第二步：添加子项</p>
-                  <table class="plate-table" style="width: 100%;" >
-                    <thead>
-                    <tr>
-                      <th>子项名称</th>
-                      <th>单位</th>
-                      <th>直接显示</th>
-                      <th>浮层显示</th>
-                      <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
-                      <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
-                      <template v-if='item.isMerge === true'>
-                        <tr class="mergetr">
-                          <td>
-                            合计(<input type="text" v-model="item.contentName">)
-                          </td>
-                          <td>{{item.valueUnit}}</td>
-                          <td></td>
-                          <td>
-                            <el-switch
-                              v-model="item.supernatantFieldFlag"
-                              disabled
-                            />
-                          </td>
-                          <td width='15%'></td>
-                        </tr>
-                      </template>
-                      <template v-else>
-                        <tr>
-                          <td>
-                            <input type="text" v-model="item.contentName" placeholder="请填子项名称">
-                          </td>
-                          <td>
-                            <input type="text" v-model="item.valueUnit" placeholder="请填单位" class='childUnitThree'>
-                          </td>
-                          <td>
-                            <template v-if='childCheckBox === true'>
-                              <el-switch
-                                v-model="item.graphicFieldFlag"
-                                @change="changeGrapFlagThree($event, index)"
-                              />
-                            </template>
-                            <template v-else>
-                              <el-switch
-                                v-model="item.graphicFieldFlag"
-                                disabled
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <el-switch
-                              v-model="item.supernatantFieldFlag"
-                              @change="changeSuperFlagThree($event, index)"
-                            />
-                          </td>
-                          <td width='15%'>
-                            <template v-if='checkedLayerMerge === true'>
-                              <template v-if="childDataListThree.length > 2">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
-                                  @click="deleteContentListThree(item.contentName, index)"
-                                  title="删除此项"
-                                ></i>
-                              </template>
-                            </template>
-                            <template v-else>
-                              <template v-if="childDataListThree.length > 1">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
-                                  @click="deleteContentListThree(item.contentName, index)"
-                                  title="删除此项"
-                                ></i>
-                              </template>
-                            </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #0785FD;"
-                              class="addChildThree el-icon-circle-plus-outline"
-                              @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
-                              title="新增项"
-                            ></i>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第三步：添加浮层并列项</p>
-                  <table class="plate-table" style="width: 100%;">
-                    <thead>
-                    <tr>
-                      <th>子项名称</th>
-                      <th>浮层并列项名称</th>
-                      <th>单位</th>
-                    </tr>
-                    </thead>
-                    <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
-                      <template v-if='item.isMerge === true'>
-                        <tr class='mergetr'>
-                          <td>合计（{{childDataListThree[index].contentName}}）</td>
-                          <td>
-                            合计(<input type="text" v-model="item.contentName">)
-                          </td>
-                          <td>{{item.valueUnit}}</td>
-                        </tr>
-                      </template>
-                      <template v-else>
-                        <tr>
-                          <td>{{childDataListThree[index].contentName}}</td>
-                          <td>
-                            <input type="text" v-model="item.contentName" placeholder="请填浮层并列项名称">
-                          </td>
-                          <td>
-                            <input type="text" v-model="item.valueUnit" placeholder="请填单位" class='layerUnitThree'>
-                          </td>
-                        </tr>
-                      </template>
-                    </tbody>
-                  </table>
-                  <div class="checkbox">
-                    <template v-if='checkBoxThree === true'>
-                      <el-checkbox
-                        v-model="checkedLayerMerge"
-                        @change="changeLayerMerge"
-                      >
-                        添加浮层子项合计项
-                      </el-checkbox>
                     </template>
                     <template v-else>
-                      <el-checkbox
-                        disabled
-                        v-model="checkedLayerMerge"
-                      >
-                        添加浮层子项合计项（<span style="color:red;">{{checkBoxTip}}</span>）
-                      </el-checkbox>
-                    </template>
-                  </div>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第四步：添加数值</p>
-                  <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
-                    <thead>
-                    <tr>
-                      <th rowspan='2'>主项</th>
-                      <th colspan='3'>子项</th>
-                      <th colspan='3'>浮层并列项</th>
-                    </tr>
-                    <tr>
-                      <th>子项名称</th>
-                      <th>值</th>
-                      <th>单位</th>
-                      <th>浮层并列项名称</th>
-                      <th>值</th>
-                      <th>单位</th>
-                    </tr>
-                    </thead>
-                    <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
-                      <tr v-for="(list, idx) in items.contentSubItemList" :key="'list'+idx">
-                        <template v-if='list.isMerge === true'>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{items.itemName}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{list.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.valueUnit}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.contnetSubItemExtendList[0].valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
-                        </template>
-                        <template v-else>
-                          <td>{{items.itemName}}</td>
-                          <td>{{list.contentName}}</td>
-                          <td><input type="text" v-model="numberObjThree[index + '_' + idx]" placeholder="请填值"></td>
-                          <td>{{list.valueUnit}}</td>
-                          <td>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" v-model="numberLayerObjThree[idx]" placeholder="请填值"></td>
-                          <td>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
-                        </template>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </template>
-            <template v-if="info.areaDataType === 2">
-              <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
-                <div class="ecl2-cr-list">
-                  <p class="list-title">第一步：添加主项</p>
-                  <table class="plate-table" style="width: 100%;">
-                    <thead>
-                    <tr>
-                      <th>主项名称</th>
-                      <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item,idx) in parentDataListTwo" :key="'item'+idx">
+                      <tr>
+                        <td><input type="text" v-model="item.contentName" placeholder="请填子项名称"></td>
+                        <td><input type="text" v-model="item.valueUnit" placeholder="请填单位" class='valueUnit'></td>
                         <td>
-                          <input type="text" v-model="item.itemName" placeholder="请填主项名称">
+                          <template v-if='isCheckBox === true'>
+                            <el-switch
+                              v-model="item.graphicFieldFlag"
+                              @change="changeGrapFlag($event, idx)"
+                            />
+                          </template>
+                          <template v-else>
+                            <el-switch
+                              v-model="item.graphicFieldFlag"
+                              disabled
+                            />
+                          </template>
+                        </td>
+                        <td>
+                          <el-switch
+                            v-model="item.supernatantFieldFlag"
+                            @change="changeSuperFlag($event, idx)"
+                            style="z-index:-1"
+                          />
                         </td>
                         <td width='15%'>
-                          <template v-if="parentDataListTwo.length>1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="delparent active el-icon-remove-outline"
-                              @click="deleteParentDataTwo(item.itemName, idx)" title="删除此项"
-                            ></i>
+                          <template v-if="checkedMerge === true">
+                            <template v-if="childDataListTwo.length > 2">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteContentListTwo(item.contentName, idx)"
+                                title="删除此项"
+                              ></i>
+                            </template>
+                          </template>
+                          <template v-else>
+                            <template v-if="childDataListTwo.length > 1">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteContentListTwo(item.contentName, idx)"
+                                title="删除此项"
+                              ></i>
+                            </template>
                           </template>
                           <i
-                            style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                            class="addparent el-icon-circle-plus-outline"
-                            @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)" title="新增项"
+                            style="font-size: 25px; cursor: pointer;  color: #0785FD;z-index:1"
+                            class="addchild el-icon-circle-plus-outline"
+                            @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
+                            title="新增项"
                           ></i>
                         </td>
                       </tr>
-                    </tbody>
-                  </table>
-                  <p class="tip" style="color:red;">{{tip}}</p>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第二步：添加子项</p>
-                  <table class="plate-table" style="width: 100%;" >
-                    <thead>
-                    <tr>
-                      <th>子项名称</th>
-                      <th>单位</th>
-                      <th>直接显示</th>
-                      <th>浮层显示</th>
-                      <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
-                      <template v-if="item.isMerge === true">
-                        <tr class='mergetr'>
-                          <td>合计(<input v-model='item.contentName' type='text' style="padding-left:3%;" />)</td>
-                          <td>{{item.valueUnit}}</td>
-                          <td></td>
-                          <td>
-                            <el-switch
-                              v-model="item.supernatantFieldFlag"
-                              class='superFlag'
-                              disabled
-                            />
-                          </td>
-                          <td width='15%'></td>
-                        </tr>
+                    </template>
+                  </tbody>
+                </table>
+                <template v-if="isCheckBox === true">
+                  <div class="checkbox">
+                    <el-checkbox
+                      v-model="checkedMerge"
+                      @change="changeMerge"
+                    >
+                      添加浮层合计项
+                    </el-checkbox>
+                  </div>
+                </template>
+                <template v-else>
+                  <div class="checkbox">
+                    <el-checkbox
+                      v-model="checkedMerge"
+                      disabled
+                    >
+                      添加浮层合计项
+                      （<span style="color:red;">{{checkBoxTip}}</span>）
+                    </el-checkbox>
+                  </div>
+                </template>
+              </div>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第三步：添加数值</p>
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>主项</th>
+                    <th>子项</th>
+                    <th>值</th>
+                    <th>单位</th>
+                  </tr>
+                  </thead>
+                  <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
+                    <span v-show='false'>{{item.plateAreaId=info.plateAreaId}}</span>
+                    <span v-show='false'>{{item.serialNumber = parseInt(index+1) }}</span>
+                    <tr v-for="(value,idx) in item.contentSubItemList" :key="'value'+idx">
+                      <span v-show='false'>{{value.serialNumber = parseInt(idx+1)}}</span>
+                      <template v-if='value.isMerge === false'>
+                        <td>{{item.itemName}}</td>
+                        <td>{{value.contentName}}</td>
+                        <td>
+                          <input
+                            type="text"
+                            v-model="numberObj[index + '_' + idx]"
+                            placeholder="请填值"
+                          >
+                        </td>
+                        <td>{{value.valueUnit}}</td>
                       </template>
                       <template v-else>
-                        <tr>
-                          <td><input type="text" v-model="item.contentName" placeholder="请填子项名称"></td>
-                          <td><input type="text" v-model="item.valueUnit" placeholder="请填单位" class='valueUnit'></td>
-                          <td>
-                            <template v-if='isCheckBox === true'>
-                              <el-switch
-                                v-model="item.graphicFieldFlag"
-                                @change="changeGrapFlag($event, idx)"
-                              />
-                            </template>
-                            <template v-else>
-                              <el-switch
-                                v-model="item.graphicFieldFlag"
-                                disabled
-                              />
-                            </template>
-                          </td>
-                          <td>
-                            <el-switch
-                              v-model="item.supernatantFieldFlag"
-                              @change="changeSuperFlag($event, idx)"
-                              style="z-index:-1"
-                            />
-                          </td>
-                          <td width='15%'>
-                            <template v-if="checkedMerge === true">
-                              <template v-if="childDataListTwo.length > 2">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
-                                  title="删除此项"
-                                ></i>
-                              </template>
-                            </template>
-                            <template v-else>
-                              <template v-if="childDataListTwo.length > 1">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
-                                  title="删除此项"
-                                ></i>
-                              </template>
-                            </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;z-index:1"
-                              class="addchild el-icon-circle-plus-outline"
-                              @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
-                              title="新增项"
-                            ></i>
-                          </td>
-                        </tr>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{item.itemName}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{value.contentName}}）</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{value.valueContent}}</td>
+                        <td style="color:#fff;border-color:#fff;background-color:#666666">{{value.valueUnit}}</td>
                       </template>
-                    </tbody>
-                  </table>
-                  <template v-if="isCheckBox === true">
-                    <div class="checkbox">
-                      <el-checkbox
-                        v-model="checkedMerge"
-                        @change="changeMerge"
-                      >
-                        添加浮层合计项
-                      </el-checkbox>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div class="checkbox">
-                      <el-checkbox
-                        v-model="checkedMerge"
-                        disabled
-                      >
-                        添加浮层合计项
-                        （<span style="color:red;">{{checkBoxTip}}</span>）
-                      </el-checkbox>
-                    </div>
-                  </template>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第三步：添加数值</p>
-                  <table class="plate-table" style="width: 100%;">
-                    <thead>
-                    <tr>
-                      <th>主项</th>
-                      <th>子项</th>
-                      <th>值</th>
-                      <th>单位</th>
                     </tr>
-                    </thead>
-                    <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
-                      <span v-show='false'>{{item.plateAreaId=info.plateAreaId}}</span>
-                      <span v-show='false'>{{item.serialNumber = parseInt(index+1) }}</span>
-                      <tr v-for="(value,idx) in item.contentSubItemList" :key="'value'+idx">
-                        <span v-show='false'>{{value.serialNumber = parseInt(idx+1)}}</span>
-                        <template v-if='value.isMerge === false'>
-                          <td>{{item.itemName}}</td>
-                          <td>{{value.contentName}}</td>
-                          <td>
-                            <input
-                              type="text"
-                              v-model="numberObj[index + '_' + idx]"
-                              placeholder="请填值"
-                            >
-                          </td>
-                          <td>{{value.valueUnit}}</td>
-                        </template>
-                        <template v-else>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{item.itemName}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">合计（{{value.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{value.valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#666666">{{value.valueUnit}}</td>
-                        </template>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                  </tbody>
+                </table>
               </div>
-            </template>
-            <template v-if="info.areaDataType === 4">
-              <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
-                <div class="ecl2-cr-list">
-                  <p class="list-title">第一步：添加项</p>
-                  <table class="plate-table" style="width: 100%;">
-                    <thead>
-                    <tr>
-                      <th>项名称</th>
-                      <th>单位</th>
-                      <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                      <tr v-for="(item, index) in childDataListFour" :key="'item'+index">
-                        <span v-show='false'>{{parentDataListFour[0].plateAreaId = info.plateAreaId}}</span>
-                        <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
-                        <td>
-                          <input type="text" v-model="item.contentName" placeholder="请填项名称">
-                        </td>
-                        <td>
-                          <input type="text" v-model="item.valueUnit" placeholder="请填单位">
-                        </td>
-                        <td width='15%'>
-                          <template v-if="childDataListFour.length > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
-                              @click="deleteChildDataListFour(item.contentName, index)"
-                              title="删除此项"
-                            >
-                            </i>
-                          </template>
+            </div>
+          </template>
+          <template v-if="info.areaDataType === 4">
+            <div style="margin-top:5%;">
+              <h2>位置{{info.serialNumber}}</h2>
+              <div class="ecl2-cr-list">
+                <p class="list-title">第一步：添加项</p>
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>项名称</th>
+                    <th>单位</th>
+                    <th>操作</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, index) in childDataListFour" :key="'item'+index">
+                      <span v-show='false'>{{parentDataListFour[0].plateAreaId = info.plateAreaId}}</span>
+                      <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
+                      <td>
+                        <input type="text" v-model="item.contentName" placeholder="请填项名称">
+                      </td>
+                      <td>
+                        <input type="text" v-model="item.valueUnit" placeholder="请填单位">
+                      </td>
+                      <td width='15%'>
+                        <template v-if="childDataListFour.length > 1">
                           <i
-                            style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                            class="addproject el-icon-circle-plus-outline"
-                            @click="addChildDataListFour(item.contentName, item.valueUnit, index, info.mainMaxCount)"
-                            title="新增项"
+                            style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                            class="active el-icon-remove-outline"
+                            @click="deleteChildDataListFour(item.contentName, index)"
+                            title="删除此项"
                           >
                           </i>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <p class="tip" style="color:red;">{{tip}}</p>
-                </div>
-                <div class="ecl2-cr-list" style="margin-top: 40px;">
-                  <p class="list-title">第二步：添加数值</p>
-                  <table class="plate-table" style="width: 100%;" >
-                    <thead>
-                    <tr>
-                      <th>项名称</th>
-                      <th>值</th>
-                      <th>同比值(%)</th>
+                        </template>
+                        <i
+                          style="font-size: 25px; cursor: pointer;  color: #0785FD;"
+                          class="addproject el-icon-circle-plus-outline"
+                          @click="addChildDataListFour(item.contentName, item.valueUnit, index, info.mainMaxCount)"
+                          title="新增项"
+                        >
+                        </i>
+                      </td>
                     </tr>
-                    </thead>
-                    <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
-                      <tr>
-                        <td>{{items.contentSubItemList[0].contentName}}</td>
-                        <td><input type="text" v-model="items.contentSubItemList[0].valueContent" placeholder="请填值"></td>
-                        <td><input type="text" v-model="percentValue[index]" placeholder="请填值"></td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                  </tbody>
+                </table>
+                <p class="tip" style="color:red;">{{tip}}</p>
               </div>
-            </template>
+              <div class="ecl2-cr-list" style="margin-top: 40px;">
+                <p class="list-title">第二步：添加数值</p>
+                <table class="plate-table" style="width: 100%;" >
+                  <thead>
+                  <tr>
+                    <th>项名称</th>
+                    <th>值</th>
+                    <th>同比值(%)</th>
+                  </tr>
+                  </thead>
+                  <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
+                    <tr>
+                      <td>{{items.contentSubItemList[0].contentName}}</td>
+                      <td><input type="text" v-model="items.contentSubItemList[0].valueContent" placeholder="请填值"></td>
+                      <td><input type="text" v-model="percentValue[index]" placeholder="请填值"></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </template>
-        </div>
+        </template>
       </div>
     </div>
-  </div>
-  <div class="plate-ecl-b">
-    <el-button @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
 <script>
-import store from '../../../../store/store.js';
+import store from '@/store/store.js';
 export default {
   props: ['plateConfigInfo', 'markUrl'],
   data () {
@@ -674,6 +668,27 @@ export default {
     this.contentItemListTwo.push(JSON.parse(JSON.stringify(this.parentDataListTwo[0])));
     this.contentItemListTwo[0]['contentSubItemList'] = JSON.parse(JSON.stringify(this.childDataListTwo));
     // this.$emit('savedata', 'data'); // 将要提交的数据传到父组件
+  },
+  destroyed () { // 当组件销毁后调用
+    this.contentItemListTwo.map((item) => {
+      if (item.itemName !== '') {
+        this.dataObjTwo[0].contentItemList.push(item);
+      }
+    });
+    this.contentItemListThree.map((item) => {
+      if (item.itemName !== '') {
+        this.dataObjTwo[0].contentItemList.push(item);
+      }
+    });
+    this.contentItemListFour.map((item) => {
+      if (item.itemName !== '') {
+        this.dataObjTwo[0].contentItemList.push(item);
+      }
+    });
+    // const data = this.dataObjTwo;
+    setTimeout(() => {
+      this.$emit('savedata', [this.contentItemListTwo,]); // 将要提交的数据传到父组件
+    }, 1000);
   },
   watch: {
     percentValue: { // 监听同比值的变化
@@ -809,35 +824,6 @@ export default {
     }
   },
   methods: {
-    preStep () {
-      this.$store.commit('setProgressIndex', {progressIndex: 1});
-    },
-    nextStep () {
-      this.$store.commit('setProgressIndex', {progressIndex: 3});
-      this.axios.get('/pageServices/pages', {params: -1})
-        .then((res) => {
-          if (res) {
-            this.$store.commit('getAllPageList', {allPageList: res.data.list});
-          }
-        })
-        .catch(() => {});
-      this.contentItemListTwo.map((item) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
-        }
-      });
-      this.contentItemListThree.map((item) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
-        }
-      });
-      this.contentItemListFour.map((item) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
-        }
-      });
-      console.log(this.dataObjTwo[0].contentItemList)
-    },
     addparentDataTwo (name, idx, maxNumber) { // 类型二添加主项
       let arr = [];
       const parentAdd = document.getElementsByClassName('addparent');
@@ -1180,9 +1166,9 @@ export default {
               }
             }
           }
+          this.childDataListTwo.push(data);
           this.contentItemListTwo[i].contentSubItemList.push(data);
         }
-        this.childDataListTwo.push(data);
       } else {
         const childLength = this.childDataListTwo.length;
         this.childDataListTwo.splice(childLength - 1, 1);
@@ -1345,9 +1331,43 @@ export default {
   }
 }
 </script>
-<style lang='scss'>
-  .bg-plate-ecl {
-    height: 100%;
+<style lang='scss' scoped>
+  .plate-ecl2-c {
+    display:flex;
+    width:100%;
+    flex-wrap: wrap;
+    h2 {
+      color: #333333;
+      font-size: 18px;
+      font-weight: bold;
+      padding-bottom: 1%;
+      width: 100%;
+    }
+    >div {
+      width: 50%;
+    }
+    .plate-explain {
+      margin-top: 3%;
+      .explain-title {
+        margin-bottom: 2%;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .explain-ul {
+        li {
+          height: 1.8em;
+        }
+        .explain-title-left {
+          font-size: 14px;
+          color: #333333;
+        }
+        .explain-title-right {
+          color: #666666;
+          font-size: 12px;
+        }
+      }
+    }
   }
   .plate-body-left {
     margin: 5% 0;
@@ -1432,8 +1452,5 @@ export default {
         color:#fff;
       }
     }
-  }
-  .stepH2 {
-    font-weight: bolder !important;
   }
 </style>

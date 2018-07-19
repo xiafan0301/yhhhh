@@ -1,94 +1,90 @@
 <template>
-<div class="plate-relation clearfix">
-  <div class="relation-title">
-    <div class="page-left">
-      <span>关联页面</span>
-      <el-select v-model="value" placeholder="选择页面">
-        <el-option
-          v-for="item in relationPage"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
+<div class="bg-plate-ecl bg-plate-ecl3" v-show="this.$store.state.progressIndex === 3">
+  <div class="plate-relation clearfix">
+    <div class="relation-title">
+      <div class="page-left">
+        <span>关联页面</span>
+        <el-select v-model="relationValue" placeholder="选择页面">
+          <el-option
+            v-for="item in this.$store.state.allPageList"
+            :key="item.pageId"
+            :value="item.pageName">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="page-right">
+        <span>跳转页面</span>
+        <el-select v-model="skipValue" placeholder="请选择">
+          <el-option
+            v-for="item in this.$store.state.allPageList"
+            :key="item.pageId"
+            :value="item.pageName">
+          </el-option>
+        </el-select>
+      </div>
     </div>
-    <div class="page-right">
-      <span>跳转页面</span>
-      <el-select v-model="value" placeholder="请选择">
-        <el-option
-          v-for="item in skipPage"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-        </el-option>
-      </el-select>
+    <div class="relation-map">
+      <div class="map-body">
+        <el-row :gutter="20">
+          <el-col :span="4">
+            <div class="grid-content bg-purple">
+              <span>左上</span>
+              <el-button class="map-button">展示到该位置</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4" :offset="15">
+            <div class="grid-content bg-purple">
+              <span>右上</span>
+              <el-button class="map-button">展示到该位置</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="grid-content bg-purple">
+              <span>左中</span>
+              <el-button class="map-button">展示到该位置</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4" :offset="15">
+            <div class="grid-content bg-purple">
+              <span>右中</span>
+              <el-button class="map-button">展示到该位置</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4">
+            <div class="grid-content bg-purple">
+              <span>左下</span>
+              <el-button class="map-button">展示到该位置</el-button>
+            </div>
+          </el-col>
+          <el-col :span="4" :offset="15">
+            <div class="grid-content bg-purple">
+              <span>右下</span>
+              <el-button class="map-button relation-active">展示到该位置</el-button>
+            </div>
+          </el-col>
+        </el-row>
+      </div>
     </div>
   </div>
-  <div class="relation-map">
-    <div class="map-body">
-      <el-row :gutter="20">
-        <el-col :span="4">
-          <div class="grid-content bg-purple">
-            <span>左上</span>
-            <el-button class="map-button">展示到该位置</el-button>
-          </div>
-        </el-col>
-        <el-col :span="4" :offset="15">
-          <div class="grid-content bg-purple">
-            <span>右上</span>
-            <el-button class="map-button">展示到该位置</el-button>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="grid-content bg-purple">
-            <span>左中</span>
-            <el-button class="map-button">展示到该位置</el-button>
-          </div>
-        </el-col>
-        <el-col :span="4" :offset="15">
-          <div class="grid-content bg-purple">
-            <span>右中</span>
-            <el-button class="map-button">展示到该位置</el-button>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <div class="grid-content bg-purple">
-            <span>左下</span>
-            <el-button class="map-button">展示到该位置</el-button>
-          </div>
-        </el-col>
-        <el-col :span="4" :offset="15">
-          <div class="grid-content bg-purple">
-            <span>右下</span>
-            <el-button class="map-button relation-active">展示到该位置</el-button>
-          </div>
-        </el-col>
-      </el-row>
-    </div>
+  <div class="plate-ecl-b">
+    <el-button @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='commitData'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
 <script>
+// import store from '@/store/store.js';
+import store from '../../../../store/store.js';
 export default {
   data () {
     return {
-      relationPage: [{
-        value: '关联页面1',
-        label: '关联页面1'
-      }, {
-        value: '关联页面2',
-        label: '关联页面2'
-      }, {
-        value: '关联页面3',
-        label: '关联页面3'
-      }],
-      skipPage: [{
-        value: '跳转页面',
-        label: '跳转页面'
-      }, {
-        value: '不跳转页面',
-        label: '不跳转页面'
-      }]
+      relationValue: '',
+      skipValue: ''
+    }
+  },
+  methods: {
+    preStep () {
+      this.$store.commit('setProgressIndex', {progressIndex: 2});
     }
   }
 }
