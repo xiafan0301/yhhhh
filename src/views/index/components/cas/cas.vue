@@ -24,48 +24,68 @@
         </el-form-item>
       </el-form>
       <div style="position: absolute; bottom: 18px; right: 0;">
-        <el-button type="primary" size="small" @click="add" icon="el-icon-plus">查询</el-button>
+        <el-button type="primary" size="small" @click="add" icon="el-icon-plus">新增</el-button>
       </div>
     </div>
     <el-table
       :data="tableData"
       border
       style="width: 100%">
-      <el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>
+      <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column prop="deviceName" label="设备名称" width="120"></el-table-column>
-      <el-table-column prop="protocolType" label="协议" width="120"></el-table-column>
+      <el-table-column prop="protocolType" label="协议" width="120">
+        <template slot-scope="scope">
+          <span v-if="scope.row.protocolType == 1">http</span>
+          <span v-else-if="scope.row.deviceStatus == 2">https</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="deviceIp" label="设备IP" width="120"></el-table-column>
       <el-table-column prop="devicePort" label="设备端口" width="120"></el-table-column>
       <el-table-column prop="channelId" label="通道ID" width="120"></el-table-column>
-      <el-table-column prop="streamType" label="流类型" width="120"></el-table-column>
+      <el-table-column prop="streamType" label="流类型" width="120">
+        <template slot-scope="scope">
+          <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
+          <span v-if="scope.row.streamType == 1">main stream</span>
+          <span v-else-if="scope.row.streamType == 2">sub-stream</span>
+          <span v-else-if="scope.row.streamType == 3">third stream</span>
+          <span v-else-if="scope.row.streamType == 4">transcode stream</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="zeroChannelFlag" label="零通道" width="120"></el-table-column>
       <el-table-column prop="deviceUserName" label="登录名" width="120"></el-table-column>
       <el-table-column prop="deviceUserPassword" label="密码" width="120"></el-table-column>
-      <el-table-column prop="deviceAddress" label="地址" width="120"></el-table-column>
+      <el-table-column prop="deviceAddress" label="地址" width="150" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="longitude" label="经度" width="120"></el-table-column>
       <el-table-column prop="latitude" label="纬度" width="120"></el-table-column>
-      <el-table-column prop="deviceStatus" label="状态" width="120"></el-table-column>
+      <el-table-column prop="deviceStatus" label="状态" width="100" fixed="right">
+        <template slot-scope="scope">
+          <span style="color: #13ce66;" v-if="scope.row.deviceStatus == 1">可用</span>
+          <span style="color: #ff4949;" v-else-if="scope.row.deviceStatus == 2">异常</span>
+          <span style="color: #999;" v-else>未知</span>
+        </template>
+      </el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
-        width="100">
+        width="120">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-          <el-button type="text" size="small">编辑</el-button>
+          <el-button type="text" size="small" disabled>编辑</el-button>
+          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <template v-if="pagination.total > 0">
-      <el-pagination
-        background
-        @current-change="onPageChange"
-        :current-page.sync="pagination.pageNum"
-        :page-size="pagination.pageSize"
-        layout="prev, pager, next, jumper"
-        :total="pagination.total">
-      </el-pagination>
-    </template>
-
+    <div style="text-align: right; padding-top: 10px;">
+      <template v-if="pagination.total > 0">
+        <el-pagination
+          background
+          @current-change="onPageChange"
+          :current-page.sync="pagination.pageNum"
+          :page-size="pagination.pageSize"
+          layout="prev, pager, next, jumper"
+          :total="pagination.total">
+        </el-pagination>
+      </template>
+    </div>
     <el-dialog
       title="提示"
       :visible.sync="dialogVisible"
@@ -174,6 +194,8 @@ export default {
   },
   methods: {
     doSearch () {
+      this.pagination.pageNum = 1;
+      this.getTableData();
     },
     handleClick (row) {
       console.log(row);
@@ -187,13 +209,17 @@ export default {
         pageNum: this.pagination.pageNum,
         pageSize: this.pagination.pageSize
       };
-      this.axios.get('/cameraServices/devices/page/', params)
+      this.axios.get('/cameraServices/devices/page?' + $.param(params))
         .then((res) => {
+          if (res && res.data) {
+            this.tableData = res.data.list;
+            this.pagination.total = res.data.total;
+          }
         })
         .catch(() => {
         });
     },
-    nPageChange (page) {
+    onPageChange (page) {
       this.pagination.pageNum = page;
       this.getTableData();
     },
@@ -206,10 +232,42 @@ export default {
       this.axios.post('/cameraServices/device/', params)
         .then((res) => {
           this.editSubmitLoading = false;
+          this.dialogVisible = false;
+          this.doSearch();
         })
         .catch(() => {
           this.editSubmitLoading = false;
         });
+    },
+    del (item) {
+      let _this = this;
+      _this.$msgbox({
+        title: '删除提示',
+        message: '确定删除吗？',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            instance.confirmButtonText = '执行中...';
+            // ajax
+            _this.axios.delete('/cameraServices/device/' + item.cameraId).then(function (res) {
+              instance.confirmButtonText = '确定';
+              instance.confirmButtonLoading = false;
+              done();
+              _this.doSearch();
+            }).catch(function () {
+              instance.confirmButtonText = '确定';
+              instance.confirmButtonLoading = false;
+              done();
+            });
+          } else {
+            done();
+          }
+        }
+      }).then(action => {
+      });
     }
   }
 }
