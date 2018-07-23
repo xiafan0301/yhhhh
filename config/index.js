@@ -10,7 +10,15 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/api/vis': {
+        target: 'http://10.16.3.40:8080/',
+        changeOrigin: true, // 是否跨域
+        pathRewrite: {
+          '^/api/vis': '/api/vis'
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

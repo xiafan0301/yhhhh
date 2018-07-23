@@ -30,15 +30,21 @@ axios.interceptors.response.use(function (response) {
   // console.log('response', response)
   if (response && response.data) {
     let _data = response.data;
+    let msg = '';
     if (_data.code === '00000000') {
       return _data;
+    } else if (_data.code === '10060002') {
+      // 未登录
+      msg = '登录已过期，请重新登录！';
+      window.location.href = './index.html#/login';
     } else {
-      let msg = '访问出错';
+      msg = '访问出错';
       if (_data.viewMsg) {
         msg = _data.viewMsg;
       }
+    }
+    if (msg && msg.length > 0) {
       ElementUI.Message({ message: msg, type: 'error' });
-      return null;
     }
   } else {
     return null;
