@@ -2,7 +2,7 @@
   <div class="vis-bg-header clearfix">
     <h1>智慧城市运营管理系统</h1>
     <ul>
-      <li style="padding-left: 16px; cursor: pointer;">
+      <li style="padding-left: 16px; cursor: pointer;" @click="loginOut">
         <i>&nbsp;</i>退出登录
       </li>
       <li>
@@ -20,7 +20,51 @@ export default {
   data () {
     return {}
   },
-  methods: {}
+  methods: {
+    loginOut () {
+      let _this = this;
+      _this.$msgbox({
+        title: '退出提示',
+        message: '确定退出登录吗？',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        beforeClose: (action, instance, done) => {
+          if (action === 'confirm') {
+            instance.confirmButtonLoading = true;
+            instance.confirmButtonText = '正在退出...';
+            setTimeout(() => {
+              instance.confirmButtonText = '确定';
+              instance.confirmButtonLoading = false;
+              done();
+              window.location.href = './index.html#/login';
+            }, 500);
+            // ajax
+            /* _this.axios.post('/core/home/exit', []).then(function (res) {
+              if (res) {
+                setCookie(cookieUserId, _this.loginUser.id, -1, '/');
+                _this.$store.commit('setToken', {tokenVal: false});
+                // _this.$router.push({name: 'login'});
+                // window.location.href = _this.$store.state.ctx + '../index/index.html';
+              }
+              instance.confirmButtonText = '确定';
+              instance.confirmButtonLoading = false;
+              done();
+              window.location.href = './index.html';
+            }).catch(function () {
+              instance.confirmButtonText = '确定';
+              instance.confirmButtonLoading = false;
+              done();
+            }); */
+          } else {
+            done();
+          }
+        }
+      }).then(action => {
+      });
+      // window.location.href = './index.html#/login';
+    }
+  }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->

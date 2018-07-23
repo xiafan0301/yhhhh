@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 // 主要
+import login from '@/views/index/components/login.vue'
 import main from '@/components/main.vue'
-import mainDefault from '@/views/index/components/default.vue'
+// import mainDefault from '@/views/index/components/default.vue'
 // page
 import data from '@/views/index/components/data/data.vue'
 import page from '@/views/index/components/page/page.vue'
@@ -16,16 +17,23 @@ import style from '@/views/index/components/style/style.vue'
 import selectData from '@/views/index/components/data/select-data.vue'
 import populationDistribution from '@/views/index/components/data/population-distribution.vue'
 import poorVillage from '@/views/index/components/data/poor-village.vue'
+// cas
+import cas from '@/views/index/components/cas/cas.vue'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
+      path: '/login',
+      name: 'login',
+      component: login
+    },
+    {
       path: '/',
       component: main,
       children: [
-        {path: '', component: mainDefault},
+        {path: '', redirect: {name: 'page'}},
         {path: 'data', name: 'data', component: data},
         {path: 'page', name: 'page', component: page},
         {
@@ -51,6 +59,11 @@ export default new Router({
             // 贫困村
             {path: 'poor-village', name: 'poor-village', component: poorVillage}
           ]
+        },
+        {
+          path: 'cas',
+          name: 'cas',
+          component: cas
         }
       ]
     }
