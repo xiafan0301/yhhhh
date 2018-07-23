@@ -1,5 +1,11 @@
 <template>
   <div class="bg-cas">
+    <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item>首页</el-breadcrumb-item>
+        <el-breadcrumb-item>视频监控管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="clearfix" style="position: relative;">
       <el-form style="float: left; margin-right: 200px;" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item label="设备名称">
@@ -39,9 +45,9 @@
           <span v-else-if="scope.row.deviceStatus == 2">https</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deviceIp" label="设备IP" width="120"></el-table-column>
-      <el-table-column prop="devicePort" label="设备端口" width="120"></el-table-column>
-      <el-table-column prop="channelId" label="通道ID" width="120"></el-table-column>
+      <el-table-column prop="deviceIp" label="设备IP" width="140"></el-table-column>
+      <el-table-column prop="devicePort" label="设备端口" width="100"></el-table-column>
+      <el-table-column prop="channelId" label="通道ID" width="100"></el-table-column>
       <el-table-column prop="streamType" label="流类型" width="120">
         <template slot-scope="scope">
           <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
@@ -51,7 +57,12 @@
           <span v-else-if="scope.row.streamType == 4">transcode stream</span>
         </template>
       </el-table-column>
-      <el-table-column prop="zeroChannelFlag" label="零通道" width="120"></el-table-column>
+      <el-table-column prop="zeroChannelFlag" label="零通道" width="100">
+        <template slot-scope="scope">
+          <span v-if="scope.row.zeroChannelFlag">是</span>
+          <span v-else>否</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="deviceUserName" label="登录名" width="120"></el-table-column>
       <el-table-column prop="deviceUserPassword" label="密码" width="120"></el-table-column>
       <el-table-column prop="deviceAddress" label="地址" width="150" :show-overflow-tooltip="true"></el-table-column>
@@ -81,7 +92,7 @@
           @current-change="onPageChange"
           :current-page.sync="pagination.pageNum"
           :page-size="pagination.pageSize"
-          layout="prev, pager, next, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="pagination.total">
         </el-pagination>
       </template>
