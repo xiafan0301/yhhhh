@@ -33,8 +33,8 @@
     <div class="bg-plate-ec">
       <div class="bg-plate-ecc">
         <div is='plate009'></div>
-        <div is='plate008'></div>
-        <div is='plateRelation'></div>
+        <div is='plate008' @setDataList="getData"></div>
+        <div is='plateRelation' :dataList='dataList'></div>
       </div>
     </div>
   </div>
@@ -49,9 +49,14 @@ export default {
   components: {plateData, plate008, plate009, plateRelation},
   data () {
     return {
+      dataList: []
     }
   },
   methods: {
+    getData (val) {
+      console.log(val)
+      this.dataList = val;
+    }
   }
 }
 </script>

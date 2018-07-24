@@ -75,7 +75,18 @@ export default {
       this.axios.get('/plateServices/areaInfos/' + param + '')
         .then((res) => {
           if (res) {
+            let typeArr = [];
+            let oneType = [];
+            res.data.map((item, index) => {
+              if (item.areaDataType !== 1 && item.areaDataType !== 4) {
+                typeArr.push(item);
+              } else {
+                oneType.push(index);
+              }
+            });
             this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
+            this.$store.commit('setType', {typeArr: typeArr});
+            this.$store.commit('setOneType', {oneType: oneType});
           }
         })
         .catch(() => {});

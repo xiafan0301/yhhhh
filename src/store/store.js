@@ -15,7 +15,8 @@ const state = {
   progressIndex: 1, // 添加板块的进度条索引
   plateConfigInfo: [], // 根据configId获取的板块配置信息
   plateInfo: {}, // 板块信息
-  allPageList: [] // 所有的页面
+  typeArr: [], // 类型不为1的对象
+  oneType: []
 };
 
 export default new Vuex.Store({

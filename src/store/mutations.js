@@ -24,8 +24,10 @@ export default {
   setPlateInfo (state, options) {
     state.plateInfo = options.plateInfo;
   },
-  // 所有页面
-  getAllPageList (state, options) {
-    state.allPageList = options.allPageList;
+  setType (state, options) {
+    state.typeArr = options.typeArr;
+  },
+  setOneType (state, options) {
+    state.oneType = options.oneType;
   }
 }
