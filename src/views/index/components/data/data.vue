@@ -1097,7 +1097,7 @@ export default {
     },
     // 查询地图应用类型
     getdataTypesList () {
-      this.axios.get('/vis/mapServices/dataTypes')
+      this.axios.get('/mapServices/dataTypes')
         .then(res => {
           this.pageList = res.data;
         })
@@ -1110,7 +1110,7 @@ export default {
         pageSize: this.pageSize
       };
       if (this.searchForm.dataTypeId) {
-        this.axios.get('/vis/mapServices/datas?' + $.param(params))
+        this.axios.get('/mapServices/datas?' + $.param(params))
           .then(res => {
             if (res && res.data) {
               this.plateList = res.data.list;
@@ -1173,7 +1173,7 @@ export default {
       params.dataExtendList[0].valueContent = this.form.households;
       params.dataExtendList[1].valueContent = this.form.pople;
       params.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.put('/vis/mapServices/datas', params)
+      this.axios.put('/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         });
@@ -1242,7 +1242,7 @@ export default {
       params.dataExtendList[1].valueContent = this.form.teacher;
       params.dataExtendList[2].valueContent = this.form.student;
       params.dataExtendList[3].valueContent = this.form.addrs;
-      this.axios.put('/vis/mapServices/datas', params)
+      this.axios.put('/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         });
@@ -1290,7 +1290,7 @@ export default {
       params.latitude = this.form.coordinate.split(',')[1];
       params.dataExtendList[0].valueContent = this.form.addrs;
       params.dataExtendList[1].valueContent = this.form.number;
-      this.axios.put('/vis/mapServices/datas', params)
+      this.axios.put('/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         });
@@ -1329,7 +1329,7 @@ export default {
       params.longitude = this.form.coordinate.split(',')[0];
       params.latitude = this.form.coordinate.split(',')[1];
       params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/vis/mapServices/datas', params)
+      this.axios.put('/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         });
@@ -1368,7 +1368,7 @@ export default {
       params.longitude = this.form.coordinate.split(',')[0];
       params.latitude = this.form.coordinate.split(',')[1];
       params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/vis/mapServices/datas', params)
+      this.axios.put('/mapServices/datas', params)
         .then(res => {
           this.getPlateList();
         });
@@ -1381,7 +1381,7 @@ export default {
     },
     qued () {
       this.dialogVisible = false;
-      this.axios.delete('/vis/mapServices/data/' + this.shchuId)
+      this.axios.delete('/mapServices/data/' + this.shchuId)
         .then(res => {
           this.getPlateList();
         });
@@ -1395,7 +1395,7 @@ export default {
       this.Tobjpk.dataExtendList[0].valueContent = this.form.households;
       this.Tobjpk.dataExtendList[1].valueContent = this.form.pople;
       this.Tobjpk.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjpk)
+      this.axios.post('/mapServices/data', this.Tobjpk)
         .then(res => {
           this.getPlateList();
         });
@@ -1414,7 +1414,7 @@ export default {
       this.Tobjgsgy.dataExtendList[0].valueContent = this.form.households;
       this.Tobjgsgy.dataExtendList[1].valueContent = this.form.pople;
       this.Tobjgsgy.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjgsgy)
+      this.axios.post('/mapServices/data', this.Tobjgsgy)
         .then(res => {
           this.getPlateList();
         });
@@ -1433,7 +1433,7 @@ export default {
       this.Tobjgsjz.dataExtendList[0].valueContent = this.form.households;
       this.Tobjgsjz.dataExtendList[1].valueContent = this.form.pople;
       this.Tobjgsjz.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjgsjz)
+      this.axios.post('/mapServices/data', this.Tobjgsjz)
         .then(res => {
           this.getPlateList();
         });
@@ -1452,7 +1452,7 @@ export default {
       this.Tobjgssm.dataExtendList[0].valueContent = this.form.households;
       this.Tobjgssm.dataExtendList[1].valueContent = this.form.pople;
       this.Tobjgssm.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjgssm)
+      this.axios.post('/mapServices/data', this.Tobjgssm)
         .then(res => {
           this.getPlateList();
         });
@@ -1472,7 +1472,7 @@ export default {
       this.Tobjylzy.dataExtendList[1].valueContent = this.form.teacher;
       this.Tobjylzy.dataExtendList[2].valueContent = this.form.student;
       this.Tobjylzy.dataExtendList[3].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjylzy)
+      this.axios.post('/mapServices/data', this.Tobjylzy)
         .then(res => {
           this.getPlateList();
         });
@@ -1493,7 +1493,7 @@ export default {
       this.Tobjjyzy.dataExtendList[1].valueContent = this.form.teacher;
       this.Tobjjyzy.dataExtendList[2].valueContent = this.form.student;
       this.Tobjjyzy.dataExtendList[3].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjjyzy)
+      this.axios.post('/mapServices/data', this.Tobjjyzy)
         .then(res => {
           this.getPlateList();
         });
@@ -1512,7 +1512,7 @@ export default {
       this.Tobjtcc.latitude = this.form.coordinate.split(',')[1];
       this.Tobjtcc.dataExtendList[0].valueContent = this.form.addrs;
       this.Tobjtcc.dataExtendList[1].valueContent = this.form.number;
-      this.axios.post('/vis/mapServices/data', this.Tobjtcc)
+      this.axios.post('/mapServices/data', this.Tobjtcc)
         .then(res => {
           this.getPlateList();
         });
@@ -1529,7 +1529,7 @@ export default {
       this.Tobjyljg.latitude = this.form.coordinate.split(',')[1];
       this.Tobjyljg.dataExtendList[0].valueContent = this.form.addrs;
       this.Tobjyljg.dataExtendList[1].valueContent = this.form.number;
-      this.axios.post('/vis/mapServices/data', this.Tobjyljg)
+      this.axios.post('/mapServices/data', this.Tobjyljg)
         .then(res => {
           this.getPlateList();
         });
@@ -1546,7 +1546,7 @@ export default {
       this.Tobjfpxm.latitude = this.form.coordinate.split(',')[1];
       this.Tobjfpxm.dataExtendList[0].valueContent = this.form.addrs;
       this.Tobjfpxm.dataExtendList[1].valueContent = this.form.number;
-      this.axios.post('/vis/mapServices/data', this.Tobjfpxm)
+      this.axios.post('/mapServices/data', this.Tobjfpxm)
         .then(res => {
           this.getPlateList();
         });
@@ -1562,7 +1562,7 @@ export default {
       this.Tobjkq.longitude = this.form.coordinate.split(',')[0];
       this.Tobjkq.latitude = this.form.coordinate.split(',')[1];
       this.Tobjkq.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjkq)
+      this.axios.post('/mapServices/data', this.Tobjkq)
         .then(res => {
           this.getPlateList();
         });
@@ -1577,7 +1577,7 @@ export default {
       this.Tobjsw.longitude = this.form.coordinate.split(',')[0];
       this.Tobjsw.latitude = this.form.coordinate.split(',')[1];
       this.Tobjsw.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjsw)
+      this.axios.post('/mapServices/data', this.Tobjsw)
         .then(res => {
           this.getPlateList();
         });
@@ -1592,7 +1592,7 @@ export default {
       this.Tobjwh.longitude = this.form.coordinate.split(',')[0];
       this.Tobjwh.latitude = this.form.coordinate.split(',')[1];
       this.Tobjwh.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjwh)
+      this.axios.post('/mapServices/data', this.Tobjwh)
         .then(res => {
           this.getPlateList();
         });
@@ -1607,7 +1607,7 @@ export default {
       this.Tobjzw.longitude = this.form.coordinate.split(',')[0];
       this.Tobjzw.latitude = this.form.coordinate.split(',')[1];
       this.Tobjzw.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjzw)
+      this.axios.post('/mapServices/data', this.Tobjzw)
         .then(res => {
           this.getPlateList();
         });
@@ -1622,7 +1622,7 @@ export default {
       this.Tobjzdjk.longitude = this.form.coordinate.split(',')[0];
       this.Tobjzdjk.latitude = this.form.coordinate.split(',')[1];
       this.Tobjzdjk.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjzdjk)
+      this.axios.post('/mapServices/data', this.Tobjzdjk)
         .then(res => {
           this.getPlateList();
         });
@@ -1637,7 +1637,7 @@ export default {
       this.Tobjggcz.longitude = this.form.coordinate.split(',')[0];
       this.Tobjggcz.latitude = this.form.coordinate.split(',')[1];
       this.Tobjggcz.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.post('/vis/mapServices/data', this.Tobjggcz)
+      this.axios.post('/mapServices/data', this.Tobjggcz)
         .then(res => {
           this.getPlateList();
         });
