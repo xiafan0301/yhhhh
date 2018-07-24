@@ -8,7 +8,7 @@
         </router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'plate'}" class="as-ellipsis">
+        <router-link :to="{ name: 'plate-list'}" class="as-ellipsis">
           <i class="bg-mu-icon bg-mu-icon2"></i>板块管理
         </router-link>
       </li>
@@ -20,6 +20,11 @@
       <li>
         <router-link :to="{ name: 'style'}" class="as-ellipsis">
           <i class="bg-mu-icon bg-mu-icon4"></i>样式维护
+        </router-link>
+      </li>
+      <li>
+        <router-link :to="{ name: 'cas'}" class="as-ellipsis">
+          <i class="bg-mu-icon bg-mu-icon4"></i>视频监控
         </router-link>
       </li>
     </ul>
@@ -54,7 +59,7 @@ export default {
             text-decoration: none;
             color: #fff;
           }
-          &.router-link-exact-active {
+          &.router-link-active {
             background-color: #0785FD;
             cursor: default;
             color: #fff;
@@ -80,7 +85,7 @@ export default {
       &.bg-mu-icon3 { background-image: url(../../assets/img/icons/bg-icon-013.png); }
       &.bg-mu-icon4 { background-image: url(../../assets/img/icons/bg-icon-014.png); }
     }
-    .router-link-exact-active, .bg-mu-u > li > a:hover{
+    .router-link-active, .bg-mu-u > li > a:hover{
       .bg-mu-icon1 { background-image: url(../../assets/img/icons/bg-icon-011s.png); }
       .bg-mu-icon2 { background-image: url(../../assets/img/icons/bg-icon-012s.png); }
       .bg-mu-icon3 { background-image: url(../../assets/img/icons/bg-icon-013s.png); }

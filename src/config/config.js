@@ -14,12 +14,11 @@ export const ctx = 'vis';
 const oDomains = {
   // ajax开发地址
   domain: {
-    // 本地配置 localhost:8801
-    // http://10.116.64.145:8082 赵志远
-    // test http://10.16.4.41:8082  dev http://10.16.4.41:8081
-    dev: 'http://10.16.3.40:8080',
-    test: 'http://10.16.3.40:8082',
-    prod: 'http://10.16.3.40:8082'
+    // 本地配置 localhost:8902
+    // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
+    dev: 'http://localhost:8902',
+    test: 'http://10.16.3.40:8080',
+    prod: 'http://10.16.3.40:8080'
   },
   // 文件/图片/CDN地址
   fileDomain: {
@@ -49,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 console.log('environment', sENV)
 // ajax default
-export const ajaxCtx = oDomains.domain[sENV] + '/api/';
+export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV];
 // 图片所在域名地址
@@ -62,3 +61,14 @@ export const cookieUserId = 'sc.vis_id';
 export const cookieUserName = 'sc.vis_name';
 // cookie默认有效时间（小时）
 export const cookieTime = 24;
+
+/*
+* dataType: 1基础数据
+*
+* */
+export const plateConfigData = {
+  plate001: {
+    dataType: 1,
+    limit: [5] // 0不限制  >0限制
+  }
+};
