@@ -45,21 +45,6 @@ export default new Router({
           ]
         },
         {path: 'style', name: 'style', component: style},
-        // 数据维护
-        {
-          path: 'data',
-          name: '/data',
-          component: data,
-          redirect: {name: 'data'},
-          children: [
-            // 选择数据
-            {path: 'select-data', name: 'select-data', component: selectData},
-            // 人口分布
-            {path: 'population-distribution', name: 'population-distribution', component: populationDistribution},
-            // 贫困村
-            {path: 'poor-village', name: 'poor-village', component: poorVillage}
-          ]
-        },
         {
           path: 'cas',
           name: 'cas',
