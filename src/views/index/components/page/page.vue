@@ -136,7 +136,7 @@ export default {
         pagesize: this.pagesize,
         pageNum: this.pageNum
       };
-      this.axios.get('/vis/pageServices/pages', {params})
+      this.axios.get('/pageServices/pages', {params})
         .then(res => {
           if (res.data.list) {
             this.total = res.data.total;
@@ -150,7 +150,7 @@ export default {
       this.dialogFormVisible = false;
       let params = this.form;
       params.pageName = this.form.name;
-      this.axios.post('/vis/pageServices/page', params)
+      this.axios.post('/pageServices/page', params)
         .then(res => {
           this.getAdviceList();
         });
@@ -165,7 +165,7 @@ export default {
     },
     qued () {
       this.dialogVisible = false;
-      this.axios.delete('/vis/pageServices/page/' + this.shchupar.pageId)
+      this.axios.delete('/pageServices/page/' + this.shchupar.pageId)
         .then(res => {
           this.getAdviceList();
         })
@@ -186,7 +186,7 @@ export default {
     sure () {
       this.dialogFormVisible1 = false;
       this.par.pageName = this.form1.name;
-      this.axios.put('/vis/pageServices/pages', this.par)
+      this.axios.put('/pageServices/pages', this.par)
         .then(res => {
           this.getAdviceList();
         });
