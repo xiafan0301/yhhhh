@@ -7,7 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">
-      <el-button type="primary" size="small" @click.native="showEditDialog(true)" class="add-plate-btn" icon="el-icon-plus">添加板块</el-button>
+      <el-button type="primary" size="small" @click="dialogFormVisible = true" class="add-plate-btn" icon="el-icon-plus">添加板块</el-button>
     </div>
     <div class="bg-plate-tb">
       <el-table :data="plateList"  highlight-current-row style="width: 100%;">
@@ -20,14 +20,7 @@
         </el-table-column>
         <el-table-column prop="" label="基础数据项数" min-width="180"></el-table-column>
         <el-table-column prop="pageName" label="图表数据主项上限数" min-width="200"></el-table-column>
-        <el-table-column prop="" label="图表数据子项上限数" min-width="200">
-          <template slot-scope="scope">
-            <el-switch
-              @change="showTypeChange(scope.row)"
-              v-model="scope.row.active">
-            </el-switch>
-          </template>
-        </el-table-column>
+        <el-table-column prop="" label="图表数据子项上限数" min-width="200"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text">修改</el-button>
@@ -51,15 +44,26 @@
     <!-- 新增/修改样式  -->
     <el-dialog
       title="新增/修改板块"
-      :visible.sync="editDialogVisible"
-      width="800px">
-      <div>
-        <el-steps :space="200" :active="1" finish-status="success" align-center>
-          <el-step title="已完成"></el-step>
-          <el-step title="进行中"></el-step>
-          <el-step title="步骤 3"></el-step>
-        </el-steps>
-      </div>
+      :visible.sync="dialogFormVisible"
+      width="729px">
+        <el-form :model="form">
+          <el-form-item label="编码" :label-width="formLabelWidth">
+            <el-select v-model="form.region" placeholder="请选择" style="width: 340px">
+              <el-option label="区域一" value="shanghai"></el-option>
+              <el-option label="区域二" value="beijing"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="缩略图链接" :label-width="formLabelWidth">
+            <el-input v-model="form.name" auto-complete="off" style="width: 340px"></el-input>
+          </el-form-item>
+          <el-form-item label="注解图链接" :label-width="formLabelWidth">
+            <el-input v-model="form.name" auto-complete="off" style="width: 340px"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">完成</el-button>
+        </div>
     </el-dialog>
   </div>
 </template>
@@ -69,7 +73,11 @@ export default {
     return {
       plateList: [],
       pager: { total: 0, pageSize: 10, pageNum: 1 },
-      editDialogVisible: false
+      // 定义对话框form表单
+      dialogFormVisible: false,
+      form: {
+      },
+      formLabelWidth: '120px'
     }
   },
   computed: {
@@ -96,17 +104,6 @@ export default {
       this.getPlateList();
     },
     getPlateList () {
-      setTimeout(() => {
-        this.pager.total = 1;
-        this.plateList = getTestData();
-      }, 100);
-    },
-    showEditDialog (flag) {
-      this.editDialogVisible = flag;
-    },
-    showTypeChange (item) {
-      // console.log(item)
-      // active 已经变了
     }
   }
 }
