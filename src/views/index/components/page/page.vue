@@ -181,6 +181,7 @@ export default {
         pageName: scope.pageName,
         pageId: scope.pageId
       };
+      this.form1.name = scope.pageName
     },
     sure () {
       this.dialogFormVisible1 = false;

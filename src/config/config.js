@@ -29,7 +29,7 @@ const oDomains = {
   },
   // 上传地址
   uploadDomain: {
-    dev: 'http://10.16.4.50:8084',
+    dev: 'http://10.16.4.40:8084',
     test: 'http://10.16.4.50:8084',
     prod: 'http://10.16.4.50:8084'
   }
