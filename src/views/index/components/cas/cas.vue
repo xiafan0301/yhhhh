@@ -270,7 +270,7 @@ export default {
       this.resetEditForm('editForm');
       if (item) {
         this.editObj = true;
-        this.editForm = item;
+        this.editForm = Object.assign({}, item);
       } else {
         this.editObj = false;
         this.editReset();
