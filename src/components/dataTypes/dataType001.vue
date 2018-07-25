@@ -1,3 +1,4 @@
+<!-- 基础数据类型 -->
 <template>
   <div class="main">
     <div class="vis-bg-l">

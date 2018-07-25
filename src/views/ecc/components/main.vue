@@ -16,7 +16,7 @@
 </template>
 <script>
 import visHeader from '@/components/common/header.vue';
-import visMenu from '@/components/common/menu.vue';
+import visMenu from './menu.vue';
 export default {
   components: {visHeader, visMenu},
   data () {

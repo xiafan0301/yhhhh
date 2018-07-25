@@ -1,15 +1,16 @@
 <template>
-  <div>模块管理</div>
+  <div style="height: 100%;">
+    <transition enter-active-class="fade-in" leave-active-class="leave-immediately"
+                :duration="{ enter: 300, leave: 100 }">
+      <router-view></router-view>
+    </transition>
+  </div>
 </template>
 <script>
 export default {
   data () {
     return {
     }
-  },
-  computed: {
-  },
-  mounted () {
   },
   methods: {
   }
