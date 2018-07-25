@@ -30,7 +30,7 @@
         </el-form-item>
       </el-form>
       <div style="position: absolute; bottom: 18px; right: 0;">
-        <el-button type="primary" size="small" @click="add" icon="el-icon-plus">新增</el-button>
+        <el-button type="primary" size="small" @click="edit(null)" icon="el-icon-plus">新增</el-button>
       </div>
     </div>
     <el-table
@@ -80,7 +80,7 @@
         label="操作"
         width="120">
         <template slot-scope="scope">
-          <el-button type="text" size="small" disabled>编辑</el-button>
+          <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -98,11 +98,12 @@
       </template>
     </div>
     <el-dialog
-      title="提示"
+      :title="editObj ? '修改' : '新增'"
       :visible.sync="dialogVisible"
+      class="bg-form-dialog"
       width="600px">
-      <el-form style="padding-right: 60px;" :model="editForm" class="demo-form-inline" size="small" label-width="120px">
-        <el-form-item label="设备名称">
+      <el-form :model="editForm" :rules="editFormRules" ref="editForm"  style="padding-right: 60px;" size="small" label-width="120px">
+        <el-form-item label="设备名称" prop="deviceName">
           <el-input v-model="editForm.deviceName" placeholder="设备名称"></el-input>
         </el-form-item>
         <el-form-item label="协议">
@@ -111,13 +112,13 @@
             <el-option label="https" :value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="设备ip">
+        <el-form-item label="设备ip" prop="deviceIp">
           <el-input v-model="editForm.deviceIp" placeholder="设备ip"></el-input>
         </el-form-item>
-        <el-form-item label="设备端口">
+        <el-form-item label="设备端口" prop="devicePort">
           <el-input v-model="editForm.devicePort" placeholder="设备端口"></el-input>
         </el-form-item>
-        <el-form-item label="通道ID">
+        <el-form-item label="通道ID" prop="channelId">
           <el-input v-model="editForm.channelId" placeholder="通道ID"></el-input>
         </el-form-item>
         <el-form-item label="流类型">
@@ -134,19 +135,19 @@
             <el-radio :label="true">是</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item label="登录名">
+        <el-form-item label="登录名" prop="deviceUserName">
           <el-input v-model="editForm.deviceUserName" placeholder="登录名"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="deviceUserPassword">
           <el-input v-model="editForm.deviceUserPassword" placeholder="密码"></el-input>
         </el-form-item>
-        <el-form-item label="地址">
+        <el-form-item label="地址" prop="deviceAddress">
           <el-input v-model="editForm.deviceAddress" placeholder="地址"></el-input>
         </el-form-item>
-        <el-form-item label="经度">
+        <el-form-item label="经度" prop="longitude">
           <el-input v-model="editForm.longitude" placeholder="经度"></el-input>
         </el-form-item>
-        <el-form-item label="纬度">
+        <el-form-item label="纬度" prop="latitude">
           <el-input v-model="editForm.latitude" placeholder="纬度"></el-input>
         </el-form-item>
         <el-form-item label="设备状态">
@@ -158,12 +159,13 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit">确 定</el-button>
+        <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')">确 定</el-button>
       </span>
     </el-dialog>
   </div>
 </template>
 <script>
+import {checkIp4} from '@/utils/validator.js';
 export default {
   data () {
     return {
@@ -180,7 +182,9 @@ export default {
         total: 0
       },
       dialogVisible: false,
-      editForm: {
+      editForm: {},
+      initEditForm: {
+        cameraId: '',
         deviceName: '',
         protocolType: 1, // protocol 1：http, 2:https
         deviceIp: '',
@@ -195,11 +199,43 @@ export default {
         latitude: '',
         deviceStatus: 1
       },
-      editSubmitLoading: false
+      editFormRules: {
+        deviceName: [
+          { required: true, message: '请输入设备名称', trigger: 'blur' },
+          { min: 2, max: 100, message: '长度在 2 到 100 个字符', trigger: 'blur' }
+        ],
+        deviceIp: [
+          { required: true, message: '请输入设备IP', trigger: 'blur' },
+          { validator: checkIp4, trigger: 'blur' }
+        ],
+        devicePort: [
+          { required: true, message: '请输入端口', trigger: 'blur' }
+        ],
+        channelId: [
+          { required: true, message: '请输入通道ID', trigger: 'blur' }
+        ],
+        deviceUserName: [
+          { required: true, message: '请输入登录名', trigger: 'blur' }
+        ],
+        deviceUserPassword: [
+          { required: true, message: '请输入密码', trigger: 'blur' }
+        ],
+        longitude: [
+          { required: true, message: '请输入经度', trigger: 'blur' }
+        ],
+        latitude: [
+          { required: true, message: '请输入纬度', trigger: 'blur' }
+        ]
+      },
+      editObj: null,
+      editSubmitLoading: false,
+
+      a: []
     }
   },
   created () {
     this.getTableData();
+    this.editForm = this.initEditForm;
   },
   mounted () {
   },
@@ -207,9 +243,6 @@ export default {
     doSearch () {
       this.pagination.pageNum = 1;
       this.getTableData();
-    },
-    handleClick (row) {
-      console.log(row);
     },
     getTableData () {
       let params = {
@@ -234,22 +267,59 @@ export default {
       this.pagination.pageNum = page;
       this.getTableData();
     },
-    add () {
+    edit (item) {
+      this.resetEditForm('editForm');
+      if (item) {
+        this.editObj = true;
+        this.editForm = item;
+      } else {
+        this.editObj = false;
+        this.editReset();
+      }
       this.dialogVisible = true;
     },
-    editSubmit () {
-      this.editSubmitLoading = true;
-      let params = this.editForm;
-      this.axios.post('/cameraServices/device/', params)
-        .then((res) => {
-          this.editSubmitLoading = false;
-          this.dialogVisible = false;
-          this.doSearch();
-        })
-        .catch(() => {
-          this.editSubmitLoading = false;
-        });
+    editReset () {
+      this.editForm = this.initEditForm;
     },
+    resetEditForm (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
+    },
+    editSubmit (formRef) {
+      this.$refs[formRef].validate((valid) => {
+        if (valid) {
+          let params = this.editForm;
+          this.editSubmitLoading = true;
+          if (this.editObj) {
+            this.axios.put('/cameraServices/devices/' + params.cameraId, params)
+              .then((res) => {
+                this.editSubmitLoading = false;
+                this.dialogVisible = false;
+                this.editObj = false;
+                this.doSearch();
+              })
+              .catch(() => {
+                this.editSubmitLoading = false;
+              });
+          } else {
+            this.axios.post('/cameraServices/device/', params)
+              .then((res) => {
+                this.editSubmitLoading = false;
+                this.dialogVisible = false;
+                this.editObj = false;
+                this.doSearch();
+              })
+              .catch(() => {
+                this.editSubmitLoading = false;
+              });
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+
     del (item) {
       let _this = this;
       _this.$msgbox({
