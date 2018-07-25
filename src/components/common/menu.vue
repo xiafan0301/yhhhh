@@ -17,11 +17,11 @@
           <i class="bg-mu-icon bg-mu-icon3"></i>数据维护
         </router-link>
       </li>
-      <li>
+      <!--<li>
         <router-link :to="{ name: 'style'}" class="as-ellipsis">
           <i class="bg-mu-icon bg-mu-icon4"></i>样式维护
         </router-link>
-      </li>
+      </li>-->
       <li>
         <router-link :to="{ name: 'cas'}" class="as-ellipsis">
           <i class="bg-mu-icon bg-mu-icon4"></i>视频监控
