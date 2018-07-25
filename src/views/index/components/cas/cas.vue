@@ -37,8 +37,8 @@
       border
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column prop="deviceName" label="设备名称" width="120"></el-table-column>
-      <el-table-column prop="protocolType" label="协议" width="120">
+      <el-table-column prop="deviceName" label="设备名称" width="150" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="protocolType" label="协议" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.protocolType == 1">http</span>
           <span v-else-if="scope.row.deviceStatus == 2">https</span>
