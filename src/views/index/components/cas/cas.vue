@@ -26,7 +26,6 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
-
         </el-form-item>
       </el-form>
       <div style="position: absolute; bottom: 18px; right: 0;">
