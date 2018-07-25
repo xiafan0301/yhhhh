@@ -19,7 +19,11 @@
       </el-form>
       <!--贫困村添加-->
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn()">添加</el-button>
+      <el-upload action = "http://10.116.64.62:8080/api/vis/mapServices/data/excelImport"
+                :on-preview="handlePreview"
+                :on-remove="handleRemove">
       <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf" >一键导入</el-button>
+      </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '4fce5edb-7092-4455-971b-6f8526d6a827'" href="http://10.16.3.40:8080/api/vis/mapServices/template/download/4fce5edb-7092-4455-971b-6f8526d6a827">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" href="http://10.16.3.40:8080/api/vis/mapServices/template/download/e46c60f2-b1ea-46b7-9f83-51c51a5738b2">模块下载</a>
     </div>
@@ -706,10 +710,6 @@ export default {
       obj: {},
       // 删除ID
       shchuId: '',
-      xzbg: {
-        pkc: '',
-        rkfb: ''
-      },
       // 控制添加按钮的显隐
       o: {
         '4fce5edb-7092-4455-971b-6f8526d6a827': true,
@@ -1644,14 +1644,28 @@ export default {
       this.form.name = '';
       this.form.coordinate = '';
       this.form.addrs = '';
-    }
+    },
     // 导入数据
+    handleRemove (file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview (file) {
+      console.log(file);
+    },
+    handleExceed (files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove (file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    }
   }
 }
 </script>
 <style lang="scss" scoped>
   .vis-bg-plate {
-    padding: 20px 20px 0 20px;
+    padding: 20px 20px 20px 20px;
+    height: 100%;
+    overflow: auto;
   }
   .bg-plate-bd {
     border-bottom: 1px solid #E3E3E3;
@@ -1661,10 +1675,10 @@ export default {
     padding-top: 20px;
     position: relative;
     .add-plate-btn {
-      position: absolute; top: 23px; right: 195px;
+      position: absolute; top: 22px; right: 195px;
     }
     .add-plate-btnf{
-      position: absolute; top: 23px; right: 95px
+      position: absolute; top: 22px; right: 95px
     }
     .add-plate-btns{
       position: absolute; top: 26px; right: 20px;

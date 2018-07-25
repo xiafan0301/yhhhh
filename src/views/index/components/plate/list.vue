@@ -144,10 +144,12 @@ export default {
         pageNum: this.pager.pageNum,
         pageSize: this.pager.pageSize
       };
+      console.log(this.searchForm.pageId)
       this.axios.get('/plateServices/plates', {params})
         .then((res) => {
           this.pager.total = res.data.total;
           this.plateList = res.data.list;
+          console.log(res)
         })
         .catch(() => {});
     },

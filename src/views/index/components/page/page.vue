@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <div style = "margin:20px 20px 20px 30px; padding-bottom: 20px;">
-      <div style="float: left">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }" ><span style="color:#0785FD;font-size:14px; margin-right:8px">页面管理</span><i class="el-icon-arrow-right" style="color:#0785FD"></i>
-        </el-breadcrumb-item>
+  <div class="vis-bg-plate">
+      <div class="bg-plate-bd">
+        <el-breadcrumb separator="/">
+          <el-breadcrumb-item>首页</el-breadcrumb-item>
       </el-breadcrumb>
       </div>
-      <div style="float: right;">
-        <el-button type="primary" size="small" @click="dialogFormVisible = true">添加页面</el-button>
+      <div class="bg-plate-sf">
+        <el-button type="primary" size="small" @click="dialogFormVisible = true" class="add-plate-btn">添加页面</el-button>
         <el-dialog title="添加页面" :visible.sync="dialogFormVisible" width="500px">
           <el-form :model="form" ref ="form">
             <el-form-item label="页面名称" :label-width="formLabelWidth">
@@ -21,8 +19,7 @@
           </div>
         </el-dialog>
       </div>
-    </div>
-    <div style = "margin:20px 20px 20px 30px;">
+    <div class="bg-plate-tb">
     <el-table
     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
     style="width: 100%;">
@@ -54,7 +51,7 @@
         label=""
         width=" ">
         <template slot-scope="scope">
-          <el-button @click="handleClick(scope)" type="text" size="small" v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
+          <el-button @click.native="showEditDialog(true)" type="text" size="small" v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
           <el-button @click="handleClick(scope)" type="text" size="small" v-show="scope.row.plateList.length == 0">添加模块</el-button>
         </template>
       </el-table-column>
@@ -87,7 +84,7 @@
         </template>
       </el-table-column>
   </el-table>
-      <div class="block" style="float:right; margin-top:20px">
+      <div class="bg-plate-tbp">
         <el-pagination
           background
           @current-change="handleCurrentChange"
@@ -174,6 +171,9 @@ export default {
     handleClick (scope) {
       console.log(scope);
     },
+    showEditDialog (flag) {
+      this.$router.push({name: 'plate-list', params: {pageId: '3cc74115-2384-4d46-a59d-2b491c79730a'}});
+    },
     // 修改页面
     modify (scope) {
       this.dialogFormVisible1 = true;
@@ -201,4 +201,27 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .vis-bg-plate {
+    padding: 20px 20px 20px 20px;
+    height: 100%;
+    overflow: auto;
+  }
+  .bg-plate-bd {
+    padding: 2px 0 10px 2px;
+  }
+  .bg-plate-sf {
+    padding-top: 20px;
+    position: relative;
+    .add-plate-btn {
+      position: absolute; top: -32px; right: 0;
+    }
+  }
+  .bg-plate-tb {
+    border: 1px solid #E3E3E3;
+    padding-bottom: 20px;
+    > .bg-plate-tbp {
+      text-align: right;
+      padding: 20px 20px 0 0;
+    }
+  }
 </style>
