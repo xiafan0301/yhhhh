@@ -11,7 +11,15 @@ const state = {
   // 登录token
   token: null,
   // 面包屑
-  breadcrumb: []
+  breadcrumb: [],
+  // 图片基础路径
+  imgBaseUrl: '',
+  // 文件基础路径
+  fileBaseUrl: '',
+  // 上传文件路径
+  fileUploadUrl: '',
+  // 下载文件路径
+  fileDownloadUrl: ''
 };
 
 export default new Vuex.Store({

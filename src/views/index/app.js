@@ -12,6 +12,12 @@ import store from '@/store/store.js';
 
 // router
 import router from './router/index.js';
+import { imgBaseUrl, fileUploadUrl, ajaxCtx } from '@/config/config.js';
+store.commit('setBaseUrl', {
+  ajaxCtx: ajaxCtx,
+  imgBaseUrl: imgBaseUrl,
+  fileUploadUrl: fileUploadUrl
+});
 
 // 关闭生产模式下给出的提示
 Vue.config.productionTip = false;
