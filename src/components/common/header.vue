@@ -33,29 +33,20 @@ export default {
           if (action === 'confirm') {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = '正在退出...';
-            setTimeout(() => {
-              instance.confirmButtonText = '确定';
-              instance.confirmButtonLoading = false;
-              done();
-              window.location.href = './index.html#/login';
-            }, 500);
             // ajax
-            /* _this.axios.post('/core/home/exit', []).then(function (res) {
+            _this.axios.post('/authServices/logOut', []).then(function (res) {
               if (res) {
-                setCookie(cookieUserId, _this.loginUser.id, -1, '/');
-                _this.$store.commit('setToken', {tokenVal: false});
-                // _this.$router.push({name: 'login'});
-                // window.location.href = _this.$store.state.ctx + '../index/index.html';
               }
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              window.location.href = './index.html';
+              window.location.href = './index.html#/login';
             }).catch(function () {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-            }); */
+              window.location.href = './index.html#/login';
+            });
           } else {
             done();
           }
