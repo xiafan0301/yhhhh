@@ -16,7 +16,10 @@ const state = {
   plateConfigInfo: [], // 根据configId获取的板块配置信息
   plateInfo: {}, // 板块信息
   typeArr: [], // 类型不为1的对象
-  oneType: []
+  oneType: [],
+  styleType: 1, // 左右两侧、地图区域
+  mapPageDataList: [], // 页面中已有的数据
+  pageId: '' // 页面id
 };
 
 export default new Vuex.Store({

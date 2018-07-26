@@ -17,12 +17,12 @@
         <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 2}">
           <div class="plate-pro-ill"></div>
           <div class="plate-pro-ilr"></div>
-          <p>填充数据</p>
+          <p>关联页面/位置</p>
         </div>
         <div class="plate-pro-i plate-pro-i3" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 3}">
           <div class="plate-pro-ill"></div>
           <div class="plate-pro-ilr"></div>
-          <p>关联页面/位置</p>
+          <p>填充数据</p>
         </div>
         <div class="plate-pro-i plate-pro-i4" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 4}">
           <div class="plate-pro-ill"></div>
@@ -33,23 +33,31 @@
     <div class="bg-plate-ec">
       <div class="bg-plate-ecc">
         <div is='plate009'></div>
-        <div is='plate008' @setDataList="getData"></div>
-        <div is='plateRelation' :dataList='dataList'></div>
+        <template v-if='this.$store.state.styleType === 1'>
+          <div is='plate008' :dataList='dataList'></div>
+          <div is='plateRelation' @setDataList="getData"></div>
+        </template>
+        <template v-else-if='this.$store.state.styleType === 2'>
+          <div is='plateMap'></div>
+          <div is='plateRelationMap'></div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script>
 import store from '../../../../store/store.js';
-import plateData from './plateData.vue';
 import plate008 from './plate008.vue';
 import plate009 from './plate009.vue';
 import plateRelation from './plateRelation.vue';
+import plateMap from './plateMap.vue';
+import plateRelationMap from './plateRelationMap.vue';
 export default {
-  components: {plateData, plate008, plate009, plateRelation},
+  components: {plate008, plate009, plateRelation, plateRelationMap, plateMap},
   data () {
     return {
-      dataList: []
+      dataList: {},
+      value: ''
     }
   },
   methods: {

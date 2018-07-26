@@ -29,5 +29,14 @@ export default {
   },
   setOneType (state, options) {
     state.oneType = options.oneType;
+  },
+  setStyleType (state, options) {
+    state.styleType = options.styleType;
+  },
+  setMapDataList (state, options) {
+    state.mapPageDataList = options.mapPageDataList;
+  },
+  setPageId (state, options) {
+    state.pageId = options.pageId;
   }
 }

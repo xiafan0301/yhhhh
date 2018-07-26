@@ -14,21 +14,9 @@
           </el-option>
         </el-select>
       </div>
-      <div class="page-right">
-        <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
-          <el-option
-            v-for="item in skipPageList"
-            :key="item.pageId"
-            :disabled="item.isDisabled"
-            :value="item.pageName"
-          >
-            {{item.pageName}}
-          </el-option>
-        </el-select>
-      </div>
     </div>
-    <div class="relation-map">
+    <!-- <div class="relation-map">
+      <img :src='imgUrl' class='map-img' />
       <div class="map-body">
         <ul>
           <li v-for="(item, index) in positionObj" :key="'item'+index">
@@ -48,23 +36,24 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
   </div>
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
 <script>
 import store from '../../../../store/store.js';
 export default {
+  props: ['dataList'],
   data () {
     return {
-      relationValue: '',
-      btnDisabled: false,
       tips: '',
+      imgUrl: require('../../../../assets/img/temp/map_noselect.png'),
+      relationValue: '',
       positionObj:
       [
         {
@@ -99,9 +88,7 @@ export default {
       relationPageList: [], // 所有的关联页面
       skipPageList: [], // 所有的跳转页面
       newDataList: {
-        pageId: '',
-        positionId: '',
-        jumpPageId: ''
+        pageId: ''
       },
       ltId: '',
       rtId: '',
@@ -109,6 +96,11 @@ export default {
       rcId: '',
       lbId: '',
       rbId: ''
+    }
+  },
+  watch: {
+    dataList (newVal) {
+      this.newDataList = newVal;
     }
   },
   mounted () {
@@ -159,43 +151,14 @@ export default {
   methods: {
     preStep () { // 上一步
       this.$store.commit('setProgressIndex', {progressIndex: 1});
-      this.skipValue = '';
       this.relationValue = '';
-      this.positionObj.forEach((item, idx) => {
-        item.canChecked = false;
-        item.finishChecked = false;
-        item.isChecked = false;
-        item.name = '展示到该位置';
-      });
+      // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
     nextStep () {
-      if (this.plateList.length >= 6) {
-        this.btnDisabled = true;
-        this.tips = '该页面所有位置已经被占，请重新选择';
-      } else if (this.relationValue === '') {
-        this.btnDisabled = true;
-        this.tips = '请先选择要关联的页面';
-      } else if (this.newDataList.positionId === '') {
-        this.btnDisabled = true;
-        this.tips = '请先选择要展示的位置';
-      } else {
-        this.btnDisabled = false;
-        this.tips = '';
-        this.$store.commit('setProgressIndex', {progressIndex: 3});
-        this.$emit('setDataList', this.newDataList);
-      }
-    },
-    skipPages (value) { // 要跳转的页面
-      let obj = {};
-      obj = this.relationPageList.find((item) => {
-        return item.pageName === value;
-      });
-      this.newDataList.jumpPageId = obj.pageId;
+      this.$store.commit('setProgressIndex', {progressIndex: 3});
     },
     selectPages (value) {
       let obj = {};
-      this.tips = '';
-      this.btnDisabled = false;
       obj = this.relationPageList.find((item) => {
         return item.pageName === value;
       });
@@ -212,64 +175,18 @@ export default {
           item.isDisabled = false;
         }
       });
-      this.axios.get('/pageServices/pages/' + obj.pageId + '')
+      this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
         .then((res) => {
-          if (res) {
-            this.plateList = res.data.plateList;
-            if (res.data.plateList.length > 0) {
-              res.data.plateList.forEach((items, index) => {
-                this.positionObj.forEach((item, idx) => {
-                  item.canChecked = true;
-                  if (items.serialNumber === item.id) {
-                    item.isChecked = true;
-                    item.name = items.plateName;
-                  }
-                });
-              });
-            } else {
-              this.positionObj.forEach((item, index) => {
-                item.canChecked = true;
-              });
-            }
-            this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+          console.log(res)
+          if (res.data.length > 0) {
+            this.$store.commit('setMapDataList', {mapPageDataList: res.data});
+            this.tips = '该页面已有位置被选，若继续，则会被替换';
+          } else {
+            this.tips = '';
           }
         })
         .catch(() => {});
-      this.newDataList.pageId = obj.pageId;
-    },
-    selectPosition (num) { // 选择位置
-      this.tips = '';
-      this.btnDisabled = false;
-      this.positionObj.map((item, index) => {
-        if (item.id === num) {
-          item = Object.assign(item, {finishChecked: true});
-        } else if (item.isChecked !== true) {
-          item.canChecked = false;
-        }
-      });
-      this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-      switch (num) {
-        case 11:
-          this.newDataList.positionId = this.ltId;
-          break;
-        case 12:
-          this.newDataList.positionId = this.lcId;
-          break;
-        case 13:
-          this.newDataList.positionId = this.lbId;
-          break;
-        case 21:
-          this.newDataList.positionId = this.rtId;
-          break;
-        case 22:
-          this.newDataList.positionId = this.rcId;
-          break;
-        case 23:
-          this.newDataList[0].positionId = this.rbId;
-          break;
-        default:
-          break;
-      }
+      this.$store.commit('setPageId', {pageId: obj.pageId});
     }
   }
 }
@@ -296,12 +213,19 @@ export default {
     }
     .relation-map {
       width: 96%;
-      margin: 2% 2% 3% 2%;
+      margin: 2% 2% 0 2%;
       height: 300px;
+      position: relative;
+      .map-img {
+        position: absolute;
+        left: 50%;
+        top: 25%;
+      }
       .bg-purple {
         background-color: #FCFCFE;
       }
       .map-body {
+        margin-top: 3%;
         ul {
           display: flex;
           flex-wrap: wrap;

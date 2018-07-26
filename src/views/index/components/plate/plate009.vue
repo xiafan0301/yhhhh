@@ -49,6 +49,7 @@ export default {
     changeStyleType (type) {
       this.styleType = type;
       this.getAllPlateList();
+      this.$store.commit('setStyleType', {styleType: type});
     },
     // 获取所有的板块
     getAllPlateList () {
@@ -78,10 +79,9 @@ export default {
             let typeArr = [];
             let oneType = [];
             res.data.map((item, index) => {
+              oneType.push(item.configCount);
               if (item.areaDataType !== 1 && item.areaDataType !== 4) {
                 typeArr.push(item);
-              } else {
-                oneType.push(index);
               }
             });
             this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
