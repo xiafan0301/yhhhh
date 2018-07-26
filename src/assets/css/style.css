@@ -1,3 +1,30 @@
+/* login commnon css */
+.xs-lg-form {
+  padding: 20px 40px;
+}
+.xs-lg-form .el-form-item {
+  margin-bottom: 35px;
+}
+.xs-lg-form .el-form-item__error { padding-top: 10px; padding-left: 10px; }
+.xs-lg-form .el-input__inner {
+  /*border: 0; border-bottom: 1px solid #e3e3e3;*/
+  border-radius: 4px;
+  position: relative;
+  height: 48px; line-height: 48px;
+}
+.xs-lg-form .el-input--prefix .el-input__inner { padding-left: 60px; }
+.xs-lg-form .xs-lg-form-date .el-input__prefix {
+  left: 18px; top: -2px;
+  font-size: 20px;
+}
+.xs-lg-form .xs-lg-btn {
+  height: 48px; line-height: 48px;
+  padding: 0;
+}
+
+.oa-login-ibg { position: absolute; left: 15px; top: 16px; height: 18px; width: 17px; }
+.oa-login-ibg1 { background: url(../img/login/lg-un.png) center center no-repeat; }
+.oa-login-ibg2 { background: url(../img/login/lg-pwd.png) center center no-repeat; }
 
 /* reset element ui style */
 .el-table thead th {
@@ -40,4 +67,9 @@ input:-moz-placeholder{    /* Mozilla Firefox 4 to 18 */
 }
 input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   color: #ccc;
+}
+
+.bg-form-dialog .el-dialog__body {
+  padding-bottom: 0;
+  padding-top: 10px;
 }
