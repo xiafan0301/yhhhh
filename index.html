@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>智慧城市可视化与大数据平台</title>
+    <title>溆浦县智慧城市运营管理系统</title>
     <script>
       function IEVersion () {
         var userAgent = navigator.userAgent; // 取得浏览器的userAgent字符串
@@ -30,10 +30,10 @@
           if (!d.applicationCache || IEVersion() < 10) {
             d.location.href = './views/browse.html'
           } else {
-            window.location.href='./views/index.html';
+            window.location.href='./views/index.html#/login';
           }
         } catch (f) {}
-        window.location.href='./views/index.html';
+        window.location.href='./views/index.html#/login';
       }(window));
     </script>
   </head>
