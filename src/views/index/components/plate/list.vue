@@ -34,7 +34,7 @@
         <el-table-column prop="" label="展示状态" min-width="100">
           <template slot-scope="scope">
             <el-switch
-              @change="showTypeChange(scope.row)"
+              @change="showTypeChange(scope)"
               v-model="scope.row.active">
             </el-switch>
           </template>
@@ -75,6 +75,7 @@
   </div>
 </template>
 <script>
+import store from '../../../../store/store.js';
 export default {
   data () {
     return {
@@ -154,11 +155,11 @@ export default {
         .catch(() => {});
     },
     showEditDialog (flag) {
-      // this.editDialogVisible = flag;
+      this.$store.commit('setProgressIndex', {progressIndex: 1});
       this.$router.push({name: 'plate-edit', params: {plateId: '0'}});
     },
     showTypeChange (item) {
-      // console.log(item)
+      console.log(item)
       // active 已经变了
     }
   }

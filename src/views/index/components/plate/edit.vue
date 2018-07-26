@@ -10,21 +10,21 @@
       </div>
       <!-- 进度控制 -->
       <div class="pb-plate-pro">
-        <div class="plate-pro-i plate-pro-i1" :class="{'plate-pro-ised': progressIndex >= 1}">
+        <div class="plate-pro-i plate-pro-i1" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 1}">
           <div class="plate-pro-ilr"></div>
           <p>选择样式</p>
         </div>
-        <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': progressIndex >= 2}">
-          <div class="plate-pro-ill"></div>
-          <div class="plate-pro-ilr"></div>
-          <p>填充数据</p>
-        </div>
-        <div class="plate-pro-i plate-pro-i3" :class="{'plate-pro-ised': progressIndex >= 3}">
+        <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 2}">
           <div class="plate-pro-ill"></div>
           <div class="plate-pro-ilr"></div>
           <p>关联页面/位置</p>
         </div>
-        <div class="plate-pro-i plate-pro-i4" :class="{'plate-pro-ised': progressIndex >= 4}">
+        <div class="plate-pro-i plate-pro-i3" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 3}">
+          <div class="plate-pro-ill"></div>
+          <div class="plate-pro-ilr"></div>
+          <p>填充数据</p>
+        </div>
+        <div class="plate-pro-i plate-pro-i4" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 4}">
           <div class="plate-pro-ill"></div>
           <p>完成</p>
         </div>
@@ -32,106 +32,38 @@
     </div>
     <div class="bg-plate-ec">
       <div class="bg-plate-ecc">
-        <div class="bg-plate-ecl bg-plate-ecl1" v-show="progressIndex === 1">
-          <div class="plate-ecl1-tab">
-            <div>
-              <span :class="{'ecl1-tab-sed': styleType === 1}" @click="changeStyleType(1)">左右两侧</span>
-              <span :class="{'ecl1-tab-sed': styleType === 2}" @click="changeStyleType(2)">地图区域</span>
-            </div>
-          </div>
-          <div class="plate-ecl1-c">
-            <ul v-show="styleType === 1" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
-              <li v-for="item in 42" :key="item">
-                <img @click="setStyleRadio(item)" src="../../../../assets/img/temp/temp-t032.png" alt="">
-                <p><el-radio v-model="styleRadio" :label="item">样式{{item}}</el-radio></p>
-              </li>
-            </ul>
-            <div v-show="styleType === 2">
-              地图区域
-            </div>
-          </div>
-          <div class="plate-ecl-b">
-            <el-button :disabled="!styleRadio" @click.native="nextStep(2)" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-          </div>
-        </div>
-
-        <div class="bg-plate-ecl bg-plate-ecl2" v-show="progressIndex === 2">
-          <div class="plate-ecl2-c clearfix">
-            <div class="plate-ecl2-cl">
-              <img src="../../../../assets/img/temp/temp-t032.png" alt="">
-              <ul>
-                <li>
-                  <div>板块名称：</div>
-                  <div>贫困类型</div>
-                </li>
-                <li>
-                  <div>注释：</div>
-                  <div>2017年数据</div>
-                </li>
-                <li>
-                  <div>图表：</div>
-                  <div>项：一般户、低保户、五保户
-                    值1：数值（1870、520、1870）
-                    值2：同比（-1.2、-1.2、-1.2）
-                    值3：占比（40、20、40）</div>
-                </li>
-              </ul>
-            </div>
-            <div class="plate-ecl2-cr">
-              <div is="plateData"></div>
-            </div>
-          </div>
-          <div class="plate-ecl-b">
-            <el-button @click.native="nextStep(1)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-            <el-button @click.native="nextStep(3)" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-          </div>
-        </div>
-
-        <div class="bg-plate-ecl bg-plate-ecl3" v-show="progressIndex === 3">
-          <div class="plate-ecl-b">
-            <el-button @click.native="nextStep(2)">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-            <el-button type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-          </div>
-        </div>
-
+        <div is='plate009'></div>
+        <template v-if='this.$store.state.styleType === 1'>
+          <div is='plate008' :dataList='dataList'></div>
+          <div is='plateRelation' @setDataList="getData"></div>
+        </template>
+        <template v-else-if='this.$store.state.styleType === 2'>
+          <div is='plateMap'></div>
+          <div is='plateRelationMap'></div>
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script>
-import plateData from './plateData.vue';
+import store from '../../../../store/store.js';
+import plate008 from './plate008.vue';
+import plate009 from './plate009.vue';
+import plateRelation from './plateRelation.vue';
+import plateMap from './plateMap.vue';
+import plateRelationMap from './plateRelationMap.vue';
 export default {
-  components: {plateData},
+  components: {plate008, plate009, plateRelation, plateRelationMap, plateMap},
   data () {
     return {
-      // 进度
-      progressIndex: 1,
-      // 选择样式
-      styleType: 1, // 1 所有两侧 2 地图区域
-      styleRadio: ''
+      dataList: {},
+      value: ''
     }
   },
   methods: {
-    changeStyleType (type) {
-      this.styleType = type;
-    },
-    setStyleRadio (val) {
-      this.styleRadio = val;
-    },
-    editProject (flag, index) {
-      if (flag) { // 新增
-        this.projectList.splice(index + 1, 0, {
-          name: ''
-        });
-      } else {
-        if (this.projectList.length > 1) {
-          this.projectList.splice(index, 1);
-        }
-      }
-    },
-    // 下一步
-    nextStep (iNext) {
-      this.progressIndex = iNext;
+    getData (val) {
+      console.log(val)
+      this.dataList = val;
     }
   }
 }
@@ -320,5 +252,126 @@ export default {
 
   .bg-plate-ecl3 {
     padding-bottom: 80px;
+  }
+  .plate-ecl2-c {
+    display:flex;
+    width:100%;
+    flex-wrap: wrap;
+    h2 {
+      color: #333333;
+      font-size: 18px;
+      font-weight: bold !important;
+      padding-bottom: 1%;
+      width: 100%;
+    }
+    >div {
+      width: 50%;
+    }
+    .plate-explain {
+      margin-top: 3%;
+      .explain-title {
+        margin-bottom: 2%;
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+      }
+      .explain-ul {
+        li {
+          height: 1.8em;
+        }
+        .explain-title-left {
+          font-size: 14px;
+          color: #333333;
+        }
+        .explain-title-right {
+          color: #666666;
+          font-size: 12px;
+        }
+      }
+    }
+  }
+  .plate-body-left {
+    margin: 5% 0;
+    p {
+      color: #333333;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .plate-ul {
+      margin-top: 3%;
+      .plate-first {
+        color: #333333;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      ul {
+        display: flex;
+        li {
+          width:33.3%;
+        }
+      }
+      .plate-detail {
+        margin-top: 2%;
+        .title-left {
+          color: #666666;
+          font-size: 14px;
+          margin-right: 3%;
+        }
+        .title-right {
+          color: #999999;
+          font-size: 12px;
+        }
+        li {
+          height: 1.1em;
+        }
+      }
+    }
+  }
+  .plate-ecl2-cr {
+    .ecl2-cr-list {
+      margin-top: 3%;
+      .list-title {
+        color: #333333;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 2% 0;
+      }
+    }
+    .checkbox {
+      margin-top: 2%;
+      color: #e3e3e3;
+    }
+  }
+
+  .el-form-item--small {
+    .el-form-item__label {
+      color: #333333;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+  .plate-table {
+    border: 0;
+    thead th, tbody tr, thead tr th, tbody tr td {
+      text-align: center;
+      border: 1px solid #cccccc;
+    }
+    .unactive {
+      color: #cccccc !important;
+    }
+    .active {
+      color: #0785FD !important;
+    }
+    .mergetr {
+      color: #ffffff;
+      td {
+        background-color: #666666;
+        border-color: #fff;
+      }
+      input {
+        background:transparent;
+        color:#fff;
+      }
+    }
   }
 </style>
