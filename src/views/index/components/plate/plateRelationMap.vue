@@ -5,6 +5,7 @@
       <div class="page-left">
         <span>关联页面</span>
         <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
+          <el-option value=''>请选择</el-option>
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
@@ -40,7 +41,7 @@
   </div>
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
-    <el-button @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -192,6 +193,10 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+  #preBtn {
+    color:#0785FD !important;
+    border-color:#0785FD !important;
+  }
   .plate-relation {
     display:flex;
     width:100%;

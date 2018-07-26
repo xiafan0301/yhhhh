@@ -271,7 +271,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <el-button @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -777,6 +777,10 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  #preBtn {
+    color:#0785FD !important;
+    border-color:#0785FD !important;
   }
   .plate-ecl2-cr {
     .position-select {
