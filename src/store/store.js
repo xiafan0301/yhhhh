@@ -12,6 +12,14 @@ const state = {
   token: null,
   // 面包屑
   breadcrumb: [],
+  progressIndex: 1, // 添加板块的进度条索引
+  plateConfigInfo: [], // 根据configId获取的板块配置信息
+  plateInfo: {}, // 板块信息
+  typeArr: [], // 类型不为1的对象
+  oneType: [],
+  styleType: 1, // 左右两侧、地图区域
+  mapPageDataList: [], // 页面中已有的数据
+  pageId: '', // 页面id
   // 图片基础路径
   imgBaseUrl: '',
   // 文件基础路径
