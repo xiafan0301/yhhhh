@@ -15,8 +15,14 @@
           </el-option>
         </el-select>
       </div>
+      <span class='advice' v-show='fisrtTip'>*请选择关联页面展示</span>
+      <span class='advice' v-show='isRepace'>
+        *该页面已存在地图板块，是否替换？
+        <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
+        <el-button id='preBtn' size='small' @click='handleNo'>否</el-button>
+      </span>
     </div>
-    <!-- <div class="relation-map">
+    <div class="relation-map">
       <img :src='imgUrl' class='map-img' />
       <div class="map-body">
         <ul>
@@ -25,24 +31,26 @@
               <div class="grid-content bg-purple"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
-                <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
+                <span class='map-name'>{{item.name}}</span>
               </div>
             </template>
             <template v-else>
               <div class="grid-content bg-purple cannotChecked">
                 <span>{{item.position}}</span>
-                <button class="map-button">{{item.name}}</button>
+                <span class='map-name'>{{item.name}}</span>
               </div>
             </template>
           </li>
         </ul>
       </div>
-    </div> -->
+    </div>
   </div>
+  <!-- <div class="content">
+  </div> -->
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -53,6 +61,9 @@ export default {
   data () {
     return {
       tips: '',
+      fisrtTip: true,
+      isRepace: false,
+      btnDisabled: true,
       imgUrl: require('../../../../assets/img/temp/map_noselect.png'),
       relationValue: '',
       positionObj:
@@ -60,27 +71,27 @@ export default {
         {
           id: 11,
           position: '左上',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 21,
           position: '右上',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 12,
           position: '左中',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 22,
           position: '右中',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 13,
           position: '左下',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 23,
           position: '右下',
-          name: '展示到该位置'
+          name: ''
         }
       ],
       skipValue: '',
@@ -150,44 +161,73 @@ export default {
       .catch(() => {});
   },
   methods: {
+    handleSure () {
+      this.isRepace = false;
+      this.btnDisabled = false;
+    },
+    handleNo () {
+      this.isRepace = false;
+      this.btnDisabled = true;
+      this.fisrtTip = true;
+    },
     preStep () { // 上一步
       this.$store.commit('setProgressIndex', {progressIndex: 1});
       this.relationValue = '';
-      // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
     nextStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 3});
     },
     selectPages (value) {
       let obj = {};
+      this.tips = '';
+      // this.btnDisabled = false;
+      this.imgUrl = require('../../../../assets/img/temp/map_select.png');
       obj = this.relationPageList.find((item) => {
         return item.pageName === value;
       });
       this.positionObj.forEach((item) => {
         item.canChecked = false;
         item.isChecked = false;
-        item.finishChecked = false;
-        item.name = '展示到该位置';
+        item.name = '';
       });
-      this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
-        if (item.pageName === value) {
-          item.isDisabled = true;
-        } else {
-          item.isDisabled = false;
-        }
-      });
-      this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
+      this.axios.get('/pageServices/pages/' + obj.pageId + '')
         .then((res) => {
-          console.log(res)
-          if (res.data.length > 0) {
-            this.$store.commit('setMapDataList', {mapPageDataList: res.data});
-            this.tips = '该页面已有位置被选，若继续，则会被替换';
-          } else {
-            this.tips = '';
+          if (res) {
+            this.plateList = res.data.plateList;
+            if (res.data.plateList.length > 0) {
+              res.data.plateList.forEach((items, index) => {
+                this.positionObj.forEach((item, idx) => {
+                  item.canChecked = true;
+                  if (items.serialNumber === item.id) {
+                    item.isChecked = true;
+                    item.name = items.plateName;
+                  }
+                });
+              });
+              const dataArr = res.data.plateList.filter((item) => {
+                return item.serialNumber.toString().substring(0, 1) === '3';
+              });
+              if (dataArr.length > 0) {
+                this.fisrtTip = false;
+                this.isRepace = true;
+                this.btnDisabled = true;
+              } else {
+                this.fisrtTip = false;
+                this.btnDisabled = false;
+              }
+            } else {
+              this.positionObj.forEach((item, index) => {
+                item.canChecked = true;
+                item.name = '空';
+                this.btnDisabled = false;
+                this.fisrtTip = false;
+              });
+            }
+            this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
         })
         .catch(() => {});
-      this.$store.commit('setPageId', {pageId: obj.pageId});
+      this.newDataList.pageId = obj.pageId;
     }
   }
 }
@@ -209,11 +249,14 @@ export default {
       display: flex;
       justify-content: center;
       .page-left, .page-right {
-        margin-right: 5%;
         span {
           color: #333333;
           font-size: 14px;
         }
+      }
+      .advice {
+        color: #F8560F;
+        font-size: 14px;
       }
     }
     .relation-map {
@@ -224,19 +267,22 @@ export default {
       .map-img {
         position: absolute;
         left: 50%;
-        top: 25%;
+        top: 5%;
       }
       .bg-purple {
         background-color: #FCFCFE;
       }
       .map-body {
-        margin-top: 3%;
         ul {
           display: flex;
           flex-wrap: wrap;
           li {
             width: 50%;
             height: 100px;
+          }
+          .map-name {
+            float:right;
+            margin-right: 7%;
           }
           li:nth-child(even) {
             >div {
@@ -252,20 +298,15 @@ export default {
         height:65px;
         width:289px;
         line-height: 65px;
-        display: flex;
-        justify-content: space-around;
         margin-bottom: 10%;
         span {
           font-size: 14px;
-          float: left;
+          margin-left: 5%;
         }
-        .map-button {
-          border-radius:4px;
-          height: 50px;
-          margin-top:2%;
-          margin-right: -10%;
-          border: 0;
-          padding: 12px 20px;
+      }
+      .cannotChecked {
+        span {
+          color: #999999;
         }
       }
       .checkedContent {
@@ -273,41 +314,47 @@ export default {
         span {
           color: #0785FD;
         }
-        .map-button {
-          background-color: transparent;
-          color: #0785FD;
-          border: 0;
-        }
-      }
-      .cannotChecked {
-        span {
-          color: #0785FD;
-        }
-        .map-button {
-          background-color: #D3D3D3;
-          color: #fff;
-        }
       }
       .canChecked {
         span {
           color: #0785FD;
         }
-        .map-button {
-          background-color: #0785FD;
-          color: #fff;
-        }
-      }
-      .finishChecked {
-        background-color: #0785FD;
-        span {
-          color: #ffffff;
-        }
-        .map-button {
-          background-color: transparent;
-          color: #fff;
-          border: 0;
+        .map-name {
+          color: #D3D3D3;
         }
       }
     }
+  }
+  .content {
+    width:95px;
+    height:27px;
+    border:1px solid #0785FD;
+    border-radius:3px 3px 0px 3px;
+    margin-top: -300px;
+    margin-left:600px;
+  }
+  .content:before {
+    content:'';
+    display:block;
+    width:0;
+    height:0;
+    position:relative;
+    top:0;
+    left:95px;
+    border-left:9px solid #0785FD;
+    border-top:7px solid transparent;
+    border-bottom:7px solid transparent;
+  }
+  .content:after {
+    content:'';
+    display:block;
+    width:0;
+    height:0;
+    position:relative;
+    top:-2px;
+    // right:10px;
+    border-left:7px solid #fff;
+    border-top:5px solid transparent;
+    border-bottom:5px solid transparent;
   }
 </style>
