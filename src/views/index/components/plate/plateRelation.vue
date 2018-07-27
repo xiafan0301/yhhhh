@@ -15,6 +15,7 @@
           </el-option>
         </el-select>
       </div>
+      <span class='advice'>*{{tips}}</span>
       <div class="page-right">
         <span>跳转页面</span>
         <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
@@ -53,7 +54,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
+    <!-- <span style='color:red;float:left;margin-left:5%'>{{tips}}</span> -->
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
@@ -65,8 +66,8 @@ export default {
   data () {
     return {
       relationValue: '',
-      btnDisabled: false,
-      tips: '',
+      btnDisabled: true,
+      tips: '请选择关联页面',
       positionObj:
       [
         {
@@ -171,21 +172,8 @@ export default {
       });
     },
     nextStep () {
-      if (this.plateList.length >= 6) {
-        this.btnDisabled = true;
-        this.tips = '该页面所有位置已经被占，请重新选择';
-      } else if (this.relationValue === '') {
-        this.btnDisabled = true;
-        this.tips = '请先选择要关联的页面';
-      } else if (this.newDataList.positionId === '') {
-        this.btnDisabled = true;
-        this.tips = '请先选择要展示的位置';
-      } else {
-        this.btnDisabled = false;
-        this.tips = '';
-        this.$store.commit('setProgressIndex', {progressIndex: 3});
-        this.$emit('setDataList', this.newDataList);
-      }
+      this.$store.commit('setProgressIndex', {progressIndex: 3});
+      this.$emit('setDataList', this.newDataList);
     },
     skipPages (value) { // 要跳转的页面
       let obj = {};
@@ -233,6 +221,16 @@ export default {
                 item.canChecked = true;
               });
             }
+            const data = this.positionObj.filter((item) => {
+              return item.isChecked !== true;
+            });
+            if (data.length > 0) {
+              this.tips = '点击选择要展示的位置按钮';
+              this.btnDisabled = true;
+            } else {
+              this.tips = '该页面所有位置已经被占，请重新选择';
+              this.btnDisabled = true;
+            }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
         })
@@ -245,6 +243,8 @@ export default {
       this.positionObj.map((item, index) => {
         if (item.id === num) {
           item = Object.assign(item, {finishChecked: true});
+          this.tips = '展示成功，点击下一步';
+          this.btnDisabled = false;
         } else if (item.isChecked !== true) {
           item.canChecked = false;
         }
@@ -293,12 +293,16 @@ export default {
       display: flex;
       justify-content: center;
       .page-left, .page-right {
-        margin-right: 5%;
         span {
           color: #333333;
           font-size: 14px;
         }
       }
+    }
+    .advice {
+      color: #F8560F;
+      font-size: 14px;
+      margin-right: 5%;
     }
     .relation-map {
       width: 96%;
