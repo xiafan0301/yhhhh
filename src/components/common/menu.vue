@@ -1,6 +1,5 @@
 <template>
   <div class="vis-bg-menu">
-    <div class="bg-mu-t"></div>
     <ul class="bg-mu-u">
       <li class="bg-mu-li-sed">
         <router-link :to="{ name: 'page'}" class="as-ellipsis">
@@ -51,18 +50,21 @@ export default {
         cursor: pointer;
         > a {
           position: relative;
-          width: 100%; height: 60px; line-height: 60px;
+          width: 100%; height: 62px; line-height: 62px;
           padding-left: 45px;
-          color: #B0CBF9; font-weight: bold;
+          color: #666; font-weight: bold;
           display: block;
+          text-decoration: none !important;
+          border-left: 3px solid #fff;
           &:hover {
             text-decoration: none;
-            color: #fff;
+            color: #0785FD;
           }
           &.router-link-active {
-            background-color: #0785FD;
+            background-color: #E6F7FF;
             cursor: default;
-            color: #fff;
+            color: #0785FD;
+            border-left-color: #0785FD;
           }
         }
       }
