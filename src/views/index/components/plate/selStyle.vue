@@ -7,20 +7,16 @@
       </div>
     </div>
     <div class="plate-ecl1-c">
-      <ul v-show="styleType === 1" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
+      <ul class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
         <li v-for="item in allPlateList" :key="item.configId">
           <img v-bind:src="item.thumbnailUrl" alt="">
-          <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)"  :label="item">{{item.configName}}</el-radio></p>
+          <p>
+            <el-radio v-model="styleRadio" @change="setStyleRadio(item)" :label="item">
+              {{item.configName}}
+            </el-radio>
+          </p>
         </li>
       </ul>
-      <div class="plate-ecl1-c">
-        <ul v-show="styleType === 2" class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
-          <li v-for="item in allPlateList" :key="item.configId">
-            <img v-bind:src="item.thumbnailUrl" alt="">
-            <p><el-radio v-model="styleRadio" @change="setStyleRadio(item)" :label="item" >{{item.configName}}</el-radio></p>
-          </li>
-        </ul>
-      </div>
     </div>
     <div class="plate-ecl-b">
       <el-button :disabled="!styleRadio" @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
@@ -151,7 +147,8 @@ export default {
     padding-top: 138px; padding-bottom: 20px;
   }
   .bg-plate-ecc {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     border: 1px solid #E3E3E3;
   }
   .bg-plate-ecl {
@@ -201,7 +198,8 @@ export default {
     > .plate-ecl1-c {
       height: 100%;
       overflow: auto;
-      margin: 0 auto;  padding: 0 20px 0 20px;
+      margin: 0 auto;
+      padding: 0 20px 0 20px;
       > .plate-ecl1-ul {
         > li {
           width: 320px; height: 230px;

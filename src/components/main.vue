@@ -1,15 +1,17 @@
 <template>
   <div class="main">
-    <div class="vis-bg-l">
-      <div is="visMenu"></div>
-    </div>
-    <div class="vis-bg-r">
-      <div is="visHeader"></div>
-      <div class="vis-bg-content">
-        <transition enter-active-class="fade-in" leave-active-class="leave-immediately"
-                    :duration="{ enter: 300, leave: 100 }">
-          <router-view></router-view>
-        </transition>
+    <div is="visHeader"></div>
+    <div class="vis-bg-m">
+      <div class="vis-bg-l">
+        <div is="visMenu"></div>
+      </div>
+      <div class="vis-bg-r">
+        <div class="vis-bg-content">
+          <transition enter-active-class="fade-in" leave-active-class="leave-immediately"
+                      :duration="{ enter: 300, leave: 100 }">
+            <router-view></router-view>
+          </transition>
+        </div>
       </div>
     </div>
   </div>
@@ -39,7 +41,9 @@ export default {
   .vis-bg-l {
     float: left;
     width: 200px; height: 100%;
-    background-color: #022344;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+    box-shadow: 0 0 4px #eee;
   }
   .vis-bg-r {
     height: 100%;
@@ -47,9 +51,11 @@ export default {
     position: relative;
   }
   .vis-bg-content {
-    padding-top: 62px;
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+  }
+  .vis-bg-m {
+    width: 100%; height: 100%; padding-top: 62px;
   }
 </style>

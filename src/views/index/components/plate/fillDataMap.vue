@@ -7,66 +7,58 @@
     </div>
     <div class="plate-ecl2-cr">
       <div class='position-select'>
-        <template v-if='positionIdList.length > 0'>
-          <div>
-            <span>位置1</span>
-            <el-select v-model='relationValue1' placeholder="选择数据组件" @change="changeMapType1">
-              <el-option value=''>请选择数据组件</el-option>
-              <el-option
-                v-for='item in mapTypeList1'
-                :key='item.dataTypeId'
-                :value='item.typeName'
-                :disabled="item.isDisabled"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </template>
-        <template v-if='positionIdList.length > 1'>
-          <div>
-            <span>位置2</span>
-            <el-select :disabled="isDisabled2" v-model="relationValue2" placeholder="选择数据组件" @change='changeMapType2'>
-              <el-option value=''>请选择数据组件</el-option>
-              <el-option
-                v-for='item in mapTypeList2'
-                :key='item.dataTypeId'
-                :value='item.typeName'
-                :disabled="item.isDisabled"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </template>
-        <template v-if='positionIdList.length > 2'>
-          <div>
-            <span>位置3</span>
-            <el-select :disabled="isDisabled3" v-model="relationValue3" placeholder="选择数据组件" @change='changeMapType3'>
-              <el-option value=''>请选择数据组件</el-option>
-              <el-option
-                v-for='item in mapTypeList3'
-                :key='item.dataTypeId'
-                :value='item.typeName'
-                :disabled="item.isDisabled"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </template>
-        <template v-if='positionIdList.length > 3'>
-          <div>
-            <span>位置4</span>
-            <el-select :disabled="isDisabled4" v-model="relationValue4" placeholder="选择数据组件" @change='changeMapType4'>
-              <el-option value=''>请选择数据组件</el-option>
-              <el-option
-                v-for='item in mapTypeList4'
-                :key='item.dataTypeId'
-                :value='item.typeName'
-                :disabled="item.isDisabled"
-              >
-              </el-option>
-            </el-select>
-          </div>
-        </template>
+        <div>
+          <span>位置1</span>
+          <el-select v-model='relationValue1' placeholder="选择数据组件" @change="changeMapType1">
+            <el-option value=''>请选择数据组件</el-option>
+            <el-option
+              v-for='item in mapTypeList1'
+              :key='item.dataTypeId'
+              :value='item.typeName'
+              :disabled="item.isDisabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div>
+          <span>位置2</span>
+          <el-select :disabled="isDisabled2" v-model="relationValue2" placeholder="选择数据组件" @change='changeMapType2'>
+            <el-option value=''>请选择数据组件</el-option>
+            <el-option
+              v-for='item in mapTypeList2'
+              :key='item.dataTypeId'
+              :value='item.typeName'
+              :disabled="item.isDisabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div>
+          <span>位置3</span>
+          <el-select :disabled="isDisabled3" v-model="relationValue3" placeholder="选择数据组件" @change='changeMapType3'>
+            <el-option value=''>请选择数据组件</el-option>
+            <el-option
+              v-for='item in mapTypeList3'
+              :key='item.dataTypeId'
+              :value='item.typeName'
+              :disabled="item.isDisabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
+        <div>
+          <span>位置4</span>
+          <el-select :disabled="isDisabled4" v-model="relationValue4" placeholder="选择数据组件" @change='changeMapType4'>
+            <el-option value=''>请选择数据组件</el-option>
+            <el-option
+              v-for='item in mapTypeList4'
+              :key='item.dataTypeId'
+              :value='item.typeName'
+              :disabled="item.isDisabled"
+            >
+            </el-option>
+          </el-select>
+        </div>
       </div>
       <div class='position-table'>
         <div class='navigation'>
@@ -279,6 +271,7 @@
 <script>
 import store from '../../../../store/store.js';
 export default {
+  props: ['mapDataList'],
   data () {
     return {
       tip: '',
@@ -311,41 +304,58 @@ export default {
       positionIdList: []
     }
   },
-  mounted () {
-    if (this.$store.state.mapPageDataList.length > 0) {
-      this.$store.state.mapPageDataList.map((item, index) => {
-        if (index === 0) {
-          this.relationValue1 = item.plateName;
-          this.isDisabled2 = false;
-        } else if (index === 1) {
-          this.relationValue2 = item.plateName;
-          this.isDisabled3 = false;
-        } else if (index === 2) {
-          this.relationValue3 = item.plateName;
-          this.isDisabled4 = false;
-        } else if (index === 3) {
-          this.relationValue4 = item.plateName;
-        }
-        if (item.areaInfoList[0].contentItemList.length > 0) {
-          item.areaInfoList[0].contentItemList.map((item, idx) => {
-            const data = {
-              name: item.itemName,
-              value: item.contentSubItemList[0].valueContent,
-              unit: item.contentSubItemList[0].valueUnit
+  watch: {
+    mapDataList (newVal) {
+      this.mapDataList = Object.assign(this.mapDataList, newVal);
+      if (this.mapDataList.length > 0) {
+        console.log(this.mapDataList)
+        this.mapDataList.map((item, index) => {
+          if (index === 0) {
+            this.relationValue1 = item.plateName;
+            this.isDisabled2 = false;
+          } else if (index === 1) {
+            this.relationValue2 = item.plateName;
+            this.isDisabled3 = false;
+          } else if (index === 2) {
+            this.relationValue3 = item.plateName;
+            this.isDisabled4 = false;
+          } else if (index === 3) {
+            this.relationValue4 = item.plateName;
+          }
+          if (item.areaInfoList) {
+            if (item.areaInfoList[0].contentItemList.length > 0) {
+              item.areaInfoList[0].contentItemList.map((item, idx) => {
+                const data = {
+                  name: item.itemName,
+                  value: item.contentSubItemList[0].valueContent,
+                  unit: item.contentSubItemList[0].valueUnit
+                }
+                if (index === 0) {
+                  this.dataList1.push(data);
+                } else if (index === 1) {
+                  this.dataList2.push(data);
+                } else if (index === 2) {
+                  this.dataList3.push(data);
+                } else if (index === 3) {
+                  this.dataList4.push(data);
+                }
+              });
             }
-            if (index === 0) {
-              this.dataList1.push(data);
-            } else if (index === 1) {
-              this.dataList2.push(data);
-            } else if (index === 2) {
-              this.dataList3.push(data);
-            } else if (index === 3) {
-              this.dataList4.push(data);
-            }
-          });
-        }
-      });
+          }
+        });
+      } else {
+        this.relationValue1 = '';
+        this.relationValue2 = '';
+        this.relationValue3 = '';
+        this.relationValue4 = '';
+        this.dataList1 = [];
+        this.dataList2 = [];
+        this.dataList3 = [];
+        this.dataList4 = [];
+      }
     }
+  },
+  mounted () {
     this.axios.get('/mapServices/dataTypes')
       .then((res) => {
         if (res) {
@@ -396,7 +406,7 @@ export default {
         }
       }
       let dataArrOne = {
-        pageId: this.$store.state.pageId,
+        pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue1,
         remark: '',
@@ -409,7 +419,7 @@ export default {
         contentItemList: []
       };
       let dataArrTwo = {
-        pageId: this.$store.state.pageId,
+        pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue2,
         remark: '',
@@ -422,7 +432,7 @@ export default {
         contentItemList: []
       };
       let dataArrThree = {
-        pageId: this.$store.state.pageId,
+        pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue3,
         remark: '',
@@ -435,7 +445,7 @@ export default {
         contentItemList: []
       };
       let dataArrFour = {
-        pageId: this.$store.state.pageId,
+        pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue4,
         plateId: plateId4,

@@ -11,7 +11,8 @@ import page from '@/views/index/components/page/page.vue'
 // plate
 import plate from '@/views/index/components/plate/plate.vue'
 import plateList from '@/views/index/components/plate/list.vue'
-import plateEdit from '@/views/index/components/plate/edit.vue'
+import plateAdd from '@/views/index/components/plate/addPlate.vue'
+import plateEdit from '@/views/index/components/plate/editPlate.vue'
 import style from '@/views/index/components/style/style.vue'
 // cas
 import cas from '@/views/index/components/cas/cas.vue'
@@ -37,6 +38,7 @@ export default new Router({
           component: plate,
           children: [
             {path: '', name: 'plate-list', component: plateList},
+            {path: 'add/:plateId', name: 'plate-add', component: plateAdd},
             {path: 'edit/:plateId', name: 'plate-edit', component: plateEdit}
           ]
         },

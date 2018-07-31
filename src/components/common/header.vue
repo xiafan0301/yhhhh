@@ -1,5 +1,6 @@
 <template>
   <div class="vis-bg-header clearfix">
+    <div>&nbsp;</div>
     <h1>智慧城市运营管理系统</h1>
     <ul>
       <li style="padding-left: 16px; cursor: pointer;" @click="loginOut">
@@ -63,12 +64,16 @@ export default {
   .vis-bg-header {
     position: absolute; top: 0; left: 0;
     width: 100%; height: 62px;
-    border-bottom: 1px solid #ddd;
-    box-shadow: 0 0 3px #ccc;
+    background-color: #022344;
+    > div {
+      float: left;
+      background: url(../../assets/img/aorise-logo.png) center center no-repeat;
+      width: 200px; height: 100%;
+    }
     > h1 {
       float: left;
-      height: 61px; line-height: 61px;
-      color: #333; font-weight: 600; font-size: 16px;
+      height: 62px; line-height: 62px;
+      color: #fff; font-weight: 600; font-size: 16px;
       padding-left: 20px;
     }
     > ul {
@@ -80,7 +85,7 @@ export default {
         float: left;
         line-height: 40px;
         margin-left: 20px;
-        color: #666; font-size: 14px;
+        color: #fff; font-size: 12px;
         > img {
           width: 40px; height: 40px;
           border-radius: 50%;
