@@ -10,6 +10,7 @@ const state = {
   ctx: '',
   // 登录token
   token: null,
+  loginUser: {},
   // 面包屑
   breadcrumb: [],
   progressIndex: 1, // 添加板块的进度条索引
