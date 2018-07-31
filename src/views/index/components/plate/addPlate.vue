@@ -32,14 +32,19 @@
     </div>
     <div class="bg-plate-ec">
       <div class="bg-plate-ecc">
-        <div is='plate009'></div>
+        <div is='selStyle'></div>
         <template v-if='this.$store.state.styleType === 1'>
-          <div is='plate008' :dataList='dataList'></div>
           <div is='plateRelation' @setDataList="getData"></div>
+          <template v-if="this.$store.state.plateInfo.configId === 'de096a27-4896-41f7-95c2-990d5594fcc3'">
+            <div is='dischargeAdd' :dataList='dataList'></div>
+          </template>
+          <template v-else>
+            <div is='fillDataAdd' :dataList='dataList'></div>
+          </template>
         </template>
         <template v-else-if='this.$store.state.styleType === 2'>
-          <div is='plateMap'></div>
-          <div is='plateRelationMap'></div>
+          <div is='plateRelationMap' @getMapDataList='getMapDataList'></div>
+          <div is='fillDataMap' :mapDataList='mapDataList'></div>
         </template>
       </div>
     </div>
@@ -47,23 +52,27 @@
 </template>
 <script>
 import store from '../../../../store/store.js';
-import plate008 from './plate008.vue';
-import plate009 from './plate009.vue';
+import fillDataAdd from './fillDataAdd.vue';
+import selStyle from './selStyle.vue';
 import plateRelation from './plateRelation.vue';
-import plateMap from './plateMap.vue';
+import fillDataMap from './fillDataMap.vue';
 import plateRelationMap from './plateRelationMap.vue';
+import dischargeAdd from './dischargeAdd.vue';
 export default {
-  components: {plate008, plate009, plateRelation, plateRelationMap, plateMap},
+  components: {fillDataAdd, selStyle, dischargeAdd, plateRelation, plateRelationMap, fillDataMap},
   data () {
     return {
       dataList: {},
+      mapDataList: [],
       value: ''
     }
   },
   methods: {
     getData (val) {
-      console.log(val)
       this.dataList = val;
+    },
+    getMapDataList (val) {
+      this.mapDataList = val;
     }
   }
 }
@@ -132,7 +141,8 @@ export default {
     padding-top: 138px; padding-bottom: 20px;
   }
   .bg-plate-ecc {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     border: 1px solid #E3E3E3;
   }
   .bg-plate-ecl {

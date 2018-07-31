@@ -56,7 +56,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>

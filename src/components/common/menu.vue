@@ -8,7 +8,7 @@
       </li>
       <li>
         <router-link :to="{ name: 'plate-list'}" class="as-ellipsis">
-          <i class="bg-mu-icon bg-mu-icon2"></i>板块管理
+          <i class="bg-mu-icon bg-mu-icon2"></i>版块管理
         </router-link>
       </li>
       <li>

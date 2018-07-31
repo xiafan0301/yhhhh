@@ -29,7 +29,7 @@
           <li v-for="(item, index) in positionObj" :key="'item'+index">
             <template v-if='item.canChecked === true'>
               <div class="grid-content bg-purple"
-                :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
+                :class="[item.isChecked === true ? 'checkedContent' : 'canChecked']">
                 <span>{{item.position}}</span>
                 <span class='map-name'>{{item.name}}</span>
               </div>
@@ -173,6 +173,14 @@ export default {
     preStep () { // 上一步
       this.$store.commit('setProgressIndex', {progressIndex: 1});
       this.relationValue = '';
+      this.btnDisabled = true;
+      this.imgUrl = require('../../../../assets/img/temp/map_noselect.png');
+      this.fisrtTip = true;
+      this.positionObj.forEach((item) => {
+        item.canChecked = false;
+        item.isChecked = false;
+        item.name = '';
+      });
     },
     nextStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 3});
@@ -180,7 +188,6 @@ export default {
     selectPages (value) {
       let obj = {};
       this.tips = '';
-      // this.btnDisabled = false;
       this.imgUrl = require('../../../../assets/img/temp/map_select.png');
       obj = this.relationPageList.find((item) => {
         return item.pageName === value;
@@ -211,9 +218,12 @@ export default {
                 this.fisrtTip = false;
                 this.isRepace = true;
                 this.btnDisabled = true;
+                this.$emit('getMapDataList', dataArr);
               } else {
                 this.fisrtTip = false;
+                this.isRepace = false;
                 this.btnDisabled = false;
+                this.$emit('getMapDataList', []);
               }
             } else {
               this.positionObj.forEach((item, index) => {
@@ -221,13 +231,15 @@ export default {
                 item.name = '空';
                 this.btnDisabled = false;
                 this.fisrtTip = false;
+                this.isRepace = false;
+                this.$emit('getMapDataList', []);
               });
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
         })
         .catch(() => {});
-      this.newDataList.pageId = obj.pageId;
+      this.$store.commit('setMapPageId', {mapPageId: obj.pageId});
     }
   }
 }
