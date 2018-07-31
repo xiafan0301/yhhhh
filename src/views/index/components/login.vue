@@ -23,12 +23,14 @@
   </div>
 </template>
 <script>
+import { cookieUserId, cookieUserName, cookieTime } from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
       loginForm: {
         userName: 'aorise',
-        userPassword: '1234'
+        userPassword: '123456'
       },
       loginBtnLoading: false,
       loginFormRules: {
@@ -61,6 +63,14 @@ export default {
           let params = this.loginForm;
           _this.axios.post('/authServices/login?' + $.param(params)).then(function (response) {
             if (response) {
+              let oUser = response.data;
+              setCookie(cookieUserId, oUser.authUserId, cookieTime, '/');
+              // 保存用户姓名到cookie
+              setCookie(cookieUserName, oUser.userName, cookieTime, '/');
+              _this.$store.commit('setLoginUser', {loginUser: {
+                userId: oUser.authUserId,
+                userName: oUser.userName
+              }});
               _this.$router.push({name: 'page'});
             }
             _this.loginBtnLoading = false;

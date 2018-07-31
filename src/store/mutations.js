@@ -4,6 +4,10 @@ export default {
   setCtx (state, options) {
     state.ctx = options.ctx;
   },
+  // 登录用户
+  setLoginUser (state, options) {
+    state.loginUser = options.loginUser;
+  },
   // 登录状态token
   setToken (state, options) {
     state.token = options.token;
