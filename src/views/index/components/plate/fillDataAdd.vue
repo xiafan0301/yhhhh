@@ -80,8 +80,6 @@
                     </thead>
                     <tbody>
                       <tr v-for="(item, index) in parentDataListThree" :key="'item'+index">
-                        <span v-show='false'>{{item.plateAreaId = info.plateAreaId}}</span>
-                        <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
                         <td><input type="text" v-model="item.itemName" placeholder='请填写'></td>
                         <td width='15%'>
                           <template v-if="parentDataListThree.length > 1">
@@ -268,6 +266,8 @@
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
+                      <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
+                      <span v-show='false'>{{items.serialNumber = parseInt(index+1)}}</span>
                       <tr v-for="(list, idx) in items.contentSubItemList" :key="'list'+idx">
                         <template v-if='list.isMerge === true'>
                           <td style="color:#fff;border-color:#fff;background-color:#999999">{{items.itemName}}</td>
@@ -281,10 +281,10 @@
                         <template v-else>
                           <td>{{items.itemName}}</td>
                           <td>{{list.contentName}}</td>
-                          <td><input type="text" v-model="numberObjThree[index + '_' + idx]"></td>
+                          <td><input type="text" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
                           <td>{{list.valueUnit}}</td>
                           <td>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" v-model="numberLayerObjThree[index + '_' + idx]"></td>
+                          <td><input type="text" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
                           <td>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                       </tr>
@@ -379,7 +379,6 @@
                             <el-switch
                               v-model="item.supernatantFieldFlag"
                               @change="changeSuperFlag($event, idx)"
-                              style="z-index:-1"
                             />
                           </td>
                           <td width='15%'>
@@ -404,7 +403,7 @@
                               </template>
                             </template>
                             <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;z-index:1"
+                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                               class="el-icon-circle-plus-outline"
                               :class="[isActiveChild === idx ? 'active' : 'unactive']"
                               @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
@@ -481,6 +480,7 @@
               <div style="margin-top:5%;">
                 <h2>位置{{info.serialNumber}}</h2>
                 <span v-show='false'>{{plateAreaId = info.plateAreaId}}</span>
+                <span v-show='false'>{{configCountFour = info.mainMinCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -509,26 +509,14 @@
                             >
                             </i>
                           </template>
-                          <template v-if='info.serialNumber === 3'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive3 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
-                          <template v-if='info.serialNumber === 5'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive5 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
+                          <i
+                            style="font-size: 25px; cursor: pointer;  color: #0785FD;"
+                            class="el-icon-circle-plus-outline"
+                            :class="[isActiveParent === index ? 'active' : 'unactive']"
+                            @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                            title="新增项"
+                          >
+                          </i>
                         </td>
                       </tr>
                     </tbody>
@@ -585,8 +573,6 @@ export default {
       itemName: {},
       valueUnit: {},
       valueContent: {},
-      isActive3: 0,
-      isActive5: 0,
       itemNameFour: {},
       contentNameFour: {},
       valueContentFour: {},
@@ -714,7 +700,6 @@ export default {
   },
   watch: {
     dataList (newVal) { // 要提交的数据
-      console.log(newVal)
       this.dataList = Object.assign(this.dataList, newVal);
     },
     numberObj: {
@@ -881,11 +866,15 @@ export default {
   methods: {
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
+      this.isActiveChild = 0;
+      this.isActiveParent = 0;
+      this.tip = '';
       // this.$store.commit('setType', {typeArr: []});
       // this.$store.commit('setConfigInfo', {setConfigInfo: []});
-      // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
+      Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
     nextStep () {
+      this.dataObjTwo[0].contentItemList = [];
       let numberThree = [], numberLayerThree = [];
       for (let i in this.numberObjThree) {
         numberThree.push(this.numberObjThree[i]);
@@ -1150,18 +1139,13 @@ export default {
       }
     },
     addChildDataListFour (name, unit, idx, maxNumber, sortNumber) { // 类型四添加项
-      let length = this.configCountFour + 1;
       const configLength = this.$store.state.plateConfigInfo.length;
       if (name || unit) {
-        if (sortNumber === 3) {
-          this.isActive3 = idx + 1;
-        } else if (sortNumber === 5) {
-          this.isActive5 = idx + 1;
-        }
+        this.isActiveParent = idx + 1;
         if (this.configCountFour < maxNumber) {
           for (let i = 0; i < configLength; i++) {
             if (this.$store.state.plateConfigInfo[i].serialNumber === sortNumber) {
-              this.$store.state.plateConfigInfo[i].mainMinCount = length;
+              this.$store.state.plateConfigInfo[i].mainMinCount++;
             }
           }
         } else {
@@ -1291,6 +1275,7 @@ export default {
           this.contentItemListThree.splice(index, 1);
         }
       });
+      console.log(this.contentItemListThree)
       this.isActiveParent = this.parentDataListThree.length - 1;
       if (this.value.length > 0) {
         for (let i = 0; i < this.value.length; i++) {
@@ -1308,11 +1293,7 @@ export default {
       this.$store.state.plateConfigInfo.map((item) => {
         if (item.serialNumber === sortNumber) {
           --item.mainMinCount;
-          if (sortNumber === 3) {
-            this.isActive3 = item.mainMinCount - 1;
-          } else if (sortNumber === 5) {
-            this.isActive5 = item.mainMinCount - 1;
-          }
+          this.isActiveParent = item.mainMinCount - 1;
         }
       });
     },
@@ -1403,30 +1384,32 @@ export default {
     changeLayerMerge (value) { // 类型三的勾选浮层合并项
       const parentLength = this.parentDataListThree.length; // 获取主项的长度
       const childLength = this.childDataListThree.length; // 获取子项的长度
-      let childData, layerData, layerArr = [];
+      let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
       if (value === true) {
         for (let i = 0; i < parentLength; i++) {
           let childResult = 0, layerResult = 0, data;
           for (let j = 0; j < childLength; j++) {
             if (this.childDataListThree[j].supernatantFieldFlag === true) {
+              console.log('aaaa')
               if (this.numberObjThree[i + '_' + j] !== undefined) {
                 childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
+                console.log(childResult)
               }
               if (this.numberLayerObjThree[j] !== '') {
-                layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[j]));
+                layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[i + '_' + j]));
               }
-              childData = {
-                contentName: '',
-                valueContent: childResult,
-                valueUnit: this.childDataListThree[0].valueUnit,
-                serialNumber: this.childDataListThree.length + 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: false,
-                isMerge: true
-              };
             }
           }
+          childData = {
+            contentName: '',
+            valueContent: childResult,
+            valueUnit: this.childDataListThree[0].valueUnit,
+            serialNumber: this.childDataListThree.length + 1,
+            graphicFieldFlag: false,
+            supernatantFieldFlag: true,
+            sumFlag: false,
+            isMerge: true
+          };
           layerData = {
             contentName: '',
             valueContent: layerResult,
@@ -1656,7 +1639,7 @@ export default {
   .plate-table {
     border: 0;
     >tbody td input {
-      width: 30% !important;
+      width: 100% !important;
       min-width: 25% !important;
     }
     >thead th {

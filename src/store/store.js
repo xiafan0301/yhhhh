@@ -19,7 +19,8 @@ const state = {
   oneType: [],
   styleType: 1, // 左右两侧、地图区域
   mapPageDataList: [], // 页面中已有的数据
-  pageId: '', // 页面id
+  mapMageId: '', // 页面id
+  editPlateInfo: {}, // 板块已有的数据
   // 图片基础路径
   imgBaseUrl: '',
   // 文件基础路径

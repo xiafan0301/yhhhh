@@ -36,8 +36,11 @@ export default {
   setMapDataList (state, options) {
     state.mapPageDataList = options.mapPageDataList;
   },
-  setPageId (state, options) {
-    state.pageId = options.pageId;
+  setMapPageId (state, options) {
+    state.mapPageId = options.mapPageId;
+  },
+  setEditPlateInfo (state, options) {
+    state.editPlateInfo = options.editPlateInfo;
   },
   // 设置基础路径
   setBaseUrl (state, options) {
