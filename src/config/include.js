@@ -10,5 +10,21 @@ import '@/assets/css/style.css';
 import '@/utils/filter.js';
 // import 全局方法
 import '@/utils/method.js';
+import { cookieUserId, cookieUserName } from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
+// 通用store
+import store from '@/store/store.js';
 // use element-ui 2.0
 Vue.use(ElementUI);
+
+let sUserId = getCookie(cookieUserId);
+let sUserName = getCookie(cookieUserName);
+console.log(sUserId + '=' + sUserId)
+if (sUserId && sUserName) {
+  store.commit('setLoginUser', {
+    loginUser: {
+      userId: sUserId,
+      userName: sUserName
+    }
+  });
+}
