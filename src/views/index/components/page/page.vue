@@ -15,7 +15,7 @@
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="addPage()">确 定</el-button>
+            <el-button :loading="addPageLoading" type="primary" @click="addPage()">确 定</el-button>
           </div>
         </el-dialog>
       </div>
@@ -52,7 +52,7 @@
         width=" ">
         <template slot-scope="scope">
           <el-button @click.native="showEditDialog(true)" type="text" size="small" v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
-          <el-button @click="handleClick(scope)" type="text" size="small" v-show="scope.row.plateList.length == 0">添加模块</el-button>
+          <el-button @click.native="showEditDialog(true)" type="text" size="small" v-show="scope.row.plateList.length == 0">添加模块</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -112,6 +112,7 @@ export default {
       dialogFormVisible: false,
       dialogFormVisible1: false,
       dialogVisible: false,
+      addPageLoading: false,
       form: {
         name: ''
       },
@@ -147,9 +148,14 @@ export default {
       this.dialogFormVisible = false;
       let params = this.form;
       params.pageName = this.form.name;
+      this.addPageLoading = true;
       this.axios.post('/pageServices/page', params)
         .then(res => {
           this.getAdviceList();
+          this.addPageLoading = false
+        })
+        .catch(() => {
+          this.addPageLoading = false
         });
       this.form.name = '';
     },
