@@ -35,7 +35,7 @@
           <template slot-scope="scope">
             <el-button type="text" @click='editPlate(scope.row.plateId)'>修改</el-button>
             <span class='separation'>|</span>
-            <el-button type="text" id='delete' @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
+            <el-button type="text" id='delete' class="vis-bg-del-btn" @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
             <!-- <el-button type="text">删除</el-button> -->
           </template>
         </el-table-column>
@@ -45,9 +45,9 @@
           @size-change="pagerSizeChange"
           @current-change="pagerCurrChange"
           :current-page="pager.pageNum"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[5, 10, 20, 50, 100]"
           :page-size="pager.pageSize"
-          layout="total, prev, pager, next, sizes, jumper"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="pager.total">
         </el-pagination>
       </div>
