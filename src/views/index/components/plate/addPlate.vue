@@ -43,7 +43,7 @@
           </template>
         </template>
         <template v-else-if='this.$store.state.styleType === 2'>
-          <div is='plateRelationMap' @getMapDataList='getMapDataList'></div>
+          <div is='plateRMapAdd' @getMapDataList='getMapDataList'></div>
           <div is='fillDataMap' :mapDataList='mapDataList'></div>
         </template>
       </div>
@@ -56,10 +56,10 @@ import fillDataAdd from './fillDataAdd.vue';
 import selStyle from './selStyle.vue';
 import plateRelation from './plateRelation.vue';
 import fillDataMap from './fillDataMap.vue';
-import plateRelationMap from './plateRelationMap.vue';
+import plateRMapAdd from './plateRMapAdd.vue';
 import dischargeAdd from './dischargeAdd.vue';
 export default {
-  components: {fillDataAdd, selStyle, dischargeAdd, plateRelation, plateRelationMap, fillDataMap},
+  components: {fillDataAdd, selStyle, dischargeAdd, plateRelation, plateRMapAdd, fillDataMap},
   data () {
     return {
       dataList: {},

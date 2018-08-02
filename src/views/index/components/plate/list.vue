@@ -78,7 +78,13 @@ export default {
       searchForm: {
         pageId: ''
       },
-      editDialogVisible: false
+      editDialogVisible: false,
+      newDataList: {
+        pageId: '',
+        positionId: '',
+        jumpPageId: '',
+        plateId: ''
+      }
     }
   },
   computed: {
@@ -180,13 +186,29 @@ export default {
     },
     editPlate (plateId) { // 修改板块
       if (plateId) {
-        this.axios.get('/plateServices/plates/' + plateId + '')
+        this.axios.get('/plateServices/managers/' + plateId + '')
           .then((res) => {
             if (res) {
-              console.log(res)
+              console.log(res.data)
+              const data = {
+                configId: res.data.configId,
+                markUrl: this.$store.state.plateInfo.markUrl
+              }
+              this.newDataList = {
+                plateId: res.data.plateId,
+                jumpPageId: res.data.visPagePlate.jumpPageId,
+                pageId: res.data.visPagePlate.pageId,
+                positionId: res.data.visPagePlate.positionId
+              }
               this.$store.commit('setStyleType', {styleType: res.data.plateType});
-              this.$store.commit('setProgressIndex', {progressIndex: 2});
+              if (res.data.plateType === 1) {
+                this.$store.commit('setProgressIndex', {progressIndex: 2});
+              } else {
+                this.$store.commit('setProgressIndex', {progressIndex: 3});
+              }
+              this.$emit('setDataList', this.newDataList);
               this.$store.commit('setEditPlateInfo', {editPlateInfo: res.data});
+              this.$store.commit('setPlateInfo', {plateInfo: data});
               this.$router.push({name: 'plate-edit', params: {plateId: '0'}});
             }
           })

@@ -49,7 +49,7 @@
   </div> -->
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
-    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -98,9 +98,9 @@ export default {
       checkedPageId: '', // 选中的页面id
       plateList: [], // 该页面已经有哪些板块被占用
       relationPageList: [], // 所有的关联页面
-      skipPageList: [], // 所有的跳转页面
       newDataList: {
-        pageId: ''
+        pageId: '',
+        plateId: ''
       },
       ltId: '',
       rtId: '',
@@ -123,39 +123,6 @@ export default {
       .then((res) => {
         if (res) {
           this.relationPageList = res.data.list;
-          this.skipPageList = res.data.list;
-        }
-      })
-      .catch(() => {});
-    this.axios.get('/plateServices/positions')
-      .then((res) => {
-        if (res) {
-          if (res.data.length > 0) {
-            res.data.map((item, index) => {
-              switch (item.serialNumber) {
-                case 11:
-                  this.ltId = item.positionId;
-                  break;
-                case 12:
-                  this.lcId = item.positionId;
-                  break;
-                case 13:
-                  this.lbId = item.positionId;
-                  break;
-                case 21:
-                  this.rtId = item.positionId;
-                  break;
-                case 22:
-                  this.rcId = item.positionId;
-                  break;
-                case 23:
-                  this.rbId = item.positionId;
-                  break;
-                default:
-                  break;
-              }
-            });
-          }
         }
       })
       .catch(() => {});
@@ -197,43 +164,20 @@ export default {
         item.isChecked = false;
         item.name = '';
       });
-      this.axios.get('/pageServices/pages/' + obj.pageId + '')
+      this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
         .then((res) => {
           if (res) {
             this.plateList = res.data.plateList;
-            if (res.data.plateList.length > 0) {
-              res.data.plateList.forEach((items, index) => {
-                this.positionObj.forEach((item, idx) => {
-                  item.canChecked = true;
-                  if (items.serialNumber === item.id) {
-                    item.isChecked = true;
-                    item.name = items.plateName;
-                  }
-                });
-              });
-              const dataArr = res.data.plateList.filter((item) => {
-                return item.serialNumber.toString().substring(0, 1) === '3';
-              });
-              if (dataArr.length > 0) {
-                this.fisrtTip = false;
-                this.isRepace = true;
-                this.btnDisabled = true;
-                this.$emit('getMapDataList', dataArr);
-              } else {
-                this.fisrtTip = false;
-                this.isRepace = false;
-                this.btnDisabled = false;
-                this.$emit('getMapDataList', []);
-              }
+            if (res.data.length > 0) {
+              this.fisrtTip = false;
+              this.isRepace = true;
+              this.btnDisabled = true;
+              this.$emit('getMapDataList', res.data);
             } else {
-              this.positionObj.forEach((item, index) => {
-                item.canChecked = true;
-                item.name = '空';
-                this.btnDisabled = false;
-                this.fisrtTip = false;
-                this.isRepace = false;
-                this.$emit('getMapDataList', []);
-              });
+              this.btnDisabled = false;
+              this.fisrtTip = false;
+              this.isRepace = false;
+              this.$emit('getMapDataList', []);
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }

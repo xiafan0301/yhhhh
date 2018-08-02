@@ -115,8 +115,7 @@
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
-                      <span v-show='false'>{{item.serialNumber = parseInt(index+1)}}</span>
-                      <template v-if='item.isMerge === true'>
+                      <template v-if='item.sumFlag === true'>
                         <tr class="mergetr">
                           <td>
                             合计(<input type="text" v-model="item.contentName" placeholder='请填写'>)
@@ -221,7 +220,7 @@
                             <input type="text" v-model="item.contentName" placeholder='请填写'>
                           </td>
                           <td>
-                            <input type="text" v-model="item.valueUnit" class='layerUnitThree' placeholder='请填写'>
+                            <input type="text" v-model="item.valueUnit" placeholder='请填写'>
                           </td>
                         </tr>
                       </template>
@@ -266,10 +265,8 @@
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
-                      <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                      <span v-show='false'>{{items.serialNumber = parseInt(index+1)}}</span>
                       <tr v-for="(list, idx) in items.contentSubItemList" :key="'list'+idx">
-                        <template v-if='list.isMerge === true'>
+                        <template v-if='list.sumFlag === true'>
                           <td style="color:#fff;border-color:#fff;background-color:#999999">{{items.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#999999">合计（{{list.contentName}}）</td>
                           <td style="color:#fff;border-color:#fff;background-color:#999999">{{list.valueContent}}</td>
@@ -342,7 +339,7 @@
                     </tr>
                     </thead>
                     <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
-                      <template v-if="item.isMerge === true">
+                      <template v-if="item.sumFlag === true">
                         <tr class='mergetr'>
                           <td>合计(<input v-model='item.contentName' type='text' style="padding-left:3%;" placeholder='请填写' />)</td>
                           <td>{{item.valueUnit}}</td>
@@ -360,7 +357,7 @@
                       <template v-else>
                         <tr>
                           <td><input type="text" v-model="item.contentName" placeholder='请填写'></td>
-                          <td><input type="text" v-model="item.valueUnit" class='valueUnit' placeholder='请填写'></td>
+                          <td><input type="text" v-model="item.valueUnit" placeholder='请填写'></td>
                           <td>
                             <template v-if='isCheckBox === true'>
                               <el-switch
@@ -448,11 +445,8 @@
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
-                      <span v-show='false'>{{item.plateAreaId=info.plateAreaId}}</span>
-                      <span v-show='false'>{{item.serialNumber = parseInt(index+1) }}</span>
                       <tr v-for="(value,idx) in item.contentSubItemList" :key="'value'+idx">
-                        <span v-show='false'>{{value.serialNumber = parseInt(idx+1)}}</span>
-                        <template v-if='value.isMerge === false'>
+                        <template v-if='value.sumFlag === false'>
                           <td>{{item.itemName}}</td>
                           <td>{{value.contentName}}</td>
                           <td>
@@ -479,7 +473,6 @@
             <template v-if="info.areaDataType === 4">
               <div style="margin-top:5%;">
                 <h2>位置{{info.serialNumber}}</h2>
-                <span v-show='false'>{{plateAreaId = info.plateAreaId}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -491,54 +484,34 @@
                     </tr>
                     </thead>
                     <tbody>
-                      <tr v-for="(item, index) in info.mainMinCount" :key="'item'+index">
-                        <td>
-                          <input type="text" v-model="itemNameFour[index + '_' + info.serialNumber]" placeholder='请填写'>
-                        </td>
-                        <td>
-                          <input type="text" v-model="valueUnitFour[index + '_' + info.serialNumber]" placeholder='请填写'>
-                        </td>
-                        <td width='15%'>
-                          <template v-if="info.mainMinCount > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
-                              @click="deleteChildDataListFour(itemNameFour[index + '_' + info.serialNumber], index, info.serialNumber)"
-                              title="删除此项"
-                            >
-                            </i>
-                          </template>
-                          <template v-if='info.serialNumber === 3'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive3 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
-                          <template v-else-if='info.serialNumber === 5'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive5 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
-                          <template v-else>
+                      <tr v-for="(item, index) in parentDataListFour" :key="'item'+index">
+                        <template v-if="childDataListFour[index].isPercent !== true">
+                          <td>
+                            <input type="text" v-model="item.itemName" placeholder='请填写'>
+                          </td>
+                          <td>
+                            <input type="text" v-model="childDataListFour[index].valueUnit" placeholder='请填写'>
+                          </td>
+                          <td width='15%'>
+                            <template v-if="parentDataListFour.length > 1">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteChildDataListFour(item.itemName, index)"
+                                title="删除此项"
+                              >
+                              </i>
+                            </template>
                             <i
                               style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                               class="el-icon-circle-plus-outline"
                               :class="[isActiveParent === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                              @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
                               title="新增项"
                             >
                             </i>
-                          </template>
-                        </td>
+                          </td>
+                        </template>
                       </tr>
                     </tbody>
                   </table>
@@ -553,11 +526,11 @@
                       <th>同比值(%)</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
+                    <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
                       <tr>
-                        <td>{{itemNameFour[index + '_' + info.serialNumber]}}</td>
-                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td>{{items.itemName}}</td>
+                        <td><input type="text" v-model="valueContentFour[index]" placeholder='请填写'></td>
+                        <td><input type="text" v-model="percentValue[index]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </table>
@@ -584,8 +557,8 @@ export default {
     return {
       typeArr: [],
       noRelation: '不关联',
-      isActiveParent: 0,
-      isActiveChild: 0,
+      isActiveParent: '',
+      isActiveChild: '',
       configCount: 0,
       configCountFour: 1,
       plateAreaId: '',
@@ -594,19 +567,14 @@ export default {
       itemName: {},
       valueUnit: {},
       valueContent: {},
-      isActive3: 0,
-      isActive5: 0,
-      itemNameFour: {},
-      contentNameFour: {},
       valueContentFour: {},
-      valueUnitFour: {},
       checkedMerge: false, // 合并项
       checkedLayerMerge: false, // 浮层合并项
       isCheckBox: false, // 是否能勾选类型二的浮层合并项
       checkBoxThree: false, // 是否能勾选类型三的浮层合并项
       childCheckBox: false, // 类型三中的是否能直接显示
       checkBoxTip: '单位不能为空，请先填写单位', // 浮层合并项提示语
-      percentValue: [], // 类型四的同比值
+      percentValue: {}, // 类型四的同比值
       percentValueOne: {}, // 类型一的同比值
       value: [],
       dataForm: {
@@ -623,151 +591,27 @@ export default {
         jumpPageId: '',
         configId: '',
         pageId: '',
+        plateId: '',
         plateType: 1,
         remark: '',
         contentItemList: []
       }],
-      parentDataListTwo: [{
-        itemName: '',
-        plateAreaId: '',
-        serialNumber: 1
-      }], // 类型二的主项列表
-      childDataListTwo: [{
-        contentName: '',
-        valueContent: '',
-        valueUnit: '',
-        serialNumber: 1,
-        graphicFieldFlag: true,
-        supernatantFieldFlag: true,
-        sumFlag: false,
-        contnetSubItemExtendList: [],
-        isMerge: false
-      }], // 类型二子项列表
-      parentDataListThree: [{
-        itemName: '',
-        plateAreaId: '',
-        serialNumber: 1
-      }], // 类型三的主项列表
-      childDataListThree: [{
-        contentName: '',
-        valueContent: '',
-        valueUnit: '',
-        serialNumber: 1,
-        graphicFieldFlag: true,
-        supernatantFieldFlag: true,
-        sumFlag: false,
-        isMerge: false
-      }], // 类型三的子项列表
-      layerDataListThree: [{
-        contentName: '',
-        valueContent: '',
-        valueUnit: '',
-        serialNumber: 1,
-        isMerge: false
-      }], // 类型三的浮层列表
-      parentDataListFour: [{
-        itemName: '',
-        plateAreaId: '',
-        serialNumber: 1
-      }], // 类型四的主项列表
-      childDataListFour: [{
-        contentName: '',
-        valueContent: '',
-        valueUnit: '',
-        serialNumber: 1,
-        graphicFieldFlag: true,
-        supernatantFieldFlag: true,
-        sumFlag: false
-      }], // 类型四的子项列表
-      contentItemListThree: [{
-        itemName: '',
-        plateAreaId: '',
-        serialNumber: 1,
-        contentSubItemList: [{
-          contentName: '',
-          valueContent: '',
-          valueUnit: '',
-          serialNumber: 1,
-          graphicFieldFlag: true,
-          supernatantFieldFlag: true,
-          sumFlag: false,
-          isMerge: false,
-          contnetSubItemExtendList: [{
-            contentName: '',
-            valueContent: '',
-            valueUnit: '',
-            serialNumber: 1,
-            isMerge: false
-          }]
-        }]
-      }], // 类型三的所有数据的集合
+      parentDataListTwo: [], // 类型二的主项列表
+      childDataListTwo: [], // 类型二子项列表
+      parentDataListThree: [], // 类型三的主项列表
+      childDataListThree: [], // 类型三的子项列表
+      layerDataListThree: [], // 类型三的浮层列表
+      parentDataListFour: [], // 类型四的主项列表
+      childDataListFour: [], // 类型四的子项列表
+      contentItemListThree: [], // 类型三的所有数据的集合
       contentItemListFour: [], // 类型四的所有数据的集合
-      contentItemListTwo: [{
-        itemName: '',
-        plateAreaId: '',
-        serialNumber: 1,
-        contentSubItemList: [{
-          contentName: '',
-          valueContent: '',
-          valueUnit: '',
-          serialNumber: 1,
-          graphicFieldFlag: true,
-          supernatantFieldFlag: true,
-          sumFlag: false,
-          contnetSubItemExtendList: [],
-          isMerge: false
-        }]
-      }], // 类型四的所有数据的集合
+      contentItemListTwo: [], // 类型四的所有数据的集合
       contentItemListOne: [] // 类型一的所有数据的集合
     }
   },
   watch: {
     dataList (newVal) { // 要提交的数据
       this.dataList = Object.assign(this.dataList, newVal);
-    },
-    numberObj: {
-      handler: function (newVal) {
-        for (let i in newVal) {
-          let str = i.split('_');
-          if (newVal[i] !== undefined) {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = newVal[i];
-            });
-          } else {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = '';
-            });
-          }
-        }
-      },
-      deep: true
-    },
-    percentValue: { // 监听同比值的变化
-      handler: function (newVal) {
-        let newArr;
-        if (newVal.length >= 1) {
-          this.contentItemListFour.map((items, index) => {
-            if (newVal[index] !== '') {
-              const data = {
-                contentName: '',
-                valueContent: newVal[index],
-                valueUnit: items.contentSubItemList[0].valueUnit,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: false,
-                sumFlag: false,
-                serialNumber: 2,
-                contnetSubItemExtendList: []
-              }
-              items.contentSubItemList.push(data);
-            }
-          });
-        }
-        this.contentItemListFour.map((items, index) => { // 去除contentSubItemList中重复的元素
-          const newArr = items.contentSubItemList.slice(0, 2);
-          items.contentSubItemList = JSON.parse(JSON.stringify(newArr));
-        });
-      },
-      deep: true
     },
     parentDataListTwo: { // 监听类型二主项
       handler: function (newVal) {
@@ -785,26 +629,39 @@ export default {
       },
       deep: true
     },
-    childDataListFour: { // 监听类型四的项
+    parentDataListFour: { // 监听类型四的项
       handler: function (newVal) {
         this.parentDataListFour.map((item, index) => {
-          item.itemName = this.childDataListFour[index].contentName;
-          // item.serialNumber = this.childDataListFour[index].contentName;
+          this.childDataListFour[index].contentName = item.itemName;
         });
         this.contentItemListFour.map((items, index) => {
-          items.itemName = this.childDataListFour[index].contentName;
+          items.itemName = this.parentDataListFour[index].itemName;
           items.plateAreaId = this.parentDataListFour[0].plateAreaId;
           items.contentSubItemList.map((item, idx) => {
-            item.valueUnit = this.childDataListFour[index].valueUnit;
-            item.contentName = this.childDataListFour[index].contentName;
-            item.valueContent = this.childDataListFour[index].valueContent;
+            if (item.serialNumber === 1) {
+              item.valueUnit = this.childDataListFour[idx].valueUnit;
+              item.valueContent = this.childDataListFour[idx].valueContent;
+            }
+          });
+        });
+      },
+      deep: true
+    },
+    childDataListFour: { // 监听类型四的子项
+      handler: function (newVal) {
+        this.contentItemListFour.map((items, index) => {
+          items.contentSubItemList.map((item, idx) => {
+            if (item.serialNumber === 1) {
+              item.valueUnit = this.childDataListFour[idx].valueUnit;
+              item.valueContent = this.childDataListFour[idx].valueContent;
+            }
           });
         });
       },
       deep: true
     },
     childDataListTwo: { // 监听类型二的子项
-      handler: function (newVal, oldVal) {
+      handler: function (newVal) {
         let unitArr = [];
         newVal.map((item, index) => {
           unitArr.push(item.valueUnit);
@@ -819,10 +676,10 @@ export default {
               if (item.isMerge === true) {
                 if (result === false) {
                   this.checkedMerge = false; // 将浮层合并项设为未选中
-                  this.childDataListTwo.splice(length - 1, 1);
-                  items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
                   items.contentSubItemList[idx].graphicFieldFlag = false; // 将直接显示设为false
                   this.childDataListTwo[idx].graphicFieldFlag = false; // 将直接显示设为false
+                  // this.childDataListTwo.splice(length - 1, 1);
+                  // items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
                   return;
                 }
               }
@@ -886,24 +743,38 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.setInitialData(); // 初始化数据
+  },
   methods: {
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
+      this.isActiveChild = 0;
+      this.isActiveParent = 0;
       this.tip = '';
       // this.$store.commit('setType', {typeArr: []});
       // this.$store.commit('setConfigInfo', {setConfigInfo: []});
-      // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
+      Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
     nextStep () {
       this.dataObjTwo[0].contentItemList = [];
-      let numberThree = [], numberLayerThree = [];
+      this.contentItemListOne = [];
+      let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
       for (let i in this.numberObjThree) {
         numberThree.push(this.numberObjThree[i]);
+      }
+      for (let i in this.numberObj) {
+        numberTwo.push(this.numberObj[i]);
+      }
+      for (let i in this.valueContentFour) {
+        numberFour.push(this.valueContentFour[i]);
       }
       for (let i in this.numberLayerObjThree) {
         numberLayerThree.push(this.numberLayerObjThree[i]);
       }
       let obj = JSON.parse(JSON.stringify(this.contentItemListThree)); // 改变一下该数组的内存地址，防止其他地方的改变影响现在的操作
+      let objTwo = JSON.parse(JSON.stringify(this.contentItemListTwo));
+      let objFour = JSON.parse(JSON.stringify(this.contentItemListFour));
       obj.map((items, index) => {
         let length;
         if (this.checkedLayerMerge === true) {
@@ -915,22 +786,54 @@ export default {
         const newArr = numberThree.slice(data, length * (index + 1));
         const newLayerArr = numberLayerThree.slice(data, length * (index + 1));
         items.contentSubItemList.map((item, idx) => {
-          item.valueContent = newArr[idx];
-          item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
+          if (item.isMerge !== true) {
+            item.valueContent = newArr[idx];
+            item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
+          }
+        });
+      });
+      objTwo.map((items, index) => {
+        let length;
+        if (this.checkedMerge === true) {
+          length = items.contentSubItemList.length - 1;
+        } else {
+          length = items.contentSubItemList.length;
+        }
+        const data = index * length;
+        const newArr = numberTwo.slice(data, length * (index + 1));
+        items.contentSubItemList.map((item, idx) => {
+          if (item.isMerge !== true) {
+            item.valueContent = newArr[idx];
+          }
+        });
+      });
+      objFour.map((items, index) => {
+        items.contentSubItemList.map((item, idx) => {
+          item.valueContent = numberFour[index];
         });
       });
       this.contentItemListThree = obj;
-      this.contentItemListTwo.map((item) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
+      this.contentItemListTwo = objTwo;
+      this.contentItemListFour = objFour;
+      this.contentItemListTwo.map((items, index) => {
+        if (items.itemName !== '') {
+          items.serialNumber = index + 1;
+          items.contentSubItemList.map((item, idx) => {
+            item.serialNumber = idx + 1;
+          });
+          this.dataObjTwo[0].contentItemList.push(items);
         }
       });
-      this.contentItemListThree.map((item, index) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
+      this.contentItemListThree.map((items, index) => {
+        if (items.itemName !== '') {
+          items.serialNumber = index + 1;
+          items.contentSubItemList.map((item, idx) => {
+            item.serialNumber = idx + 1;
+          });
+          this.dataObjTwo[0].contentItemList.push(items);
         }
       });
-      let data = {}, dataFour = {};
+      let data = {};
       for (let i in this.itemName) {
         if (this.percentValueOne[i] !== undefined) {
           data = {
@@ -979,80 +882,59 @@ export default {
         }
         this.contentItemListOne.push(data);
       }
-      for (let i in this.itemNameFour) {
-        if (this.percentValue[i] !== undefined) {
-          dataFour = {
-            itemName: this.itemNameFour[i],
-            serialNumber: ++this.indexValueFour,
-            plateAreaId: this.plateAreaId,
-            contentSubItemList: [
-              {
-                contentName: this.itemNameFour[i],
-                valueContent: this.valueContentFour[i] ? this.valueContentFour[i] : '',
-                valueUnit: this.valueUnitFour[i] ? this.valueUnitFour[i] : '',
-                graphicFieldFlag: false,
-                supernatantFieldFlag: false,
-                sumFlag: false,
-                serialNumber: 1,
-                contnetSubItemExtendList: []
-              },
-              {
-                contentName: '',
-                valueContent: this.percentValue[i] ? this.percentValue[i] : '',
-                valueUnit: '%',
-                graphicFieldFlag: false,
-                supernatantFieldFlag: false,
-                sumFlag: false,
-                serialNumber: 2,
-                contnetSubItemExtendList: []
-              }
-            ]
-          }
-        } else {
-          dataFour = {
-            itemName: this.itemNameFour[i],
-            serialNumber: ++this.indexValueFour,
-            plateAreaId: this.plateAreaId,
-            contentSubItemList: [{
-              contentName: this.itemNameFour[i],
-              valueContent: this.valueContentFour[i] ? this.valueContentFour[i] : '',
-              valueUnit: this.valueUnitFour[i] ? this.valueUnitFour[i] : '',
-              graphicFieldFlag: false,
-              supernatantFieldFlag: false,
-              sumFlag: false,
-              serialNumber: 1,
-              contnetSubItemExtendList: []
-            }]
-          }
-        }
-        this.contentItemListFour.push(dataFour);
-      }
       this.contentItemListOne.map((item) => {
         item.serialNumber = this.dataObjTwo[0].contentItemList.length + 1;
         if (item.itemName !== '') {
           this.dataObjTwo[0].contentItemList.push(item);
         }
       });
-      this.contentItemListFour.map((item) => {
-        item.serialNumber = this.dataObjTwo[0].contentItemList.length + 1;
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
+      this.contentItemListFour.map((items, index) => {
+        items.serialNumber = this.dataObjTwo[0].contentItemList.length + 1;
+        if (items.contentSubItemList.length > 1) {
+          items.contentSubItemList.map((item, idx) => {
+            if (item.serialNumber === 2) {
+              item.valueContent = this.percentValue[index];
+            }
+          });
+          if (this.percentValue[index] === '') {
+            this.contentItemListFour[index].contentSubItemList.splice(1, 1);
+          }
+        } else {
+          if (this.percentValue[index] !== '') {
+            const data = {
+              contentName: '',
+              valueContent: this.percentValue[index],
+              valueUnit: '%',
+              graphicFieldFlag: false,
+              supernatantFieldFlag: false,
+              sumFlag: false,
+              serialNumber: 2,
+              contnetSubItemExtendList: [],
+              isPercent: true
+            }
+            items.contentSubItemList.push(data);
+          }
+        }
+        if (items.itemName !== '') {
+          this.dataObjTwo[0].contentItemList.push(items);
         }
       });
       this.dataObjTwo[0].positionId = this.dataList.positionId;
       this.dataObjTwo[0].pageId = this.dataList.pageId;
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
+      this.dataObjTwo[0].plateId = this.dataList.plateId;
       if (this.dataObjTwo[0].contentItemList.length > 0) {
+        console.log(this.dataObjTwo)
         const params = {
           visPlates: this.dataObjTwo
         }
-        this.axios.post('/plateServices/plateBatch', params.visPlates)
+        this.axios.put('/plateServices/platesBatch', params.visPlates)
           .then((res) => {
             if (res) {
               if (res.data.length > 0) {
                 this.$message({
                   showClose: true,
-                  message: '添加板块成功',
+                  message: '修改板块成功',
                   type: 'success'
                 });
                 this.$store.commit('setProgressIndex', {progressIndex: 4});
@@ -1060,7 +942,7 @@ export default {
               } else {
                 this.$message({
                   showClose: true,
-                  message: '添加板块失败',
+                  message: '修改板块失败',
                   type: 'error'
                 });
               }
@@ -1110,8 +992,13 @@ export default {
           }
         }
       }
+      console.log(this.numberObj)
     },
     addparentDataThree (name, idx, maxNumber) { // 类型三添加主项
+      if (this.checkedLayerMerge === true) {
+        this.tip = '请先取消勾选浮层子项合计项';
+        return false;
+      }
       let arr = [];
       this.childDataListThree.map((item, index) => {
         if (item) {
@@ -1159,21 +1046,42 @@ export default {
         }
       }
     },
-    addChildDataListFour (name, unit, idx, maxNumber, sortNumber) { // 类型四添加项
-      let length = this.configCountFour + 1;
-      const configLength = this.$store.state.plateConfigInfo.length;
+    addChildDataListFour (name, unit, idx, maxNumber) { // 类型四添加项
       if (name || unit) {
-        if (sortNumber === 3) {
-          this.isActive3 = idx + 1;
-        } else if (sortNumber === 5) {
-          this.isActive5 = idx + 1;
-        }
-        if (this.configCountFour < maxNumber) {
-          for (let i = 0; i < configLength; i++) {
-            if (this.$store.state.plateConfigInfo[i].serialNumber === sortNumber) {
-              this.$store.state.plateConfigInfo[i].mainMinCount = length;
-            }
+        const length = this.childDataListFour.length;
+        if (length < maxNumber) {
+          const parentData = {
+            itemName: '',
+            plateAreaId: this.parentDataListFour[0].plateAreaId,
+            serialNumber: this.childDataListFour.length + 1
           }
+          const childData = {
+            contentName: '',
+            valueContent: '',
+            valueUnit: '',
+            serialNumber: 1,
+            graphicFieldFlag: false,
+            supernatantFieldFlag: false,
+            sumFlag: false
+          }
+          const value = {
+            itemName: '',
+            plateAreaId: this.parentDataListFour[0].plateAreaId,
+            serialNumber: this.childDataListFour.length + 1,
+            contentSubItemList: [{
+              contentName: '',
+              valueContent: '',
+              valueUnit: '',
+              serialNumber: 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: false,
+              sumFlag: false
+            }]
+          };
+          this.isActiveParent = idx + 1;
+          this.childDataListFour.push(childData);
+          this.parentDataListFour.push(parentData);
+          this.contentItemListFour.push(value);
         } else {
           this.tip = '项可添加条数已达到上线';
         }
@@ -1182,9 +1090,23 @@ export default {
       }
     },
     addContentListTwo (name, unit, index, maxNumber) { // 类型二的添加子项
+      let numTwo = {};
       if (name === '' && unit === '') {
         this.tip = '请填写信息';
       } else {
+        if (this.checkedMerge === true) {
+          this.checkedMerge = false; // 将浮层合并项的值设为false
+          this.childDataListTwo.splice(this.childDataListTwo.length - 1, 1);
+          this.contentItemListTwo.map((item) => {
+            item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
+          });
+        }
+        this.contentItemListTwo.map((items, index) => {
+          items.contentSubItemList.map((item, idx) => {
+            numTwo[index + '_' + idx] = item.valueContent;
+          });
+        });
+        this.numberObj = numTwo;
         if (this.childDataListTwo.length < maxNumber) {
           this.tip = '';
           const data = {
@@ -1198,13 +1120,6 @@ export default {
             contnetSubItemExtendList: [],
             isMerge: false
           }
-          if (this.checkedMerge === true) {
-            this.checkedMerge = false; // 将浮层合并项的值设为false
-            this.childDataListTwo.splice(this.childDataListTwo.length - 1, 1);
-            this.contentItemListTwo.map((item) => {
-              item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
-            });
-          }
           this.contentItemListTwo.map((item) => {
             item.contentSubItemList.push(data);
           });
@@ -1216,9 +1131,26 @@ export default {
       }
     },
     addContentListThree (name, unit, index, maxNumber) { // 类型三的添加子项
+      let numThree = {}, numLayerThree = {};
       if (name === '' && unit === '') {
         this.tip = '请填写信息';
       } else {
+        if (this.checkedLayerMerge === true) {
+          this.checkedLayerMerge = false; // 将浮层合并项的值设为false
+          this.childDataListThree.splice(this.childDataListThree.length - 1, 1);
+          this.layerDataListThree.splice(this.layerDataListThree.length - 1, 1);
+          this.contentItemListThree.map((item) => {
+            item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
+          });
+        }
+        this.contentItemListThree.map((items, index) => {
+          items.contentSubItemList.map((item, idx) => {
+            numThree[index + '_' + idx] = item.valueContent;
+            numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
+          });
+        });
+        this.numberLayerObjThree = numLayerThree;
+        this.numberObjThree = numThree;
         if (this.childDataListThree.length < maxNumber) {
           this.tip = '';
           const data = {
@@ -1255,14 +1187,6 @@ export default {
             serialNumber: this.layerDataListThree.length + 1,
             isMerge: false
           };
-          if (this.checkedLayerMerge === true) {
-            this.checkedLayerMerge = false; // 将浮层合并项的值设为false
-            this.childDataListThree.splice(this.childDataListThree.length - 1, 1);
-            this.layerDataListThree.splice(this.layerDataListThree.length - 1, 1);
-            this.contentItemListThree.map((item) => {
-              item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
-            });
-          }
           this.contentItemListThree.map((item) => {
             item.contentSubItemList.push(data);
           });
@@ -1275,13 +1199,21 @@ export default {
       }
     },
     deleteParentDataTwo (name, idx) { // 类型二的删除主项
+      console.log(this.value)
       this.parentDataListTwo.splice(idx, 1);
+      let numberTwo = {};
       this.contentItemListTwo.map((item, index) => {
         if (item.itemName === name) {
           this.contentItemListTwo.splice(index, 1);
         }
       });
       this.isActiveParent = this.parentDataListTwo.length - 1;
+      this.contentItemListTwo.map((items, index) => {
+        items.contentSubItemList.map((item, idx) => {
+          numberTwo[index + '_' + idx] = item.valueContent;
+        });
+      });
+      this.numberObj = numberTwo;
       if (this.value.length > 0) {
         for (let i = 0; i < this.value.length; i++) {
           if (this.value[i] !== undefined) {
@@ -1293,6 +1225,21 @@ export default {
           }
         }
       }
+      let itemNameObj = {}, valueContentObj = {}, valueUnitObj = {}, percentValueOneObj = {};
+      for (let i = 0; i < this.value.length; i++) {
+        if (this.value[i] !== undefined) {
+          this.parentDataListTwo.map((item, index) => {
+            itemNameObj[index + '_' + i] = this.itemName[index + '_' + i];
+            valueContentObj[index + '_' + i] = this.valueContent[index + '_' + i];
+            valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
+            percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
+          });
+        }
+      }
+      this.itemName = itemNameObj;
+      this.valueContent = valueContentObj;
+      this.valueUnit = valueUnitObj;
+      this.percentValueOne = percentValueOneObj;
     },
     deleteParentDataThree (name, idx) { // 类型三的删除主项
       this.parentDataListThree.splice(idx, 1);
@@ -1301,7 +1248,6 @@ export default {
           this.contentItemListThree.splice(index, 1);
         }
       });
-      console.log(this.contentItemListThree)
       this.isActiveParent = this.parentDataListThree.length - 1;
       if (this.value.length > 0) {
         for (let i = 0; i < this.value.length; i++) {
@@ -1314,20 +1260,46 @@ export default {
           }
         }
       }
-    },
-    deleteChildDataListFour (name, idx, sortNumber) { // 类型四的删除项
-      this.$store.state.plateConfigInfo.map((item) => {
-        if (item.serialNumber === sortNumber) {
-          --item.mainMinCount;
-          if (sortNumber === 3) {
-            this.isActive3 = item.mainMinCount - 1;
-          } else if (sortNumber === 5) {
-            this.isActive5 = item.mainMinCount - 1;
-          }
-        }
+      let numThree = {}, numLayerThree = {};
+      this.contentItemListThree.map((items, index) => {
+        items.contentSubItemList.map((item, idx) => {
+          numThree[index + '_' + idx] = item.valueContent;
+          numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
+        });
       });
+      this.numberLayerObjThree = numLayerThree;
+      this.numberObjThree = numThree;
+      let itemNameObj = {}, valueContentObj = {}, valueUnitObj = {}, percentValueOneObj = {};
+      for (let i = 0; i < this.value.length; i++) {
+        if (this.value[i] !== undefined) {
+          this.parentDataListThree.map((item, index) => {
+            itemNameObj[index + '_' + i] = this.itemName[index + '_' + i];
+            valueContentObj[index + '_' + i] = this.valueContent[index + '_' + i];
+            valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
+            percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
+          });
+        }
+      }
+      this.itemName = itemNameObj;
+      this.valueContent = valueContentObj;
+      this.valueUnit = valueUnitObj;
+      this.percentValueOne = percentValueOneObj;
+    },
+    deleteChildDataListFour (name, idx) { // 类型四的删除项
+      this.parentDataListFour.splice(idx, 1);
+      this.childDataListFour.splice(idx, 1);
+      let valueFour = {}, percentFour = {};
+      this.contentItemListFour.splice(idx, 1);
+      this.contentItemListFour.map((item, index) => {
+        valueFour[index] = item.contentSubItemList[0].valueContent;
+        percentFour[index] = item.contentSubItemList[1].valueContent;
+      });
+      this.valueContentFour = valueFour;
+      this.percentValue = percentFour;
+      this.isActiveParent = this.childDataListFour.length - 1;
     },
     deleteContentListTwo (name, idx) { // 类型二的删除子项
+      let numberTwo = [];
       this.childDataListTwo.splice(idx, 1);
       this.contentItemListTwo.map((items, index) => {
         items.contentSubItemList.map((item, num) => {
@@ -1336,7 +1308,17 @@ export default {
           }
         });
       });
-      this.isActiveChild = this.childDataListTwo.length - 1;
+      this.contentItemListTwo.map((items, index) => {
+        items.contentSubItemList.map((item, idx) => {
+          numberTwo[index + '_' + idx] = item.valueContent;
+        });
+      });
+      this.numberObj = numberTwo;
+      if (this.checkedMerge === true) {
+        this.isActiveChild = this.childDataListTwo.length - 2;
+      } else {
+        this.isActiveChild = this.childDataListTwo.length - 1;
+      }
     },
     deleteContentListThree (name, idx) { // 类型三的删除子项
       this.childDataListThree.splice(idx, 1);
@@ -1348,7 +1330,21 @@ export default {
           }
         });
       });
-      this.isActiveChild = this.childDataListThree.length - 1;
+      if (this.checkedLayerMerge === true) {
+        this.isActiveChild = this.childDataListThree.length - 2;
+      } else {
+        this.isActiveChild = this.childDataListThree.length - 1;
+      }
+      console.log(this.isActiveChild)
+      let numThree = {}, numLayerThree = {};
+      this.contentItemListThree.map((items, index) => {
+        items.contentSubItemList.map((item, idx) => {
+          numThree[index + '_' + idx] = item.valueContent;
+          numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
+        });
+      });
+      this.numberLayerObjThree = numLayerThree;
+      this.numberObjThree = numThree;
     },
     changeGrapFlag (value, index) { // 类型二的改变直接显示的switch
       this.childDataListTwo[index].graphicFieldFlag = value;
@@ -1386,22 +1382,23 @@ export default {
               if (this.numberObj[i + '_' + j] !== undefined) {
                 result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
               }
-              data = {
-                contentName: '',
-                valueContent: result,
-                valueUnit: this.childDataListTwo[0].valueUnit,
-                serialNumber: 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: false,
-                contnetSubItemExtendList: [],
-                isMerge: true
-              }
+            }
+            data = {
+              contentName: '',
+              valueContent: result,
+              valueUnit: this.childDataListTwo[0].valueUnit,
+              serialNumber: 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              contnetSubItemExtendList: [],
+              isMerge: true
             }
           }
           this.contentItemListTwo[i].contentSubItemList.push(data);
         }
         this.childDataListTwo.push(data);
+        console.log(this.childDataListTwo)
       } else {
         const childLength = this.childDataListTwo.length;
         this.childDataListTwo.splice(childLength - 1, 1);
@@ -1412,7 +1409,6 @@ export default {
       }
     },
     changeLayerMerge (value) { // 类型三的勾选浮层合并项
-      console.log(this.contentItemListThree)
       const parentLength = this.parentDataListThree.length; // 获取主项的长度
       const childLength = this.childDataListThree.length; // 获取子项的长度
       let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
@@ -1436,7 +1432,7 @@ export default {
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
             supernatantFieldFlag: true,
-            sumFlag: false,
+            sumFlag: true,
             isMerge: true
           };
           layerData = {
@@ -1453,7 +1449,7 @@ export default {
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
             supernatantFieldFlag: true,
-            sumFlag: false,
+            sumFlag: true,
             isMerge: true,
             contnetSubItemExtendList: [{
               contentName: '',
@@ -1468,20 +1464,28 @@ export default {
         this.childDataListThree.push(childData);
         this.layerDataListThree.push(layerData);
       } else {
+        let numThree = {}, numLayerThree = {};
         this.childDataListThree.splice(childLength - 1, 1);
         this.layerDataListThree.splice(childLength - 1, 1);
-        this.contentItemListThree.map((item) => {
+        this.contentItemListThree.map((item, index) => {
           item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
         });
+        this.contentItemListThree.map((items, index) => {
+          items.contentSubItemList.map((item, idx) => {
+            numThree[index + '_' + idx] = item.valueContent;
+            numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
+          });
+        });
+        this.numberLayerObjThree = numLayerThree;
+        this.numberObjThree = numThree;
       }
     },
     judgeUnit () { // 类型二的判断单位是否为空或不一样
       let valueArr = [];
       let result;
-      const valueUnit = document.getElementsByClassName('valueUnit'); // 获取子项所有的单位
-      for (let i = 0; i < valueUnit.length; i++) {
-        valueArr.push(valueUnit[i].value);
-      }
+      this.childDataListTwo.map((item) => {
+        valueArr.push(item.valueUnit);
+      });
       if (valueArr.indexOf('') === -1) {
         this.checkBoxTip = '';
         result = valueArr.every((value, index, valueArr) => {
@@ -1593,6 +1597,213 @@ export default {
           });
         }
       }
+    },
+    setInitialData () {
+      const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
+      const configId = this.$store.state.editPlateInfo.configId;
+      this.dataForm = {
+        plateName: this.$store.state.editPlateInfo.plateName,
+        remark: this.$store.state.editPlateInfo.remark
+      }
+      this.axios.get('/plateServices/areaInfos/' + configId + '')
+        .then((res) => {
+          if (res) {
+            let typeArr = [];
+            let oneType = [];
+            res.data.map((item, index) => {
+              oneType.push(item.configCount);
+              if (item.areaDataType !== 1 && item.areaDataType !== 4) {
+                typeArr.push(item);
+              }
+              if (areaDataList.length > 0) {
+                areaDataList.map((items, idx) => {
+                  if (items.areaDataType === item.areaDataType && items.serialNumber === item.serialNumber) {
+                    if (items.areaDataType === 1) {
+                      if (items.contentItemList.length > 0) {
+                        items.contentItemList.map((item, index) => {
+                          this.itemName[index + '_' + items.serialNumber] = item.itemName;
+                          if (item.contentSubItemList.length > 0) {
+                            item.contentSubItemList.map((value, idx) => {
+                              if (value.serialNumber === 1) {
+                                this.valueContent[index + '_' + items.serialNumber] = value.valueContent;
+                                this.valueUnit[index + '_' + items.serialNumber] = value.valueUnit;
+                              } else {
+                                this.percentValueOne[index + '_' + items.serialNumber] = value.valueContent;
+                              }
+                            });
+                          }
+                        });
+                      }
+                    } else if (items.areaDataType === 2) {
+                      let unitArr = [];
+                      if (items.contentItemList.length > 0) {
+                        let length;
+                        let parentArr = [];
+                        items.contentItemList.map((list, index) => {
+                          list.plateAreaId = items.plateAreaId;
+                          const data = {
+                            itemName: list.itemName,
+                            plateAreaId: items.plateAreaId,
+                            serialNumber: list.serialNumber
+                          }
+                          this.parentDataListTwo.push(data);
+                          if (list.contentSubItemList.length > 0) {
+                            length = list.contentSubItemList.length;
+                            list.contentSubItemList.map((value, idx) => {
+                              unitArr.push(value.valueUnit);
+                              const data = {
+                                contentName: value.contentName,
+                                valueContent: value.valueContent,
+                                valueUnit: value.valueUnit,
+                                serialNumber: value.serialNumber,
+                                graphicFieldFlag: value.graphicFieldFlag,
+                                supernatantFieldFlag: value.supernatantFieldFlag,
+                                sumFlag: value.sumFlag,
+                                isMerge: value.sumFlag,
+                                contnetSubItemExtendList: value.contnetSubItemExtendList
+                              }
+                              if (value.sumFlag === true) {
+                                console.log('99999')
+                                this.isCheckBox = true;
+                                this.checkedMerge = true;
+                              }
+                              this.childDataListTwo.push(data);
+                              let numObj = JSON.parse(JSON.stringify(this.numberObj));
+                              numObj[index + '_' + idx] = value.valueContent;
+                              this.numberObj = numObj;
+                            });
+                          }
+                          this.parentDataListTwo.concat(parentArr);
+                        });
+                        this.contentItemListTwo = JSON.parse(JSON.stringify(items.contentItemList));
+                        const newData = this.childDataListTwo.slice(0, length);
+                        this.childDataListTwo = JSON.parse(JSON.stringify(newData));
+                        if (this.checkedMerge === true) {
+                          this.isActiveChild = this.childDataListTwo.length - 2;
+                        } else {
+                          this.isActiveChild = this.childDataListTwo.length - 1;
+                        }
+                        this.isActiveParent = this.parentDataListTwo.length - 1;
+                      }
+                      const length = unitArr.length;
+                      const result = unitArr.every((value, index, unitArr) => {
+                        return value === unitArr[length - 1];
+                      });
+                      console.log(result)
+                      if (result === false) {
+                        console.log('assaassa')
+                        this.isCheckBox = false;
+                        this.checkedMerge = false;
+                        this.checkBoxTip = '单位不一致';
+                      }
+                      console.log(this.isCheckBox)
+                    } else if (items.areaDataType === 3) {
+                      if (items.contentItemList.length > 0) {
+                        let length;
+                        let parentArr = [];
+                        items.contentItemList.map((list, index) => {
+                          list.plateAreaId = items.plateAreaId;
+                          const data = {
+                            itemName: list.itemName,
+                            plateAreaId: items.plateAreaId,
+                            serialNumber: list.serialNumber
+                          }
+                          this.parentDataListThree.push(data);
+                          if (list.contentSubItemList.length > 0) {
+                            length = list.contentSubItemList.length;
+                            list.contentSubItemList.map((value, idx) => {
+                              const data = {
+                                contentName: value.contentName,
+                                valueContent: value.valueContent,
+                                valueUnit: value.valueUnit,
+                                serialNumber: value.serialNumber,
+                                graphicFieldFlag: value.graphicFieldFlag,
+                                supernatantFieldFlag: value.supernatantFieldFlag,
+                                sumFlag: value.sumFlag,
+                                isMerge: value.sumFlag,
+                                contnetSubItemExtendList: []
+                              }
+                              if (value.sumFlag === true) {
+                                this.checkBoxThree = true;
+                                this.checkedLayerMerge = true;
+                              }
+                              this.childDataListThree.push(data);
+                              this.numberObjThree[index + '_' + idx] = value.valueContent;
+                              if (value.contnetSubItemExtendList.length > 0) {
+                                const layerData = {
+                                  contentName: value.contnetSubItemExtendList[0].contentName,
+                                  valueContent: value.contnetSubItemExtendList[0].valueContent,
+                                  valueUnit: value.contnetSubItemExtendList[0].valueUnit,
+                                  serialNumber: value.contnetSubItemExtendList[0].serialNumber,
+                                  isMerge: value.sumFlag
+                                };
+                                this.layerDataListThree.push(layerData);
+                                this.numberLayerObjThree[index + '_' + idx] = value.contnetSubItemExtendList[0].valueContent;
+                              }
+                            });
+                          }
+                          this.parentDataListThree.concat(parentArr);
+                        });
+                        this.contentItemListThree = JSON.parse(JSON.stringify(items.contentItemList));
+                        const newData = this.childDataListThree.slice(0, length);
+                        const newLayerData = this.layerDataListThree.slice(0, length);
+                        this.childDataListThree = JSON.parse(JSON.stringify(newData));
+                        this.layerDataListThree = JSON.parse(JSON.stringify(newLayerData));
+                        if (this.checkedLayerMerge === true) {
+                          this.isActiveChild = this.childDataListThree.length - 2;
+                        } else {
+                          this.isActiveChild = this.childDataListThree.length - 1;
+                        }
+                        this.isActiveParent = this.parentDataListThree.length - 1;
+                      }
+                    } else if (items.areaDataType === 4) {
+                      if (items.contentItemList.length > 0) {
+                        let length;
+                        let parentArr = [];
+                        let childData;
+                        items.contentItemList.map((list, index) => {
+                          list.plateAreaId = items.plateAreaId;
+                          const data = {
+                            itemName: list.itemName,
+                            plateAreaId: items.plateAreaId,
+                            serialNumber: list.serialNumber
+                          }
+                          this.parentDataListFour.push(data);
+                          if (list.contentSubItemList.length > 0) {
+                            length = list.contentSubItemList.length;
+                            list.contentSubItemList.map((value, idx) => {
+                              if (value.serialNumber === 2) {
+                                this.percentValue[index] = value.valueContent;
+                              } else {
+                                childData = {
+                                  contentName: value.contentName,
+                                  valueContent: value.valueContent,
+                                  valueUnit: value.valueUnit,
+                                  serialNumber: value.serialNumber,
+                                  graphicFieldFlag: value.graphicFieldFlag,
+                                  supernatantFieldFlag: value.supernatantFieldFlag,
+                                  sumFlag: value.sumFlag
+                                }
+                                this.valueContentFour[index] = value.valueContent;
+                              }
+                            });
+                          }
+                          this.childDataListFour.push(childData);
+                        });
+                        this.contentItemListFour = JSON.parse(JSON.stringify(items.contentItemList));
+                        this.isActiveParent = this.parentDataListFour.length - 1;
+                      }
+                    }
+                  }
+                });
+              }
+            });
+            this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
+            this.$store.commit('setType', {typeArr: typeArr});
+            this.$store.commit('setOneType', {oneType: oneType});
+          }
+        })
+        .catch(() => {});
     }
   }
 }
