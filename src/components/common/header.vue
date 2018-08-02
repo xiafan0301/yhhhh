@@ -134,7 +134,7 @@ export default {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = '正在退出...';
             // ajax
-            _this.axios.post('/authServices/logOut', []).then(function (res) {
+            _this.axios.delete('/authServices/logOut', []).then(function (res) {
               if (res) {
               }
               instance.confirmButtonText = '确定';
