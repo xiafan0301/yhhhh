@@ -36,15 +36,15 @@
         <template v-if='this.$store.state.styleType === 1'>
           <div is='plateRelationEdit' @setDataList="getData"></div>
           <template v-if="this.$store.state.plateInfo.configId === 'de096a27-4896-41f7-95c2-990d5594fcc3'">
-            <div is='dischargeAdd' :dataList='dataList'></div>
+            <div is='dischargeEdit' :dataList='dataList'></div>
           </template>
           <template v-else>
-            <div is='fillDataAdd' :dataList='dataList'></div>
+            <div is='fillDataEdit' :dataList='dataList'></div>
           </template>
         </template>
         <template v-else-if='this.$store.state.styleType === 2'>
-          <div is='plateRelationMap' @getMapDataList='getMapDataList'></div>
-          <div is='fillDataMap' :mapDataList='mapDataList'></div>
+          <!-- <div is='plateRMapEdit' @getMapDataList='getMapDataList'></div> -->
+          <div is='fillDataMapEdit' :mapDataList='mapDataList'></div>
         </template>
       </div>
     </div>
@@ -52,14 +52,15 @@
 </template>
 <script>
 import store from '../../../../store/store.js';
-import fillDataAdd from './fillDataAdd.vue';
+import fillDataEdit from './fillDataEdit.vue';
 import selStyle from './selStyle.vue';
 import plateRelationEdit from './plateRelationEdit.vue';
-import fillDataMap from './fillDataMap.vue';
-import plateRelationMap from './plateRelationMap.vue';
+import fillDataMapEdit from './fillDataMapEdit.vue';
+import plateRMapEdit from './plateRMapEdit.vue';
 import dischargeAdd from './dischargeAdd.vue';
+import dischargeEdit from './dischargeEdit.vue';
 export default {
-  components: {fillDataAdd, selStyle, dischargeAdd, plateRelationEdit, plateRelationMap, fillDataMap},
+  components: {fillDataEdit, selStyle, dischargeAdd, dischargeEdit, plateRelationEdit, plateRMapEdit, fillDataMapEdit},
   data () {
     return {
       dataList: {},

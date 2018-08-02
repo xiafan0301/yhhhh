@@ -106,7 +106,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive1 === index ? 'active' : 'unactive']"
                       @click="addDataListOne(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -153,7 +153,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive2 === index ? 'active' : 'unactive']"
                       @click="addDataListTwo(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -200,7 +200,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive3 === index ? 'active' : 'unactive']"
                       @click="addDataListThree(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -247,7 +247,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive4 === index ? 'active' : 'unactive']"
                       @click="addDataListFour(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -263,7 +263,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -275,7 +275,10 @@ export default {
   data () {
     return {
       tip: '',
-      isActive: 0,
+      isActive1: 0,
+      isActive2: 0,
+      isActive3: 0,
+      isActive4: 0,
       isChanged: 1,
       relationValue1: '',
       relationValue2: '',
@@ -289,9 +292,9 @@ export default {
       displayType2: '',
       displayType3: '',
       displayType4: '',
-      isDisabled4: true,
-      isDisabled3: true,
-      isDisabled2: true,
+      isDisabled4: false,
+      isDisabled3: false,
+      isDisabled2: false,
       positionList: [],
       mapTypeList1: [], // 位置1地图应用类型列表
       mapTypeList2: [], // 位置2地图应用类型列表
@@ -301,84 +304,12 @@ export default {
       dataList2: [], // 位置2的表格数据
       dataList3: [], // 位置3的表格数据
       dataList4: [], // 位置4的表格数据
-      positionIdList: []
-    }
-  },
-  watch: {
-    mapDataList (newVal) {
-      this.mapDataList = Object.assign(this.mapDataList, newVal);
-      if (this.mapDataList.length > 0) {
-        this.mapDataList.map((item, index) => {
-          const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
-          if (serialNumber === 31) {
-            this.relationValue1 = item.plateName;
-            this.isDisabled2 = false;
-          } else if (serialNumber === 32) {
-            this.relationValue2 = item.plateName;
-            this.isDisabled3 = false;
-          } else if (serialNumber === 33) {
-            this.relationValue3 = item.plateName;
-            this.isDisabled4 = false;
-          } else if (serialNumber === 34) {
-            this.relationValue4 = item.plateName;
-          }
-          if (item.areaInfoList) {
-            if (item.areaInfoList[0].contentItemList.length > 0) {
-              item.areaInfoList[0].contentItemList.map((item, idx) => {
-                const data = {
-                  name: item.itemName,
-                  value: item.contentSubItemList[0].valueContent,
-                  unit: item.contentSubItemList[0].valueUnit
-                }
-                if (serialNumber === 31) {
-                  this.dataList1.push(data);
-                } else if (serialNumber === 32) {
-                  this.dataList2.push(data);
-                } else if (serialNumber === 33) {
-                  this.dataList3.push(data);
-                } else if (serialNumber === 34) {
-                  this.dataList4.push(data);
-                }
-              });
-            }
-          }
-        });
-      } else {
-        this.relationValue1 = '';
-        this.relationValue2 = '';
-        this.relationValue3 = '';
-        this.relationValue4 = '';
-        this.dataList1 = [];
-        this.dataList2 = [];
-        this.dataList3 = [];
-        this.dataList4 = [];
-      }
+      positionIdList: [],
+      dataList: []
     }
   },
   mounted () {
-    this.axios.get('/mapServices/dataTypes')
-      .then((res) => {
-        if (res) {
-          this.mapTypeList1 = res.data;
-          this.mapTypeList2 = res.data;
-          this.mapTypeList3 = res.data;
-          this.mapTypeList4 = res.data;
-        }
-      })
-      .catch(() => {})
-    this.axios.get('/plateServices/positions')
-      .then((res) => {
-        if (res) {
-          if (res.data.length > 0) {
-            res.data.map((item) => {
-              if (item.serialNumber.toString().substr(0, 1) === '3') {
-                this.positionIdList.push(item);
-              }
-            });
-          }
-        }
-      })
-      .catch(() => {})
+    this.setInitialData();
   },
   methods: {
     handleClick (index) {
@@ -390,24 +321,42 @@ export default {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
     },
     nextStep () {
-      let totalDataList = [], plateId1 = '', plateId2 = '', plateId3 = '', plateId4 = '';
-      if (this.$store.state.mapPageDataList.length > 0) {
-        if (this.$store.state.mapPageDataList[0] !== undefined) {
-          plateId1 = this.$store.state.mapPageDataList[0].plateId;
-        }
-        if (this.$store.state.mapPageDataList[1] !== undefined) {
-          plateId2 = this.$store.state.mapPageDataList[1].plateId;
-        }
-        if (this.$store.state.mapPageDataList[2] !== undefined) {
-          plateId3 = this.$store.state.mapPageDataList[2].plateId;
-        }
-        if (this.$store.state.mapPageDataList[3] !== undefined) {
-          plateId4 = this.$store.state.mapPageDataList[3].plateId;
-        }
+      let totalDataList = [],
+        plateAreaId = '',
+        plateId1 = '',
+        plateId2 = '',
+        plateId3 = '',
+        plateId4 = '',
+        pageId = '',
+        configId = '';
+      if (this.dataList.length > 0) {
+        this.dataList.map((item, index) => {
+          const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
+          pageId = item.visPagePlate.pageId;
+          configId = item.configId;
+          plateAreaId = item.areaInfoList[0].plateAreaId;
+          if (serialNumber === 31) {
+            plateId1 = item.plateId;
+            this.displayType1 = item.displayType;
+            this.typeId1 = item.typeId;
+          } else if (serialNumber === 32) {
+            plateId2 = item.plateId;
+            this.displayType2 = item.displayType;
+            this.typeId2 = item.typeId;
+          } else if (serialNumber === 33) {
+            plateId3 = item.plateId;
+            this.displayType3 = item.displayType;
+            this.typeId3 = item.typeId;
+          } else if (serialNumber === 34) {
+            plateId4 = item.plateId;
+            this.displayType4 = item.displayType;
+            this.typeId4 = item.typeId;
+          }
+        });
       }
       let dataArrOne = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
+        pageId: pageId,
+        configId: configId,
         plateName: this.relationValue1,
         remark: '',
         plateType: 2,
@@ -419,8 +368,8 @@ export default {
         contentItemList: []
       };
       let dataArrTwo = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
+        pageId: pageId,
+        configId: configId,
         plateName: this.relationValue2,
         remark: '',
         plateType: 2,
@@ -432,27 +381,27 @@ export default {
         contentItemList: []
       };
       let dataArrThree = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
+        pageId: pageId,
+        configId: configId,
         plateName: this.relationValue3,
         remark: '',
+        plateType: 2,
+        plateId: plateId3,
         positionId: this.positionIdList[2].positionId,
         jumpPageId: '',
-        plateId: plateId3,
-        plateType: 2,
         displayType: this.displayType3,
         typeId: this.typeId3,
         contentItemList: []
       };
       let dataArrFour = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
+        pageId: pageId,
+        configId: configId,
         plateName: this.relationValue4,
-        plateId: plateId4,
         remark: '',
+        plateType: 2,
+        plateId: plateId4,
         positionId: this.positionIdList[3].positionId,
         jumpPageId: '',
-        plateType: 2,
         displayType: this.displayType4,
         typeId: this.typeId4,
         contentItemList: []
@@ -461,7 +410,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+            plateAreaId: plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -481,7 +430,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+            plateAreaId: plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -501,7 +450,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+            plateAreaId: plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -521,7 +470,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+            plateAreaId: plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -552,13 +501,14 @@ export default {
       const params = {
         visPlates: totalDataList
       }
+      // console.log(totalDataList)
       this.axios.put('/plateServices/platesBatch', params.visPlates)
         .then((res) => {
           if (res) {
             if (res.data.length > 0) {
               this.$message({
                 showClose: true,
-                message: '添加板块成功',
+                message: '修改板块成功',
                 type: 'success'
               });
               this.$router.push({name: 'plate-list'});
@@ -566,7 +516,7 @@ export default {
             } else {
               this.$message({
                 showClose: true,
-                message: '添加板块失败',
+                message: '修改板块失败',
                 type: 'error'
               });
             }
@@ -701,7 +651,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive1 = index + 1;
         this.dataList1.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -713,7 +663,7 @@ export default {
           this.dataList1.splice(index, 1);
         }
       });
-      this.isActive = this.dataList1.length - 1;
+      this.isActive1 = this.dataList1.length - 1;
     },
     addDataListTwo (name, value, unit, index) { // 位置2的添加一行
       if (name || value || unit) {
@@ -723,7 +673,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive2 = index + 1;
         this.dataList2.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -735,7 +685,7 @@ export default {
           this.dataList2.splice(index, 1);
         }
       });
-      this.isActive = this.dataList2.length - 1;
+      this.isActive2 = this.dataList2.length - 1;
     },
     addDataListThree (name, value, unit, index) { // 位置3的添加一行
       if (name || value || unit) {
@@ -745,7 +695,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive3 = index + 1;
         this.dataList3.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -757,7 +707,7 @@ export default {
           this.dataList3.splice(index, 1);
         }
       });
-      this.isActive = this.dataList3.length - 1;
+      this.isActive3 = this.dataList3.length - 1;
     },
     addDataListFour (name, value, unit, index) { // 位置4的添加一行
       if (name || value || unit) {
@@ -767,7 +717,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive4 = index + 1;
         this.dataList4.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -779,7 +729,97 @@ export default {
           this.dataList4.splice(index, 1);
         }
       });
-      this.isActive = this.dataList4.length - 1;
+      this.isActive4 = this.dataList4.length - 1;
+    },
+    setInitialData () { // 设置初始化数据
+      const pageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
+      this.axios.get('/plateServices/managers/byPageId/' + pageId + '')
+        .then((res) => {
+          console.log(res)
+          if (res && res.data) {
+            this.dataList = res.data;
+            res.data.map((item, index) => {
+              const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
+              const plateName = item.plateName;
+              if (serialNumber === 31) {
+                this.relationValue1 = plateName;
+                this.isChanged = 1;
+              } else if (serialNumber === 32) {
+                this.relationValue2 = plateName;
+                this.isChanged = 2;
+              } else if (serialNumber === 33) {
+                this.relationValue3 = plateName;
+                this.isChanged = 3;
+              } else if (serialNumber === 34) {
+                this.relationValue4 = plateName;
+                this.isChanged = 4;
+              }
+              if (item.areaInfoList) {
+                if (item.areaInfoList[0].contentItemList.length > 0) {
+                  item.areaInfoList[0].contentItemList.map((item, idx) => {
+                    if (serialNumber === 31) {
+                      const data = {
+                        name: item.itemName,
+                        value: item.contentSubItemList[0].valueContent,
+                        unit: item.contentSubItemList[0].valueUnit
+                      }
+                      this.dataList1.push(data);
+                      this.isActive1 = item.contentSubItemList.length - 1;
+                    } else if (serialNumber === 32) {
+                      const data = {
+                        name: item.itemName,
+                        value: item.contentSubItemList[0].valueContent,
+                        unit: item.contentSubItemList[0].valueUnit
+                      }
+                      this.dataList2.push(data);
+                      this.isActive2 = item.contentSubItemList.length - 1;
+                    } else if (serialNumber === 33) {
+                      const data = {
+                        name: item.itemName,
+                        value: item.contentSubItemList[0].valueContent,
+                        unit: item.contentSubItemList[0].valueUnit
+                      }
+                      this.dataList3.push(data);
+                      this.isActive3 = item.contentSubItemList.length - 1;
+                    } else if (serialNumber === 34) {
+                      const data = {
+                        name: item.itemName,
+                        value: item.contentSubItemList[0].valueContent,
+                        unit: item.contentSubItemList[0].valueUnit
+                      }
+                      this.dataList4.push(data);
+                      this.isActive4 = item.contentSubItemList.length - 1;
+                    }
+                  });
+                }
+              }
+            });
+          }
+        })
+        .catch(() => {});
+      this.axios.get('/mapServices/dataTypes')
+        .then((res) => {
+          if (res) {
+            this.mapTypeList1 = res.data;
+            this.mapTypeList2 = res.data;
+            this.mapTypeList3 = res.data;
+            this.mapTypeList4 = res.data;
+          }
+        })
+        .catch(() => {})
+      this.axios.get('/plateServices/positions')
+        .then((res) => {
+          if (res) {
+            if (res.data.length > 0) {
+              res.data.map((item) => {
+                if (item.serialNumber.toString().substr(0, 1) === '3') {
+                  this.positionIdList.push(item);
+                }
+              });
+            }
+          }
+        })
+        .catch(() => {})
     }
   }
 }

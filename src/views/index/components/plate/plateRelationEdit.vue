@@ -16,7 +16,7 @@
           </el-option>
         </el-select>
       </div>
-      <span class='advice'>*{{tips}}</span>
+      <span class='advice'>{{tips}}</span>
       <div class="page-right">
         <span>跳转页面</span>
         <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
@@ -40,8 +40,22 @@
               <div class="grid-content bg-purple"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
-                <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
-                <i class='el-icon-circle-close close-icon' @click='againSelect(item.id)' v-show='item.finishChecked === true'></i>
+                <template v-if='isSerialNumber === 0'>
+                  <button
+                    class="map-button"
+                    disabled
+                  >
+                    {{item.name}}
+                  </button>
+                </template>
+                <template v-else>
+                  <button
+                    class="map-button"
+                    @click='selectPosition(item.id)'>
+                    {{item.name}}
+                  </button>
+                </template>
+                <i class='el-icon-circle-close close-icon' @click='againSelect(item.id)' v-show='item.finishChecked === true || item.isSerialNumber === true'></i>
               </div>
             </template>
             <template v-else>
@@ -67,8 +81,9 @@ export default {
   data () {
     return {
       relationValue: '',
-      btnDisabled: true,
-      tips: '请选择关联页面',
+      btnDisabled: false,
+      tips: '',
+      isSerialNumber: 0,
       positionObj:
       [
         {
@@ -106,7 +121,8 @@ export default {
       newDataList: {
         pageId: '',
         positionId: '',
-        jumpPageId: ''
+        jumpPageId: '',
+        plateId: ''
       },
       ltId: '',
       rtId: '',
@@ -117,49 +133,7 @@ export default {
     }
   },
   mounted () {
-    const params = {
-      pageNum: -1
-    }
-    this.axios.get('/pageServices/pages', {params})
-      .then((res) => {
-        if (res) {
-          this.relationPageList = res.data.list;
-          this.skipPausePageList = res.data.list;
-        }
-      })
-      .catch(() => {});
-    this.axios.get('/plateServices/positions')
-      .then((res) => {
-        if (res) {
-          if (res.data.length > 0) {
-            res.data.map((item, index) => {
-              switch (item.serialNumber) {
-                case 11:
-                  this.ltId = item.positionId;
-                  break;
-                case 12:
-                  this.lcId = item.positionId;
-                  break;
-                case 13:
-                  this.lbId = item.positionId;
-                  break;
-                case 21:
-                  this.rtId = item.positionId;
-                  break;
-                case 22:
-                  this.rcId = item.positionId;
-                  break;
-                case 23:
-                  this.rbId = item.positionId;
-                  break;
-                default:
-                  break;
-              }
-            });
-          }
-        }
-      })
-      .catch(() => {});
+    this.setInitialData();
   },
   methods: {
     preStep () { // 上一步
@@ -243,10 +217,10 @@ export default {
               return item.isChecked !== true;
             });
             if (data.length > 0) {
-              this.tips = '点击选择要展示的位置按钮';
+              this.tips = '*点击选择要展示的位置按钮';
               this.btnDisabled = true;
             } else {
-              this.tips = '该页面所有位置已经被占，请重新选择';
+              this.tips = '*该页面所有位置已经被占，请重新选择';
               this.btnDisabled = true;
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
@@ -258,10 +232,12 @@ export default {
     selectPosition (num) { // 选择位置
       this.tips = '';
       this.btnDisabled = false;
+      const plateName = this.$store.state.editPlateInfo.plateName;
       this.positionObj.map((item, index) => {
         if (item.id === num) {
-          item = Object.assign(item, {finishChecked: true});
-          this.tips = '展示成功，点击下一步';
+          item.name = plateName;
+          item.finishChecked = true;
+          this.tips = '*展示成功，点击下一步';
           this.btnDisabled = false;
         } else if (item.isChecked !== true) {
           item.canChecked = false;
@@ -293,14 +269,119 @@ export default {
     },
     againSelect (num) { // 重新选择位置
       this.positionObj.map((item, index) => {
-        if (item.isChecked === false) {
-          item.canChecked = true;
+        item.canChecked = true;
+        if (item.id === num) {
+          item.name = '展示到该位置';
+          item.isSerialNumber = false;
           item.finishChecked = false;
+          item.isChecked = false;
         }
       });
-      this.tips = '点击选择要展示的位置按钮';
+      this.tips = '*点击选择要展示的位置按钮';
       this.btnDisabled = true;
+      this.isSerialNumber = 1;
       this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+    },
+    setInitialData () { // 设置初始化数据
+      const params = {
+        pageNum: -1
+      }
+      const pageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
+      const jumpPageId = this.$store.state.editPlateInfo.visPagePlate.jumpPageId;
+      const positionId = this.$store.state.editPlateInfo.visPagePlate.positionId;
+      const plateId = this.$store.state.editPlateInfo.plateId;
+      this.newDataList = {
+        jumpPageId: jumpPageId,
+        pageId: pageId,
+        positionId: positionId,
+        plateId: plateId
+      }
+      this.axios.get('/pageServices/pages', {params})
+        .then((res) => {
+          if (res && res.data.list) {
+            res.data.list.map((item) => {
+              if (item.pageId === pageId) {
+                this.relationValue = item.pageName;
+              } else if (item.pageId === jumpPageId) {
+                this.skipValue = item.pageName;
+              }
+            });
+            this.relationPageList = res.data.list;
+            this.skipPausePageList = res.data.list;
+          }
+        })
+        .catch(() => {});
+      this.axios.get('/pageServices/pages/' + pageId + '')
+        .then((res) => {
+          if (res) {
+            this.plateList = res.data.plateList;
+            if (res.data.plateList.length > 0) {
+              res.data.plateList.forEach((items, index) => {
+                this.positionObj.forEach((item, idx) => {
+                  item.canChecked = true;
+                  if (items.serialNumber === item.id) {
+                    item.isChecked = true;
+                    item.name = items.plateName;
+                  }
+                });
+              });
+            } else {
+              this.positionObj.forEach((item, index) => {
+                item.canChecked = true;
+              });
+            }
+            const data = this.positionObj.filter((item) => {
+              return item.isChecked !== true;
+            });
+            if (data.length > 0) {
+              const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
+              this.positionObj.map((item) => {
+                if (item.id === serialNumber) {
+                  item.isSerialNumber = true;
+                }
+              });
+              this.tips = '*点击选择要修改的位置按钮';
+              this.btnDisabled = false;
+            } else {
+              this.tips = '*该页面其他位置已经被占，不能更换位置';
+              this.btnDisabled = false;
+            }
+            this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+          }
+        })
+        .catch(() => {});
+      this.axios.get('/plateServices/positions')
+        .then((res) => {
+          if (res) {
+            if (res.data.length > 0) {
+              res.data.map((item, index) => {
+                switch (item.serialNumber) {
+                  case 11:
+                    this.ltId = item.positionId;
+                    break;
+                  case 12:
+                    this.lcId = item.positionId;
+                    break;
+                  case 13:
+                    this.lbId = item.positionId;
+                    break;
+                  case 21:
+                    this.rtId = item.positionId;
+                    break;
+                  case 22:
+                    this.rcId = item.positionId;
+                    break;
+                  case 23:
+                    this.rbId = item.positionId;
+                    break;
+                  default:
+                    break;
+                }
+              });
+            }
+          }
+        })
+        .catch(() => {});
     }
   }
 }
