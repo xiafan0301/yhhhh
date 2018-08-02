@@ -140,12 +140,14 @@ export default {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              window.location.href = './index.html#/login';
+              // window.location.href = './index.html#/login';
+              // window.location.reload();
+              _this.$router.push({name: 'login'});
             }).catch(function () {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              window.location.href = './index.html#/login';
+              _this.$router.push({name: 'login'});
             });
           } else {
             done();

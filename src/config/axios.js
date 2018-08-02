@@ -37,6 +37,7 @@ axios.interceptors.response.use(function (response) {
       // 未登录
       msg = '登录已过期，请重新登录！';
       window.location.href = './index.html#/login';
+      window.location.reload();
     } else {
       msg = '访问出错';
       if (_data.viewMsg) {
