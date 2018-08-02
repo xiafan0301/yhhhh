@@ -23,7 +23,7 @@
         <template slot-scope="scope">
           <el-button type="text">修改</el-button>
           <!-- <el-button type="text" :disabled="scope.$index == 0">删除</el-button> -->
-          <el-button type="text">删除</el-button>
+          <el-button class="vis-bg-del-btn" type="text">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,9 +32,9 @@
         @size-change="pagerSizeChange"
         @current-change="pagerCurrChange"
         :current-page="pager.pageNum"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="[5, 10, 20, 50, 100]"
         :page-size="pager.pageSize"
-        layout="total, prev, pager, next, sizes, jumper"
+        layout="total, sizes, prev, pager, next, jumper"
         :total="pager.total">
       </el-pagination>
     </div>
