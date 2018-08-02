@@ -15,15 +15,15 @@
             <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
           </el-form-item>
         </el-form>
-        <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
+        <div v-for="(info, index) in plateInfoList" :key="'info'+index">
           <span v-show='false'>{{dataObjTwo[0].configId=info.configId}}</span>
           <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
           <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
-          <span v-show='false'>{{plateAreaId[info.serialNumber] = info.plateAreaId}}</span>
           <template v-if="info.areaDataType === 1">
             <div style="margin-top:3%;">
               <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
               <span v-show='false'>{{configCount = info.configCount}}</span>
+              <span v-show='false'>{{plateAreaId = info.plateAreaId}}</span>
               <div class="ecl2-cr-list">
                 <table class="plate-table" style="width: 100%;">
                   <thead>
@@ -54,6 +54,7 @@
             <template v-if="info.areaDataType === 4">
               <div style="margin-top:5%;">
                 <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{plateAreaId = info.plateAreaId}}</span>
                 <span v-show='false'>{{configCountFour = info.mainMinCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
@@ -65,47 +66,49 @@
                       <th>操作</th>
                     </tr>
                     </thead>
-                    <tbody>
-                      <tr v-for="(item, index) in info.mainMinCount" :key="'item'+index">
-                        <td>
-                          <input type="text" v-model="itemNameFour[index + '_' + info.serialNumber]" placeholder='请填写'>
-                        </td>
-                        <td>
-                          <input type="text" v-model="valueUnitFour[index + '_' + info.serialNumber]" placeholder='请填写'>
-                        </td>
-                        <td width='15%'>
-                          <template v-if="info.mainMinCount > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
-                              @click="deleteChildDataListFour(itemNameFour[index + '_' + info.serialNumber], index, info.serialNumber)"
-                              title="删除此项"
-                            >
-                            </i>
-                          </template>
-                          <template v-if='info.serialNumber === 3'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive3 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
-                          <template v-else-if='info.serialNumber === 5'>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive5 === index ? 'active' : 'unactive']"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                              title="新增项"
-                            >
-                            </i>
-                          </template>
-                        </td>
-                      </tr>
-                    </tbody>
+                    <template v-if ='info.serialNumber === 3'>
+                      <tbody>
+                        <tr v-for="(item, index) in parentDataFour3" :key="'item'+index">
+                          <td>
+                            <input type="text" v-model="item.itemName" placeholder='请填写'>
+                          </td>
+                          <td>
+                            <input type="text" v-model="childDataFour3[index].valueUnit" placeholder='请填写'>
+                          </td>
+                          <td width='15%'>
+                            <template v-if="info.mainMinCount > 1">
+                              <i
+                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
+                                class="active el-icon-remove-outline"
+                                @click="deleteChildDataListFour(itemNameFour[index + '_' + info.serialNumber], index, info.serialNumber)"
+                                title="删除此项"
+                              >
+                              </i>
+                            </template>
+                            <template v-if='info.serialNumber === 3'>
+                              <i
+                                style="font-size: 25px; cursor: pointer;  color: #0785FD;"
+                                class="el-icon-circle-plus-outline"
+                                :class="[isActive3 === index ? 'active' : 'unactive']"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                                title="新增项"
+                              >
+                              </i>
+                            </template>
+                            <template v-else-if='info.serialNumber === 5'>
+                              <i
+                                style="font-size: 25px; cursor: pointer;  color: #0785FD;"
+                                class="el-icon-circle-plus-outline"
+                                :class="[isActive5 === index ? 'active' : 'unactive']"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                                title="新增项"
+                              >
+                              </i>
+                            </template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
                   </table>
                 </div>
                 <div class="ecl2-cr-list" style="margin-top: 40px;">
@@ -118,13 +121,24 @@
                       <th>同比值(%)</th>
                     </tr>
                     </thead>
-                    <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
-                      <tr>
-                        <td>{{itemNameFour[index + '_' + info.serialNumber]}}</td>
-                        <td><input type="text" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                      </tr>
-                    </tbody>
+                    <template v-if ='info.serialNumber === 3'>
+                      <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
+                        <tr>
+                          <td>{{allItemNameFour3[index]}}</td>
+                          <td><input type="text" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        </tr>
+                      </tbody>
+                    </template>
+                    <template v-if ='info.serialNumber === 5'>
+                      <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
+                        <tr>
+                          <td>{{allItemNameFour5[index]}}</td>
+                          <td><input type="text" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        </tr>
+                      </tbody>
+                    </template>
                   </table>
                 </div>
               </div>
@@ -149,8 +163,9 @@ export default {
     return {
       typeArr: [],
       configCount: 0,
+      plateInfoList: [],
       configCountFour: 1,
-      plateAreaId: {},
+      plateAreaId: '',
       indexValue: 0,
       indexValueFour: 0,
       itemName: {},
@@ -161,6 +176,8 @@ export default {
       itemNameFour: {},
       contentNameFour: {},
       valueContentFour: {},
+      allItemNameFour3: [],
+      allItemNameFour5: [],
       valueUnitFour: {},
       percentValue: [], // 类型四的同比值
       percentValueOne: {}, // 类型一的同比值
@@ -180,7 +197,12 @@ export default {
         remark: '',
         contentItemList: []
       }],
-      contentItemListFour: [], // 类型四的所有数据的集合
+      parentDataFour3: [],
+      parentDataFour5: [],
+      childDataFour3: [],
+      childDataFour5: [],
+      contentItemListFour3: [], // 类型四的所有数据的集合
+      contentItemListFour5: [], // 类型四的所有数据的集合
       contentItemListOne: [] // 类型一的所有数据的集合
     }
   },
@@ -228,6 +250,9 @@ export default {
       deep: true
     }
   },
+  mounted () {
+    this.setInitialData();
+  },
   methods: {
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
@@ -240,12 +265,11 @@ export default {
       this.dataObjTwo[0].contentItemList = [];
       let data = {}, dataFour = {};
       for (let i in this.itemName) {
-        let str = i.split('_');
         if (this.percentValueOne[i] !== undefined) {
           data = {
             itemName: this.itemName[i],
             serialNumber: ++this.indexValue,
-            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            plateAreaId: this.plateAreaId,
             contentSubItemList: [
               {
                 contentName: this.itemName[i],
@@ -273,7 +297,7 @@ export default {
           data = {
             itemName: this.itemName[i],
             serialNumber: ++this.indexValue,
-            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            plateAreaId: this.plateAreaId,
             contentSubItemList: [{
               contentName: this.itemName[i],
               valueContent: this.valueContent[i] ? this.valueContent[i] : '',
@@ -289,12 +313,11 @@ export default {
         this.contentItemListOne.push(data);
       }
       for (let i in this.itemNameFour) {
-        let str = i.split('_');
         if (this.percentValue[i] !== undefined) {
           dataFour = {
             itemName: this.itemNameFour[i],
             serialNumber: ++this.indexValueFour,
-            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            plateAreaId: this.plateAreaId,
             contentSubItemList: [
               {
                 contentName: this.itemNameFour[i],
@@ -322,7 +345,7 @@ export default {
           dataFour = {
             itemName: this.itemNameFour[i],
             serialNumber: ++this.indexValueFour,
-            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            plateAreaId: this.plateAreaId,
             contentSubItemList: [{
               contentName: this.itemNameFour[i],
               valueContent: this.valueContentFour[i] ? this.valueContentFour[i] : '',
@@ -411,6 +434,127 @@ export default {
           }
         }
       });
+    },
+    setInitialData () {
+      this.plateInfoList = JSON.parse(JSON.stringify(this.$store.state.plateConfigInfo))
+      const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
+      const configId = this.$store.state.editPlateInfo.configId;
+      this.dataForm = {
+        plateName: this.$store.state.editPlateInfo.plateName,
+        remark: this.$store.state.editPlateInfo.remark
+      }
+      this.axios.get('/plateServices/areaInfos/' + configId + '')
+        .then((res) => {
+          if (res) {
+            let typeArr = [];
+            let oneType = [];
+            res.data.map((item, index) => {
+              oneType.push(item.configCount);
+              if (item.areaDataType !== 1 && item.areaDataType !== 4) {
+                typeArr.push(item);
+              }
+              if (areaDataList.length > 0) {
+                areaDataList.map((items, idx) => {
+                  if (items.areaDataType === item.areaDataType && items.serialNumber === item.serialNumber) {
+                    if (items.areaDataType === 1) {
+                      if (items.contentItemList.length > 0) {
+                        items.contentItemList.map((item, index) => {
+                          this.itemName[index + '_' + items.serialNumber] = item.itemName;
+                          if (item.contentSubItemList.length > 0) {
+                            item.contentSubItemList.map((value, idx) => {
+                              if (value.serialNumber === 1) {
+                                this.valueContent[index + '_' + items.serialNumber] = value.valueContent;
+                                this.valueUnit[index + '_' + items.serialNumber] = value.valueUnit;
+                              } else {
+                                this.percentValueOne[index + '_' + items.serialNumber] = value.valueContent;
+                              }
+                            });
+                          }
+                        });
+                      }
+                    } else if (items.areaDataType === 4) {
+                      if (items.contentItemList.length > 0) {
+                        console.log(items.contentItemList)
+                        items.contentItemList.map((item, index) => {
+                          item.plateAreaId = items.plateAreaId;
+                          if (items.serialNumber === 3) {
+                            console.log('3', items.contentItemList)
+                            let childData;
+                            const data = {
+                              itemName: item.itemName,
+                              plateAreaId: items.plateAreaId,
+                              serialNumber: item.serialNumber
+                            }
+                            this.parentDataFour3.push(data);
+                            if (item.contentSubItemList.length > 0) {
+                              item.contentSubItemList.map((value, idx) => {
+                                if (value.serialNumber === 2) {
+                                  this.percentValue[index + '_' + items.serialNumber] = value.valueContent;
+                                } else {
+                                  childData = {
+                                    contentName: value.contentName,
+                                    valueContent: value.valueContent,
+                                    valueUnit: value.valueUnit,
+                                    serialNumber: value.serialNumber,
+                                    graphicFieldFlag: value.graphicFieldFlag,
+                                    supernatantFieldFlag: value.supernatantFieldFlag,
+                                    sumFlag: value.sumFlag
+                                  }
+                                  this.valueContentFour[index + '_' + items.serialNumber] = value.valueContent;
+                                }
+                              });
+                            }
+                            this.childDataFour3.push(childData);
+                          } else if (items.serialNumber === 5) {
+                            console.log('5', items.contentItemList)
+                            let childData;
+                            const data = {
+                              itemName: item.itemName,
+                              plateAreaId: items.plateAreaId,
+                              serialNumber: item.serialNumber
+                            }
+                            this.parentDataFour5.push(data);
+                            if (item.contentSubItemList.length > 0) {
+                              item.contentSubItemList.map((value, idx) => {
+                                if (value.serialNumber === 2) {
+                                  this.percentValue[index + '_' + items.serialNumber] = value.valueContent;
+                                } else {
+                                  childData = {
+                                    contentName: value.contentName,
+                                    valueContent: value.valueContent,
+                                    valueUnit: value.valueUnit,
+                                    serialNumber: value.serialNumber,
+                                    graphicFieldFlag: value.graphicFieldFlag,
+                                    supernatantFieldFlag: value.supernatantFieldFlag,
+                                    sumFlag: value.sumFlag
+                                  }
+                                  this.valueContentFour[index + '_' + items.serialNumber] = value.valueContent;
+                                }
+                              });
+                            }
+                            this.childDataFour5.push(childData);
+                          }
+                        });
+                        if (items.serialNumber === 3) {
+                          this.contentItemListFour3 = JSON.parse(JSON.stringify(items.contentItemList));
+                        } else if (items.serialNumber === 5) {
+                          this.contentItemListFour5 = JSON.parse(JSON.stringify(items.contentItemList));
+                        }
+                        console.log(this.parentDataFour3);
+                        console.log(this.childDataFour3);
+                        console.log(this.contentItemListFour3)
+                      }
+                    }
+                  }
+                });
+              }
+            });
+            this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
+            this.$store.commit('setType', {typeArr: typeArr});
+            this.$store.commit('setOneType', {oneType: oneType});
+          }
+        })
+        .catch(() => {});
     }
   }
 }
