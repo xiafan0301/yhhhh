@@ -1,9 +1,11 @@
 <template>
   <div class="vis-bg-plate">
     <div class="bg-plate-bd">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
-        <el-breadcrumb-item><span style="color:#0785FD;font-size:14px;">版块管理</span></el-breadcrumb-item>
+      <el-breadcrumb>
+        <el-breadcrumb-item>
+          <span style="color:#0785FD;font-size:14px;">版块管理</span>
+          <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">
@@ -36,12 +38,12 @@
             <el-button type="text" @click='editPlate(scope.row.plateId)'>修改</el-button>
             <span class='separation'>|</span>
             <el-button type="text" id='delete' class="vis-bg-del-btn" @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
-            <!-- <el-button type="text">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
       <div class="bg-plate-tbp">
         <el-pagination
+          background
           @size-change="pagerSizeChange"
           @current-change="pagerCurrChange"
           :current-page="pager.pageNum"

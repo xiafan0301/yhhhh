@@ -346,8 +346,8 @@ export default {
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
-      background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
-      background-size: 100% 100%;
+      // background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
+      // background-size: 100% 100%;
       height: 300px;
       .bg-purple {
         background-color: #FCFCFE;

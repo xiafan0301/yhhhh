@@ -2,10 +2,19 @@
   <div class="vis-bg-plate">
     <div class="bg-plate-et">
       <div class="bg-plate-bd">
-        <el-breadcrumb separator-class="el-icon-arrow-right">
-          <!-- <el-breadcrumb-item>首页</el-breadcrumb-item> -->
-          <el-breadcrumb-item :to="{name: 'plate-list'}">版块管理</el-breadcrumb-item>
-          <el-breadcrumb-item>添加/修改版块</el-breadcrumb-item>
+        <el-breadcrumb separator-class=" ">
+          <el-breadcrumb-item style='margin-right: 0.4%'>
+            <div style='background: #F2F2F2; height: 21px;line-height:21px;padding:0 5px;border-radius:3px'>
+              <span style='color:#666666;font-size:14px;padding:0 5px'>版块管理</span>
+              <i class='el-icon-close'></i>
+            </div>
+          </el-breadcrumb-item>
+          <el-breadcrumb-item>
+            <div style='background: #F2F2F2; height: 21px;line-height:21px;padding:0 5px;border-radius:3px'>
+              <span style='color: #0785FD;font-size:14px;'>添加/修改版块</span>
+              <i class='el-icon-close' @click='closePage' style='cursor: pointer'></i>
+            </div>
+          </el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <!-- 进度控制 -->
@@ -77,6 +86,9 @@ export default {
     },
     getMapDataList (val) {
       this.mapDataList = val;
+    },
+    closePage () {
+      this.$router.push({name: 'plate-list'});
     }
   }
 }
