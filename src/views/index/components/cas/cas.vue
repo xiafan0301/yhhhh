@@ -41,7 +41,7 @@
       <el-table-column prop="protocolType" label="协议" width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.protocolType == 1">http</span>
-          <span v-else-if="scope.row.deviceStatus == 2">https</span>
+          <span v-else-if="scope.row.protocolType == 2">https</span>
         </template>
       </el-table-column>
       <el-table-column prop="deviceIp" label="设备IP" width="140"></el-table-column>
@@ -80,7 +80,7 @@
         width="120">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
-          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+          <el-button @click="del(scope.row)" class="vis-bg-del-btn" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,10 +88,12 @@
       <template v-if="pagination.total > 0">
         <el-pagination
           background
+          :page-sizes="[5, 10, 20, 50, 100]"
+          @size-change="onSizeChange"
           @current-change="onPageChange"
           :current-page.sync="pagination.pageNum"
           :page-size="pagination.pageSize"
-          layout="total, prev, pager, next, jumper"
+          layout="total, sizes, prev, pager, next, jumper"
           :total="pagination.total">
         </el-pagination>
       </template>
@@ -264,6 +266,11 @@ export default {
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
+      this.getTableData();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
       this.getTableData();
     },
     edit (item) {

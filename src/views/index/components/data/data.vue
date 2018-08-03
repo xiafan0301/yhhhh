@@ -62,7 +62,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modifypk5(scope)">修改</el-button>
-            <el-button type="text"  @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn"  @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,7 +99,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify6(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -117,8 +117,8 @@
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="100"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="modifyjy5(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" @click="modify5(scope)">修改</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>gi
           </template>
         </el-table-column>
       </el-table>
@@ -136,7 +136,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -153,7 +153,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -187,7 +187,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -221,7 +221,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -239,7 +239,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -256,7 +256,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -273,7 +273,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -308,7 +308,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -359,7 +359,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -378,7 +378,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -397,7 +397,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -416,7 +416,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
-            <el-button type="text" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

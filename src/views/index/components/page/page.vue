@@ -72,8 +72,8 @@
               <el-button type="primary" @click="sure('form1')">确 定</el-button>
             </div>
           </el-dialog>
-          <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 2px 0 2px"></i>
-          <el-button type="text"   @click="schu(scope)">删除</el-button>
+          <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 12px 0 12px"></i>
+          <el-button type="text" class="vis-bg-del-btn" size="small"  @click="schu(scope)">删除</el-button>
           <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
             <span>点击确认删除后，设置到该页面上的版块将变为异常状态，确认删除吗？</span>
             <span slot="footer" class="dialog-footer">
@@ -91,7 +91,7 @@
           @size-change="pagerSizeChange"
           :current-page ="currentPage"
           :page-size="pagesize"
-          :page-sizes="[10, 20]"
+          :page-sizes="[5, 10, 20, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
