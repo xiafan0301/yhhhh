@@ -16,15 +16,15 @@
   </div>
 </template>
 <script>
-  export default {
-    data () {
-      return {
-        pagination: {
-          total : 0,
-          pageNum: 1,
-          pageSize: 10,
-        }
+export default {
+  data () {
+    return {
+      pagination: {
+        total: 0,
+        pageNum: 1,
+        pageSize: 10
       }
     }
   }
+}
 </script>
