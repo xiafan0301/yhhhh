@@ -78,8 +78,13 @@ export default {
           children: [
             {
               id: '4-1',
-              name: '消息管理',
+              name: '公告管理',
               url: '/notice'
+            },
+            {
+              id: '4-2',
+              name: '系统消息',
+              url: '/system'
             }
           ]
         }

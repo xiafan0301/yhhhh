@@ -92,10 +92,10 @@ export default {
   },
   created () {
     this.getPageList();
-    this.getPlateList();
   },
   mounted () {
-    // this.showEditDialog(true);
+    this.searchForm.pageId = this.$route.query.pageId;
+    this.getPlateList();
   },
   methods: {
     // 获取所有的页面
@@ -145,7 +145,6 @@ export default {
         pageNum: this.pager.pageNum,
         pageSize: this.pager.pageSize
       };
-      console.log(this.searchForm.pageId)
       this.axios.get('/plateServices/plates', {params})
         .then((res) => {
           this.pager.total = res.data.total;
