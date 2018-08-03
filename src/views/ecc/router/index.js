@@ -5,9 +5,14 @@ import Router from 'vue-router'
 import main from '@/views/ecc/components/main.vue'
 // 消息管理
 import notice from '@/views/ecc/components/notice/notice.vue'
+import system from '@/views/ecc/components/notice/system.vue'
 import noticeRelease from '@/views/ecc/components/notice/release.vue'
-import noticeList from '@/views/ecc/components/notice/list.vue'
-Vue.use(Router)
+import event from '@/views/ecc/components/event/event.vue'
+import eventList from '@/views/ecc/components/event/eventList.vue'
+import noticeSee from '@/views/ecc/components/notice/see.vue'
+import noticeAtmanagementList from '@/views/ecc/components/notice/noticeAtmanagementList.vue'
+import noticeModify from '@/views/ecc/components/notice/modify.vue'
+Vue.use(Router);
 
 export default new Router({
   routes: [
@@ -19,8 +24,27 @@ export default new Router({
           path: 'notice',
           component: notice,
           children: [
-            {path: '', name: 'notice-list', component: noticeList},
-            {path: 'release', name: 'notice-release', component: noticeRelease}
+            {path: '', name: 'notice-atmanagementList', component: noticeAtmanagementList},
+            {path: 'release', name: 'notice-release', component: noticeRelease},
+            {path: 'modify', name: 'notice-modify', component: noticeModify},
+            {path: 'see', name: 'notice-see', component: noticeSee}
+          ]
+        },
+        {
+          path: 'system',
+          component: system,
+          name: 'system',
+          children: [
+            {path: '', name: 'notice-atmanagementList', component: noticeAtmanagementList},
+            {path: 'release', name: 'notice-release', component: noticeRelease},
+            {path: 'modify', name: 'notice-modify', component: noticeModify}
+          ]
+        },
+        {
+          path: 'event',
+          component: event,
+          children: [
+            {path: '', name: 'event-list', component: eventList}
           ]
         }
       ]

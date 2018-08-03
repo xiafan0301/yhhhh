@@ -16,7 +16,7 @@
           </el-option>
         </el-select>
       </div>
-      <span class='advice'>*{{tips}}</span>
+      <span class='advice'>{{tips}}</span>
       <div class="page-right">
         <span>跳转页面</span>
         <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
@@ -57,7 +57,7 @@
   </div>
   <div class="plate-ecl-b">
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -68,7 +68,7 @@ export default {
     return {
       relationValue: '',
       btnDisabled: true,
-      tips: '请选择关联页面',
+      tips: '*请选择关联页面',
       positionObj:
       [
         {
@@ -99,7 +99,7 @@ export default {
       ],
       skipValue: '',
       checkedPageId: '', // 选中的页面id
-      plateList: [], // 该页面已经有哪些板块被占用
+      plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
       skipPageList: [], // 所有的跳转页面
       skipPausePageList: [],
@@ -173,7 +173,7 @@ export default {
         item.isChecked = false;
         item.name = '展示到该位置';
       });
-      this.tips = '请选择关联页面';
+      this.tips = '*请选择关联页面';
       this.skipPageList = [];
       this.relationPageList.map((item) => {
         item.isDisabled = false;
@@ -200,6 +200,10 @@ export default {
     selectPages (value) {
       if (value) {
         this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
+      } else {
+        this.skipPageList = [];
+        this.skipValue = '';
+        this.tips = '*请选择关联页面';
       }
       let obj = {};
       this.tips = '';
@@ -243,10 +247,10 @@ export default {
               return item.isChecked !== true;
             });
             if (data.length > 0) {
-              this.tips = '点击选择要展示的位置按钮';
+              this.tips = '*点击选择要展示的位置按钮';
               this.btnDisabled = true;
             } else {
-              this.tips = '该页面所有位置已经被占，请重新选择';
+              this.tips = '*该页面所有位置已经被占，请重新选择';
               this.btnDisabled = true;
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
@@ -261,7 +265,7 @@ export default {
       this.positionObj.map((item, index) => {
         if (item.id === num) {
           item = Object.assign(item, {finishChecked: true});
-          this.tips = '展示成功，点击下一步';
+          this.tips = '*展示成功，点击下一步';
           this.btnDisabled = false;
         } else if (item.isChecked !== true) {
           item.canChecked = false;
@@ -298,7 +302,7 @@ export default {
           item.finishChecked = false;
         }
       });
-      this.tips = '点击选择要展示的位置按钮';
+      this.tips = '*点击选择要展示的位置按钮';
       this.btnDisabled = true;
       this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
     }
@@ -309,6 +313,12 @@ export default {
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   .plate-relation {
     display:flex;
@@ -336,6 +346,8 @@ export default {
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
+      // background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
+      // background-size: 100% 100%;
       height: 300px;
       .bg-purple {
         background-color: #FCFCFE;
@@ -414,12 +426,18 @@ export default {
           color: #0785FD;
         }
         .map-button {
-          background-color: #0785FD;
+          background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+          background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+          background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+          background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
           color: #fff;
         }
       }
       .finishChecked {
-        background-color: #0785FD;
+        background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+        background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+        background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+        background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
         span {
           color: #ffffff;
         }

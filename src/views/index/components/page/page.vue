@@ -2,26 +2,26 @@
   <div class="vis-bg-plate">
       <div class="bg-plate-bd">
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item>首页</el-breadcrumb-item>
+          <el-breadcrumb-item><span style="color:#0785FD; font-size: 14px ">页面管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       </div>
       <div class="bg-plate-sf">
-        <el-button type="primary" size="small" @click="dialogFormVisible = true" class="add-plate-btn">添加页面</el-button>
+        <el-button type="primary" size="small" @click="filin('form')" class="add-plate-btn">添加页面</el-button>
         <el-dialog title="添加页面" :visible.sync="dialogFormVisible" width="500px">
-          <el-form :model="form" ref ="form">
-            <el-form-item label="页面名称" :label-width="formLabelWidth">
+          <el-form :model="form" ref ="form" :rules="rules"  style="padding-right: 60px;" size="small">
+            <el-form-item label="页面名称" :label-width="formLabelWidth" prop="name">
               <el-input v-model="form.name" auto-complete="off"></el-input>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer">
+          <div slot="footer" class="dialog-footer" style="text-align: center; padding-left: 20px" size="small">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button :loading="addPageLoading" type="primary" @click="addPage()">确 定</el-button>
+            <el-button :loading="addPageLoading" type="primary" @click="addPage('form')">确 定</el-button>
           </div>
         </el-dialog>
       </div>
     <div class="bg-plate-tb">
     <el-table
-    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+    :data="tableData"
     style="width: 100%;">
     <el-table-column
       type="index"
@@ -51,8 +51,8 @@
         label=""
         width=" ">
         <template slot-scope="scope">
-          <el-button @click.native="showEditDialog(true)" type="text" size="small" v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
-          <el-button @click.native="showEditDialog(true)" type="text" size="small" v-show="scope.row.plateList.length == 0">添加模块</el-button>
+          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
+          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length == 0">添加模块</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -60,16 +60,16 @@
         label="操作"
         width="">
         <template slot-scope="scope">
-          <el-button @click="modify(scope.row)" type="text" size="small" >修改</el-button>
+          <el-button @click="modify(scope.row)" type="text"  >修改</el-button>
           <el-dialog title="修改" :visible.sync="dialogFormVisible1" width="500px">
-            <el-form :model="form1" ref ="form1">
-              <el-form-item label="修改" :label-width="formLabelWidth">
+            <el-form :model="form1" ref ="form1" :rules="rules1"  style="padding-right: 60px;" size="small">
+              <el-form-item label="页面名称" :label-width="formLabelWidth" prop="name">
                 <el-input v-model="form1.name" auto-complete="off"></el-input>
               </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible1 = false">取 消</el-button>
-              <el-button type="primary" @click="sure(scope.row)">确 定</el-button>
+              <el-button type="primary" @click="sure('form1')">确 定</el-button>
             </div>
           </el-dialog>
           <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 12px 0 12px"></i>
@@ -88,6 +88,7 @@
         <el-pagination
           background
           @current-change="handleCurrentChange"
+          @size-change="pagerSizeChange"
           :current-page ="currentPage"
           :page-size="pagesize"
           :page-sizes="[5, 10, 20, 50, 100]"
@@ -119,6 +120,16 @@ export default {
       formLabelWidth: '120px',
       form1: {
         name: ''
+      },
+      rules: {
+        name: [
+          {required: true, message: '请输入名称', trigger: 'blur'}
+        ]
+      },
+      rules1: {
+        name: [
+          {required: true, message: '请输入名称', trigger: 'blur'}
+        ]
       }
     }
   },
@@ -144,20 +155,34 @@ export default {
         })
     },
     // 添加页面
-    addPage () {
-      this.dialogFormVisible = false;
-      let params = this.form;
-      params.pageName = this.form.name;
-      this.addPageLoading = true;
-      this.axios.post('/pageServices/page', params)
-        .then(res => {
-          this.getAdviceList();
-          this.addPageLoading = false
-        })
-        .catch(() => {
-          this.addPageLoading = false
-        });
-      this.form.name = '';
+    filin (formName) {
+      this.dialogFormVisible = true;
+      this.resetEditFormf('form');
+    },
+    resetEditFormf (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
+    },
+    addPage (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          let params = this.form;
+          params.pageName = this.form.name;
+          this.addPageLoading = true;
+          this.axios.post('/pageServices/page', params)
+            .then(res => {
+              this.getAdviceList();
+              this.dialogFormVisible = false;
+              this.addPageLoading = false;
+            })
+            .catch(() => {
+              this.addPageLoading = false
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 删除页面
     schu (scope) {
@@ -174,14 +199,12 @@ export default {
         })
     },
     // 选择管理还是添加
-    handleClick (scope) {
-      console.log(scope);
-    },
-    showEditDialog (flag) {
-      this.$router.push({name: 'plate-list', params: {pageId: '3cc74115-2384-4d46-a59d-2b491c79730a'}});
+    showEditDialog (scope) {
+      this.$router.push({name: 'plate-list', query: {pageId: scope.pageId}});
     },
     // 修改页面
     modify (scope) {
+      this.resetEditForm('form1');
       this.dialogFormVisible1 = true;
       this.par = {
         pageName: scope.pageName,
@@ -189,18 +212,34 @@ export default {
       };
       this.form1.name = scope.pageName
     },
-    sure () {
-      this.dialogFormVisible1 = false;
-      this.par.pageName = this.form1.name;
-      this.axios.put('/pageServices/pages', this.par)
-        .then(res => {
-          this.getAdviceList();
-        });
-      this.form1.name = '';
+    resetEditForm (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
+    },
+    sure (form1) {
+      this.$refs[form1].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible1 = false;
+          this.par.pageName = this.form1.name;
+          this.axios.put('/pageServices/pages', this.par)
+            .then(res => {
+              this.getAdviceList();
+            });
+          this.form1.name = '';
+        } else {
+          return false;
+        }
+      });
     },
     // 分页
     handleCurrentChange (currentPage) {
       this.pageNum = currentPage;
+      this.getAdviceList()
+    },
+    pagerSizeChange (val) {
+      this.pageNum = 1;
+      this.pagesize = val;
       this.getAdviceList()
     }
   }
@@ -220,6 +259,7 @@ export default {
     position: relative;
     .add-plate-btn {
       position: absolute; top: -32px; right: 0;
+      background: linear-gradient(to bottom, #0785FD, #07BAFD);
     }
   }
   .bg-plate-tb {

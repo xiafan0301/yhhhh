@@ -7,7 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">
-      <el-button type="primary" size="small" @click="dialogFormVisible = true" class="add-plate-btn" icon="el-icon-plus">添加板块</el-button>
+      <el-button type="primary" size="small" @click="dialogFormVisible = true" class="add-plate-btn" icon="el-icon-plus">添加版块</el-button>
     </div>
     <div class="bg-plate-tb">
       <el-table :data="plateList"  highlight-current-row style="width: 100%;">
@@ -43,7 +43,7 @@
     </div>
     <!-- 新增/修改样式  -->
     <el-dialog
-      title="新增/修改板块"
+      title="新增/修改版块"
       :visible.sync="dialogFormVisible"
       width="729px">
         <el-form :model="form">

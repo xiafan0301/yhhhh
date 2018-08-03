@@ -17,7 +17,7 @@
       </div>
       <span class='advice' v-show='fisrtTip'>*请选择关联页面展示</span>
       <span class='advice' v-show='isRepace'>
-        *该页面已存在地图板块，是否替换？
+        *该页面已存在地图版块，是否替换？
         <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
         <el-button id='preBtn' size='small' @click='handleNo'>否</el-button>
       </span>
@@ -50,7 +50,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -96,7 +96,7 @@ export default {
       ],
       skipValue: '',
       checkedPageId: '', // 选中的页面id
-      plateList: [], // 该页面已经有哪些板块被占用
+      plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
       newDataList: {
         pageId: '',
@@ -192,6 +192,12 @@ export default {
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   .plate-relation {
     display:flex;

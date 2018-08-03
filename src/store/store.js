@@ -13,15 +13,15 @@ const state = {
   loginUser: {},
   // 面包屑
   breadcrumb: [],
-  progressIndex: 1, // 添加板块的进度条索引
-  plateConfigInfo: [], // 根据configId获取的板块配置信息
-  plateInfo: {}, // 板块信息
+  progressIndex: 1, // 添加版块的进度条索引
+  plateConfigInfo: [], // 根据configId获取的版块配置信息
+  plateInfo: {}, // 版块信息
   typeArr: [], // 类型不为1的对象
   oneType: [],
   styleType: 1, // 左右两侧、地图区域
   mapPageDataList: [], // 页面中已有的数据
   mapMageId: '', // 页面id
-  editPlateInfo: {}, // 板块已有的数据
+  editPlateInfo: {}, // 版块已有的数据
   // 图片基础路径
   imgBaseUrl: '',
   // 文件基础路径

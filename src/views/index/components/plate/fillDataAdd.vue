@@ -7,12 +7,12 @@
     </div>
     <div class="plate-ecl2-cr">
       <div>
-        <el-form :inline="true" :model="dataForm" class="demo-form-inline" size="small">
-          <el-form-item label="板块名称" required>
-            <el-input v-model="dataForm.plateName" placeholder="板块名称" maxlength='20'></el-input>
+        <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
+          <el-form-item label="版块名称" prop='plateName'>
+            <el-input v-model="dataForm.plateName" placeholder="必填" maxlength='20'></el-input>
           </el-form-item>
-          <el-form-item label="注释">
-            <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
+          <el-form-item label="注释" prop='remark'>
+            <el-input v-model="dataForm.remark" placeholder="选填" maxlength='20'></el-input>
           </el-form-item>
         </el-form>
         <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
@@ -552,7 +552,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep('dataForm')" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -563,6 +563,13 @@ export default {
   data () {
     return {
       typeArr: [],
+      rules: {
+        plateName: [{
+          required: true,
+          message: '请输入版块名称',
+          trigger: 'blur'
+        }]
+      },
       noRelation: '不关联',
       isActiveParent: 0,
       isActiveChild: 0,
@@ -767,11 +774,11 @@ export default {
       handler: function (newVal) {
         this.contentItemListFour.map((items, index) => {
           items.contentSubItemList.map((item, idx) => {
-            item.valueUnit = this.childDataListFour[index].valueUnit;
-            item.valueContent = this.childDataListFour[index].valueContent;
+            item.contentName = this.childDataListFour[idx].contentName;
+            item.valueUnit = this.childDataListFour[idx].valueUnit;
+            item.valueContent = this.childDataListFour[idx].valueContent;
           });
         });
-        console.log(this.childDataListFour)
       },
       deep: true
     },
@@ -868,7 +875,7 @@ export default {
       // this.$store.commit('setConfigInfo', {setConfigInfo: []});
       Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
-    nextStep () {
+    nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
       let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
       for (let i in this.numberObjThree) {
@@ -994,7 +1001,7 @@ export default {
       });
       this.contentItemListFour.map((item, index) => {
         item.serialNumber = this.dataObjTwo[0].contentItemList.length + 1;
-        if (this.percentValue[index] !== '') {
+        if (this.percentValue[index] !== undefined) {
           const data = {
             contentName: '',
             valueContent: this.percentValue[index],
@@ -1017,31 +1024,37 @@ export default {
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
       this.dataObjTwo[0].plateId = '';
       if (this.dataObjTwo[0].contentItemList.length > 0) {
-        console.log(this.dataObjTwo[0])
         const params = {
           visPlates: this.dataObjTwo
         }
-        this.axios.post('/plateServices/plateBatch', params.visPlates)
-          .then((res) => {
-            if (res) {
-              if (res.data.length > 0) {
-                this.$message({
-                  showClose: true,
-                  message: '添加板块成功',
-                  type: 'success'
-                });
-                this.$store.commit('setProgressIndex', {progressIndex: 4});
-                this.$router.push({name: 'plate-list'});
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '添加板块失败',
-                  type: 'error'
-                });
-              }
-            }
-          })
-          .catch(() => {});
+        this.$refs[dataForm].validate((valid) => {
+          if (valid) {
+            this.tip = '';
+            this.axios.post('/plateServices/plateBatch', params.visPlates)
+              .then((res) => {
+                if (res) {
+                  if (res.data.length > 0) {
+                    this.$message({
+                      showClose: true,
+                      message: '添加版块成功',
+                      type: 'success'
+                    });
+                    this.$store.commit('setProgressIndex', {progressIndex: 4});
+                    this.$router.push({name: 'plate-list'});
+                  } else {
+                    this.$message({
+                      showClose: true,
+                      message: '添加版块失败',
+                      type: 'error'
+                    });
+                  }
+                }
+              })
+              .catch(() => {});
+          } else {
+            this.tip = '请输入版块名称';
+          }
+        });
       }
     },
     addparentDataTwo (name, idx, maxNumber) { // 类型二添加主项
@@ -1419,7 +1432,7 @@ export default {
                 serialNumber: 1,
                 graphicFieldFlag: false,
                 supernatantFieldFlag: true,
-                sumFlag: false,
+                sumFlag: true,
                 contnetSubItemExtendList: [],
                 isMerge: true
               }
@@ -1625,6 +1638,12 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   #preBtn {
     color:#0785FD !important;
