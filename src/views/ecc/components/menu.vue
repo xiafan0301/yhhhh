@@ -38,6 +38,11 @@ export default {
             {
               id: '1-1',
               name: '事件管理',
+              url: '/event'
+            },
+            {
+              id: '1-2',
+              name: 'APP端民众互助管理',
               url: ''
             }
           ]

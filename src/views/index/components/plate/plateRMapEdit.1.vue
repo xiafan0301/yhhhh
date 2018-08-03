@@ -15,7 +15,7 @@
           </el-option>
         </el-select>
       </div>
-      <span class='advice' v-show='fisrtTip'>*请选择关联页面展示</span>
+      <span class='advice' v-show='fisrtTip'>*请选择要修改的页面</span>
       <span class='advice' v-show='isRepace'>
         *该页面已存在地图版块，是否替换？
         <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
@@ -50,7 +50,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' calss='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -116,16 +116,7 @@ export default {
     }
   },
   mounted () {
-    const params = {
-      pageNum: -1
-    }
-    this.axios.get('/pageServices/pages', {params})
-      .then((res) => {
-        if (res) {
-          this.relationPageList = res.data.list;
-        }
-      })
-      .catch(() => {});
+    this.setInitialData();
   },
   methods: {
     handleSure () {
@@ -167,23 +158,108 @@ export default {
       this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
         .then((res) => {
           if (res) {
-            this.plateList = res.data.plateList;
-            if (res.data.length > 0) {
-              this.fisrtTip = false;
-              this.isRepace = true;
-              this.btnDisabled = true;
-              this.$emit('getMapDataList', res.data);
+            this.plateList = res.data;
+            if (res.data.plateList.length > 0) {
+              const siderArr = res.data.plateList.filter((item) => {
+                return item.serialNumber.toString().substring(0, 1) !== '3';
+              });
+              siderArr.forEach((items, index) => {
+                this.positionObj.forEach((item, idx) => {
+                  item.canChecked = true;
+                  if (items.serialNumber === item.id) {
+                    item.isChecked = true;
+                    item.name = items.plateName;
+                  }
+                });
+              });
+              const dataArr = res.data.plateList.filter((item) => {
+                return item.serialNumber.toString().substring(0, 1) === '3';
+              });
+              if (dataArr.length > 0) {
+                this.fisrtTip = false;
+                this.isRepace = true;
+                this.btnDisabled = true;
+                this.$emit('getMapDataList', dataArr);
+              } else {
+                this.fisrtTip = false;
+                this.isRepace = false;
+                this.btnDisabled = false;
+                this.$emit('getMapDataList', []);
+              }
             } else {
-              this.btnDisabled = false;
-              this.fisrtTip = false;
-              this.isRepace = false;
-              this.$emit('getMapDataList', []);
+              this.positionObj.forEach((item, index) => {
+                item.canChecked = true;
+                item.name = '空';
+                this.btnDisabled = false;
+                this.fisrtTip = false;
+                this.isRepace = false;
+                this.$emit('getMapDataList', []);
+              });
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
         })
         .catch(() => {});
       this.$store.commit('setMapPageId', {mapPageId: obj.pageId});
+    },
+    setInitialData () {
+      const params = {
+        pageNum: -1
+      }
+      const pageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
+      this.axios.get('/pageServices/pages', {params})
+        .then((res) => {
+          if (res && res.data.list) {
+            res.data.list.map((item) => {
+              if (item.pageId === pageId) {
+                this.relationValue = item.pageName;
+                this.btnDisabled = false;
+                this.imgUrl = require('../../../../assets/img/temp/map_select.png');
+              }
+            });
+            this.relationPageList = res.data.list;
+          }
+        })
+        .catch(() => {});
+      this.axios.get('/plateServices/managers/byPageId/' + pageId + '')
+        .then((res) => {
+          if (res) {
+            this.plateList = res.data.plateList;
+            console.log(res.data)
+            if (res.data.length > 0) {
+              // const siderArr = res.data.plateList.filter((item) => {
+              //   return item.serialNumber.toString().substring(0, 1) !== '3';
+              // });
+              // siderArr.forEach((items, index) => {
+              //   this.positionObj.forEach((item, idx) => {
+              //     item.canChecked = true;
+              //     if (items.serialNumber === item.id) {
+              //       item.isChecked = true;
+              //       item.name = items.plateName;
+              //     }
+              //   });
+              // });
+              // const dataArr = res.data.plateList.filter((item) => {
+              //   return item.serialNumber.toString().substring(0, 1) === '3';
+              // });
+              // if (dataArr.length > 0) {
+              this.$emit('getMapDataList', res.data);
+              // } else {
+              //   this.$emit('getMapDataList', []);
+              // }
+            // } else {
+            //   this.positionObj.forEach((item, index) => {
+            //     item.canChecked = true;
+            //     item.name = '空';
+            //     this.btnDisabled = false;
+            //     this.fisrtTip = false;
+            //     this.$emit('getMapDataList', []);
+            //   });
+            }
+            this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+          }
+        })
+        .catch(() => {});
     }
   }
 }

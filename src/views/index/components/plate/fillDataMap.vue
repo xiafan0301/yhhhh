@@ -9,7 +9,7 @@
       <div class='position-select'>
         <div>
           <span>位置1</span>
-          <el-select v-model='relationValue1' placeholder="选择数据组件" @change="changeMapType1">
+          <el-select v-model='relationValue1' :class="{isActive: borderActive === 1}" placeholder="选择数据组件" @change="changeMapType1">
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList1'
@@ -22,7 +22,7 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select :disabled="isDisabled2" v-model="relationValue2" placeholder="选择数据组件" @change='changeMapType2'>
+          <el-select :disabled="isDisabled2" v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList2'
@@ -35,7 +35,7 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select :disabled="isDisabled3" v-model="relationValue3" placeholder="选择数据组件" @change='changeMapType3'>
+          <el-select :disabled="isDisabled3" v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList3'
@@ -48,7 +48,7 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select :disabled="isDisabled4" v-model="relationValue4" placeholder="选择数据组件" @change='changeMapType4'>
+          <el-select :disabled="isDisabled4" v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList4'
@@ -106,7 +106,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive1 === index ? 'active' : 'unactive']"
                       @click="addDataListOne(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -153,7 +153,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive2 === index ? 'active' : 'unactive']"
                       @click="addDataListTwo(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -200,7 +200,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive3 === index ? 'active' : 'unactive']"
                       @click="addDataListThree(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -247,7 +247,7 @@
                     <i
                       style="font-size: 25px; cursor: pointer;  color: #0785FD;"
                       class="el-icon-circle-plus-outline"
-                      :class="[isActive === index ? 'active' : 'unactive']"
+                      :class="[isActive4 === index ? 'active' : 'unactive']"
                       @click="addDataListFour(item.name, item.value, item.unit, index)"
                       title="新增项"
                     >
@@ -264,7 +264,7 @@
   </div>
   <div class="plate-ecl-b">
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -275,7 +275,11 @@ export default {
   data () {
     return {
       tip: '',
-      isActive: 0,
+      borderActive: 1,
+      isActive1: 0,
+      isActive2: 0,
+      isActive3: 0,
+      isActive4: 0,
       isChanged: 1,
       relationValue1: '',
       relationValue2: '',
@@ -285,6 +289,10 @@ export default {
       typeId2: '',
       typeId3: '',
       typeId4: '',
+      plateId1: '',
+      plateId2: '',
+      plateId3: '',
+      plateId4: '',
       displayType1: '',
       displayType2: '',
       displayType3: '',
@@ -292,6 +300,10 @@ export default {
       isDisabled4: true,
       isDisabled3: true,
       isDisabled2: true,
+      positionId1: '',
+      positionId2: '',
+      positionId3: '',
+      positionId4: '',
       positionList: [],
       mapTypeList1: [], // 位置1地图应用类型列表
       mapTypeList2: [], // 位置2地图应用类型列表
@@ -308,23 +320,35 @@ export default {
     mapDataList (newVal) {
       this.mapDataList = Object.assign(this.mapDataList, newVal);
       if (this.mapDataList.length > 0) {
-        this.mapDataList.map((item, index) => {
-          const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
+        this.mapDataList.map((items, index) => {
+          const serialNumber = items.visPagePlate.visPlatePosition.serialNumber;
           if (serialNumber === 31) {
-            this.relationValue1 = item.plateName;
+            this.relationValue1 = items.plateName;
             this.isDisabled2 = false;
+            this.typeId1 = items.typeId;
+            this.displayType1 = items.displayType;
+            this.plateId1 = items.plateId;
           } else if (serialNumber === 32) {
-            this.relationValue2 = item.plateName;
+            this.relationValue2 = items.plateName;
             this.isDisabled3 = false;
+            this.typeId2 = items.typeId;
+            this.plateId2 = items.plateId;
+            this.displayType2 = items.displayType;
           } else if (serialNumber === 33) {
-            this.relationValue3 = item.plateName;
+            this.relationValue3 = items.plateName;
             this.isDisabled4 = false;
+            this.typeId3 = items.typeId;
+            this.plateId3 = items.plateId;
+            this.displayType3 = items.displayType;
           } else if (serialNumber === 34) {
-            this.relationValue4 = item.plateName;
+            this.relationValue4 = items.plateName;
+            this.plateId4 = items.plateId;
+            this.typeId4 = items.typeId;
+            this.displayType4 = items.displayType;
           }
-          if (item.areaInfoList) {
-            if (item.areaInfoList[0].contentItemList.length > 0) {
-              item.areaInfoList[0].contentItemList.map((item, idx) => {
+          if (items.areaInfoList) {
+            if (items.areaInfoList[0].contentItemList.length > 0) {
+              items.areaInfoList[0].contentItemList.map((item, idx) => {
                 const data = {
                   name: item.itemName,
                   value: item.contentSubItemList[0].valueContent,
@@ -332,12 +356,16 @@ export default {
                 }
                 if (serialNumber === 31) {
                   this.dataList1.push(data);
+                  this.isActive1 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 32) {
                   this.dataList2.push(data);
+                  this.isActive2 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 33) {
                   this.dataList3.push(data);
+                  this.isActive3 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 34) {
                   this.dataList4.push(data);
+                  this.isActive4 = items.areaInfoList[0].contentItemList.length - 1;
                 }
               });
             }
@@ -383,36 +411,32 @@ export default {
   methods: {
     handleClick (index) {
       this.isChanged = index;
-      if (index === 2) {
-      }
+      this.borderActive = index;
     },
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
     },
     nextStep () {
-      let totalDataList = [], plateId1 = '', plateId2 = '', plateId3 = '', plateId4 = '';
-      if (this.$store.state.mapPageDataList.length > 0) {
-        if (this.$store.state.mapPageDataList[0] !== undefined) {
-          plateId1 = this.$store.state.mapPageDataList[0].plateId;
+      let totalDataList = [];
+      this.positionIdList.map((item, index) => {
+        if (item.serialNumber === 31) {
+          this.positionId1 = item.positionId;
+        } else if (item.serialNumber === 32) {
+          this.positionId2 = item.positionId;
+        } else if (item.serialNumber === 33) {
+          this.positionId3 = item.positionId;
+        } else if (item.serialNumber === 34) {
+          this.positionId4 = item.positionId;
         }
-        if (this.$store.state.mapPageDataList[1] !== undefined) {
-          plateId2 = this.$store.state.mapPageDataList[1].plateId;
-        }
-        if (this.$store.state.mapPageDataList[2] !== undefined) {
-          plateId3 = this.$store.state.mapPageDataList[2].plateId;
-        }
-        if (this.$store.state.mapPageDataList[3] !== undefined) {
-          plateId4 = this.$store.state.mapPageDataList[3].plateId;
-        }
-      }
+      });
       let dataArrOne = {
         pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue1,
         remark: '',
         plateType: 2,
-        plateId: plateId1,
-        positionId: this.positionIdList[0].positionId,
+        plateId: this.plateId1,
+        positionId: this.positionId1,
         jumpPageId: '',
         displayType: this.displayType1,
         typeId: this.typeId1,
@@ -424,8 +448,8 @@ export default {
         plateName: this.relationValue2,
         remark: '',
         plateType: 2,
-        plateId: plateId2,
-        positionId: this.positionIdList[1].positionId,
+        plateId: this.plateId2,
+        positionId: this.positionId2,
         jumpPageId: '',
         displayType: this.displayType2,
         typeId: this.typeId2,
@@ -436,9 +460,9 @@ export default {
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue3,
         remark: '',
-        positionId: this.positionIdList[2].positionId,
+        positionId: this.positionId3,
         jumpPageId: '',
-        plateId: plateId3,
+        plateId: this.plateId3,
         plateType: 2,
         displayType: this.displayType3,
         typeId: this.typeId3,
@@ -448,9 +472,9 @@ export default {
         pageId: this.$store.state.mapPageId,
         configId: this.$store.state.plateInfo.configId,
         plateName: this.relationValue4,
-        plateId: plateId4,
+        plateId: this.plateId4,
         remark: '',
-        positionId: this.positionIdList[3].positionId,
+        positionId: this.positionId4,
         jumpPageId: '',
         plateType: 2,
         displayType: this.displayType4,
@@ -558,7 +582,7 @@ export default {
             if (res.data.length > 0) {
               this.$message({
                 showClose: true,
-                message: '添加板块成功',
+                message: '添加版块成功',
                 type: 'success'
               });
               this.$router.push({name: 'plate-list'});
@@ -566,7 +590,7 @@ export default {
             } else {
               this.$message({
                 showClose: true,
-                message: '添加板块失败',
+                message: '添加版块失败',
                 type: 'error'
               });
             }
@@ -578,120 +602,128 @@ export default {
       let obj = {};
       this.isActive = 0;
       this.dataList1 = [];
-      obj = this.mapTypeList1.find((item) => {
-        return item.typeName === value;
-      });
-      this.typeId1 = obj.dataTypeId;
-      this.displayType1 = obj.displayType;
-      if (this.relationValue1 !== '') {
-        this.isChanged = 1;
-        this.isDisabled2 = false;
-      }
-      this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.dataList1 = res.data;
-            } else {
-              const data = {
-                name: '',
-                unit: '',
-                value: ''
+      if (value) {
+        obj = this.mapTypeList1.find((item) => {
+          return item.typeName === value;
+        });
+        this.typeId1 = obj.dataTypeId;
+        this.displayType1 = obj.displayType;
+        if (this.relationValue1 !== '') {
+          this.isChanged = 1;
+          this.isDisabled2 = false;
+        }
+        this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.dataList1 = res.data;
+              } else {
+                const data = {
+                  name: '',
+                  unit: '',
+                  value: ''
+                }
+                this.dataList1.push(data);
               }
-              this.dataList1.push(data);
             }
-          }
-        })
-        .catch(() => {})
+          })
+          .catch(() => {})
+      }
     },
     changeMapType2 (value) {
       let obj = {};
       this.dataList2 = [];
       this.isActive = 0;
-      obj = this.mapTypeList2.find((item) => {
-        return item.typeName === value;
-      });
-      this.typeId2 = obj.dataTypeId;
-      this.displayType2 = obj.displayType;
-      if (this.relationValue2 !== '') {
-        this.isChanged = 2;
-        this.isDisabled3 = false;
-      }
-      this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.dataList2 = res.data;
-            } else {
-              const data = {
-                name: '',
-                unit: '',
-                value: ''
+      if (value) {
+        obj = this.mapTypeList2.find((item) => {
+          return item.typeName === value;
+        });
+        this.typeId2 = obj.dataTypeId;
+        this.displayType2 = obj.displayType;
+        if (this.relationValue2 !== '') {
+          this.isChanged = 2;
+          this.isDisabled3 = false;
+        }
+        this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.dataList2 = res.data;
+              } else {
+                const data = {
+                  name: '',
+                  unit: '',
+                  value: ''
+                }
+                this.dataList2.push(data);
               }
-              this.dataList2.push(data);
             }
-          }
-        })
-        .catch(() => {})
+          })
+          .catch(() => {})
+      }
     },
     changeMapType3 (value) {
       let obj = {};
       this.isActive = 0;
       this.dataList3 = [];
-      obj = this.mapTypeList3.find((item) => {
-        return item.typeName === value;
-      });
-      this.typeId3 = obj.dataTypeId;
-      this.displayType3 = obj.displayType;
-      if (this.relationValue3 !== '') {
-        this.isChanged = 3;
-        this.isDisabled4 = false;
-      }
-      this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.dataList3 = res.data;
-            } else {
-              const data = {
-                name: '',
-                unit: '',
-                value: ''
+      if (value) {
+        obj = this.mapTypeList3.find((item) => {
+          return item.typeName === value;
+        });
+        this.typeId3 = obj.dataTypeId;
+        this.displayType3 = obj.displayType;
+        if (this.relationValue3 !== '') {
+          this.isChanged = 3;
+          this.isDisabled4 = false;
+        }
+        this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.dataList3 = res.data;
+              } else {
+                const data = {
+                  name: '',
+                  unit: '',
+                  value: ''
+                }
+                this.dataList3.push(data);
               }
-              this.dataList3.push(data);
             }
-          }
-        })
-        .catch(() => {})
+          })
+          .catch(() => {})
+      }
     },
     changeMapType4 (value) {
       let obj = {};
       this.isActive = 0;
       this.dataList4 = [];
-      obj = this.mapTypeList4.find((item) => {
-        return item.typeName === value;
-      });
-      this.typeId4 = obj.dataTypeId;
-      this.displayType4 = obj.displayType;
-      if (this.relationValue4 !== '') {
-        this.isChanged = 4;
-      }
-      this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.dataList4 = res.data;
-            } else {
-              const data = {
-                name: '',
-                unit: '',
-                value: ''
+      if (value) {
+        obj = this.mapTypeList4.find((item) => {
+          return item.typeName === value;
+        });
+        this.typeId4 = obj.dataTypeId;
+        this.displayType4 = obj.displayType;
+        if (this.relationValue4 !== '') {
+          this.isChanged = 4;
+        }
+        this.axios.get('/mapServices/calcCount/' + obj.dataTypeId + '')
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.dataList4 = res.data;
+              } else {
+                const data = {
+                  name: '',
+                  unit: '',
+                  value: ''
+                }
+                this.dataList4.push(data);
               }
-              this.dataList4.push(data);
             }
-          }
-        })
-        .catch(() => {})
+          })
+          .catch(() => {})
+      }
     },
     addDataListOne (name, value, unit, index) { // 位置1的添加一行
       if (name || value || unit) {
@@ -788,6 +820,12 @@ export default {
   .bg-plate-ecl {
     height: 100%;
   }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
+  }
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
@@ -834,5 +872,8 @@ export default {
   }
   .active {
     color: #0785FD !important;
+  }
+  .el-select.isActive .el-input .el-input__inner {
+    border-color: #409EFF;
   }
 </style>

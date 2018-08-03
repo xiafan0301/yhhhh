@@ -71,7 +71,7 @@
   </div>
   <div class="plate-ecl-b">
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -114,7 +114,7 @@ export default {
       ],
       skipValue: '',
       checkedPageId: '', // 选中的页面id
-      plateList: [], // 该页面已经有哪些板块被占用
+      plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
       skipPageList: [], // 所有的跳转页面
       skipPausePageList: [],
@@ -185,6 +185,8 @@ export default {
         item.canChecked = false;
         item.isChecked = false;
         item.finishChecked = false;
+        item.isSerialNumber = false;
+        this.isSerialNumber = 1;
         item.name = '展示到该位置';
       });
       this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
@@ -391,6 +393,12 @@ export default {
     color:#0785FD !important;
     border-color:#0785FD !important;
   }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
+  }
   .plate-relation {
     display:flex;
     width:100%;
@@ -500,7 +508,10 @@ export default {
         }
       }
       .finishChecked {
-        background-color: #0785FD;
+        background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+        background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+        background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+        background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
         span {
           color: #ffffff;
         }

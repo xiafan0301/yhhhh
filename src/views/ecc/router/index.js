@@ -7,6 +7,8 @@ import main from '@/views/ecc/components/main.vue'
 import notice from '@/views/ecc/components/notice/notice.vue'
 import noticeRelease from '@/views/ecc/components/notice/release.vue'
 import noticeList from '@/views/ecc/components/notice/list.vue'
+import event from '@/views/ecc/components/event/event.vue'
+import eventList from '@/views/ecc/components/event/eventList.vue'
 Vue.use(Router)
 
 export default new Router({
@@ -21,6 +23,13 @@ export default new Router({
           children: [
             {path: '', name: 'notice-list', component: noticeList},
             {path: 'release', name: 'notice-release', component: noticeRelease}
+          ]
+        },
+        {
+          path: 'event',
+          component: event,
+          children: [
+            {path: '', name: 'event-list', component: eventList}
           ]
         }
       ]

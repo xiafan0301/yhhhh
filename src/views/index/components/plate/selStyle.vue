@@ -9,9 +9,9 @@
     <div class="plate-ecl1-c">
       <ul class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
         <li v-for="item in allPlateList" :key="item.configId">
-          <img v-bind:src="item.thumbnailUrl" alt="">
+            <img v-bind:src="item.thumbnailUrl" alt="">
           <p>
-            <el-radio v-model="styleRadio" @change="setStyleRadio(item)" :label="item">
+            <el-radio v-model="styleRadio" :label="item.configId" @change="setStyleRadio(item)">
               {{item.configName}}
             </el-radio>
           </p>
@@ -19,7 +19,7 @@
       </ul>
     </div>
     <div class="plate-ecl-b">
-      <el-button :disabled="!styleRadio" @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+      <el-button :disabled="!styleRadio" @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     </div>
   </div>
 </template>
@@ -29,25 +29,27 @@ export default {
   data () {
     return {
       styleType: 1, // 1 所有两侧 2 地图区域
-      allPlateList: [], // 所有的板块
+      allPlateList: [], // 所有的版块
       plateInfo: {
         configId: '',
         markUrl: ''
-      }, // 新增板块信息
+      }, // 新增版块信息
       // 选择样式
       styleRadio: ''
     }
   },
   created () {
     this.getAllPlateList();
+    // this.$store.commit('setStyleType', {styleType: 1});
   },
   methods: {
     changeStyleType (type) {
       this.styleType = type;
+      this.styleRadio = '';
       this.getAllPlateList();
       this.$store.commit('setStyleType', {styleType: type});
     },
-    // 获取所有的板块
+    // 获取所有的版块
     getAllPlateList () {
       let params = {
         configType: this.styleType
@@ -61,7 +63,7 @@ export default {
         .catch(() => {});
     },
     setStyleRadio (val) {
-      this.styleRadio = val;
+      this.styleRadio = val.configId;
       this.plateInfo.configId = val.configId;
       this.plateInfo.markUrl = val.markUrl;
       this.$store.commit('setPlateInfo', {plateInfo: val});
@@ -91,6 +93,12 @@ export default {
 }
 </script>
 <style lang="scss">
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
+  }
   .pb-plate-pro {
     padding: 0 10% 0 10%;
     overflow: hidden;
@@ -182,7 +190,10 @@ export default {
           cursor: pointer;
           transition: all .4s;
           &.ecl1-tab-sed {
-            background-color: #0785FD;
+            background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+            background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
             color: #fff;
             cursor: default;
           }
@@ -202,7 +213,8 @@ export default {
       padding: 0 20px 0 20px;
       > .plate-ecl1-ul {
         > li {
-          width: 320px; height: 230px;
+          width: 320px;
+          height: 230px;
           float: left;
           text-align: center;
           padding: 10px 20px;

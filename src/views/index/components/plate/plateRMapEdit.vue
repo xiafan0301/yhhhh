@@ -17,7 +17,7 @@
       </div>
       <span class='advice' v-show='fisrtTip'>*请选择要修改的页面</span>
       <span class='advice' v-show='isRepace'>
-        *该页面已存在地图板块，是否替换？
+        *该页面已存在地图版块，是否替换？
         <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
         <el-button id='preBtn' size='small' @click='handleNo'>否</el-button>
       </span>
@@ -50,7 +50,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' calss='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -96,7 +96,7 @@ export default {
       ],
       skipValue: '',
       checkedPageId: '', // 选中的页面id
-      plateList: [], // 该页面已经有哪些板块被占用
+      plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
       newDataList: {
         pageId: '',
@@ -155,37 +155,16 @@ export default {
         item.isChecked = false;
         item.name = '';
       });
-      this.axios.get('/pageServices/pages/' + obj.pageId + '')
+      this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
         .then((res) => {
           if (res) {
-            this.plateList = res.data.plateList;
-            if (res.data.plateList.length > 0) {
-              const siderArr = res.data.plateList.filter((item) => {
-                return item.serialNumber.toString().substring(0, 1) !== '3';
-              });
-              siderArr.forEach((items, index) => {
-                this.positionObj.forEach((item, idx) => {
-                  item.canChecked = true;
-                  if (items.serialNumber === item.id) {
-                    item.isChecked = true;
-                    item.name = items.plateName;
-                  }
-                });
-              });
-              const dataArr = res.data.plateList.filter((item) => {
-                return item.serialNumber.toString().substring(0, 1) === '3';
-              });
-              if (dataArr.length > 0) {
-                this.fisrtTip = false;
-                this.isRepace = true;
-                this.btnDisabled = true;
-                this.$emit('getMapDataList', dataArr);
-              } else {
-                this.fisrtTip = false;
-                this.isRepace = false;
-                this.btnDisabled = false;
-                this.$emit('getMapDataList', []);
-              }
+            console.log(res.data)
+            this.plateList = res.data;
+            if (res.data.length > 0) {
+              this.fisrtTip = false;
+              this.isRepace = true;
+              this.btnDisabled = true;
+              this.$emit('getMapDataList', res.data);
             } else {
               this.positionObj.forEach((item, index) => {
                 item.canChecked = true;
@@ -193,8 +172,8 @@ export default {
                 this.btnDisabled = false;
                 this.fisrtTip = false;
                 this.isRepace = false;
-                this.$emit('getMapDataList', []);
               });
+              this.$emit('getMapDataList', []);
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
@@ -207,6 +186,7 @@ export default {
         pageNum: -1
       }
       const pageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
+      this.$store.commit('setMapPageId', {mapPageId: pageId});
       this.axios.get('/pageServices/pages', {params})
         .then((res) => {
           if (res && res.data.list) {
@@ -221,39 +201,16 @@ export default {
           }
         })
         .catch(() => {});
-      this.axios.get('/pageServices/pages/' + pageId + '')
+      this.axios.get('/plateServices/managers/byPageId/' + pageId + '')
         .then((res) => {
           if (res) {
-            this.plateList = res.data.plateList;
-            if (res.data.plateList.length > 0) {
-              const siderArr = res.data.plateList.filter((item) => {
-                return item.serialNumber.toString().substring(0, 1) !== '3';
-              });
-              siderArr.forEach((items, index) => {
-                this.positionObj.forEach((item, idx) => {
-                  item.canChecked = true;
-                  if (items.serialNumber === item.id) {
-                    item.isChecked = true;
-                    item.name = items.plateName;
-                  }
-                });
-              });
-              const dataArr = res.data.plateList.filter((item) => {
-                return item.serialNumber.toString().substring(0, 1) === '3';
-              });
-              if (dataArr.length > 0) {
-                this.$emit('getMapDataList', dataArr);
-              } else {
-                this.$emit('getMapDataList', []);
-              }
+            this.plateList = res.data;
+            if (res.data.length > 0) {
+              this.$emit('getMapDataList', res.data);
             } else {
-              this.positionObj.forEach((item, index) => {
-                item.canChecked = true;
-                item.name = '空';
-                this.btnDisabled = false;
-                this.fisrtTip = false;
-                this.$emit('getMapDataList', []);
-              });
+              this.btnDisabled = false;
+              this.fisrtTip = false;
+              this.$emit('getMapDataList', []);
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
@@ -267,6 +224,12 @@ export default {
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   .plate-relation {
     display:flex;

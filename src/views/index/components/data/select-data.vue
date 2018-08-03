@@ -3,7 +3,7 @@
 <!--选择数据表格-->
     <el-table :data="plateList"  highlight-current-row style="width: 100%;">
       <el-table-column type="index" width="100" label="序号"></el-table-column>
-      <el-table-column prop="plateName" label="板块名称" min-width="180"></el-table-column>
+      <el-table-column prop="plateName" label="版块名称" min-width="180"></el-table-column>
       <el-table-column prop="serialNumber" label="区域" min-width="100">
         <template slot-scope="scope">
           {{scope.row.serialNumber | filterPagePosition}}

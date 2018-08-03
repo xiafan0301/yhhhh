@@ -2,10 +2,10 @@
   <div class="vis-bg-plate">
     <div class="bg-plate-et">
       <div class="bg-plate-bd">
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>首页</el-breadcrumb-item>
+        <el-breadcrumb separator-class="el-icon-arrow-right">
+          <!-- <el-breadcrumb-item>首页</el-breadcrumb-item> -->
           <el-breadcrumb-item :to="{name: 'plate-list'}">版块管理</el-breadcrumb-item>
-          <el-breadcrumb-item>添加板块</el-breadcrumb-item>
+          <el-breadcrumb-item>添加/修改版块</el-breadcrumb-item>
         </el-breadcrumb>
       </div>
       <!-- 进度控制 -->
@@ -43,7 +43,7 @@
           </template>
         </template>
         <template v-else-if='this.$store.state.styleType === 2'>
-          <!-- <div is='plateRMapEdit' @getMapDataList='getMapDataList'></div> -->
+          <div is='plateRMapEdit' @getMapDataList='getMapDataList'></div>
           <div is='fillDataMapEdit' :mapDataList='mapDataList'></div>
         </template>
       </div>
@@ -67,6 +67,9 @@ export default {
       mapDataList: [],
       value: ''
     }
+  },
+  created () {
+    this.$store.commit('setProgressIndex', {progressIndex: 2});
   },
   methods: {
     getData (val) {
