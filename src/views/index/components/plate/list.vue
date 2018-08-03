@@ -80,10 +80,11 @@ export default {
   },
   created () {
     this.getPageList();
-    this.getPlateList();
   },
   mounted () {
     this.$store.commit('setStyleType', {styleType: 1});
+    this.searchForm.pageId = this.$route.query.pageId;
+    this.getPlateList();
   },
   methods: {
     // 获取所有的页面

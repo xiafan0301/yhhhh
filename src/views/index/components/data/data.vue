@@ -18,7 +18,7 @@
       </el-form>
       <!--贫困村添加-->
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
-      <el-upload action="http://10.16.3.40:8080/api/vis/mapServices/data/excelImport" :with-credentials='true'>
+      <el-upload action="http://10.16.3.40:8080/api/vis/mapServices/data/excelImport">
         <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="u[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
@@ -118,7 +118,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
-            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>gi
           </template>
         </el-table-column>
       </el-table>
@@ -421,144 +421,98 @@
         </el-table-column>
       </el-table>
       <!--修改弹窗-->
-      <el-dialog title="修改" :visible.sync="dialogFormVisible" width="500px"  >
-        <el-form :model="form" ref ="form" >
-          <el-form-item label="村名" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'">
+      <el-dialog title="修改" :visible.sync="dialogFormVisible" width="600px"  >
+        <el-form :model="form" ref ="form"  :rules="rulesx" style="padding-right: 60px;" >
+          <el-form-item :label="getName" :label-width="formLabelWidth" prop="name">
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="规上工业企业名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="规上商贸企业名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="规上建筑企业名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="医疗机构名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="学校名" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="停车场名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="养老机构名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="项目名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="空气监测站点名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '25c2ec86-a62e-45c2-a3e7-49a121a1f56d'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="水位监测站点名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '88ee0a59-19a0-4e42-b4d2-bae59634e110'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="文化旅游建筑名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd633bafc-74d0-4f0d-bea5-927ef2df4192'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="政务部门名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd42795ca-dad6-4531-aed7-eb75f3d3646d'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="重点监控污染企业名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'f90edff9-7f21-48e0-9ce4-472377825dae'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="公共车站名称" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'e5654a00-c642-44f3-a340-2827f51367d6'">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="坐标" :label-width="formLabelWidth">
+          <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
             <el-input v-model="form.coordinate" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
+          <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数量" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
+          <el-form-item label="床位数量" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="停车位数量" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
+          <el-form-item label="停车位数量" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="级别" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
-            <el-input v-model="form.households" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="师生人数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
-            <el-input v-model="form.pople" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="类型" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="类型" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="工作人员数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="工作人员数" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.teacher" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
+            <el-input v-model="form.level" auto-complete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="床位数" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.student" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="贫困户数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'">
+          <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
+                        v-if="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'||
+                               this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'||this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
             <el-input v-model="form.households" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="注册资金" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'|| this.searchForm.dataTypeId =='1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
-            <el-input v-model="form.households" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="贫困人数" :label-width="formLabelWidth"  v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'">
+          <el-form-item :label="getpPoples" :label-width="formLabelWidth" prop="pople"
+                        v-if="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'||this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'||
+                               this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'||this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
             <el-input v-model="form.pople" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="员工人数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'|| this.searchForm.dataTypeId =='1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
-            <el-input v-model="form.pople" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="地址" :label-width="formLabelWidth">
+          <el-form-item label="地址" :label-width="formLabelWidth" prop="addrs">
             <el-input v-model="form.addrs" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="sure5()" v-show="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'||this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">确 定</el-button>
-          <el-button type="primary" @click="sure6()" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">确 定</el-button>
-          <el-button type="primary" @click="sure4()" v-show="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'||this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'||this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">确 定</el-button>
-          <el-button type="primary" @click="surepk5()" v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'">确 定</el-button>
+          <el-button type="primary" @click="sure5('form')" v-show="this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">确 定</el-button>
+          <el-button type="primary" @click="sure6('form')" v-show="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">确 定</el-button>
+          <el-button type="primary" @click="sure4('form')" v-show="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'||this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'||this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">确 定</el-button>
+          <el-button type="primary" @click="surepk5('form')" v-show="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'">确 定</el-button>
+          <el-button type="primary" @click="surejy5('form')" v-show="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">确 定</el-button>
           <el-button
-            type="primary" @click="sure3()"
+            type="primary" @click="sure3('form')"
             v-show="this.searchForm.dataTypeId == '25c2ec86-a62e-45c2-a3e7-49a121a1f56d'
             ||this.searchForm.dataTypeId == '88ee0a59-19a0-4e42-b4d2-bae59634e110'||this.searchForm.dataTypeId == 'd633bafc-74d0-4f0d-bea5-927ef2df4192'||this.searchForm.dataTypeId == 'd42795ca-dad6-4531-aed7-eb75f3d3646d'||this.searchForm.dataTypeId == 'f90edff9-7f21-48e0-9ce4-472377825dae'||this.searchForm.dataTypeId == 'e5654a00-c642-44f3-a340-2827f51367d6'">确 定</el-button>
         </div>
       </el-dialog>
       <!--块修改弹窗-->
-      <el-dialog title="修改" :visible.sync="dialogFormVisible2" width="500px"  >
-        <el-form :model="form" ref ="form" >
-          <el-form-item label="镇名称" :label-width="formLabelWidth">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
+      <el-dialog title="修改" :visible.sync="dialogFormVisible2" width="600px"  >
+        <el-form :model="form2" ref ="form2" :rules="rule2" style="padding-right: 60px;">
+          <el-form-item label="镇名称" :label-width="formLabelWidth" prop="name">
+            <el-input v-model ="form2.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="坐标" :label-width="formLabelWidth">
-            <el-input v-model="form.coordinate" auto-complete="off"></el-input>
+          <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
+            <el-input v-model="form2.coordinate" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="人口数量" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label="人口数量" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="企业数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label="企业数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="外出务工人数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label="外出务工人数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="贫困人口数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label="贫困人口数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="财政人员数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '3c7944d7-d874-4478-a25a-e75fc2020d96'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label="财政人员数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '3c7944d7-d874-4478-a25a-e75fc2020d96'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="党员分布数" :label-width="formLabelWidth" v-show="this.searchForm.dataTypeId == '8a8071f2-2909-4fc7-8125-c2d58aac8263'">
-            <el-input v-model="form.addrs" auto-complete="off"></el-input>
+          <el-form-item label ="党员分布数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" prop="addrs">
+            <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="surek3()">确定</el-button>
+          <el-button type="primary" @click="surek3('form2')">确定</el-button>
         </div>
       </el-dialog>
       <!--添加弹窗-->
-      <el-dialog title="添加" :visible.sync="dialogFormVisible1" width="500px"  >
-        <el-form :model="form1" ref ="form1"  :rules="rules">
+      <el-dialog title="添加" :visible.sync="dialogFormVisible1" width="600px"  >
+        <el-form :model="form1" ref ="form1"  :rules="rules" style="padding-right: 60px;">
           <el-form-item :label="getName" :label-width="formLabelWidth" prop="name">
             <el-input v-model="form1.name" auto-complete="off"></el-input>
           </el-form-item>
@@ -580,11 +534,14 @@
           <el-form-item label="工作人员数" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.teacher" auto-complete="off"></el-input>
           </el-form-item>
+          <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
+            <el-input v-model="form1.level" auto-complete="off"></el-input>
+          </el-form-item>
           <el-form-item label="床位数" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.student" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
-                        v-if="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'||this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'||
+                        v-if="this.searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'||
                                this.searchForm.dataTypeId == '61894e2c-7738-41af-b797-b8d735a44428'||this.searchForm.dataTypeId == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'||this.searchForm.dataTypeId == '9487e07e-6b2f-49c6-b464-2216a680cc3e'">
             <el-input v-model="form1.households" auto-complete="off"></el-input>
           </el-form-item>
@@ -626,6 +583,7 @@
       </el-dialog>
       <div class="bg-plate-tbp" v-if="u[searchForm.dataTypeId]">
         <el-pagination
+          background
           @size-change="pagerSizeChange"
           @current-change="pagerCurrChange"
           :current-page="pageNum"
@@ -674,6 +632,11 @@ export default {
         student: '',
         number: ''
       },
+      form2: {
+        name: '',
+        addrs: '',
+        coordinate: ''
+      },
       // 添加表单验证
       rules: {
         name: [
@@ -686,22 +649,73 @@ export default {
           {required: true, message: '请输入地址', trigger: 'blur'}
         ],
         number: [
-          {required: true, message: '不能为空', trigger: 'blur'}
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^-?\d*\.?\d*$/, message: '必须为数字值'}
         ],
         households: [
-          {required: true, message: '不能为空', trigger: 'blur'}
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^-?\d*\.?\d*$/, message: '必须为数字值'}
         ],
         pople: [
-          {required: true, message: '不能为空', trigger: 'blur'}
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
         ],
         level: [
           {required: true, message: '不能为空', trigger: 'blur'}
         ],
         teacher: [
-          {required: true, message: '不能为空', trigger: 'blur'}
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
         ],
         student: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
+        ]
+      },
+      rulesx: {
+        name: [
+          {required: true, message: '请输入名称', trigger: 'blur'}
+        ],
+        coordinate: [
+          {required: true, message: '请输入坐标', trigger: 'blur'}
+        ],
+        addrs: [
+          {required: true, message: '请输入地址', trigger: 'blur'}
+        ],
+        number: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^-?\d*\.?\d*$/, message: '必须为数字值'}
+        ],
+        households: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^-?\d*\.?\d*$/, message: '必须为数字值'}
+        ],
+        pople: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
+        ],
+        level: [
           {required: true, message: '不能为空', trigger: 'blur'}
+        ],
+        teacher: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
+        ],
+        student: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
+        ]
+      },
+      rule2: {
+        name: [
+          {required: true, message: '请输入名称', trigger: 'blur'}
+        ],
+        coordinate: [
+          {required: true, message: '请输入坐标', trigger: 'blur'}
+        ],
+        addrs: [
+          {required: true, message: '不能为空', trigger: 'blur'},
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
         ]
       },
       obj: {},
@@ -1071,7 +1085,6 @@ export default {
       },
       households: {
         '4fce5edb-7092-4455-971b-6f8526d6a827': '贫困户数',
-        '739fe4f5-49c6-42ca-ba87-76f5300ab5af': '级别',
         '61894e2c-7738-41af-b797-b8d735a44428': '注册资金',
         '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '注册资金',
         '9487e07e-6b2f-49c6-b464-2216a680cc3e': '注册资金'
@@ -1151,6 +1164,7 @@ export default {
     },
     // 修改5号数据
     modify5 (scope) {
+      this.resetFormpk('form');
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
@@ -1194,22 +1208,94 @@ export default {
       this.form.pople = this.obj.dataExtendList[2].valueContent;
       this.form.addrs = this.obj.dataExtendList[0].valueContent;
     },
-    sure5 () {
-      this.dialogFormVisible = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[1].valueContent = this.form.households;
-      params.dataExtendList[2].valueContent = this.form.pople;
-      params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    sure5 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[1].valueContent = this.form.households;
+          params.dataExtendList[2].valueContent = this.form.pople;
+          params.dataExtendList[0].valueContent = this.form.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    modifyjy5 (scope) {
+      this.resetFormpk('form');
+      this.dialogFormVisible = true;
+      this.obj = {
+        dataExtendList: [
+          {
+            extendId: scope.row.dataExtendList[0].extendId,
+            dataId: scope.row.dataExtendList[0].dataId,
+            contentName: scope.row.dataExtendList[0].contentName,
+            valueContent: scope.row.dataExtendList[0].valueContent,
+            valueUnit: scope.row.dataExtendList[0].valueUnit,
+            serialNumber: scope.row.dataExtendList[0].serialNumber
+          },
+          {
+            extendId: scope.row.dataExtendList[1].extendId,
+            dataId: scope.row.dataExtendList[1].dataId,
+            contentName: scope.row.dataExtendList[1].contentName,
+            valueContent: scope.row.dataExtendList[1].valueContent,
+            valueUnit: scope.row.dataExtendList[1].valueUnit,
+            serialNumber: scope.row.dataExtendList[1].serialNumber
+          },
+          {
+            extendId: scope.row.dataExtendList[2].extendId,
+            dataId: scope.row.dataExtendList[2].dataId,
+            contentName: scope.row.dataExtendList[2].contentName,
+            valueContent: scope.row.dataExtendList[2].valueContent,
+            valueUnit: scope.row.dataExtendList[2].valueUnit,
+            serialNumber: scope.row.dataExtendList[2].serialNumber
+          }
+        ],
+        dataId: scope.row.dataId,
+        dataTypeId: scope.row.dataTypeId,
+        iconType: scope.row.iconType,
+        latitude: scope.row.latitude,
+        locationName: scope.row.locationName,
+        locationTag: scope.row.locationTag,
+        longitude: scope.row.longitude
+      };
+      console.log(scope);
+      this.form.name = this.obj.locationName;
+      this.form.level = this.obj.dataExtendList[1].valueContent;
+      this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
+      this.form.pople = this.obj.dataExtendList[2].valueContent;
+      this.form.addrs = this.obj.dataExtendList[0].valueContent;
+    },
+    surejy5 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[1].valueContent = this.form.level;
+          params.dataExtendList[2].valueContent = this.form.pople;
+          params.dataExtendList[0].valueContent = this.form.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 修改贫困5号数据
     modifypk5 (scope) {
+      this.resetFormpk('form');
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
@@ -1253,22 +1339,34 @@ export default {
       this.form.pople = this.obj.dataExtendList[1].valueContent;
       this.form.addrs = this.obj.dataExtendList[2].valueContent;
     },
-    surepk5 () {
-      this.dialogFormVisible = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[0].valueContent = this.form.households;
-      params.dataExtendList[1].valueContent = this.form.pople;
-      params.dataExtendList[2].valueContent = this.form.addrs;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    surepk5 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[0].valueContent = this.form.households;
+          params.dataExtendList[1].valueContent = this.form.pople;
+          params.dataExtendList[2].valueContent = this.form.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+              this.dialogFormVisible = false;
+            });
+        } else {
+          return false;
+        }
+      });
+    },
+    resetFormpk (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
     },
     // 修改6号数据
     modify6 (scope) {
+      this.resetFormpk('form');
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
@@ -1321,23 +1419,30 @@ export default {
       this.form.addrs = this.obj.dataExtendList[0].valueContent;
       console.log(this.obj)
     },
-    sure6 () {
-      this.dialogFormVisible = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[2].valueContent = this.form.level;
-      params.dataExtendList[3].valueContent = this.form.teacher;
-      params.dataExtendList[1].valueContent = this.form.student;
-      params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    sure6 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[2].valueContent = this.form.level;
+          params.dataExtendList[3].valueContent = this.form.teacher;
+          params.dataExtendList[1].valueContent = this.form.student;
+          params.dataExtendList[0].valueContent = this.form.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 修改4号数据
     modify4 (scope) {
+      this.resetFormpk('form');
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
@@ -1371,21 +1476,28 @@ export default {
       this.form.number = this.obj.dataExtendList[1].valueContent;
       this.form.addrs = this.obj.dataExtendList[0].valueContent;
     },
-    sure4 () {
-      this.dialogFormVisible = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[0].valueContent = this.form.addrs;
-      params.dataExtendList[1].valueContent = this.form.number;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    sure4 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[0].valueContent = this.form.addrs;
+          params.dataExtendList[1].valueContent = this.form.number;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 修改3号数据
     modify3 (scope) {
+      this.resetFormpk('form');
       this.dialogFormVisible = true;
       this.obj = {
         dataExtendList: [
@@ -1411,20 +1523,27 @@ export default {
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.addrs = this.obj.dataExtendList[0].valueContent
     },
-    sure3 () {
-      this.dialogFormVisible = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    sure3 (form) {
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.dialogFormVisible = false;
+          let params = this.obj;
+          params.locationName = this.form.name;
+          params.longitude = this.form.coordinate.split(',')[0];
+          params.latitude = this.form.coordinate.split(',')[1];
+          params.dataExtendList[0].valueContent = this.form.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 修改块数据
     modifyk3 (scope) {
+      this.resetFormk('form2');
       this.dialogFormVisible2 = true;
       this.obj = {
         dataExtendList: [
@@ -1446,21 +1565,32 @@ export default {
         longitude: scope.row.longitude
       };
       console.log(this.obj);
-      this.form.name = this.obj.locationName;
-      this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
-      this.form.addrs = this.obj.dataExtendList[0].valueContent
+      this.form2.name = this.obj.locationName;
+      this.form2.coordinate = this.obj.longitude + ',' + this.obj.latitude;
+      this.form2.addrs = this.obj.dataExtendList[0].valueContent
     },
-    surek3 () {
-      this.dialogFormVisible2 = false;
-      let params = this.obj;
-      params.locationName = this.form.name;
-      params.longitude = this.form.coordinate.split(',')[0];
-      params.latitude = this.form.coordinate.split(',')[1];
-      params.dataExtendList[0].valueContent = this.form.addrs;
-      this.axios.put('/mapServices/datas', params)
-        .then(res => {
-          this.getPlateList();
-        });
+    resetFormk (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
+    },
+    surek3 (form2) {
+      this.$refs[form2].validate((valid) => {
+        if (valid) {
+          let params = this.obj;
+          params.locationName = this.form2.name;
+          params.longitude = this.form2.coordinate.split(',')[0];
+          params.latitude = this.form2.coordinate.split(',')[1];
+          params.dataExtendList[0].valueContent = this.form2.addrs;
+          this.axios.put('/mapServices/datas', params)
+            .then(res => {
+              this.dialogFormVisible2 = false;
+              this.getPlateList();
+            });
+        } else {
+          return false;
+        }
+      });
     },
     // 删除数据
     shchu (scope) {
@@ -1584,7 +1714,7 @@ export default {
           this.Tobjjyzy.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjjyzy.latitude = this.form1.coordinate.split(',')[1];
           this.Tobjjyzy.dataExtendList[2].valueContent = this.form1.pople;
-          this.Tobjjyzy.dataExtendList[1].valueContent = this.form1.households;
+          this.Tobjjyzy.dataExtendList[1].valueContent = this.form1.level;
           this.Tobjjyzy.dataExtendList[0].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjjyzy)
             .then(res => {
@@ -1788,14 +1918,16 @@ export default {
   .bg-plate-sf {
     padding-top: 20px;
     position: relative;
+    height: 80px;
     .add-plate-btn {
       position: absolute; top: 22px; right: 195px;
+      background: linear-gradient(to top, #0785FD, #07BAFD);
     }
     .add-plate-btnf{
       position: absolute; top: 22px; right: 95px
     }
     .add-plate-btns{
-      position: absolute; top: 26px; right: 20px;
+      position: absolute; top: 28px; right: 25px;
       border: none;
       display: inline-block;
     }
