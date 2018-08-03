@@ -2,8 +2,8 @@
   <div class="ba-not">
     <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>发布消息</el-breadcrumb-item>
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
+        <el-breadcrumb-item>公告管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="clearfix" style="position: relative;">
@@ -14,11 +14,6 @@
           </el-select>
         </el-form-item>
         <el-form-item label="发布状态：">
-          <el-select v-model="searchForm.deviceStatus" style="width: 100px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消息类型：">
           <el-select v-model="searchForm.deviceStatus" style="width: 100px;" placeholder="设备状态">
             <el-option label="全部" :value="0"></el-option>
           </el-select>
@@ -52,7 +47,6 @@
         </template>
       </el-table-column>
       <el-table-column prop="deviceIp" label="摘要" min-width="140"></el-table-column>
-      <el-table-column prop="devicePort" label="消息类型" width="100"></el-table-column>
       <el-table-column prop="channelId" label="接收者" width="100"></el-table-column>
       <el-table-column prop="streamType" label="发布用户" width="100">
         <template slot-scope="scope">
@@ -73,9 +67,10 @@
       <el-table-column prop="deviceUserPassword" label="发布状态" width="120"></el-table-column>
       <el-table-column
         label="操作"
-        width="120">
+        width="150">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="edit(scope.row)">编辑</el-button>
+          <el-button size="mini" type="text" @click="see()">查看</el-button>
+          <el-button type="text" slot="reference" @click="modify()">修改</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -92,7 +87,23 @@ export default {
         deviceIp: '',
         deviceStatus: 0
       },
-      tableData: []
+      tableData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }]
     }
   },
   computed: {
@@ -106,7 +117,19 @@ export default {
     },
     showEditDialog (flag) {
       // this.editDialogVisible = flag;
-      this.$router.push({name: 'notice-release', params: {plateId: '0'}});
+      this.$router.push({name: 'notice-release', query: {release: true}});
+    },
+    modify () {
+      this.visible2 = false;
+      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
+    },
+    modifyxt () {
+      this.visible2 = false;
+      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
+    },
+    see () {
+      this.visible2 = false;
+      this.$router.push({name: 'notice-see', query: {modify: false}, params: {plateId: '0'}});
     }
   }
 }

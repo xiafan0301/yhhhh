@@ -1,24 +1,26 @@
 <template>
   <div class="vis-bg-plate">
     <div class="bg-plate-bd">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
-        <el-breadcrumb-item><span style="color:#0785FD;font-size:14px;">版块管理</span></el-breadcrumb-item>
+      <el-breadcrumb>
+        <el-breadcrumb-item>
+          <span style="color:#0785FD;font-size:14px;">版块管理</span>
+          <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item label="筛选查找">
-          <el-select @change="pageChange" v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;">
+          <el-select v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;">
             <el-option  v-for="(item, index) in pageList" :label="item.pageName" :value="item.pageId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click.native="searchFormSubmit" type="primary">查询</el-button>
+          <el-button icon="el-icon-search" @click.native="searchFormSubmit" type="primary" class="selectBtn">查询</el-button>
           <el-button @click.native="searchFormReset">重置</el-button>
         </el-form-item>
       </el-form>
-      <el-button type="primary" size="small" @click.native="showEditDialog(true)" class="add-plate-btn">添加板块</el-button>
+      <el-button type="primary" size="small" @click.native="showEditDialog(true)" class="add-plate-btn selectBtn">添加版块</el-button>
     </div>
     <div class="bg-plate-tb">
       <el-table :data="plateList"  highlight-current-row style="width: 100%;">
@@ -36,12 +38,12 @@
             <el-button type="text" @click='editPlate(scope.row.plateId)'>修改</el-button>
             <span class='separation'>|</span>
             <el-button type="text" id='delete' class="vis-bg-del-btn" @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
-            <!-- <el-button type="text">删除</el-button> -->
           </template>
         </el-table-column>
       </el-table>
       <div class="bg-plate-tbp">
         <el-pagination
+          background
           @size-change="pagerSizeChange"
           @current-change="pagerCurrChange"
           :current-page="pager.pageNum"
@@ -52,19 +54,6 @@
         </el-pagination>
       </div>
     </div>
-    <!-- 新增/修改板块 dialog :close-on-click-modal="false" -->
-    <el-dialog
-      title="新增/修改板块"
-      :visible.sync="editDialogVisible"
-      width="800px">
-      <div>
-        <el-steps :space="200" :active="1" finish-status="success" align-center>
-          <el-step title="已完成"></el-step>
-          <el-step title="进行中"></el-step>
-          <el-step title="步骤 3"></el-step>
-        </el-steps>
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -91,10 +80,11 @@ export default {
   },
   created () {
     this.getPageList();
-    this.getPlateList();
   },
   mounted () {
-    // this.showEditDialog(true);
+    this.$store.commit('setStyleType', {styleType: 1});
+    this.searchForm.pageId = this.$route.query.pageId;
+    this.getPlateList();
   },
   methods: {
     // 获取所有的页面
@@ -108,14 +98,6 @@ export default {
           this.pageList = res.data.list;
         })
         .catch(() => {});
-    },
-
-    pageChange (val) {
-      // console.log(val)
-      this.$nextTick(() => {
-        this.pager.pageNum = 1;
-        this.getPlateList();
-      });
     },
     searchFormSubmit () {
       this.pager.pageNum = 1;
@@ -153,10 +135,9 @@ export default {
       this.$router.push({name: 'plate-add', params: {plateId: '0'}});
     },
     showTypeChange (item) {
-      console.log(item)
       // active 已经变了
     },
-    deletePlate (plateId) { // 删除板块
+    deletePlate (plateId) { // 删除版块
       this.$confirm('确定删除该版块吗?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -184,7 +165,7 @@ export default {
         });
       });
     },
-    editPlate (plateId) { // 修改板块
+    editPlate (plateId) { // 修改版块
       if (plateId) {
         this.axios.get('/plateServices/managers/' + plateId + '')
           .then((res) => {
@@ -201,11 +182,7 @@ export default {
                 positionId: res.data.visPagePlate.positionId
               }
               this.$store.commit('setStyleType', {styleType: res.data.plateType});
-              if (res.data.plateType === 1) {
-                this.$store.commit('setProgressIndex', {progressIndex: 2});
-              } else {
-                this.$store.commit('setProgressIndex', {progressIndex: 3});
-              }
+              this.$store.commit('setProgressIndex', {progressIndex: 2});
               this.$emit('setDataList', this.newDataList);
               this.$store.commit('setEditPlateInfo', {editPlateInfo: res.data});
               this.$store.commit('setPlateInfo', {plateInfo: data});
@@ -223,7 +200,7 @@ export default {
 * 31：中一，32：中二，中间地图其它类推
 *
 * plateType
-* 板块类型，1：为图形板块默认，2：地图板块
+* 版块类型，1：为图形版块默认，2：地图版块
 * */
 function getTestData () {
   return [
@@ -265,5 +242,11 @@ function getTestData () {
       text-align: right;
       padding: 20px 20px 0 0;
     }
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
 </style>

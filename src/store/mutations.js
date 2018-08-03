@@ -20,11 +20,11 @@ export default {
   setProgressIndex (state, options) {
     state.progressIndex = options.progressIndex;
   },
-  // 板块配置信息
+  // 版块配置信息
   setConfigInfo (state, options) {
     state.plateConfigInfo = options.plateConfigInfo;
   },
-  // 板块信息
+  // 版块信息
   setPlateInfo (state, options) {
     state.plateInfo = options.plateInfo;
   },

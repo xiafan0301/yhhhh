@@ -9,7 +9,7 @@
       <div class='position-select'>
         <div>
           <span>位置1</span>
-          <el-select v-model='relationValue1' placeholder="选择数据组件" @change="changeMapType1">
+          <el-select v-model='relationValue1' placeholder="选择数据组件" :class="{isActive: borderActive === 1}" @change="changeMapType1">
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList1'
@@ -22,7 +22,7 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select :disabled="isDisabled2" v-model="relationValue2" placeholder="选择数据组件" @change='changeMapType2'>
+          <el-select :disabled="isDisabled2" v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList2'
@@ -35,7 +35,7 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select :disabled="isDisabled3" v-model="relationValue3" placeholder="选择数据组件" @change='changeMapType3'>
+          <el-select :disabled="isDisabled3" v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList3'
@@ -48,7 +48,7 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select :disabled="isDisabled4" v-model="relationValue4" placeholder="选择数据组件" @change='changeMapType4'>
+          <el-select :disabled="isDisabled4" v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList4'
@@ -264,7 +264,7 @@
   </div>
   <div class="plate-ecl-b">
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -275,6 +275,7 @@ export default {
   data () {
     return {
       tip: '',
+      borderActive: 1,
       isActive1: 0,
       isActive2: 0,
       isActive3: 0,
@@ -292,6 +293,13 @@ export default {
       displayType2: '',
       displayType3: '',
       displayType4: '',
+      plateId1: '',
+      plateId2: '',
+      plateId3: '',
+      plateId4: '',
+      pageId: '',
+      plateAreaId: '',
+      configId: '',
       isDisabled4: false,
       isDisabled3: false,
       isDisabled2: false,
@@ -308,59 +316,113 @@ export default {
       dataList: []
     }
   },
+  watch: {
+    mapDataList (newVal) {
+      if (this.mapDataList.length > 0) {
+        this.mapDataList.map((items, index) => {
+          const serialNumber = items.visPagePlate.visPlatePosition.serialNumber;
+          const plateName = items.plateName;
+          this.pageId = this.$store.state.mapPageId;
+          this.configId = items.configId;
+          this.plateAreaId = items.areaInfoList[0].plateAreaId;
+          if (serialNumber === 31) {
+            this.relationValue1 = plateName;
+            this.plateId1 = items.plateId;
+            this.displayType1 = items.displayType;
+            this.typeId1 = items.typeId;
+          } else if (serialNumber === 32) {
+            this.relationValue2 = plateName;
+            this.plateId2 = items.plateId;
+            this.displayType2 = items.displayType;
+            this.typeId2 = items.typeId;
+          } else if (serialNumber === 33) {
+            this.relationValue3 = plateName;
+            this.plateId3 = items.plateId;
+            this.displayType3 = items.displayType;
+            this.typeId3 = items.typeId;
+          } else if (serialNumber === 34) {
+            this.relationValue4 = plateName;
+            this.plateId4 = items.plateId;
+            this.displayType4 = items.displayType;
+            this.typeId4 = items.typeId;
+          }
+          if (items.areaInfoList) {
+            if (items.areaInfoList[0].contentItemList.length > 0) {
+              items.areaInfoList[0].contentItemList.map((item, idx) => {
+                if (serialNumber === 31) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
+                  this.dataList1.push(data);
+                  this.isActive1 = items.areaInfoList[0].contentItemList.length - 1;
+                } else if (serialNumber === 32) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
+                  this.dataList2.push(data);
+                  this.isActive2 = items.areaInfoList[0].contentItemList.length - 1;
+                } else if (serialNumber === 33) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
+                  this.dataList3.push(data);
+                  this.isActive3 = items.areaInfoList[0].contentItemList.length - 1;
+                } else if (serialNumber === 34) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
+                  this.dataList4.push(data);
+                  this.isActive4 = items.areaInfoList[0].contentItemList.length - 1;
+                }
+              });
+            }
+          }
+        });
+      } else {
+        this.relationValue1 = '';
+        this.relationValue2 = '';
+        this.relationValue3 = '';
+        this.relationValue4 = '';
+        this.dataList1 = [];
+        this.dataList2 = [];
+        this.dataList3 = [];
+        this.dataList4 = [];
+        this.plateId1 = '';
+        this.plateId2 = '';
+        this.plateId3 = '';
+        this.plateId4 = '';
+      }
+    }
+  },
   mounted () {
     this.setInitialData();
   },
   methods: {
     handleClick (index) {
       this.isChanged = index;
-      if (index === 2) {
-      }
+      this.borderActive = index;
     },
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
     },
     nextStep () {
-      let totalDataList = [],
-        plateAreaId = '',
-        plateId1 = '',
-        plateId2 = '',
-        plateId3 = '',
-        plateId4 = '',
-        pageId = '',
-        configId = '';
-      if (this.dataList.length > 0) {
-        this.dataList.map((item, index) => {
-          const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
-          pageId = item.visPagePlate.pageId;
-          configId = item.configId;
-          plateAreaId = item.areaInfoList[0].plateAreaId;
-          if (serialNumber === 31) {
-            plateId1 = item.plateId;
-            this.displayType1 = item.displayType;
-            this.typeId1 = item.typeId;
-          } else if (serialNumber === 32) {
-            plateId2 = item.plateId;
-            this.displayType2 = item.displayType;
-            this.typeId2 = item.typeId;
-          } else if (serialNumber === 33) {
-            plateId3 = item.plateId;
-            this.displayType3 = item.displayType;
-            this.typeId3 = item.typeId;
-          } else if (serialNumber === 34) {
-            plateId4 = item.plateId;
-            this.displayType4 = item.displayType;
-            this.typeId4 = item.typeId;
-          }
-        });
-      }
+      let totalDataList = [];
+      const pageId = this.$store.state.mapPageId;
       let dataArrOne = {
         pageId: pageId,
-        configId: configId,
+        configId: this.configId,
         plateName: this.relationValue1,
         remark: '',
         plateType: 2,
-        plateId: plateId1,
+        plateId: this.plateId1,
         positionId: this.positionIdList[0].positionId,
         jumpPageId: '',
         displayType: this.displayType1,
@@ -369,11 +431,11 @@ export default {
       };
       let dataArrTwo = {
         pageId: pageId,
-        configId: configId,
+        configId: this.configId,
         plateName: this.relationValue2,
         remark: '',
         plateType: 2,
-        plateId: plateId2,
+        plateId: this.plateId2,
         positionId: this.positionIdList[1].positionId,
         jumpPageId: '',
         displayType: this.displayType2,
@@ -382,11 +444,11 @@ export default {
       };
       let dataArrThree = {
         pageId: pageId,
-        configId: configId,
+        configId: this.configId,
         plateName: this.relationValue3,
         remark: '',
         plateType: 2,
-        plateId: plateId3,
+        plateId: this.plateId3,
         positionId: this.positionIdList[2].positionId,
         jumpPageId: '',
         displayType: this.displayType3,
@@ -395,11 +457,11 @@ export default {
       };
       let dataArrFour = {
         pageId: pageId,
-        configId: configId,
+        configId: this.configId,
         plateName: this.relationValue4,
         remark: '',
         plateType: 2,
-        plateId: plateId4,
+        plateId: this.plateId4,
         positionId: this.positionIdList[3].positionId,
         jumpPageId: '',
         displayType: this.displayType4,
@@ -410,7 +472,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: plateAreaId,
+            plateAreaId: this.plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -430,7 +492,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: plateAreaId,
+            plateAreaId: this.plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -450,7 +512,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: plateAreaId,
+            plateAreaId: this.plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -470,7 +532,7 @@ export default {
         if (item.name || item.value || item.unit) {
           const data = {
             itemName: item.name,
-            plateAreaId: plateAreaId,
+            plateAreaId: this.plateAreaId,
             serialNumber: index + 1,
             contentSubItemList: [{
               contentName: item.name,
@@ -501,14 +563,13 @@ export default {
       const params = {
         visPlates: totalDataList
       }
-      // console.log(totalDataList)
       this.axios.put('/plateServices/platesBatch', params.visPlates)
         .then((res) => {
           if (res) {
             if (res.data.length > 0) {
               this.$message({
                 showClose: true,
-                message: '修改板块成功',
+                message: '修改版块成功',
                 type: 'success'
               });
               this.$router.push({name: 'plate-list'});
@@ -516,7 +577,7 @@ export default {
             } else {
               this.$message({
                 showClose: true,
-                message: '修改板块失败',
+                message: '修改版块失败',
                 type: 'error'
               });
             }
@@ -732,71 +793,11 @@ export default {
       this.isActive4 = this.dataList4.length - 1;
     },
     setInitialData () { // 设置初始化数据
-      const pageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
-      this.axios.get('/plateServices/managers/byPageId/' + pageId + '')
-        .then((res) => {
-          console.log(res)
-          if (res && res.data) {
-            this.dataList = res.data;
-            res.data.map((item, index) => {
-              const serialNumber = item.visPagePlate.visPlatePosition.serialNumber;
-              const plateName = item.plateName;
-              if (serialNumber === 31) {
-                this.relationValue1 = plateName;
-                this.isChanged = 1;
-              } else if (serialNumber === 32) {
-                this.relationValue2 = plateName;
-                this.isChanged = 2;
-              } else if (serialNumber === 33) {
-                this.relationValue3 = plateName;
-                this.isChanged = 3;
-              } else if (serialNumber === 34) {
-                this.relationValue4 = plateName;
-                this.isChanged = 4;
-              }
-              if (item.areaInfoList) {
-                if (item.areaInfoList[0].contentItemList.length > 0) {
-                  item.areaInfoList[0].contentItemList.map((item, idx) => {
-                    if (serialNumber === 31) {
-                      const data = {
-                        name: item.itemName,
-                        value: item.contentSubItemList[0].valueContent,
-                        unit: item.contentSubItemList[0].valueUnit
-                      }
-                      this.dataList1.push(data);
-                      this.isActive1 = item.contentSubItemList.length - 1;
-                    } else if (serialNumber === 32) {
-                      const data = {
-                        name: item.itemName,
-                        value: item.contentSubItemList[0].valueContent,
-                        unit: item.contentSubItemList[0].valueUnit
-                      }
-                      this.dataList2.push(data);
-                      this.isActive2 = item.contentSubItemList.length - 1;
-                    } else if (serialNumber === 33) {
-                      const data = {
-                        name: item.itemName,
-                        value: item.contentSubItemList[0].valueContent,
-                        unit: item.contentSubItemList[0].valueUnit
-                      }
-                      this.dataList3.push(data);
-                      this.isActive3 = item.contentSubItemList.length - 1;
-                    } else if (serialNumber === 34) {
-                      const data = {
-                        name: item.itemName,
-                        value: item.contentSubItemList[0].valueContent,
-                        unit: item.contentSubItemList[0].valueUnit
-                      }
-                      this.dataList4.push(data);
-                      this.isActive4 = item.contentSubItemList.length - 1;
-                    }
-                  });
-                }
-              }
-            });
-          }
-        })
-        .catch(() => {});
+      if (this.$store.state.editPlateInfo) {
+        this.pageId = this.$store.state.mapPageId;
+        this.configId = this.$store.state.plateInfo.configId;
+        this.plateAreaId = this.$store.state.editPlateInfo.areaInfoList[0].plateAreaId;
+      }
       this.axios.get('/mapServices/dataTypes')
         .then((res) => {
           if (res) {
@@ -827,6 +828,12 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   #preBtn {
     color:#0785FD !important;
@@ -874,5 +881,8 @@ export default {
   }
   .active {
     color: #0785FD !important;
+  }
+  .el-select.isActive .el-input .el-input__inner {
+    border-color: #409EFF;
   }
 </style>

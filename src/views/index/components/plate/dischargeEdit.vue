@@ -7,11 +7,11 @@
     </div>
     <div class="plate-ecl2-cr">
       <div>
-        <el-form :inline="true" :model="dataForm" class="demo-form-inline" size="small">
-          <el-form-item label="板块名称" required>
-            <el-input v-model="dataForm.plateName" placeholder="板块名称" maxlength='20'></el-input>
+        <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
+          <el-form-item label="版块名称" prop='plateName'>
+            <el-input v-model="dataForm.plateName" placeholder="版块名称" maxlength='20'></el-input>
           </el-form-item>
-          <el-form-item label="注释">
+          <el-form-item label="注释" prop='remark'>
             <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
           </el-form-item>
         </el-form>
@@ -170,7 +170,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep('dataForm')" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -181,6 +181,13 @@ export default {
   data () {
     return {
       typeArr: [],
+      rules: {
+        plateName: [{
+          required: true,
+          message: '请输入版块名称',
+          trigger: 'blur'
+        }]
+      },
       configCount: 0,
       plateInfoList: [],
       configCountFour: 1,
@@ -318,7 +325,7 @@ export default {
       // this.$store.commit('setConfigInfo', {setConfigInfo: []});
       // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
-    nextStep () {
+    nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
       let data = {}, numberFour3 = [], numberFour5 = [];
       for (let i in this.valueContentFour3) {
@@ -493,31 +500,37 @@ export default {
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
       this.dataObjTwo[0].plateId = this.dataList.plateId;
       if (this.dataObjTwo[0].contentItemList.length > 0) {
-        console.log(this.dataObjTwo[0])
         const params = {
           visPlates: this.dataObjTwo
         }
-        this.axios.put('/plateServices/platesBatch', params.visPlates)
-          .then((res) => {
-            if (res) {
-              if (res.data.length > 0) {
-                this.$message({
-                  showClose: true,
-                  message: '修改板块成功',
-                  type: 'success'
-                });
-                this.$store.commit('setProgressIndex', {progressIndex: 4});
-                this.$router.push({name: 'plate-list'});
-              } else {
-                this.$message({
-                  showClose: true,
-                  message: '修改板块失败',
-                  type: 'error'
-                });
-              }
-            }
-          })
-          .catch(() => {});
+        this.$refs[dataForm].validate((valid) => {
+          if (valid) {
+            this.tip = '';
+            this.axios.put('/plateServices/platesBatch', params.visPlates)
+              .then((res) => {
+                if (res) {
+                  if (res.data.length > 0) {
+                    this.$message({
+                      showClose: true,
+                      message: '修改版块成功',
+                      type: 'success'
+                    });
+                    this.$store.commit('setProgressIndex', {progressIndex: 4});
+                    this.$router.push({name: 'plate-list'});
+                  } else {
+                    this.$message({
+                      showClose: true,
+                      message: '修改版块失败',
+                      type: 'error'
+                    });
+                  }
+                }
+              })
+              .catch(() => {});
+          } else {
+            this.tip = '请输入版块名称';
+          }
+        });
       }
     },
     addChildDataListFour3 (name, unit, idx, maxNumber) { // 类型四添加项
@@ -768,6 +781,12 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .selectBtn {
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   #preBtn {
     color:#0785FD !important;
