@@ -5,7 +5,7 @@
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="gg">公告管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'system'}"  v-if="!gg">系统消息</el-breadcrumb-item>
-        <el-breadcrumb-item  v-if="gg">nnnnnnn</el-breadcrumb-item>
+        <el-breadcrumb-item  v-if="gg">发布公告</el-breadcrumb-item>
         <el-breadcrumb-item  v-if="!gg">发布系统消息</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
