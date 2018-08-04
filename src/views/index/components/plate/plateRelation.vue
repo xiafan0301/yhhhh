@@ -326,8 +326,8 @@ export default {
     flex-wrap: wrap;
     .relation-title {
       width: 100%;
-      height: 60px;
-      line-height: 60px;
+      height: 50px;
+      line-height: 50px;
       background-color: #F0F0F0;
       display: flex;
       justify-content: center;
@@ -346,19 +346,22 @@ export default {
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
-      // background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
-      // background-size: 100% 100%;
+      background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
+      background-size: 100% 100%;
       height: 300px;
       .bg-purple {
         background-color: #FCFCFE;
       }
       .map-body {
+        padding: 0 20px;
+        margin-top: 20px;
         ul {
           display: flex;
           flex-wrap: wrap;
           li {
             width: 50%;
-            height: 100px;
+            height: 65px;
+            margin-bottom: 1%;
           }
           li:nth-child(even) {
             >div {
@@ -371,9 +374,9 @@ export default {
         box-shadow: 2px 1px 8px rgba(79,84,90,0.31);
         border-radius: 4px;
         border: 1px solid #fff;
-        height:65px;
+        height:56px;
         width:289px;
-        line-height: 65px;
+        line-height: 56px;
         position: relative;
         display: flex;
         justify-content: space-around;
@@ -384,11 +387,12 @@ export default {
         }
         .map-button {
           border-radius:4px;
-          height: 50px;
+          height: 36px;
           margin-top:2%;
           margin-right: -10%;
           border: 0;
-          padding: 12px 20px;
+          line-height: 36px;
+          font-size: 14px;
         }
         .close-icon {
           position: absolute;

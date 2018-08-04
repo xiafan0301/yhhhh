@@ -43,10 +43,13 @@
           </li>
         </ul>
       </div>
+      <div class="tag">
+        <em></em>
+        <span></span>
+        展示在此处
+      </div>
     </div>
   </div>
-  <!-- <div class="content">
-  </div> -->
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
@@ -221,6 +224,43 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.tag{
+    width:98px;
+    height:27px;
+    border:1px solid #0785FD;
+    position:relative;
+    background-color:#FFF;
+    color: #0785FD;
+    font-size: 14px;
+    line-height: 27px;
+    text-align: center;
+    position: absolute;
+    left: 48%;
+    top: 7%;
+    border-radius:3px 3px 0px 3px;
+  }
+  .tag em{
+    display:block;
+    border-width:5px;
+    position:absolute;
+    top: 0;
+    right:-10px;
+    border-style:solid dashed dashed;
+    border-color:transparent transparent transparent #0785FD;
+    font-size:0;
+    line-height:0;
+  }
+  .tag span{
+    display:block;
+    border-width:5px;
+    position:absolute;
+    top:0;
+    right:-9px;
+    border-style:solid dashed dashed;
+    border-color:transparent transparent transparent #FFF;
+    font-size:0;
+    line-height:0;
+  }
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
@@ -254,6 +294,8 @@ export default {
       }
     }
     .relation-map {
+      background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
+      background-size: 100% 100%;
       width: 96%;
       margin: 2% 2% 0 2%;
       height: 300px;
@@ -267,12 +309,15 @@ export default {
         background-color: #FCFCFE;
       }
       .map-body {
+        padding: 0 20px;
+        margin-top: 20px;
         ul {
           display: flex;
           flex-wrap: wrap;
           li {
             width: 50%;
-            height: 100px;
+            height: 65px;
+            margin-bottom: 1%;
           }
           .map-name {
             float:right;

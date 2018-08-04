@@ -135,7 +135,7 @@ export default {
   }
   .vis-bg-plate {
     padding: 20px 20px 0 20px;
-    height: 100%;
+    // height: 100%;
     position: relative;
   }
   .bg-plate-bd {
@@ -149,16 +149,16 @@ export default {
     height: 138px;
   }
   .bg-plate-ec {
-    height: 100%;
+    // height: 100%;
     padding-top: 138px; padding-bottom: 20px;
   }
   .bg-plate-ecc {
     width: 100%;
-    height: 100%;
+    // height: 100%;
     border: 1px solid #E3E3E3;
   }
   .bg-plate-ecl {
-    height: 100%;
+    // height: 100%;
     position: relative;
     > .plate-ecl-b {
       position: absolute; bottom: 0; right: 0;
