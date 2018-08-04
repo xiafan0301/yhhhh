@@ -8,30 +8,15 @@
     <div class="clearfix" style="position: relative;width: 100%">
       <el-form style="float: left;width:100%" :inline="true" :model='selectForm' class="demo-form-inline" size="small">
         <el-form-item style="width: 140px;">
-          <el-date-picker v-model='beginDate' type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
+          <el-date-picker v-model='beginDate' type="date" placeholder="开始日期" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 140px;">
-          <el-date-picker v-model='endDate' type="date" placeholder="选择日期" style="width: 100%;"></el-date-picker>
+          <el-date-picker v-model='endDate' type="date" placeholder="结束日期" style="width: 100%;"></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 110px;">
           <el-select placeholder="事件状态" style="width: 100%;">
             <el-option label="全部状态" :value="0"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item style="width: 110px;">
-          <el-select placeholder="事件等级" style="width: 100%;">
-            <el-option label="全部等级" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item style="width: 110px;">
-          <el-select  placeholder="事件来源" style="width: 100%;">
-            <el-option label="全部来源" :value="0"></el-option>
-            <el-option label="可用" :value="1"></el-option>
-            <el-option label="异常" :value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item style="width: 220px;">
-          <el-input placeholder='请输入提交者手机号或事件编号' style='width:110%'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon='el-icon-search' class='selectBtn'>查询</el-button>
@@ -40,21 +25,20 @@
       </el-form>
     </div>
     <div>
-      <el-button type='primary' @click='skipAddEvent'>添加事件</el-button>
+      <el-button type='primary' @click='skipAddEvent'>添加消息</el-button>
     </div>
     <el-table border style="width: 100%">
-      <el-table-column label="事件编号"></el-table-column>
-      <el-table-column label="报案人"></el-table-column>
-      <el-table-column label="角色"></el-table-column>
-      <el-table-column label="来源"></el-table-column>
+      <el-table-column label="序号"></el-table-column>
       <el-table-column label="上报时间"></el-table-column>
       <el-table-column label="事件地点"></el-table-column>
-      <el-table-column label="事件等级"></el-table-column>
-      <el-table-column label="事件状态"></el-table-column>
-      <el-table-column label="是否查看"></el-table-column>
+      <el-table-column label="事件情况"></el-table-column>
+      <el-table-column label="事件数量"></el-table-column>
+      <el-table-column label="评论数量"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button>查看详请</el-button>
+          <el-button>查看</el-button>
+          <el-button>修改</el-button>
+          <el-button>删除</el-button>
         </template>
       </el-table-column>
     </el-table>

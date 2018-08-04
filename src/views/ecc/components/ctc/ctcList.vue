@@ -2,7 +2,7 @@
   <div class="ba-not">
     <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>事件管理</el-breadcrumb-item>
+        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="clearfix" style="position: relative;width: 100%">
@@ -23,38 +23,27 @@
             <el-option label="全部等级" :value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 110px;">
-          <el-select  placeholder="事件来源" style="width: 100%;">
-            <el-option label="全部来源" :value="0"></el-option>
-            <el-option label="可用" :value="1"></el-option>
-            <el-option label="异常" :value="2"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item style="width: 220px;">
-          <el-input placeholder='请输入提交者手机号或事件编号' style='width:110%'></el-input>
-        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon='el-icon-search' class='selectBtn'>查询</el-button>
           <el-button>重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <div>
+    <!-- <div>
       <el-button type='primary' @click='skipAddEvent'>添加事件</el-button>
-    </div>
+    </div> -->
     <el-table border style="width: 100%">
       <el-table-column label="事件编号"></el-table-column>
-      <el-table-column label="报案人"></el-table-column>
-      <el-table-column label="角色"></el-table-column>
-      <el-table-column label="来源"></el-table-column>
-      <el-table-column label="上报时间"></el-table-column>
-      <el-table-column label="事件地点"></el-table-column>
+      <el-table-column label="事件类型"></el-table-column>
       <el-table-column label="事件等级"></el-table-column>
-      <el-table-column label="事件状态"></el-table-column>
-      <el-table-column label="是否查看"></el-table-column>
+      <el-table-column label="受理时间"></el-table-column>
+      <el-table-column label="事件地点"></el-table-column>
+      <el-table-column label="新反馈数"></el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
-          <el-button>查看详请</el-button>
+          <el-button>查看</el-button>
+          <el-button>调度/再次调度</el-button>
+          <el-button>结束</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -78,9 +67,9 @@ export default {
   mounted () {
   },
   methods: {
-    skipAddEvent () {
-      this.$router.push({name: 'add-event'});
-    }
+    // skipAddEvent () {
+    //   this.$router.push({name: 'add-event'});
+    // }
   }
 }
 </script>

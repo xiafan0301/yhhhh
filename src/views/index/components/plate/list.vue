@@ -36,7 +36,7 @@
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click='editPlate(scope.row.plateId)'>修改</el-button>
-            <span class='separation'>|</span>
+            <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 12px 0 12px"></i>
             <el-button type="text" id='delete' class="vis-bg-del-btn" @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
           </template>
         </el-table-column>
@@ -214,6 +214,19 @@ function getTestData () {
     padding: 20px 20px 20px 20px;
     height: 100%;
     overflow: auto;
+  }
+  .el-select-dropdown {
+    background-color: #F7F7F7 !important;
+  }
+  .el-select-dropdown__item.selected {
+    color: #0785FD !important;
+  }
+  .el-select-dropdown__item.hover {
+    color:#fff;
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
   .el-button {
     font-size: 12px !important;

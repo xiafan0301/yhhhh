@@ -74,11 +74,11 @@
             <table class="plate-table" style="width: 100%;">
               <thead>
               <tr>
-                <th>排序</th>
+                <th style='border-left: 1px solid #DDDDDD'>排序</th>
                 <th>项</th>
                 <th>单位</th>
                 <th>值</th>
-                <th>操作</th>
+                <th style='border-right: 1px solid #DDDDDD'>操作</th>
               </tr>
               </thead>
               <tbody>
@@ -95,22 +95,17 @@
                   </td>
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
-                      <i
-                        style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                        class="active el-icon-remove-outline"
+                      <img
+                        :src='reduceImf'
+                        style="cursor: pointer;"
                         @click="deleteDataListOne(item.name, index)"
-                        title="删除此项"
-                      >
-                      </i>
+                      />
                     </template>
-                    <i
-                      style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                      class="el-icon-circle-plus-outline"
-                      :class="[isActive1 === index ? 'active' : 'unactive']"
+                    <img
+                      :src="[isActive1 === index ? addImg : unactiveImg]"
+                      style="cursor: pointer;"
                       @click="addDataListOne(item.name, item.value, item.unit, index)"
-                      title="新增项"
-                    >
-                    </i>
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -121,11 +116,11 @@
             <table class="plate-table" style="width: 100%;">
               <thead>
               <tr>
-                <th>排序</th>
+                <th style='border-left: 1px solid #DDDDDD'>排序</th>
                 <th>项</th>
                 <th>单位</th>
                 <th>值</th>
-                <th>操作</th>
+                <th style='border-right: 1px solid #DDDDDD'>操作</th>
               </tr>
               </thead>
               <tbody>
@@ -142,22 +137,17 @@
                   </td>
                   <td width='15%'>
                     <template v-if="dataList2.length > 1">
-                      <i
-                        style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                        class="active el-icon-remove-outline"
+                      <img
+                        :src='reduceImg'
+                        style="cursor: pointer;"
                         @click="deleteDataListTwo(item.name, index)"
-                        title="删除此项"
-                      >
-                      </i>
+                      />
                     </template>
-                    <i
-                      style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                      class="el-icon-circle-plus-outline"
-                      :class="[isActive2 === index ? 'active' : 'unactive']"
+                    <img
+                      :src="[isActive2 === index ? addImg : unactiveImg]"
+                      style="cursor: pointer;"
                       @click="addDataListTwo(item.name, item.value, item.unit, index)"
-                      title="新增项"
-                    >
-                    </i>
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -168,11 +158,11 @@
             <table class="plate-table" style="width: 100%;">
               <thead>
               <tr>
-                <th>排序</th>
+                <th style='border-left: 1px solid #DDDDDD'>排序</th>
                 <th>项</th>
                 <th>单位</th>
                 <th>值</th>
-                <th>操作</th>
+                <th style='border-right: 1px solid #DDDDDD'>操作</th>
               </tr>
               </thead>
               <tbody>
@@ -189,22 +179,17 @@
                   </td>
                   <td width='15%'>
                     <template v-if="dataList3.length > 1">
-                      <i
-                        style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                        class="active el-icon-remove-outline"
+                      <img
+                        :src='reduceImg'
+                        style="cursor: pointer;"
                         @click="deleteDataListThree(item.name, index)"
-                        title="删除此项"
-                      >
-                      </i>
+                      />
                     </template>
-                    <i
-                      style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                      class="el-icon-circle-plus-outline"
-                      :class="[isActive3 === index ? 'active' : 'unactive']"
+                    <img
+                      :src="[isActive3 === index ? addImg : unactiveImg]"
+                      style="cursor: pointer;"
                       @click="addDataListThree(item.name, item.value, item.unit, index)"
-                      title="新增项"
-                    >
-                    </i>
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -215,11 +200,11 @@
             <table class="plate-table" style="width: 100%;">
               <thead>
               <tr>
-                <th>排序</th>
+                <th style='border-left: 1px solid #DDDDDD'>排序</th>
                 <th>项</th>
                 <th>单位</th>
                 <th>值</th>
-                <th>操作</th>
+                <th style='border-right: 1px solid #DDDDDD'>操作</th>
               </tr>
               </thead>
               <tbody>
@@ -236,22 +221,17 @@
                   </td>
                   <td width='15%'>
                     <template v-if="dataList4.length > 1">
-                      <i
-                        style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                        class="active el-icon-remove-outline"
+                      <img
+                        :src='reduceImg'
+                        style="cursor: pointer;"
                         @click="deleteDataListFour(item.name, index)"
-                        title="删除此项"
-                      >
-                      </i>
+                      />
                     </template>
-                    <i
-                      style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                      class="el-icon-circle-plus-outline"
-                      :class="[isActive4 === index ? 'active' : 'unactive']"
+                    <img
+                      :src="[isActive4 === index ? addImg : unactiveImg]"
+                      style="cursor: pointer;"
                       @click="addDataListFour(item.name, item.value, item.unit, index)"
-                      title="新增项"
-                    >
-                    </i>
+                    />
                   </td>
                 </tr>
               </tbody>
@@ -259,6 +239,7 @@
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
         </div>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>
@@ -274,6 +255,9 @@ export default {
   props: ['mapDataList'],
   data () {
     return {
+      addImg: require('../../../../assets/img/temp/add.png'),
+      reduceImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
       tip: '',
       borderActive: 1,
       isActive1: 0,
@@ -330,13 +314,13 @@ export default {
             this.plateId1 = items.plateId;
           } else if (serialNumber === 32) {
             this.relationValue2 = items.plateName;
-            this.isDisabled3 = false;
+            this.isDisabled2 = false;
             this.typeId2 = items.typeId;
             this.plateId2 = items.plateId;
             this.displayType2 = items.displayType;
           } else if (serialNumber === 33) {
             this.relationValue3 = items.plateName;
-            this.isDisabled4 = false;
+            this.isDisabled3 = false;
             this.typeId3 = items.typeId;
             this.plateId3 = items.plateId;
             this.displayType3 = items.displayType;
@@ -344,6 +328,7 @@ export default {
             this.relationValue4 = items.plateName;
             this.plateId4 = items.plateId;
             this.typeId4 = items.typeId;
+            this.isDisabled4 = false;
             this.displayType4 = items.displayType;
           }
           if (items.areaInfoList) {
@@ -866,12 +851,6 @@ export default {
         margin-top: 2%;
       }
     }
-  }
-  .unactive {
-    color: #cccccc !important;
-  }
-  .active {
-    color: #0785FD !important;
   }
   .el-select.isActive .el-input .el-input__inner {
     border-color: #409EFF;
