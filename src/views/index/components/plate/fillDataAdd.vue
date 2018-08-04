@@ -43,10 +43,10 @@
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th>项</th>
+                    <th style='border-left: 1px solid #DDDDDD'>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th>同比值(%)</th>
+                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -74,8 +74,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>主项名称</th>
-                      <th>操作</th>
+                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -84,20 +84,17 @@
                         <td><input type="text" v-model="item.itemName" placeholder='请填写'></td>
                         <td width='15%'>
                           <template v-if="parentDataListThree.length > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
                               @click="deleteParentDataThree(item.itemName, index)"
-                              title="删除此项"
-                            ></i>
+                            />
                           </template>
-                          <i
-                            style="font-size: 25px; cursor: pointer; color: #0785FD;"
-                            class="el-icon-circle-plus-outline"
-                            :class="[isActiveParent === index ? 'active' : 'unactive']"
+                          <img
+                            :src="[isActiveParent === index ? addImg : unactiveImg]"
+                            style="cursor: pointer;"
                             @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
-                            title="新增项"
-                          ></i>
+                          />
                         </td>
                       </tr>
                     </tbody>
@@ -108,11 +105,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th>子项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th>操作</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
@@ -164,31 +161,27 @@
                           <td width='15%'>
                             <template v-if='checkedLayerMerge === true'>
                               <template v-if="childDataListThree.length > 2">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
+                                <img
+                                  :src="reduceImg"
+                                  style="cursor: pointer;"
                                   @click="deleteContentListThree(item.contentName, index)"
-                                  title="删除此项"
-                                ></i>
+                                />
                               </template>
                             </template>
                             <template v-else>
                               <template v-if="childDataListThree.length > 1">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
+                                <img
+                                  :src="reduceImg"
+                                  style="cursor: pointer;"
                                   @click="deleteContentListThree(item.contentName, index)"
-                                  title="删除此项"
-                                ></i>
+                                />
                               </template>
                             </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActiveChild=== index ? 'active' : 'unactive']"
+                            <img
+                              :src="[isActiveChild=== index ? addImg : unactiveImg]"
+                              style="cursor: pointer;"
                               @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
-                              title="新增项"
-                            ></i>
+                            />
                           </td>
                         </tr>
                       </template>
@@ -200,9 +193,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>子项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
                       <th>浮层并列项名称</th>
-                      <th>单位</th>
+                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
@@ -252,32 +245,32 @@
                   <p class="list-title">第四步：添加数值</p>
                   <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
                     <thead>
-                    <tr>
-                      <th rowspan='2'>主项</th>
-                      <th colspan='3'>子项</th>
-                      <th colspan='3'>浮层并列项</th>
-                    </tr>
-                    <tr>
-                      <th>子项名称</th>
-                      <th>值</th>
-                      <th>单位</th>
-                      <th>浮层并列项名称</th>
-                      <th>值</th>
-                      <th>单位</th>
-                    </tr>
+                      <tr>
+                        <th rowspan='2' style='border-left: 1px solid #DDDDDD;border-right: 1px solid #DDDDDD'>主项</th>
+                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:0'>子项</th>
+                        <th colspan='3' style='text-align: center;border-right: 1px solid #DDDDDD;borde-bottom:0'>浮层并列项</th>
+                      </tr>
+                      <tr>
+                        <th>子项名称</th>
+                        <th>值</th>
+                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                        <th>浮层并列项名称</th>
+                        <th>值</th>
+                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                      </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
                       <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                       <span v-show='false'>{{items.serialNumber = parseInt(index+1)}}</span>
                       <tr v-for="(list, idx) in items.contentSubItemList" :key="'list'+idx">
                         <template v-if='list.isMerge === true'>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{items.itemName}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">合计（{{list.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{list.valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{list.valueUnit}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{list.contnetSubItemExtendList[0].valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{items.itemName}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contentName}}）</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                         <template v-else>
                           <td>{{items.itemName}}</td>
@@ -302,8 +295,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>主项名称</th>
-                      <th>操作</th>
+                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -314,18 +307,17 @@
                         </td>
                         <td width='15%'>
                           <template v-if="parentDataListTwo.length>1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="delparent active el-icon-remove-outline"
-                              @click="deleteParentDataTwo(item.itemName, idx)" title="删除此项"
-                            ></i>
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
+                              @click="deleteParentDataTwo(item.itemName, idx)"
+                            />
                           </template>
-                          <i
-                            style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                            class="el-icon-circle-plus-outline"
-                            :class="[isActiveParent === idx ? 'active' : 'unactive']"
+                          <img
+                            :src="[isActiveParent === idx ? addImg : unactiveImg]"
+                            style="cursor: pointer;"
                             @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)" title="新增项"
-                          ></i>
+                          />
                         </td>
                       </tr>
                     </tbody>
@@ -336,11 +328,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th>子项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th>操作</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
@@ -386,31 +378,27 @@
                           <td width='15%'>
                             <template v-if="checkedMerge === true">
                               <template v-if="childDataListTwo.length > 2">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
+                                <img
+                                  :src='reduceImg'
+                                  style="cursor: pointer;"
                                   @click="deleteContentListTwo(item.contentName, idx)"
-                                  title="删除此项"
-                                ></i>
+                                />
                               </template>
                             </template>
                             <template v-else>
                               <template v-if="childDataListTwo.length > 1">
-                                <i
-                                  style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                  class="active el-icon-remove-outline"
+                                <img
+                                  :src='reduceImg'
+                                  style="cursor: pointer;"
                                   @click="deleteContentListTwo(item.contentName, idx)"
-                                  title="删除此项"
-                                ></i>
+                                />
                               </template>
                             </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActiveChild === idx ? 'active' : 'unactive']"
+                            <img
+                              :src="[isActiveChild === idx ? addImg : unactiveImg]"
+                              style="cursor: pointer;"
                               @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
-                              title="新增项"
-                            ></i>
+                            />
                           </td>
                         </tr>
                       </template>
@@ -443,10 +431,10 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>主项</th>
+                      <th style='border-left: 1px solid #DDDDDD'>主项</th>
                       <th>子项</th>
                       <th>值</th>
-                      <th>单位</th>
+                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -467,10 +455,10 @@
                           <td>{{value.valueUnit}}</td>
                         </template>
                         <template v-else>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{item.itemName}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">合计（{{value.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{value.valueContent}}</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#999999">{{value.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{value.contentName}}）</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td>
                         </template>
                       </tr>
                     </tbody>
@@ -486,9 +474,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
                       <th>单位</th>
-                      <th>操作</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -501,22 +489,17 @@
                         </td>
                         <td width='15%'>
                           <template v-if="parentDataListFour.length > 1">
-                            <i
-                              style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                              class="active el-icon-remove-outline"
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
                               @click="deleteChildDataListFour(item.itemName, index)"
-                              title="删除此项"
-                            >
-                            </i>
+                            />
                           </template>
-                          <i
-                            style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                            class="el-icon-circle-plus-outline"
-                            :class="[isActiveParent === index ? 'active' : 'unactive']"
+                          <img
+                            :src="[isActiveParent === index ? addImg : unactiveImg]"
+                            style="cursor: pointer;"
                             @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
-                            title="新增项"
-                          >
-                          </i>
+                          />
                         </td>
                       </tr>
                     </tbody>
@@ -527,9 +510,9 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th>项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
                       <th>值</th>
-                      <th>同比值(%)</th>
+                      <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
@@ -546,6 +529,7 @@
             </template>
           </template>
         </div>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>
@@ -563,6 +547,9 @@ export default {
   data () {
     return {
       typeArr: [],
+      addImg: require('../../../../assets/img/temp/add.png'),
+      reduceImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
       rules: {
         plateName: [{
           required: true,
@@ -1710,30 +1697,23 @@ export default {
     }
   }
   .plate-table {
-    border: 0;
     >tbody td input {
       width: 100% !important;
+      text-align: left;
       min-width: 25% !important;
     }
     >thead th {
       font-weight: 400 !important;
       font-size: 14px;
-      background-color: #dddddd !important;
+      background-color: #F7F7F7 !important;
     }
     thead th, tbody tr, thead tr th, tbody tr td {
-      text-align: center;
-      border: 1px solid #cccccc;
-    }
-    .unactive {
-      color: #cccccc !important;
-    }
-    .active {
-      color: #0785FD !important;
+      text-align: left;
     }
     .mergetr {
       color: #ffffff;
       td {
-        background-color: #999999;
+        background-color: #cccccc;
         border-color: #fff;
       }
       input {

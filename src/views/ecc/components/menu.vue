@@ -38,12 +38,12 @@ export default {
             {
               id: '1-1',
               name: '事件管理',
-              url: '/event'
+              url: '/event/eventList'
             },
             {
               id: '1-2',
               name: 'APP端民众互助管理',
-              url: ''
+              url: '/event/mutualPerson'
             }
           ]
         },
@@ -55,7 +55,7 @@ export default {
             {
               id: '2-1',
               name: '调度指挥',
-              url: ''
+              url: '/ctc'
             }
           ]
         },

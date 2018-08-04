@@ -43,10 +43,13 @@
           </li>
         </ul>
       </div>
+      <div class="tag">
+        <em></em>
+        <span></span>
+        展示在此处
+      </div>
     </div>
   </div>
-  <!-- <div class="content">
-  </div> -->
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
@@ -189,6 +192,43 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
+.tag{
+    width:98px;
+    height:27px;
+    border:1px solid #0785FD;
+    position:relative;
+    background-color:#FFF;
+    color: #0785FD;
+    font-size: 14px;
+    line-height: 27px;
+    text-align: center;
+    position: absolute;
+    left: 48%;
+    top: 7%;
+    border-radius:3px 3px 0px 3px;
+  }
+  .tag em{
+    display:block;
+    border-width:5px;
+    position:absolute;
+    top: 0;
+    right:-10px;
+    border-style:solid dashed dashed;
+    border-color:transparent transparent transparent #0785FD;
+    font-size:0;
+    line-height:0;
+  }
+  .tag span{
+    display:block;
+    border-width:5px;
+    position:absolute;
+    top:0;
+    right:-9px;
+    border-style:solid dashed dashed;
+    border-color:transparent transparent transparent #FFF;
+    font-size:0;
+    line-height:0;
+  }
   #preBtn {
     color:#0785FD !important;
     border-color:#0785FD !important;
@@ -224,6 +264,8 @@ export default {
     .relation-map {
       width: 96%;
       margin: 2% 2% 0 2%;
+      background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
+      background-size: 100% 100%;
       height: 300px;
       position: relative;
       .map-img {
@@ -235,12 +277,15 @@ export default {
         background-color: #FCFCFE;
       }
       .map-body {
+        padding: 0 20px;
+        margin-top: 20px;
         ul {
           display: flex;
           flex-wrap: wrap;
           li {
             width: 50%;
-            height: 100px;
+            height: 65px;
+            margin-bottom: 1%;
           }
           .map-name {
             float:right;
@@ -286,37 +331,5 @@ export default {
         }
       }
     }
-  }
-  .content {
-    width:95px;
-    height:27px;
-    border:1px solid #0785FD;
-    border-radius:3px 3px 0px 3px;
-    margin-top: -300px;
-    margin-left:600px;
-  }
-  .content:before {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:relative;
-    top:0;
-    left:95px;
-    border-left:9px solid #0785FD;
-    border-top:7px solid transparent;
-    border-bottom:7px solid transparent;
-  }
-  .content:after {
-    content:'';
-    display:block;
-    width:0;
-    height:0;
-    position:relative;
-    top:-2px;
-    // right:10px;
-    border-left:7px solid #fff;
-    border-top:5px solid transparent;
-    border-bottom:5px solid transparent;
   }
 </style>

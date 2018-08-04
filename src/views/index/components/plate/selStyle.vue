@@ -160,13 +160,19 @@ export default {
     border: 1px solid #E3E3E3;
   }
   .bg-plate-ecl {
+    // height: calc(100% - 138px);
     height: 100%;
     position: relative;
     > .plate-ecl-b {
-      position: absolute; bottom: 0; right: 0;
-      width: 100%; height: 80px; line-height: 80px;
-      text-align: center;
-      border-top: 1px solid #ddd;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      // height: 80px;
+      // line-height: 80px;
+      text-align: right;
+      padding: 0 4% 1% 0;
+      // border-top: 1px solid #ddd;
     }
   }
   .bg-plate-ecl1 {
@@ -210,17 +216,19 @@ export default {
       height: 100%;
       overflow: auto;
       margin: 0 auto;
-      padding: 0 20px 0 20px;
+      padding: 0 5% 0 5%;
       > .plate-ecl1-ul {
+        margin: 0 auto;
         > li {
-          width: 320px;
-          height: 230px;
+          width: 325px;
+          height: 250px;
           float: left;
           text-align: center;
-          padding: 10px 20px;
+          margin: 0 5px;
+          // padding: 10px 30px;
           overflow: hidden;
           > img {
-            width: 280px; height: 180px;
+            width: 315px; height: 196px;
           }
           > p {
             height: 20px; line-height: 20px;

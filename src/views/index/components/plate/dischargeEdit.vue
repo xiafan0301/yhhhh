@@ -28,10 +28,10 @@
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th>项</th>
+                    <th style='border-left: 1px solid #DDDDDD'>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th>同比值(%)</th>
+                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -59,9 +59,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th>项名称</th>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
                       <th>单位</th>
-                      <th>操作</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
                     </tr>
                     </thead>
                     <template v-if ='info.serialNumber === 3'>
@@ -75,22 +75,17 @@
                           </td>
                           <td width='15%'>
                             <template v-if="parentDataFour3.length > 1">
-                              <i
-                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                class="active el-icon-remove-outline"
+                              <img
+                                :src="reduceImg"
+                                style="cursor: pointer;"
                                 @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
-                                title="删除此项"
-                              >
-                              </i>
+                              />
                             </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive3 === index ? 'active' : 'unactive']"
+                            <img
+                              :src="[isActive3 === index ? addImg : unactiveImg]"
+                              style="cursor: pointer;"
                               @click="addChildDataListFour3(item.itemName, childDataFour3[index].valueUnit, index, info.mainMaxCount)"
-                              title="新增项"
-                            >
-                            </i>
+                            />
                           </td>
                         </tr>
                       </tbody>
@@ -106,22 +101,17 @@
                           </td>
                           <td width='15%'>
                             <template v-if="parentDataFour5.length > 1">
-                              <i
-                                style="font-size: 25px; cursor: pointer; color: #DDDDDD;"
-                                class="active el-icon-remove-outline"
+                              <img
+                                :src="reduceImg"
+                                style="cursor: pointer;"
                                 @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
-                                title="删除此项"
-                              >
-                              </i>
+                              />
                             </template>
-                            <i
-                              style="font-size: 25px; cursor: pointer;  color: #0785FD;"
-                              class="el-icon-circle-plus-outline"
-                              :class="[isActive5 === index ? 'active' : 'unactive']"
+                            <img
+                              :src="[isActive5 === index ? addImg : unactiveImg]"
+                              style="cursor: pointer;"
                               @click="addChildDataListFour5(item.itemName, childDataFour5[index].valueUnit, index, info.mainMaxCount)"
-                              title="新增项"
-                            >
-                            </i>
+                            />
                           </td>
                         </tr>
                       </tbody>
@@ -164,6 +154,7 @@
             </template>
           </template>
         </div>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>
@@ -181,6 +172,9 @@ export default {
   data () {
     return {
       typeArr: [],
+      addImg: require('../../../../assets/img/temp/add.png'),
+      reduceImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
       rules: {
         plateName: [{
           required: true,
@@ -853,25 +847,18 @@ export default {
     }
   }
   .plate-table {
-    border: 0;
     >tbody td input {
       width: 100% !important;
       min-width: 25% !important;
+      text-align: left;
     }
     >thead th {
       font-weight: 400 !important;
       font-size: 14px;
-      background-color: #dddddd !important;
+      background-color: #F7F7F7 !important;
     }
     thead th, tbody tr, thead tr th, tbody tr td {
-      text-align: center;
-      border: 1px solid #cccccc;
-    }
-    .unactive {
-      color: #cccccc !important;
-    }
-    .active {
-      color: #0785FD !important;
+      text-align: left;
     }
     .mergetr {
       color: #ffffff;
