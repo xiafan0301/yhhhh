@@ -89,18 +89,18 @@
                               @click="deleteParentDataThree(item.itemName, index)"
                             />
                           </template>
-                          <img
-                            :src="[isActiveParent === index ? addImg : unactiveImg]"
-                            style="cursor: pointer;"
-                            @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
-                          />
-                          <!-- <img
-                            :src="[isActiveParent === index ? addImg : reduceImg]"
-                            style="cursor: pointer;"
-                            class="el-icon-circle-plus-outline"
-                            :class="[isActiveParent === index ? 'active' : 'unactive']"
-                            @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
-                          /> -->
+                          <template v-if='isActiveParent === index'>
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img
+                              :src="unactiveImg"
+                            />
+                          </template>
                         </td>
                       </tr>
                     </tbody>
@@ -182,17 +182,18 @@
                                 />
                               </template>
                             </template>
-                            <img
-                              :src="[isActiveChild=== index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
-                            />
-                            <!-- <img
-                              :src="[isActiveChild=== index ? addImg : reduceImg]"
-                              style="cursor: pointer;"
-                              :class="[isActiveChild=== index ? 'active' : 'unactive']"
-                              @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
-                            /> -->
+                            <template v-if='isActiveChild=== index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </tr>
                       </template>
@@ -321,11 +322,18 @@
                               @click="deleteParentDataTwo(item.itemName, idx)"
                             />
                           </template>
-                          <img
-                            :src="[isActiveParent === idx ? addImg : unactiveImg]"
-                            style="cursor: pointer;"
-                            @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)"
-                          />
+                          <template v-if='isActiveParent === idx'>
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img
+                              :src="unactiveImg"
+                            />
+                          </template>
                         </td>
                       </tr>
                     </tbody>
@@ -402,11 +410,18 @@
                                 />
                               </template>
                             </template>
-                            <img
-                              :src="[isActiveChild === idx ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
-                            />
+                            <template v-if='isActiveChild === idx'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </tr>
                       </template>
@@ -501,11 +516,18 @@
                                 @click="deleteChildDataListFour(item.itemName, index)"
                               />
                             </template>
-                            <img
-                              :src="[isActiveParent === index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
-                            />
+                            <template v-if="isActiveParent === index">
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </template>
                       </tr>
@@ -556,7 +578,7 @@ export default {
       rowspan: 0,
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       rules: {
         plateName: [{
           required: true,
@@ -762,9 +784,6 @@ export default {
       this.isActiveChild = 0;
       this.isActiveParent = 0;
       this.tip = '';
-      // this.$store.commit('setType', {typeArr: []});
-      // this.$store.commit('setConfigInfo', {setConfigInfo: []});
-      // Object.assign(this.$data, this.$options.data()); // 恢复初始化data值
     },
     nextStep (dataForm) {
       console.log(this.numberObj)

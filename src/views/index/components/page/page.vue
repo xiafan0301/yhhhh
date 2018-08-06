@@ -157,7 +157,12 @@ export default {
     // 添加页面
     filin (formName) {
       this.dialogFormVisible = true;
-      this.$refs[formName].resetFields();
+      this.resetEditFormf('form');
+    },
+    resetEditFormf (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
     },
     addPage (form) {
       this.$refs[form].validate((valid) => {

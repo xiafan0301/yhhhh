@@ -22,7 +22,7 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select :disabled="isDisabled2" v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
+          <el-select v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList2'
@@ -35,7 +35,7 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select :disabled="isDisabled3" v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
+          <el-select v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList3'
@@ -48,7 +48,7 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select :disabled="isDisabled4" v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
+          <el-select v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList4'
@@ -101,11 +101,18 @@
                         @click="deleteDataListOne(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive1 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListOne(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive1 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListOne(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -143,11 +150,18 @@
                         @click="deleteDataListTwo(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive2 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListTwo(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive2 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListTwo(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -185,11 +199,18 @@
                         @click="deleteDataListThree(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive3 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListThree(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive3 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListThree(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -227,11 +248,18 @@
                         @click="deleteDataListFour(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive4 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListFour(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive4 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListFour(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -244,7 +272,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -257,7 +285,7 @@ export default {
     return {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       tip: '',
       borderActive: 1,
       isActive1: 0,

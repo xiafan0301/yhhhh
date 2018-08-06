@@ -45,7 +45,6 @@ export default {
   methods: {
     changeStyleType (type) {
       this.styleType = type;
-      this.styleRadio = '';
       this.getAllPlateList();
       this.$store.commit('setStyleType', {styleType: type});
     },

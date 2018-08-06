@@ -81,11 +81,18 @@
                                 @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
                               />
                             </template>
-                            <img
-                              :src="[isActive3 === index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addChildDataListFour3(item.itemName, childDataFour3[index].valueUnit, index, info.mainMaxCount)"
-                            />
+                            <template v-if='isActive3 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour3(item.itemName, childDataFour3[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </tr>
                       </tbody>
@@ -107,11 +114,18 @@
                                 @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
                               />
                             </template>
-                            <img
-                              :src="[isActive5 === index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addChildDataListFour5(item.itemName, childDataFour5[index].valueUnit, index, info.mainMaxCount)"
-                            />
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour5(item.itemName, childDataFour5[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </tr>
                       </tbody>
@@ -174,7 +188,7 @@ export default {
       typeArr: [],
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       rules: {
         plateName: [{
           required: true,

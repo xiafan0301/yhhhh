@@ -311,6 +311,14 @@ export default {
             this.relationPageList = res.data.list;
             this.skipPausePageList = res.data.list;
           }
+          this.skipPageList = this.skipPausePageList;
+          this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
+            if (item.pageName === this.relationValue) {
+              item.isDisabled = true;
+            } else {
+              item.isDisabled = false;
+            }
+          });
         })
         .catch(() => {});
       this.axios.get('/pageServices/pages/' + pageId + '')

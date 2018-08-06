@@ -22,7 +22,7 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select :disabled="isDisabled2" v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
+          <el-select v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList2'
@@ -35,7 +35,7 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select :disabled="isDisabled3" v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
+          <el-select v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList3'
@@ -48,7 +48,7 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select :disabled="isDisabled4" v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
+          <el-select v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
             <el-option value=''>请选择数据组件</el-option>
             <el-option
               v-for='item in mapTypeList4'
@@ -96,16 +96,23 @@
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
                       <img
-                        :src='reduceImf'
+                        :src='reduceImg'
                         style="cursor: pointer;"
                         @click="deleteDataListOne(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive1 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListOne(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive1 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListOne(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -143,11 +150,18 @@
                         @click="deleteDataListTwo(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive2 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListTwo(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive2 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListTwo(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -185,11 +199,18 @@
                         @click="deleteDataListThree(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive3 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListThree(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive3 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListThree(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -227,11 +248,18 @@
                         @click="deleteDataListFour(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive4 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListFour(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive4 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListFour(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -257,7 +285,7 @@ export default {
     return {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       tip: '',
       borderActive: 1,
       isActive1: 0,
@@ -314,13 +342,13 @@ export default {
             this.plateId1 = items.plateId;
           } else if (serialNumber === 32) {
             this.relationValue2 = items.plateName;
-            this.isDisabled2 = false;
+            // this.isDisabled2 = false;
             this.typeId2 = items.typeId;
             this.plateId2 = items.plateId;
             this.displayType2 = items.displayType;
           } else if (serialNumber === 33) {
             this.relationValue3 = items.plateName;
-            this.isDisabled3 = false;
+            // this.isDisabled3 = false;
             this.typeId3 = items.typeId;
             this.plateId3 = items.plateId;
             this.displayType3 = items.displayType;
@@ -328,27 +356,42 @@ export default {
             this.relationValue4 = items.plateName;
             this.plateId4 = items.plateId;
             this.typeId4 = items.typeId;
-            this.isDisabled4 = false;
+            // this.isDisabled4 = false;
             this.displayType4 = items.displayType;
           }
           if (items.areaInfoList) {
             if (items.areaInfoList[0].contentItemList.length > 0) {
               items.areaInfoList[0].contentItemList.map((item, idx) => {
-                const data = {
-                  name: item.itemName,
-                  value: item.contentSubItemList[0].valueContent,
-                  unit: item.contentSubItemList[0].valueUnit
-                }
                 if (serialNumber === 31) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList1.push(data);
                   this.isActive1 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 32) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList2.push(data);
                   this.isActive2 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 33) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList3.push(data);
                   this.isActive3 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 34) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList4.push(data);
                   this.isActive4 = items.areaInfoList[0].contentItemList.length - 1;
                 }
@@ -602,6 +645,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList1 = res.data;
+                this.isActive1 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -718,7 +762,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive1 = index + 1;
         this.dataList1.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -730,7 +774,7 @@ export default {
           this.dataList1.splice(index, 1);
         }
       });
-      this.isActive = this.dataList1.length - 1;
+      this.isActive1 = this.dataList1.length - 1;
     },
     addDataListTwo (name, value, unit, index) { // 位置2的添加一行
       if (name || value || unit) {
@@ -740,7 +784,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive2 = index + 1;
         this.dataList2.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -752,7 +796,7 @@ export default {
           this.dataList2.splice(index, 1);
         }
       });
-      this.isActive = this.dataList2.length - 1;
+      this.isActive2 = this.dataList2.length - 1;
     },
     addDataListThree (name, value, unit, index) { // 位置3的添加一行
       if (name || value || unit) {
@@ -762,7 +806,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive3 = index + 1;
         this.dataList3.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -774,7 +818,7 @@ export default {
           this.dataList3.splice(index, 1);
         }
       });
-      this.isActive = this.dataList3.length - 1;
+      this.isActive3 = this.dataList3.length - 1;
     },
     addDataListFour (name, value, unit, index) { // 位置4的添加一行
       if (name || value || unit) {
@@ -784,7 +828,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive4 = index + 1;
         this.dataList4.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -796,7 +840,7 @@ export default {
           this.dataList4.splice(index, 1);
         }
       });
-      this.isActive = this.dataList4.length - 1;
+      this.isActive4 = this.dataList4.length - 1;
     }
   }
 }
