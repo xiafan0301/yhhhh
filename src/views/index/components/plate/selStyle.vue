@@ -215,8 +215,9 @@ export default {
       height: 100%;
       overflow: auto;
       margin: 0 auto;
-      padding: 0 5% 0 5%;
+      padding: 0 0 0 5%;
       > .plate-ecl1-ul {
+        // width: 100%;
         margin: 0 auto;
         > li {
           width: 325px;
