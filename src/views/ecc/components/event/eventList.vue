@@ -56,7 +56,7 @@
       <el-table-column label="是否查看" prop='acceptFlag' align='center'></el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color: #0785FD'>查看详情</el-button>
+          <el-button type='text' style='color: #0785FD' @click='skipEventDetail'>查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -105,6 +105,9 @@ export default {
   methods: {
     skipAddEvent () { // 跳转到添加事件页面
       this.$router.push({name: 'add-event'});
+    },
+    skipEventDetail () { // 跳转到事件详情页面
+      this.$router.push({name: 'event-detail'});
     },
     getEventList () { // 根据默认刷选条件获取事件列表
     },

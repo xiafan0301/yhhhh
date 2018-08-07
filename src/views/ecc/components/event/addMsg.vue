@@ -43,9 +43,9 @@
           </el-form-item>
         </el-form>
       </div>
-      <div class='operation-btn'>
+      <div class='operation-btn-msg'>
         <el-button>返回</el-button>
-        <el-button type="primary" style='background: #0785FD'>确认发布</el-button>
+        <el-button type="primary" style='background: #0785FD;'>确认发布</el-button>
       </div>
     </div>
   </div>
@@ -68,6 +68,31 @@
             margin-bottom: 15px;
           }
         }
+      }
+    }
+    .operation-btn-msg {
+      margin-top: 2%;
+    }
+    .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+      i {
+        margin: 0 auto;
+        font-weight: bold;
+      }
+      .add-img-text {
+        color: #C4C2C2;
+        font-size: 13px;
+        display: block;
+        width: 54px;
+        height: 13px;
+        position: absolute;
+        top: 25%;
+        left: 25%;
       }
     }
   }
