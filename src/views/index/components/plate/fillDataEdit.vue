@@ -68,7 +68,7 @@
           <template v-if="info.areaDataType !== 1">
             <template v-if="info.areaDataType === 3">
               <div style="margin-top:5%;">
-                <span class='stepH2'>位置{{info.serialNumber}}</span>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -299,7 +299,7 @@
             </template>
             <template v-if="info.areaDataType === 2">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -488,7 +488,7 @@
             </template>
             <template v-if="info.areaDataType === 4">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -734,6 +734,7 @@ export default {
             });
           }
         });
+        console.log(this.contentItemListThree);
         this.checkBoxThree = this.judgeUnitThree(); // 判断所有的单位是否一致
         this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
       },
@@ -786,7 +787,6 @@ export default {
       this.tip = '';
     },
     nextStep (dataForm) {
-      console.log(this.numberObj)
       this.dataObjTwo[0].contentItemList = [];
       this.contentItemListOne = [];
       let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
@@ -807,35 +807,37 @@ export default {
       let objFour = JSON.parse(JSON.stringify(this.contentItemListFour));
       obj.map((items, index) => {
         let length;
-        // if (this.checkedLayerMerge === true) {
-        //   length = items.contentSubItemList.length - 1;
-        // } else {
-        length = items.contentSubItemList.length;
-        // }
+        if (this.checkedLayerMerge === true) {
+          length = items.contentSubItemList.length - 1;
+        } else {
+          length = items.contentSubItemList.length;
+        }
         const data = index * length;
         const newArr = numberThree.slice(data, length * (index + 1));
         const newLayerArr = numberLayerThree.slice(data, length * (index + 1));
         items.contentSubItemList.map((item, idx) => {
-          // if (item.isMerge !== true) {
-          item.valueContent = newArr[idx];
-          item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
-          // }
+          console.log(idx,item.valueContent)
+          if (item.isMerge !== true) {
+            item.valueContent = newArr[idx];
+            item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
+          } else {
+            item.valueContent = item.valueContent;
+          }
         });
       });
       objTwo.map((items, index) => {
         let length;
-        // if (this.checkedMerge === true) {
-        //   length = items.contentSubItemList.length - 1;
-        // } else {
+        if (this.checkedMerge === true) {
+          length = items.contentSubItemList.length - 1;
+        } else {
         length = items.contentSubItemList.length;
-        // }
-        console.log(length)
+        }
         const data = index * length;
         const newArr = numberTwo.slice(data, length * (index + 1));
         items.contentSubItemList.map((item, idx) => {
-          // if (item.isMerge !== true) {
+          if (item.isMerge !== true) {
           item.valueContent = newArr[idx];
-          // }
+          }
         });
       });
       objFour.map((items, index) => {
@@ -956,6 +958,7 @@ export default {
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
       this.dataObjTwo[0].plateId = this.dataList.plateId;
       if (this.dataObjTwo[0].contentItemList.length > 0) {
+        console.log(this.dataObjTwo[0])
         const params = {
           visPlates: this.dataObjTwo
         }
@@ -1306,20 +1309,23 @@ export default {
       this.numberLayerObjThree = numLayerThree;
       this.numberObjThree = numThree;
       let itemNameObj = {}, valueContentObj = {}, valueUnitObj = {}, percentValueOneObj = {};
-      for (let i = 0; i < this.value.length; i++) {
-        if (this.value[i] !== undefined) {
-          this.parentDataListThree.map((item, index) => {
-            itemNameObj[index + '_' + i] = this.itemName[index + '_' + i];
-            valueContentObj[index + '_' + i] = this.valueContent[index + '_' + i];
-            valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
-            percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
-          });
+      if (this.value.length > 0) {
+        for (let i = 0; i < this.value.length; i++) {
+          if (this.value[i] !== undefined) {
+            console.log(this.value[i])
+            this.parentDataListThree.map((item, index) => {
+              itemNameObj[index + '_' + i] = this.itemName[index + '_' + i];
+              valueContentObj[index + '_' + i] = this.valueContent[index + '_' + i];
+              valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
+              percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
+            });
+          }
         }
+        this.itemName = itemNameObj;
+        this.valueContent = valueContentObj;
+        this.valueUnit = valueUnitObj;
+        this.percentValueOne = percentValueOneObj;
       }
-      this.itemName = itemNameObj;
-      this.valueContent = valueContentObj;
-      this.valueUnit = valueUnitObj;
-      this.percentValueOne = percentValueOneObj;
     },
     deleteChildDataListFour (name, idx) { // 类型四的删除项
       this.parentDataListFour.splice(idx, 1);
@@ -1513,6 +1519,7 @@ export default {
         }
         this.childDataListThree.push(childData);
         this.layerDataListThree.push(layerData);
+        console.log(this.layerDataListThree)
       } else {
         let numThree = {}, numLayerThree = {};
         this.childDataListThree.splice(childLength - 1, 1);
@@ -1622,6 +1629,7 @@ export default {
       }
     },
     changeRelation (value, number) {
+      console.log(this.value)
       if (value === '不关联') {
         this.$store.state.plateConfigInfo.map((item, index) => {
           if (item.serialNumber === number) {
@@ -1649,6 +1657,7 @@ export default {
       }
     },
     setInitialData () {
+      console.log(this.value)
       const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
       const configId = this.$store.state.editPlateInfo.configId;
       this.dataForm = {
@@ -1715,6 +1724,7 @@ export default {
                               if (value.sumFlag === true) {
                                 this.isCheckBox = true;
                                 this.checkedMerge = true;
+                                value.isMerge = true;
                               }
                               this.childDataListTwo.push(data);
                               let numObj = JSON.parse(JSON.stringify(this.numberObj));
@@ -1772,6 +1782,7 @@ export default {
                               if (value.sumFlag === true) {
                                 this.checkBoxThree = true;
                                 this.checkedLayerMerge = true;
+                                value.isMerge = true;
                               }
                               this.childDataListThree.push(data);
                               this.numberObjThree[index + '_' + idx] = value.valueContent;

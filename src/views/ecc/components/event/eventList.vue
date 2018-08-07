@@ -5,14 +5,14 @@
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>事件管理</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn addEvent' @click='skipAddEvent'>添加事件</el-button>
+      <el-button class='selectBtn add-event' @click='skipAddEvent'>添加事件</el-button>
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' class="demo-form-inline" size="small">
         <el-form-item style="width: 280px;" prop='reportTimeStart'>
           <el-date-picker
-            v-model='selectForm.reportTimeStart' 
-            type="daterange" 
+            v-model='selectForm.reportTimeStart'
+            type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 100%;"
@@ -156,7 +156,7 @@ export default {
     .selectBtn {
       background-color: #0785FD;
     }
-    .addEvent {
+    .add-event {
       color: #fff;
       float: right;
     }
@@ -164,5 +164,4 @@ export default {
       background-color: #FAFAFA !important;
     }
   }
-  
 </style>

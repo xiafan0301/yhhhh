@@ -68,7 +68,7 @@
           <template v-if="info.areaDataType !== 1">
             <template v-if="info.areaDataType === 3">
               <div style="margin-top:5%;">
-                <h2 class='stepH2'>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -299,7 +299,7 @@
             </template>
             <template v-if="info.areaDataType === 2">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -492,7 +492,7 @@
             </template>
             <template v-if="info.areaDataType === 4">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
                   <table class="plate-table" style="width: 100%;">
