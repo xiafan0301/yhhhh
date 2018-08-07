@@ -1,12 +1,12 @@
 <template>
-  <div class="vis-bg-plate">
-      <div class="bg-plate-bd">
+  <div class="vis-bg-page">
+      <div class="bg-page-bd">
         <el-breadcrumb separator="/">
           <el-breadcrumb-item><span style="color:#0785FD; font-size: 14px ">页面管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       </div>
-      <div class="bg-plate-sf">
-        <el-button type="primary" size="small" @click="filin('form')" class="add-plate-btn">添加页面</el-button>
+      <div class="bg-page-sf">
+        <el-button type="primary" size="small" @click="filin('form')" class="add-page-btn">添加页面</el-button>
         <el-dialog title="添加页面" :visible.sync="dialogFormVisible" width="500px">
           <el-form :model="form" ref ="form" :rules="rules"  style="padding-right: 60px;" size="small">
             <el-form-item label="页面名称" :label-width="formLabelWidth" prop="name">
@@ -19,7 +19,7 @@
           </div>
         </el-dialog>
       </div>
-    <div class="bg-plate-tb">
+    <div class="bg-page-tb">
     <el-table
     :data="tableData"
     style="width: 100%;">
@@ -38,12 +38,11 @@
       label="版块展示数量">
     </el-table-column>
       <el-table-column
-        prop=""
         label="版块详情"
         width=""
         :showOverflowTooltip = true>
         <template slot-scope="scope">
-          <span v-for="(item, index)  in scope.row.plateList" :key="'fawe' + index">{{item.plateName}}/</span>
+          <span v-for="(item, index)  in scope.row.plateList" :key="'fawe' + index" v-if="item">{{item.plateName}}/</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -51,8 +50,8 @@
         label=""
         width=" ">
         <template slot-scope="scope">
-          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理模块</el-button>
-          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length == 0">添加模块</el-button>
+          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理版块</el-button>
+          <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length == 0">添加版块</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -73,18 +72,22 @@
             </div>
           </el-dialog>
           <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 12px 0 12px"></i>
-          <el-button type="text" class="vis-bg-del-btn" size="small"  @click="schu(scope)">删除</el-button>
+          <el-button v-if="scope.row.homeFlag == true" type="text" size="small" disabled>删除</el-button>
+          <el-button type="text" class="vis-bg-del-btn" size="small"  @click="schu(scope)" v-if="scope.row.homeFlag == false">删除</el-button>
           <el-dialog title="提示" :visible.sync="dialogVisible" width="30%" >
-            <span>点击确认删除后，设置到该页面上的版块将变为异常状态，确认删除吗？</span>
+            <span>确认删除吗？</span>
             <span slot="footer" class="dialog-footer">
            <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" @click="qued()">确 定</el-button>
            </span>
           </el-dialog>
+          <el-dialog title="提示" :visible.sync="dialogVisible1" width="30%"  >
+            <span>无法删除，请先删除该页面中关联的版块</span>
+          </el-dialog>
         </template>
       </el-table-column>
   </el-table>
-      <div class="bg-plate-tbp">
+      <div class="bg-page-tbp">
         <el-pagination
           background
           @current-change="handleCurrentChange"
@@ -109,10 +112,12 @@ export default {
       ],
       currentPage: 1,
       pagesize: 10,
+      pageNum: 1,
       total: 0,
       dialogFormVisible: false,
       dialogFormVisible1: false,
       dialogVisible: false,
+      dialogVisible1: false,
       addPageLoading: false,
       form: {
         name: ''
@@ -186,10 +191,14 @@ export default {
     },
     // 删除页面
     schu (scope) {
-      this.dialogVisible = true;
-      this.shchupar = {
-        pageId: scope.row.pageId
-      };
+      if (scope.row.plateList.length === 0) {
+        this.dialogVisible = true;
+        this.shchupar = {
+          pageId: scope.row.pageId
+        };
+      } else {
+        this.dialogVisible1 = true;
+      }
     },
     qued () {
       this.dialogVisible = false;
@@ -246,26 +255,26 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .vis-bg-plate {
+  .vis-bg-page {
     padding: 20px 20px 20px 20px;
     height: 100%;
     overflow: auto;
   }
-  .bg-plate-bd {
+  .bg-page-bd {
     padding: 2px 0 10px 2px;
   }
-  .bg-plate-sf {
-    padding-top: 20px;
+  .bg-page-sf {
+    padding-top: 14px;
     position: relative;
-    .add-plate-btn {
+    .add-page-btn {
       position: absolute; top: -32px; right: 0;
-      background: linear-gradient(to bottom, #0785FD, #07BAFD);
+      background: linear-gradient(to top, #0785FD, #07BAFD);
     }
   }
-  .bg-plate-tb {
+  .bg-page-tb {
     border: 1px solid #E3E3E3;
     padding-bottom: 20px;
-    > .bg-plate-tbp {
+    > .bg-page-tbp {
       text-align: right;
       padding: 20px 20px 0 0;
     }

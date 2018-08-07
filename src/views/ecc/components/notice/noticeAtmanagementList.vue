@@ -1,25 +1,28 @@
 <template>
   <div class="ba-not">
-    <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
+    <div style="padding-bottom: 20px; position: relative">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item>公告管理</el-breadcrumb-item>
       </el-breadcrumb>
+      <div style="position: absolute; top: -10px; right: 0;">
+        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+      </div>
     </div>
-    <div class="clearfix" style="position: relative;">
-      <el-form style="float: left; margin-right: 200px;" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
-        <el-form-item label="时间段：">
-          <el-select v-model="searchForm.deviceStatus" style="width: 120px;" placeholder="设备状态">
+    <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
+      <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
+        <el-form-item >
+          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="设备状态">
             <el-option label="全部" :value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发布状态：">
-          <el-select v-model="searchForm.deviceStatus" style="width: 100px;" placeholder="设备状态">
+        <el-form-item >
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
             <el-option label="全部" :value="0"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="发布单位：">
-          <el-select v-model="searchForm.deviceStatus" style="width: 100px;" placeholder="设备状态">
+        <el-form-item >
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
             <el-option label="全部" :value="0"></el-option>
             <el-option label="可用" :value="1"></el-option>
             <el-option label="异常" :value="2"></el-option>
@@ -30,9 +33,6 @@
           <el-button @click.native="searchFormReset">重置</el-button>
         </el-form-item>
       </el-form>
-      <div style="position: absolute; bottom: 18px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
-      </div>
     </div>
     <el-table
       :data="tableData"
@@ -129,7 +129,7 @@ export default {
     },
     see () {
       this.visible2 = false;
-      this.$router.push({name: 'notice-see', query: {modify: false}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-see', query: {modify: true}, params: {plateId: '0'}});
     }
   }
 }
@@ -137,5 +137,7 @@ export default {
 <style lang="scss" scoped>
   .ba-not {
     padding: 20px;
+    background-color: #F0F3F4;
+    height: 100%;
   }
 </style>

@@ -7,7 +7,7 @@
     </div>
     <div class="bg-plate-sf">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="small">
-        <el-form-item label="地图组件">
+        <el-form-item label="地图板块">
           <el-select v-model="searchForm.dataTypeId" placeholder="选择数据" style="width: 160px;" @change="getValue">
             <el-option  v-for="(item, index) in pageList" :label="item.typeName" :value="item.dataTypeId" :key="'spl_' + index"></el-option>
           </el-select>
@@ -18,7 +18,7 @@
       </el-form>
       <!--贫困村添加-->
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
-      <el-upload action="http://10.16.3.40:8080/api/vis/mapServices/data/excelImport">
+      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
         <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="u[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
@@ -47,7 +47,7 @@
       <!--选择数据-->
       <div v-if="searchForm.dataTypeId == ''" style=" width: 200px; margin:0 auto; padding-top:200px;padding-bottom:200px; color:#999999; font-size: 14px">请先选择你要维护的数据类型</div>
       <!--  5 贫困村表格-->
-      <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'" >
+      <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'" key="2" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="村名" min-width="150"></el-table-column>
         <el-table-column label="坐标" min-width="200">
@@ -57,7 +57,7 @@
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数" min-width="100"></el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="地址" min-width="100">
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="100">
         </el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -67,7 +67,7 @@
         </el-table-column>
       </el-table>
       <!--人口分布表格   块-->
-      <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'">
+      <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" key="1">
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="镇名" min-width="180"></el-table-column>
         <el-table-column  label="坐标" min-width="100">
@@ -117,8 +117,8 @@
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="100"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="modify5(scope)">修改</el-button>
-            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>gi
+            <el-button type="text" @click="modifyjy5(scope)">修改</el-button>
+            <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -304,7 +304,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="投入金额（万元）" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地区" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
@@ -324,7 +324,7 @@
         <el-table-column prop="dataExtendList[0].valueContent" label="财政人员数" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
+            <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent == ''">录入</el-button>
             <el-button type="text"   @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent > 0">修改</el-button>
           </template>
         </el-table-column>
@@ -355,7 +355,7 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
@@ -374,7 +374,7 @@
         </el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -393,7 +393,7 @@
         </el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -412,7 +412,7 @@
         </el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -1651,7 +1651,7 @@ export default {
         if (valid) {
           this.Tobjgsjz.locationName = this.form1.name;
           this.Tobjgsjz.longitude = this.form1.coordinate.split(',')[0];
-          this.Tobjgsjz.latitude = this.form.coordinate.split(',')[1];
+          this.Tobjgsjz.latitude = this.form1.coordinate.split(',')[1];
           this.Tobjgsjz.dataExtendList[1].valueContent = this.form1.households;
           this.Tobjgsjz.dataExtendList[2].valueContent = this.form1.pople;
           this.Tobjgsjz.dataExtendList[0].valueContent = this.form1.addrs;
@@ -1895,8 +1895,18 @@ export default {
     handleRemove (file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview (file) {
-      console.log(file);
+    handlePreview (response, file, fileList) {
+      console.log(response);
+      let _this = this;
+      _this.$msgbox({
+        title: '提示',
+        message: '上传成功',
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      });
+      console.log();
+      this.getPlateList();
     },
     handleExceed (files, fileList) {
     },
