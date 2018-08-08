@@ -28,18 +28,20 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table style="width: 100%" class='person-table'>
-      <el-table-column label="序号" align='center'></el-table-column>
-      <el-table-column label="上报时间" align='center'></el-table-column>
-      <el-table-column label="事件地点" align='center'></el-table-column>
-      <el-table-column label="事件情况" align='center'></el-table-column>
-      <el-table-column label="事件数量" align='center'></el-table-column>
-      <el-table-column label="评论数量" align='center'></el-table-column>
-      <el-table-column label="操作">
+    <el-table style="width: 100%" class='person-table' :data='personDataList'>
+      <el-table-column type='index' label="序号" align='center' width='60px'></el-table-column>
+      <el-table-column prop='reportTime' label="上报时间" align='center' width='150px'></el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center' width='150px' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='eventSituation' label="事件情况" align='center' width='400px' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='eventStatusName' label="事件状态" align='center' width='80px'></el-table-column>
+      <el-table-column prop='commentNumbers' label="评论数量" align='center' width='80px'></el-table-column>
+      <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button>查看</el-button>
-          <el-button>修改</el-button>
-          <el-button>删除</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px' @click='skipPersonDetail'>查看</el-button>
+          <i style="display: inline-block; width:1px;height:11px;background:#0785FD;margin: 0 3px 0 3px"></i>
+          <el-button type='text' style='color:#0785FD;font-size:14px'>修改</el-button>
+          <i style="display: inline-block; width:1px;height:11px;background:#0785FD;margin: 0 3px 0 3px"></i>
+          <el-button type='text' style='color:#0785FD;font-size:14px'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -55,7 +57,14 @@ export default {
       selectForm: {
         beginDate: '',
         endDate: ''
-      }
+      },
+      personDataList: [{
+        reportTime: '2018-9-13 12:20',
+        eventAddress: '长沙市芙蓉区远大二路208号',
+        eventSituation: '园区门口有电动车起火，园区门口有电动车起火，园区门口有电动车起火...',
+        eventStatusName: '处理中',
+        commentNumbers: 111
+      }]
     }
   },
   computed: {
@@ -63,8 +72,11 @@ export default {
   mounted () {
   },
   methods: {
-    skipAddMsg () {
+    skipAddMsg () { // 跳转到添加消息页面
       this.$router.push({name: 'add-message'});
+    },
+    skipPersonDetail () { //查看
+      this.$router.push({name: 'mutual-detail'});
     }
   }
 }

@@ -18,27 +18,27 @@
           <div class='basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <!-- <span class='content'>自然灾害类</span> -->
-              <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
+              <span class='content'>自然灾害类</span>
+              <!-- <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
                 </el-option>
-              </el-select>
+              </el-select> -->
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <!-- <span class='content'>I极（特大）</span> -->
-              <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
+              <span class='content'>I极（特大）</span>
+              <!-- <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
                 <el-option
                   v-for="item in options1"
                   :key="item.value"
                   :label="item.label"
                   :value="item.value">
                 </el-option>
-              </el-select>
+              </el-select> -->
             </div>
             <div><span class='title'>报案事件：</span><span class='content'>2017-4-2 15：00</span></div>
           </div>
@@ -226,7 +226,7 @@
     <div class='operation-btn-event'>
       <el-button>返回</el-button>
       <el-button>再次调度</el-button>
-      <el-button type="primary" style='background: #0785FD'>事件结束</el-button>
+      <el-button type="primary" style='background: #0785FD' @click='skipEventEnd'>事件结束</el-button>
       <!-- <el-button>返回</el-button> -->
       <!-- <el-button type="primary" style='background: #0785FD'>保存</el-button> -->
       <!-- <el-button type="primary" style='background: #FB796C;border-color:#FB796C'>修改</el-button> -->
@@ -259,6 +259,11 @@ export default {
           label: '北京烤鸭'
         }],
       value: ''
+    }
+  },
+  methods: {
+    skipEventEnd () { // 跳到事件结束页面
+      this.$router.push({name: 'event-end'});
     }
   }
 }
