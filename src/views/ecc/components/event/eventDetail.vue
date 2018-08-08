@@ -226,7 +226,7 @@
     <div class='operation-btn-event'>
       <el-button>返回</el-button>
       <el-button>再次调度</el-button>
-      <el-button type="primary" style='background: #0785FD' @click='skipEventEnd'>事件结束</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
       <!-- <el-button>返回</el-button> -->
       <!-- <el-button type="primary" style='background: #0785FD'>保存</el-button> -->
       <!-- <el-button type="primary" style='background: #FB796C;border-color:#FB796C'>修改</el-button> -->

@@ -63,7 +63,7 @@
       <div class='operation-btn'>
         <el-button>返回</el-button>
         <el-button>保存</el-button>
-        <el-button type="primary" style='background: #0785FD'>去调度指挥</el-button>
+        <el-button style='background: #0785FD;color:#fff'>去调度指挥</el-button>
       </div>
     </div>
   </div>

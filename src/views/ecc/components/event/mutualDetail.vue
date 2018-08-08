@@ -112,7 +112,7 @@
     </div>
     <div class='operation-btn-mutual'>
       <el-button>返回</el-button>
-      <el-button type="primary" style='background: #0785FD' @click='mutualEndVisiable = true'>宣布结束</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='mutualEndVisiable = true'>宣布结束</el-button>
     </div>
     <el-dialog
       title="操作提示"

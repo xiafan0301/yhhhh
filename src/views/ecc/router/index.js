@@ -21,7 +21,11 @@ import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue'
 import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue'
 import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue'
 // 调度指挥
+import ctc from '@/views/ecc/components/ctc/ctc.vue'
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
+import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
+import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
+import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -66,9 +70,12 @@ export default new Router({
         },
         {
           path: 'ctc',
-          component: ctcList,
+          component: ctc,
           children: [
-            {path: '', name: 'ctc-list', component: ctcList}
+            {path: 'ctc-list', name: 'ctc-list', component: ctcList},
+            {path: 'ctcDetail', name: 'ctc-detail', component: ctcDetail},
+            {path: 'rePlanList', name: 'replan-list', component: rePlanList},
+            {path: 'replanDetail', name: 'replan-detail', component: replanDetail}
           ]
         }
       ]

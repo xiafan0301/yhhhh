@@ -119,6 +119,7 @@ export default {
       checkedPageId: '', // 选中的页面id
       plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
+      relationPausePageList: [],
       skipPageList: [], // 所有的跳转页面
       skipPausePageList: [],
       newDataList: {
@@ -170,6 +171,12 @@ export default {
           item.isDisabled = true;
         } else {
           item.isDisabled = false;
+        }
+        const list = item.plateList.filter((value, idx) => {
+          return value.plateType === 1;
+        });
+        if (list.length === 6) {
+          item.isDisabled = true;
         }
       });
       this.newDataList.jumpPageId = obj.pageId;
@@ -301,16 +308,29 @@ export default {
       this.axios.get('/pageServices/pages', {params})
         .then((res) => {
           if (res && res.data.list) {
-            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
             this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
-           this.relationPageList.map((item) => {
+            this.relationPausePageList = JSON.parse(JSON.stringify(res.data.list));
+            res.data.list.map((item) => {
               if (item.pageId === pageId) {
                 this.relationValue = item.pageName;
                 this.currentPage = item.pageName;
               } else if (item.pageId === jumpPageId) {
                 this.skipValue = item.pageName;
               }
-               const list = item.plateList.filter((value, idx) => {
+            });
+            if (this.skipPausePageList.length > 0) {
+              this.skipPausePageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
+              if (item.pageName === this.relationValue) {
+                item.isDisabled = true;
+              } else {
+                item.isDisabled = false;
+              }
+            });
+            this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
+            }
+            this.relationPageList = JSON.parse(JSON.stringify(this.relationPausePageList));
+            this.relationPageList.map((item) => {
+              const list = item.plateList.filter((value, idx) => {
                 return value.plateType === 1;
               });
               if (list.length === 6) {
@@ -318,14 +338,6 @@ export default {
               }
             });
           }
-          this.skipPageList = this.skipPausePageList;
-          this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
-            if (item.pageName === this.relationValue) {
-              item.isDisabled = true;
-            } else {
-              item.isDisabled = false;
-            }
-          });
         })
         .catch(() => {});
       this.axios.get('/pageServices/pages/' + pageId + '')

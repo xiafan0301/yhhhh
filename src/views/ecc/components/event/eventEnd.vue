@@ -32,7 +32,7 @@
     </div>
     <div class='operation-btn-event-end'>
       <el-button>返回</el-button>
-      <el-button type="primary" style='background: #0785FD'>确定</el-button>
+      <el-button style='background: #0785FD;color:#fff'>确定</el-button>
     </div>
   </div>
 </template>

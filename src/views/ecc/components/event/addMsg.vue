@@ -46,7 +46,7 @@
       </div>
       <div class='operation-btn-msg'>
         <el-button>返回</el-button>
-        <el-button type="primary" style='background: #0785FD;'>确认发布</el-button>
+        <el-button style='background: #0785FD;color:#fff'>确认发布</el-button>
       </div>
     </div>
   </div>

@@ -23,7 +23,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn'>查询</el-button>
+          <el-button class='selectBtn'>查询</el-button>
           <el-button>重置</el-button>
         </el-form-item>
       </el-form>
@@ -95,6 +95,7 @@ export default {
     }
     .selectBtn {
       background: #0785FD;
+      color:#fff;
     }
     .search-person {
       position: relative;

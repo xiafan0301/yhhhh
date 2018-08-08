@@ -213,6 +213,12 @@ export default {
         } else {
           item.isDisabled = false;
         }
+        const list = item.plateList.filter((value, idx) => {
+          return value.plateType === 1;
+        });
+        if (list.length === 6) {
+          item.isDisabled = true;
+        }
       });
       this.newDataList.jumpPageId = obj.pageId;
     },
@@ -317,18 +323,7 @@ export default {
         default:
           break;
       }
-    },
-    // againSelect (num) { // 重新选择位置
-    //   this.positionObj.map((item, index) => {
-    //     if (item.isChecked === false) {
-    //       item.canChecked = true;
-    //       item.finishChecked = false;
-    //     }
-    //   });
-    //   this.tips = '*点击选择要展示的位置按钮';
-    //   this.btnDisabled = true;
-    //   this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-    // }
+    }
   }
 }
 </script>
