@@ -20,7 +20,7 @@ export default {
   data () {
     return {
       pagination: {
-        total: 0,
+        total: 1000,
         pageNum: 1,
         pageSize: 10
       }
