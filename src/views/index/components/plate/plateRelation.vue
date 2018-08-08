@@ -3,7 +3,7 @@
   <div class="plate-relation clearfix">
     <div class="relation-title">
       <div class="page-left">
-        <span>关联页面</span>
+        <span><span style='color:red'>*</span>关联页面</span>
         <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
           <el-option value=''>请选择</el-option>
           <el-option
@@ -19,8 +19,8 @@
       </div>
       <div class="page-right">
         <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages' :disabled='skipDisabled'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="skipValue" placeholder="不跳转" @change='skipPages' :disabled='skipDisabled'>
+          <el-option value=''>不跳转</el-option>
           <el-option
             v-for="item in skipPageList"
             :key="item.pageId"
@@ -40,7 +40,12 @@
               <div class="grid-content bg-purple"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
-                <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
+                <template v-if='item.isChecked === true'>
+                  <button class="map-button">{{item.name}}</button>
+                </template>
+                <template v-else>
+                  <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
+                </template>
               </div>
             </template>
             <template v-else>
@@ -128,7 +133,9 @@ export default {
       .then((res) => {
         if (res) {
           if (res.data.list.length > 0) {
-            res.data.list.map((items, index) => {
+            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
+            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
+            this.relationPageList.map((items, index) => {
               const list = items.plateList.filter((item, idx) => {
                 return item.plateType === 1;
               });
@@ -137,8 +144,6 @@ export default {
               }
             });
           }
-          this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
-          this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
         }
       })
       .catch(() => {});
@@ -267,6 +272,7 @@ export default {
               this.btnDisabled = true;
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+            console.log(this.positionObj)
           }
         })
         .catch(() => {});

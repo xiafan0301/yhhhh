@@ -3,7 +3,7 @@
   <div class="plate-relation clearfix">
     <div class="relation-title">
       <div class="page-left">
-        <span>关联页面</span>
+        <span><span style='color:red'>*</span>关联页面</span>
         <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
           <el-option value=''>请选择</el-option>
           <el-option

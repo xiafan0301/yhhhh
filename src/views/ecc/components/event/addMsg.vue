@@ -14,6 +14,7 @@
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px'>
             <el-input style='width: 500px' placeholder='请选择事发地点...'></el-input>
+            <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>

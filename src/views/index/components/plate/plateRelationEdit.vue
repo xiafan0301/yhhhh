@@ -3,7 +3,7 @@
   <div class="plate-relation clearfix">
     <div class="relation-title">
       <div class="page-left">
-        <span>关联页面</span>
+        <span><span style='color:red'>*</span>关联页面</span>
         <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
           <el-option value=''>请选择</el-option>
           <el-option
@@ -19,8 +19,8 @@
       </div>
       <div class="page-right">
         <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="skipValue" placeholder="不跳转" @change='skipPages'>
+          <el-option value=''>不跳转</el-option>
           <el-option
             v-for="item in skipPageList"
             :key="item.pageId"
@@ -40,11 +40,20 @@
               <div class="grid-content bg-purple"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
+                <template v-if='item.isChecked === true'>
+                  <button
+                    class="map-button"
+                  >
+                    {{item.name}}
+                  </button>
+                </template>
+                <template v-else>
                   <button
                     class="map-button"
                     @click='selectPosition(item.id)'>
                     {{item.name}}
                   </button>
+                </template>
               </div>
             </template>
             <template v-else>
@@ -282,6 +291,7 @@ export default {
       const jumpPageId = this.$store.state.editPlateInfo.visPagePlate.jumpPageId;
       const positionId = this.$store.state.editPlateInfo.visPagePlate.positionId;
       const plateId = this.$store.state.editPlateInfo.plateId;
+      const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
       this.newDataList = {
         jumpPageId: jumpPageId,
         pageId: pageId,
@@ -291,7 +301,9 @@ export default {
       this.axios.get('/pageServices/pages', {params})
         .then((res) => {
           if (res && res.data.list) {
-            res.data.list.map((item) => {
+            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
+            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
+           this.relationPageList.map((item) => {
               if (item.pageId === pageId) {
                 this.relationValue = item.pageName;
                 this.currentPage = item.pageName;
@@ -305,8 +317,6 @@ export default {
                 item.isDisabled = true;
               }
             });
-            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
-            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
           }
           this.skipPageList = this.skipPausePageList;
           this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
@@ -328,7 +338,10 @@ export default {
                   item.canChecked = true;
                   if (items.serialNumber === item.id) {
                     item.isChecked = true;
-                    // item.finishChecked = true;
+                    if (serialNumber === item.id) {
+                      item.isChecked = false;
+                      item.finishChecked = true;
+                    }
                     item.name = items.plateName;
                   }
                 });

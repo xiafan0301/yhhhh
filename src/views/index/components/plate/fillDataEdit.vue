@@ -9,10 +9,10 @@
       <div>
         <el-form :inline="true" :model="dataForm" class="demo-form-inline" :rules='rules' ref='dataForm' size="small">
           <el-form-item label="版块名称" prop='plateName'>
-            <el-input v-model="dataForm.plateName" placeholder="版块名称" maxlength='20'></el-input>
+            <el-input v-model="dataForm.plateName" placeholder="版块名称" :maxlength='maxlength'></el-input>
           </el-form-item>
           <el-form-item label="注释" prop='remark'>
-            <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
+            <el-input v-model="dataForm.remark" placeholder="注释" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
         <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
@@ -20,6 +20,37 @@
           <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
           <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
           <template v-if="info.areaDataType === 1">
+            <div style="margin-top:3%;">
+              <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+              <span v-show='false'>{{configCount = info.configCount}}</span>
+              <span v-show='false'>{{plateAreaId[info.serialNumber] = info.plateAreaId}}</span>
+              <div class="ecl2-cr-list">
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th style='border-left: 1px solid #ddd'>项</th>
+                    <th>值</th>
+                    <th>单位</th>
+                    <th style='border-right: 1px solid #ddd'>同比值(%)</th>
+                  </tr>
+                  </thead>
+                  <template v-if='info.configCount !== 0'>
+                    <tbody v-for='(item, index) in info.configCount' :key='index'>
+                      <tr>
+                        <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td>
+                          <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
+                        </td>
+                        <td><input type="text" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </table>
+              </div>
+            </div>
+          </template>
+          <template v-if="info.areaDataType === 6">
             <div style="margin-top:3%;">
               <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
               <span v-show='false'>{{configCount = info.configCount}}</span>
@@ -555,6 +586,73 @@
                 </div>
               </div>
             </template>
+            <template v-if="info.areaDataType === 5">
+              <div style="margin-top:5%;">
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <div class="ecl2-cr-list">
+                  <p class="list-title">第一步：添加项</p>
+                  <table class="plate-table" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th style='border-left: 1px solid #ddd'>项名称</th>
+                      <th>单位</th>
+                      <th style='border-right: 1px solid #ddd'>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in parentDataListFour" :key="'item'+index">
+                        <template v-if="childDataListFour[index].isPercent !== true">
+                          <td>
+                            <input type="text" v-model="item.itemName" placeholder='请填写'>
+                          </td>
+                          <td>
+                            <input type="text" v-model="childDataListFour[index].valueUnit" placeholder='请填写'>
+                          </td>
+                          <td width='15%'>
+                            <template v-if="parentDataListFour.length > 1">
+                              <img
+                                :src='reduceImg'
+                                style="cursor: pointer;"
+                                @click="deleteChildDataListFour(item.itemName, index)"
+                              />
+                            </template>
+                            <template v-if="isActiveParent === index">
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
+                          </td>
+                        </template>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ecl2-cr-list" style="margin-top: 40px;">
+                  <p class="list-title">第二步：添加数值</p>
+                  <table class="plate-table" style="width: 100%;" >
+                    <thead>
+                    <tr>
+                      <th style='border-left: 1px solid #ddd;width:50%'>项名称</th>
+                      <th>值</th>
+                    </tr>
+                    </thead>
+                    <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
+                      <tr>
+                        <td>{{items.itemName}}</td>
+                        <td><input type="text" v-model="valueContentFour[index]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </template>
           </template>
         </div>
         <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
@@ -575,6 +673,7 @@ export default {
   data () {
     return {
       typeArr: [],
+      maxlength: 20,
       rowspan: 0,
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
@@ -683,6 +782,11 @@ export default {
         this.contentItemListFour.map((items, index) => {
           items.contentSubItemList.map((item, idx) => {
             if (item.serialNumber === 1) {
+              if (item.valueUnit !== this.childDataListFour[index].valueUnit) {
+                this.childDataListFour.map((value) => {
+                  value.valueUnit = this.childDataListFour[index].valueUnit;
+                });
+              }
               item.contentName = this.childDataListFour[index].contentName;
               item.valueUnit = this.childDataListFour[index].valueUnit;
               item.valueContent = this.childDataListFour[index].valueContent;
@@ -1743,6 +1847,8 @@ export default {
                           this.isActiveChild = this.childDataListTwo.length - 1;
                         }
                         this.isActiveParent = this.parentDataListTwo.length - 1;
+                      } else {
+
                       }
                       const length = unitArr.length;
                       const result = unitArr.every((value, index, unitArr) => {
@@ -1850,6 +1956,59 @@ export default {
                         });
                         this.contentItemListFour = JSON.parse(JSON.stringify(items.contentItemList));
                         this.isActiveParent = this.parentDataListFour.length - 1;
+                      }
+                    } else if (items.areaDataType === 5) {
+                      if (items.contentItemList.length > 0) {
+                        let length;
+                        let parentArr = [];
+                        let childData;
+                        items.contentItemList.map((list, index) => {
+                          list.plateAreaId = items.plateAreaId;
+                          const data = {
+                            itemName: list.itemName,
+                            plateAreaId: items.plateAreaId,
+                            serialNumber: list.serialNumber
+                          }
+                          this.parentDataListFour.push(data);
+                          if (list.contentSubItemList.length > 0) {
+                            length = list.contentSubItemList.length;
+                            list.contentSubItemList.map((value, idx) => {
+                              // if (value.serialNumber === 2) {
+                              //   this.percentValue[index] = value.valueContent;
+                              // } else {
+                              childData = {
+                                contentName: value.contentName,
+                                valueContent: value.valueContent,
+                                valueUnit: value.valueUnit,
+                                serialNumber: value.serialNumber,
+                                graphicFieldFlag: value.graphicFieldFlag,
+                                supernatantFieldFlag: value.supernatantFieldFlag,
+                                sumFlag: value.sumFlag
+                              }
+                              this.valueContentFour[index] = value.valueContent;
+                              // }
+                            });
+                          }
+                          this.childDataListFour.push(childData);
+                        });
+                        this.contentItemListFour = JSON.parse(JSON.stringify(items.contentItemList));
+                        this.isActiveParent = this.parentDataListFour.length - 1;
+                      }
+                    } else if (items.areaDataType === 6) {
+                      if (items.contentItemList.length > 0) {
+                        items.contentItemList.map((item, index) => {
+                          this.itemName[index + '_' + items.serialNumber] = item.itemName;
+                          if (item.contentSubItemList.length > 0) {
+                            item.contentSubItemList.map((value, idx) => {
+                              if (value.serialNumber === 1) {
+                                this.valueContent[index + '_' + items.serialNumber] = value.valueContent;
+                                this.valueUnit[index + '_' + items.serialNumber] = value.valueUnit;
+                              } else {
+                                this.percentValueOne[index + '_' + items.serialNumber] = value.valueContent;
+                              }
+                            });
+                          }
+                        });
                       }
                     }
                   }

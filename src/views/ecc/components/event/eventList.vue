@@ -107,7 +107,8 @@ export default {
       this.$router.push({name: 'add-event'});
     },
     skipEventDetail () { // 跳转到事件详情页面
-      this.$router.push({name: 'event-detail'});
+      // this.$router.push({name: 'event-detail'});
+      this.$router.push({name: 'event-untreated'});
     },
     getEventList () { // 根据默认刷选条件获取事件列表
     },
