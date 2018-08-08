@@ -75,7 +75,7 @@ export default {
     skipAddMsg () { // 跳转到添加消息页面
       this.$router.push({name: 'add-message'});
     },
-    skipPersonDetail () { //查看
+    skipPersonDetail () { // 查看
       this.$router.push({name: 'mutual-detail'});
     }
   }

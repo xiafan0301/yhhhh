@@ -9,10 +9,10 @@
       <div>
         <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
           <el-form-item label="版块名称" prop='plateName'>
-            <el-input v-model="dataForm.plateName" placeholder="必填" maxlength='20'></el-input>
+            <el-input v-model="dataForm.plateName" placeholder="必填" :maxlength='maxlength'></el-input>
           </el-form-item>
           <el-form-item label="注释" prop='remark'>
-            <el-input v-model="dataForm.remark" placeholder="选填" maxlength='20'></el-input>
+            <el-input v-model="dataForm.remark" placeholder="选填" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
         <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
@@ -20,6 +20,37 @@
           <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
           <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
           <template v-if="info.areaDataType === 1">
+            <div style="margin-top:3%;">
+              <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+              <span v-show='false'>{{configCount = info.configCount}}</span>
+              <span v-show='false'>{{plateAreaId[info.serialNumber] = info.plateAreaId}}</span>
+              <div class="ecl2-cr-list">
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th style='border-left: 1px solid #DDDDDD'>项</th>
+                    <th>值</th>
+                    <th>单位</th>
+                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                  </tr>
+                  </thead>
+                  <template v-if='info.configCount !== 0'>
+                    <tbody v-for='(item, index) in info.configCount' :key='index'>
+                      <tr>
+                        <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td>
+                          <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
+                        </td>
+                        <td><input type="text" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </table>
+              </div>
+            </div>
+          </template>
+          <template v-if="info.areaDataType === 6">
             <div style="margin-top:3%;">
               <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
               <span v-show='false'>{{configCount = info.configCount}}</span>
@@ -124,7 +155,7 @@
                           <td>
                             合计(<input type="text" v-model="item.contentName" placeholder='请填写'>)
                           </td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                           <td></td>
                           <td>
                             <el-switch
@@ -211,16 +242,16 @@
                     <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
                       <template v-if='item.isMerge === true'>
                         <tr class='mergetr'>
-                          <td>合计（{{childDataListThree[index].contentName}}）</td>
+                          <td class='cannot-modify'>合计（{{childDataListThree[index].contentName}}）</td>
                           <td>
                             合计(<input type="text" v-model="item.contentName" placeholder='请填写'>)
                           </td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                         </tr>
                       </template>
                       <template v-else>
                         <tr>
-                          <td>{{childDataListThree[index].contentName}}</td>
+                          <td class='cannot-modify'>{{childDataListThree[index].contentName}}</td>
                           <td>
                             <input type="text" v-model="item.contentName" placeholder='请填写'>
                           </td>
@@ -283,13 +314,13 @@
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                         <template v-else>
-                          <td>{{items.itemName}}</td>
-                          <td>{{list.contentName}}</td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td class='cannot-modify'>{{list.contentName}}</td>
                           <td><input type="text" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
-                          <td>{{list.valueUnit}}</td>
-                          <td>{{list.contnetSubItemExtendList[0].contentName}}</td>
+                          <td class='cannot-modify'>{{list.valueUnit}}</td>
+                          <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].contentName}}</td>
                           <td><input type="text" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
-                          <td>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                       </tr>
                     </tbody>
@@ -356,7 +387,7 @@
                       <template v-if="item.isMerge === true">
                         <tr class='mergetr'>
                           <td>合计(<input v-model='item.contentName' type='text' style="padding-left:3%;" placeholder='请填写' />)</td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                           <td></td>
                           <td>
                             <el-switch
@@ -467,8 +498,8 @@
                       <tr v-for="(value,idx) in item.contentSubItemList" :key="'value'+idx">
                         <span v-show='false'>{{value.serialNumber = parseInt(idx+1)}}</span>
                         <template v-if='value.isMerge === false'>
-                          <td>{{item.itemName}}</td>
-                          <td>{{value.contentName}}</td>
+                          <td class='cannot-modify'>{{item.itemName}}</td>
+                          <td class='cannot-modify'>{{value.contentName}}</td>
                           <td>
                             <input
                               type="text"
@@ -476,7 +507,7 @@
                               placeholder='请填写'
                             >
                           </td>
-                          <td>{{value.valueUnit}}</td>
+                          <td class='cannot-modify'>{{value.valueUnit}}</td>
                         </template>
                         <template v-else>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
@@ -547,9 +578,73 @@
                     <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
                       <tr>
                         <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                        <td>{{items.itemName}}</td>
+                        <td class='cannot-modify'>{{items.itemName}}</td>
                         <td><input type="text" v-model="valueContentFour[index]" placeholder='请填写'></td>
                         <td><input type="text" v-model="percentValue[index]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </template>
+             <template v-if="info.areaDataType === 5">
+              <div style="margin-top:5%;">
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <div class="ecl2-cr-list">
+                  <p class="list-title">第一步：添加项</p>
+                  <table class="plate-table" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>单位</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in parentDataListFour" :key="'item'+index">
+                        <td>
+                          <input type="text" v-model="item.itemName" placeholder='请填写'>
+                        </td>
+                        <td>
+                          <input type="text" v-model="childDataListFour[index].valueUnit" placeholder='请填写'>
+                        </td>
+                        <td width='15%'>
+                          <template v-if="parentDataListFour.length > 1">
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
+                              @click="deleteChildDataListFour(item.itemName, index)"
+                            />
+                          </template>
+                          <template v-if='isActiveParent === index'>
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img :src="unactiveImg" />
+                          </template>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ecl2-cr-list" style="margin-top: 40px;">
+                  <p class="list-title">第二步：添加数值</p>
+                  <table class="plate-table" style="width: 100%;" >
+                    <thead>
+                      <tr>
+                        <th style='border-left: 1px solid #DDDDDD;width:50%'>项名称</th>
+                        <th>值</th>
+                      </tr>
+                    </thead>
+                    <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
+                      <tr>
+                        <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
+                        <td class='cannot-modify'>{{items.itemName}}</td>
+                        <td><input type="text" v-model="valueContentFour[index]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </table>
@@ -576,6 +671,7 @@ export default {
   data () {
     return {
       typeArr: [],
+      maxlength: 20,
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
@@ -790,6 +886,11 @@ export default {
       handler: function (newVal) {
         this.contentItemListFour.map((items, index) => {
           items.contentSubItemList.map((item, idx) => {
+            if (item.valueUnit !== this.childDataListFour[idx].valueUnit) {
+              this.childDataListFour.map((value) => {
+                value.valueUnit = this.childDataListFour[idx].valueUnit;
+              });
+            }
             item.contentName = this.childDataListFour[idx].contentName;
             item.valueUnit = this.childDataListFour[idx].valueUnit;
             item.valueContent = this.childDataListFour[idx].valueContent;
@@ -1654,6 +1755,9 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .cannot-modify {
+    background: #eee;
   }
   .selectBtn {
     background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
