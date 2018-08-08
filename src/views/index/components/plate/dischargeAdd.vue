@@ -82,18 +82,32 @@
                             />
                           </template>
                           <template v-if='info.serialNumber === 3'>
-                            <img
-                              :src="[isActive3 === index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                            />
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </template>
                           <template v-else-if='info.serialNumber === 5'>
-                            <img
-                              :src="[isActive5 === index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
-                            />
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </template>
                         </td>
                       </tr>
@@ -143,7 +157,7 @@ export default {
       typeArr: [],
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       rules: {
         plateName: [{
           required: true,

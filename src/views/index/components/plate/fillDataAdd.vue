@@ -68,7 +68,7 @@
           <template v-if="info.areaDataType !== 1">
             <template v-if="info.areaDataType === 3">
               <div style="margin-top:5%;">
-                <h2 class='stepH2'>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -90,11 +90,16 @@
                               @click="deleteParentDataThree(item.itemName, index)"
                             />
                           </template>
-                          <img
-                            :src="[isActiveParent === index ? addImg : unactiveImg]"
-                            style="cursor: pointer;"
-                            @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
-                          />
+                          <template v-if="isActiveParent === index">
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addparentDataThree(item.itemName, index, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img :src="unactiveImg" />
+                          </template>
                         </td>
                       </tr>
                     </tbody>
@@ -177,11 +182,16 @@
                                 />
                               </template>
                             </template>
-                            <img
-                              :src="[isActiveChild=== index ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
-                            />
+                            <template v-if="isActiveChild=== index">
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addContentListThree(item.contentName, item.valueUnit, index, info.subMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img :src="unactiveImg" />
+                            </template>
                           </td>
                         </tr>
                       </template>
@@ -289,7 +299,7 @@
             </template>
             <template v-if="info.areaDataType === 2">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -313,11 +323,18 @@
                               @click="deleteParentDataTwo(item.itemName, idx)"
                             />
                           </template>
-                          <img
-                            :src="[isActiveParent === idx ? addImg : unactiveImg]"
-                            style="cursor: pointer;"
-                            @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)" title="新增项"
-                          />
+                          <template v-if="isActiveParent === idx">
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addparentDataTwo(item.itemName,idx, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img
+                              :src="unactiveImg"
+                            />
+                          </template>
                         </td>
                       </tr>
                     </tbody>
@@ -394,11 +411,18 @@
                                 />
                               </template>
                             </template>
-                            <img
-                              :src="[isActiveChild === idx ? addImg : unactiveImg]"
-                              style="cursor: pointer;"
-                              @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
-                            />
+                            <template v-if="isActiveChild === idx">
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addContentListTwo(item.contentName, item.valueUnit, idx, info.subMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
                           </td>
                         </tr>
                       </template>
@@ -468,7 +492,7 @@
             </template>
             <template v-if="info.areaDataType === 4">
               <div style="margin-top:5%;">
-                <h2>位置{{info.serialNumber}}</h2>
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -495,11 +519,16 @@
                               @click="deleteChildDataListFour(item.itemName, index)"
                             />
                           </template>
-                          <img
-                            :src="[isActiveParent === index ? addImg : unactiveImg]"
-                            style="cursor: pointer;"
-                            @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
-                          />
+                          <template v-if='isActiveParent === index'>
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img :src="unactiveImg" />
+                          </template>
                         </td>
                       </tr>
                     </tbody>
@@ -549,7 +578,7 @@ export default {
       typeArr: [],
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       rules: {
         plateName: [{
           required: true,

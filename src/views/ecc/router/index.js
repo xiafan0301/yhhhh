@@ -15,6 +15,7 @@ import event from '@/views/ecc/components/event/event.vue'
 import eventList from '@/views/ecc/components/event/eventList.vue'
 import addEvent from '@/views/ecc/components/event/addEvent.vue'
 import addMsg from '@/views/ecc/components/event/addMsg.vue'
+import eventDetail from '@/views/ecc/components/event/eventDetail.vue'
 import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue'
 // 调度指挥
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
@@ -53,6 +54,7 @@ export default new Router({
             {path: 'eventList', name: 'event-list', component: eventList},
             {path: 'addEvent', name: 'add-event', component: addEvent},
             {path: 'addMsg', name: 'add-message', component: addMsg},
+            {path: 'eventDetail', name: 'event-detail', component: eventDetail},
             {path: 'mutualPerson', name: 'mutual-person', component: mutualPerson}
           ]
         },

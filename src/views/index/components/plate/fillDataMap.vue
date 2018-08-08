@@ -9,8 +9,8 @@
       <div class='position-select'>
         <div>
           <span>位置1</span>
-          <el-select v-model='relationValue1' :class="{isActive: borderActive === 1}" placeholder="选择数据组件" @change="changeMapType1">
-            <el-option value=''>请选择数据组件</el-option>
+          <el-select v-model='relationValue1' :class="{isActive: borderActive === 1}" placeholder="请选择地图版块数据类型" @change="changeMapType1">
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList1'
               :key='item.dataTypeId'
@@ -22,8 +22,8 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select :disabled="isDisabled2" v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="选择数据组件" @change='changeMapType2'>
-            <el-option value=''>请选择数据组件</el-option>
+          <el-select v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="请选择地图版块数据类型" @change='changeMapType2'>
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList2'
               :key='item.dataTypeId'
@@ -35,8 +35,8 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select :disabled="isDisabled3" v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="选择数据组件" @change='changeMapType3'>
-            <el-option value=''>请选择数据组件</el-option>
+          <el-select v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图版块数据类型" @change='changeMapType3'>
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList3'
               :key='item.dataTypeId'
@@ -48,8 +48,8 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select :disabled="isDisabled4" v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="选择数据组件" @change='changeMapType4'>
-            <el-option value=''>请选择数据组件</el-option>
+          <el-select v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图版块数据类型" @change='changeMapType4'>
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList4'
               :key='item.dataTypeId'
@@ -96,16 +96,23 @@
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
                       <img
-                        :src='reduceImf'
+                        :src='reduceImg'
                         style="cursor: pointer;"
                         @click="deleteDataListOne(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive1 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListOne(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive1 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListOne(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -143,11 +150,18 @@
                         @click="deleteDataListTwo(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive2 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListTwo(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive2 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListTwo(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -185,11 +199,18 @@
                         @click="deleteDataListThree(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive3 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListThree(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive3 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListThree(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -227,11 +248,18 @@
                         @click="deleteDataListFour(item.name, index)"
                       />
                     </template>
-                    <img
-                      :src="[isActive4 === index ? addImg : unactiveImg]"
-                      style="cursor: pointer;"
-                      @click="addDataListFour(item.name, item.value, item.unit, index)"
-                    />
+                    <template v-if='isActive4 === index'>
+                      <img
+                        :src="addImg"
+                        style="cursor: pointer;"
+                        @click="addDataListFour(item.name, item.value, item.unit, index)"
+                      />
+                    </template>
+                    <template v-else>
+                      <img
+                        :src="unactiveImg"
+                      />
+                    </template>
                   </td>
                 </tr>
               </tbody>
@@ -257,7 +285,7 @@ export default {
     return {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
-      unactiveImg: require('../../../../assets/img/temp/reduce.png'),
+      unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       tip: '',
       borderActive: 1,
       isActive1: 0,
@@ -314,13 +342,12 @@ export default {
             this.plateId1 = items.plateId;
           } else if (serialNumber === 32) {
             this.relationValue2 = items.plateName;
-            this.isDisabled2 = false;
             this.typeId2 = items.typeId;
             this.plateId2 = items.plateId;
             this.displayType2 = items.displayType;
           } else if (serialNumber === 33) {
             this.relationValue3 = items.plateName;
-            this.isDisabled3 = false;
+            // this.isDisabled3 = false;
             this.typeId3 = items.typeId;
             this.plateId3 = items.plateId;
             this.displayType3 = items.displayType;
@@ -328,27 +355,42 @@ export default {
             this.relationValue4 = items.plateName;
             this.plateId4 = items.plateId;
             this.typeId4 = items.typeId;
-            this.isDisabled4 = false;
+            // this.isDisabled4 = false;
             this.displayType4 = items.displayType;
           }
           if (items.areaInfoList) {
             if (items.areaInfoList[0].contentItemList.length > 0) {
               items.areaInfoList[0].contentItemList.map((item, idx) => {
-                const data = {
-                  name: item.itemName,
-                  value: item.contentSubItemList[0].valueContent,
-                  unit: item.contentSubItemList[0].valueUnit
-                }
                 if (serialNumber === 31) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList1.push(data);
                   this.isActive1 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 32) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList2.push(data);
                   this.isActive2 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 33) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList3.push(data);
                   this.isActive3 = items.areaInfoList[0].contentItemList.length - 1;
                 } else if (serialNumber === 34) {
+                  const data = {
+                    name: item.itemName,
+                    value: item.contentSubItemList[0].valueContent,
+                    unit: item.contentSubItemList[0].valueUnit
+                  }
                   this.dataList4.push(data);
                   this.isActive4 = items.areaInfoList[0].contentItemList.length - 1;
                 }
@@ -402,7 +444,7 @@ export default {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
     },
     nextStep () {
-      let totalDataList = [];
+      let totalDataList = [], dataArrOne, dataArrFour, dataArrThree, dataArrTwo;
       this.positionIdList.map((item, index) => {
         if (item.serialNumber === 31) {
           this.positionId1 = item.positionId;
@@ -414,149 +456,157 @@ export default {
           this.positionId4 = item.positionId;
         }
       });
-      let dataArrOne = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
-        plateName: this.relationValue1,
-        remark: '',
-        plateType: 2,
-        plateId: this.plateId1,
-        positionId: this.positionId1,
-        jumpPageId: '',
-        displayType: this.displayType1,
-        typeId: this.typeId1,
-        contentItemList: []
-      };
-      let dataArrTwo = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
-        plateName: this.relationValue2,
-        remark: '',
-        plateType: 2,
-        plateId: this.plateId2,
-        positionId: this.positionId2,
-        jumpPageId: '',
-        displayType: this.displayType2,
-        typeId: this.typeId2,
-        contentItemList: []
-      };
-      let dataArrThree = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
-        plateName: this.relationValue3,
-        remark: '',
-        positionId: this.positionId3,
-        jumpPageId: '',
-        plateId: this.plateId3,
-        plateType: 2,
-        displayType: this.displayType3,
-        typeId: this.typeId3,
-        contentItemList: []
-      };
-      let dataArrFour = {
-        pageId: this.$store.state.mapPageId,
-        configId: this.$store.state.plateInfo.configId,
-        plateName: this.relationValue4,
-        plateId: this.plateId4,
-        remark: '',
-        positionId: this.positionId4,
-        jumpPageId: '',
-        plateType: 2,
-        displayType: this.displayType4,
-        typeId: this.typeId4,
-        contentItemList: []
-      };
-      this.dataList1.map((item, index) => {
-        if (item.name || item.value || item.unit) {
-          const data = {
-            itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
-            serialNumber: index + 1,
-            contentSubItemList: [{
-              contentName: item.name,
-              valueContent: item.value,
-              valueUnit: item.unit,
-              serialNumber: 1,
-              graphicFieldFlag: false,
-              supernatantFieldFlag: false,
-              sumFlag: false,
-              contnetSubItemExtendList: []
-            }]
+      let deleteFlag1 = this.relationValue1 !== '' ? false : this.plateId1 === '' ? false : true;
+      let deleteFlag2 = this.relationValue2 !== '' ? false : this.plateId2 === '' ? false : true;
+      let deleteFlag3 = this.relationValue3 !== '' ? false : this.plateId3 === '' ? false : true;
+      let deleteFlag4 = this.relationValue4 !== '' ? false : this.plateId4 === '' ? false : true;
+      if (this.relationValue1 !== '') {
+        dataArrOne = {
+          pageId: this.$store.state.mapPageId,
+          configId: this.$store.state.plateInfo.configId,
+          plateName: this.relationValue1,
+          remark: '',
+          plateType: 2,
+          deleteFlag: deleteFlag1,
+          plateId: this.plateId1,
+          positionId: this.positionId1,
+          jumpPageId: '',
+          displayType: this.displayType1,
+          typeId: this.typeId1,
+          contentItemList: []
+        };
+        this.dataList1.map((item, index) => {
+          if (item.name || item.value || item.unit) {
+            const data = {
+              itemName: item.name,
+              plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+              serialNumber: index + 1,
+              contentSubItemList: [{
+                contentName: item.name,
+                valueContent: item.value,
+                valueUnit: item.unit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                contnetSubItemExtendList: []
+              }]
+            }
+            dataArrOne.contentItemList.push(data);
           }
-          dataArrOne.contentItemList.push(data);
-        }
-      });
-      this.dataList2.map((item, index) => {
-        if (item.name || item.value || item.unit) {
-          const data = {
-            itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
-            serialNumber: index + 1,
-            contentSubItemList: [{
-              contentName: item.name,
-              valueContent: item.value,
-              valueUnit: item.unit,
-              serialNumber: 1,
-              graphicFieldFlag: false,
-              supernatantFieldFlag: false,
-              sumFlag: false,
-              contnetSubItemExtendList: []
-            }]
-          }
-          dataArrTwo.contentItemList.push(data);
-        }
-      });
-      this.dataList3.map((item, index) => {
-        if (item.name || item.value || item.unit) {
-          const data = {
-            itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
-            serialNumber: index + 1,
-            contentSubItemList: [{
-              contentName: item.name,
-              valueContent: item.value,
-              valueUnit: item.unit,
-              serialNumber: 1,
-              graphicFieldFlag: false,
-              supernatantFieldFlag: false,
-              sumFlag: false,
-              contnetSubItemExtendList: []
-            }]
-          }
-          dataArrThree.contentItemList.push(data);
-        }
-      });
-      this.dataList4.map((item, index) => {
-        if (item.name || item.value || item.unit) {
-          const data = {
-            itemName: item.name,
-            plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
-            serialNumber: index + 1,
-            contentSubItemList: [{
-              contentName: item.name,
-              valueContent: item.value,
-              valueUnit: item.unit,
-              serialNumber: 1,
-              graphicFieldFlag: false,
-              supernatantFieldFlag: false,
-              sumFlag: false,
-              contnetSubItemExtendList: []
-            }]
-          }
-          dataArrFour.contentItemList.push(data);
-        }
-      });
-      if (dataArrFour.contentItemList.length > 0) {
-        totalDataList.push(dataArrFour);
+        });
+        totalDataList.push(dataArrOne);
       }
-      if (dataArrThree.contentItemList.length > 0) {
-        totalDataList.push(dataArrThree);
-      }
-      if (dataArrTwo.contentItemList.length > 0) {
+      if (this.relationValue2 !== '') {
+        dataArrTwo = {
+          pageId: this.$store.state.mapPageId,
+          configId: this.$store.state.plateInfo.configId,
+          plateName: this.relationValue2,
+          remark: '',
+          plateType: 2,
+          deleteFlag: deleteFlag2,
+          plateId: this.plateId2,
+          positionId: this.positionId2,
+          jumpPageId: '',
+          displayType: this.displayType2,
+          typeId: this.typeId2,
+          contentItemList: []
+        };
+        this.dataList2.map((item, index) => {
+          if (item.name || item.value || item.unit) {
+            const data = {
+              itemName: item.name,
+              plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+              serialNumber: index + 1,
+              contentSubItemList: [{
+                contentName: item.name,
+                valueContent: item.value,
+                valueUnit: item.unit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                contnetSubItemExtendList: []
+              }]
+            }
+            dataArrTwo.contentItemList.push(data);
+          }
+        });
         totalDataList.push(dataArrTwo);
       }
-      if (dataArrOne.contentItemList.length > 0) {
-        totalDataList.push(dataArrOne);
+      if (this.relationValue3 !== '') {
+        dataArrThree = {
+          pageId: this.$store.state.mapPageId,
+          configId: this.$store.state.plateInfo.configId,
+          plateName: this.relationValue3,
+          remark: '',
+          positionId: this.positionId3,
+          jumpPageId: '',
+          plateId: this.plateId3,
+          deleteFlag: deleteFlag3,
+          plateType: 2,
+          displayType: this.displayType3,
+          typeId: this.typeId3,
+          contentItemList: []
+        };
+        this.dataList3.map((item, index) => {
+          if (item.name || item.value || item.unit) {
+            const data = {
+              itemName: item.name,
+              plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+              serialNumber: index + 1,
+              contentSubItemList: [{
+                contentName: item.name,
+                valueContent: item.value,
+                valueUnit: item.unit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                contnetSubItemExtendList: []
+              }]
+            }
+            dataArrThree.contentItemList.push(data);
+          }
+        });
+        totalDataList.push(dataArrThree);
+      }
+      if (this.relationValue4 !== '') {
+        dataArrFour = {
+          pageId: this.$store.state.mapPageId,
+          configId: this.$store.state.plateInfo.configId,
+          plateName: this.relationValue4,
+          plateId: this.plateId4,
+          remark: '',
+          positionId: this.positionId4,
+          deleteFlag: deleteFlag4,
+          jumpPageId: '',
+          plateType: 2,
+          displayType: this.displayType4,
+          typeId: this.typeId4,
+          contentItemList: []
+        };
+         this.dataList4.map((item, index) => {
+          if (item.name || item.value || item.unit) {
+            const data = {
+              itemName: item.name,
+              plateAreaId: this.$store.state.plateConfigInfo[0].plateAreaId,
+              serialNumber: index + 1,
+              contentSubItemList: [{
+                contentName: item.name,
+                valueContent: item.value,
+                valueUnit: item.unit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                contnetSubItemExtendList: []
+              }]
+            }
+            dataArrFour.contentItemList.push(data);
+          }
+        });
+        totalDataList.push(dataArrFour);
       }
       const params = {
         visPlates: totalDataList
@@ -584,10 +634,10 @@ export default {
         .catch(() => {});
     },
     changeMapType1 (value) { // 位置1的选择框change方法
-      let obj = {};
-      this.isActive = 0;
       this.dataList1 = [];
       if (value) {
+        let obj = {};
+        this.isActive = 0;
         obj = this.mapTypeList1.find((item) => {
           return item.typeName === value;
         });
@@ -602,6 +652,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList1 = res.data;
+                this.isActive1 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -613,13 +664,15 @@ export default {
             }
           })
           .catch(() => {})
+      } else {
+        this.dataList1 = [];
       }
     },
     changeMapType2 (value) {
-      let obj = {};
       this.dataList2 = [];
-      this.isActive = 0;
       if (value) {
+        let obj = {};
+        this.isActive = 0;
         obj = this.mapTypeList2.find((item) => {
           return item.typeName === value;
         });
@@ -645,13 +698,15 @@ export default {
             }
           })
           .catch(() => {})
+      } else {
+        this.dataList2 = [];
       }
     },
     changeMapType3 (value) {
-      let obj = {};
-      this.isActive = 0;
       this.dataList3 = [];
       if (value) {
+        let obj = {};
+        this.isActive = 0;
         obj = this.mapTypeList3.find((item) => {
           return item.typeName === value;
         });
@@ -677,6 +732,8 @@ export default {
             }
           })
           .catch(() => {})
+      } else {
+        this.dataList3 = [];
       }
     },
     changeMapType4 (value) {
@@ -708,6 +765,8 @@ export default {
             }
           })
           .catch(() => {})
+      } else {
+        this.dataList4 = [];
       }
     },
     addDataListOne (name, value, unit, index) { // 位置1的添加一行
@@ -718,7 +777,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive1 = index + 1;
         this.dataList1.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -730,7 +789,7 @@ export default {
           this.dataList1.splice(index, 1);
         }
       });
-      this.isActive = this.dataList1.length - 1;
+      this.isActive1 = this.dataList1.length - 1;
     },
     addDataListTwo (name, value, unit, index) { // 位置2的添加一行
       if (name || value || unit) {
@@ -740,7 +799,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive2 = index + 1;
         this.dataList2.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -752,7 +811,7 @@ export default {
           this.dataList2.splice(index, 1);
         }
       });
-      this.isActive = this.dataList2.length - 1;
+      this.isActive2 = this.dataList2.length - 1;
     },
     addDataListThree (name, value, unit, index) { // 位置3的添加一行
       if (name || value || unit) {
@@ -762,7 +821,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive3 = index + 1;
         this.dataList3.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -774,7 +833,7 @@ export default {
           this.dataList3.splice(index, 1);
         }
       });
-      this.isActive = this.dataList3.length - 1;
+      this.isActive3 = this.dataList3.length - 1;
     },
     addDataListFour (name, value, unit, index) { // 位置4的添加一行
       if (name || value || unit) {
@@ -784,7 +843,7 @@ export default {
           value: '',
           unit: ''
         }
-        this.isActive = index + 1;
+        this.isActive4 = index + 1;
         this.dataList4.push(data);
       } else {
         this.tip = '请先填写信息';
@@ -796,7 +855,7 @@ export default {
           this.dataList4.splice(index, 1);
         }
       });
-      this.isActive = this.dataList4.length - 1;
+      this.isActive4 = this.dataList4.length - 1;
     }
   }
 }
