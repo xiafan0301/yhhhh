@@ -11,15 +11,15 @@
             :key="item.pageId"
             :disabled="item.isDisabled"
             :value="item.pageName"
+            :title="[item.isDisabled ===true ? '页面无空余位置' : '']"
           >
             {{item.pageName}}
           </el-option>
         </el-select>
       </div>
-      <span class='advice'>{{tips}}</span>
       <div class="page-right">
         <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
+        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages' :disabled='skipDisabled'>
           <el-option value=''>请选择</el-option>
           <el-option
             v-for="item in skipPageList"
@@ -41,7 +41,6 @@
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
                 <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
-                <i class='el-icon-circle-close close-icon' @click='againSelect(item.id)' v-show='item.finishChecked === true'></i>
               </div>
             </template>
             <template v-else>
@@ -56,8 +55,9 @@
     </div>
   </div>
   <div class="plate-ecl-b">
+    <span class='advice'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button type="primary" :disabled='btnDisabled' @click.native='nextStep' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button type="primary" :disabled='btnDisabled' :style="[btnDisabled === true ? styleObj : '']" @click.native='nextStep' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -67,34 +67,38 @@ export default {
   data () {
     return {
       relationValue: '',
+      skipDisabled: true,
       btnDisabled: true,
-      tips: '*请选择关联页面',
+      tips: '请把版块绑定到要展示的页面上',
+      styleObj: {
+        background: '#ddd'
+      },
       positionObj:
       [
         {
           id: 11,
           position: '左上',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 21,
           position: '右上',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 12,
           position: '左中',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 22,
           position: '右中',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 13,
           position: '左下',
-          name: '展示到该位置'
+          name: ''
         }, {
           id: 23,
           position: '右下',
-          name: '展示到该位置'
+          name: ''
         }
       ],
       skipValue: '',
@@ -123,8 +127,18 @@ export default {
     this.axios.get('/pageServices/pages', {params})
       .then((res) => {
         if (res) {
-          this.relationPageList = res.data.list;
-          this.skipPausePageList = res.data.list;
+          if (res.data.list.length > 0) {
+            res.data.list.map((items, index) => {
+              const list = items.plateList.filter((item, idx) => {
+                return item.plateType === 1;
+              });
+              if (list.length === 6) {
+                items.isDisabled = true;
+              }
+            });
+          }
+          this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
+          this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
         }
       })
       .catch(() => {});
@@ -173,7 +187,7 @@ export default {
         item.isChecked = false;
         item.name = '展示到该位置';
       });
-      this.tips = '*请选择关联页面';
+      this.tips = '请把版块绑定到要展示的页面上';
       this.skipPageList = [];
       this.relationPageList.map((item) => {
         item.isDisabled = false;
@@ -200,10 +214,12 @@ export default {
     selectPages (value) {
       if (value) {
         this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
+        this.skipDisabled = false;
       } else {
         this.skipPageList = [];
+        this.skipDisabled = true;
         this.skipValue = '';
-        this.tips = '*请选择关联页面';
+        this.tips = '请在目标页面上选择版块要展示的位置';
       }
       let obj = {};
       this.tips = '';
@@ -247,10 +263,7 @@ export default {
               return item.isChecked !== true;
             });
             if (data.length > 0) {
-              this.tips = '*点击选择要展示的位置按钮';
-              this.btnDisabled = true;
-            } else {
-              this.tips = '*该页面所有位置已经被占，请重新选择';
+              this.tips = '请在目标页面上选择版块要展示的位置';
               this.btnDisabled = true;
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
@@ -263,12 +276,16 @@ export default {
       this.tips = '';
       this.btnDisabled = false;
       this.positionObj.map((item, index) => {
+        item.finishChecked = false;
+        // item.isChecked = false;
         if (item.id === num) {
           item = Object.assign(item, {finishChecked: true});
-          this.tips = '*展示成功，点击下一步';
+          this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
           this.btnDisabled = false;
+          item.name = '展示到该位置';
         } else if (item.isChecked !== true) {
-          item.canChecked = false;
+          item.name = '替换到该位置';
+          item.canChecked = true;
         }
       });
       this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
@@ -295,17 +312,17 @@ export default {
           break;
       }
     },
-    againSelect (num) { // 重新选择位置
-      this.positionObj.map((item, index) => {
-        if (item.isChecked === false) {
-          item.canChecked = true;
-          item.finishChecked = false;
-        }
-      });
-      this.tips = '*点击选择要展示的位置按钮';
-      this.btnDisabled = true;
-      this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-    }
+    // againSelect (num) { // 重新选择位置
+    //   this.positionObj.map((item, index) => {
+    //     if (item.isChecked === false) {
+    //       item.canChecked = true;
+    //       item.finishChecked = false;
+    //     }
+    //   });
+    //   this.tips = '*点击选择要展示的位置按钮';
+    //   this.btnDisabled = true;
+    //   this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+    // }
   }
 }
 </script>
@@ -332,17 +349,14 @@ export default {
       display: flex;
       justify-content: center;
       .page-left, .page-right {
+        margin-left: 3%;
         span {
           color: #333333;
           font-size: 14px;
         }
       }
     }
-    .advice {
-      color: #F8560F;
-      font-size: 14px;
-      margin-right: 5%;
-    }
+    
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
@@ -370,6 +384,7 @@ export default {
           }
         }
       }
+      
       .grid-content {
         box-shadow: 2px 1px 8px rgba(79,84,90,0.31);
         border-radius: 4px;
@@ -406,22 +421,22 @@ export default {
         }
       }
       .checkedContent {
-        border-color: #0785FD;
+        border-color: #ddd;
         span {
-          color: #0785FD;
+          color: #ddd;
         }
         .map-button {
           background-color: transparent;
-          color: #0785FD;
+          color: #ddd;
           border: 0;
         }
       }
       .cannotChecked {
         span {
-          color: #0785FD;
+          color: #fff;
         }
         .map-button {
-          background-color: #D3D3D3;
+          background-color: #fff;
           color: #fff;
         }
       }
@@ -452,5 +467,10 @@ export default {
         }
       }
     }
+  }
+  .advice {
+    color: #F8560F;
+    font-size: 14px;
+    margin-right: 5%;
   }
 </style>

@@ -1,21 +1,21 @@
 <template>
   <div class="main">
+    <div is="visHeader"></div>
     <div class="vis-bg-l">
       <div is="visMenu"></div>
     </div>
     <div class="vis-bg-r">
-      <div is="visHeader"></div>
       <div class="vis-bg-content">
         <transition enter-active-class="fade-in" leave-active-class="leave-immediately"
                     :duration="{ enter: 300, leave: 100 }">
-          <router-view></router-view>
+          <router-view style='background:#F0F3F4;overflow:auto'></router-view>
         </transition>
       </div>
     </div>
   </div>
 </template>
 <script>
-import visHeader from '@/components/common/header.vue';
+import visHeader from '@/components/common/eccHeader.vue';
 import visMenu from './menu.vue';
 export default {
   components: {visHeader, visMenu},
@@ -39,7 +39,8 @@ export default {
   .vis-bg-l {
     float: left;
     width: 200px; height: 100%;
-    background-color: #022344;
+    background-color: #fff;
+    box-shadow:0px 2px 4px rgba(132,132,132,0.1);
   }
   .vis-bg-r {
     height: 100%;

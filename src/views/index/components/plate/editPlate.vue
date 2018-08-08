@@ -21,7 +21,7 @@
       <div class="pb-plate-pro">
         <div class="plate-pro-i plate-pro-i1" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 1}">
           <div class="plate-pro-ilr"></div>
-          <p>选择样式</p>
+          <p>选择示图</p>
         </div>
         <div class="plate-pro-i plate-pro-i2" :class="{'plate-pro-ised': this.$store.state.progressIndex >= 2}">
           <div class="plate-pro-ill"></div>

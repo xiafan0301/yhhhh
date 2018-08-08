@@ -170,17 +170,17 @@ export default {
         this.axios.get('/plateServices/managers/' + plateId + '')
           .then((res) => {
             if (res) {
-              console.log(res.data)
+              console.log(res.data);
               const data = {
                 configId: res.data.configId,
                 markUrl: this.$store.state.plateInfo.markUrl
-              }
+              };
               this.newDataList = {
                 plateId: res.data.plateId,
                 jumpPageId: res.data.visPagePlate.jumpPageId,
                 pageId: res.data.visPagePlate.pageId,
                 positionId: res.data.visPagePlate.positionId
-              }
+              };
               this.$store.commit('setStyleType', {styleType: res.data.plateType});
               this.$store.commit('setProgressIndex', {progressIndex: 2});
               this.$emit('setDataList', this.newDataList);

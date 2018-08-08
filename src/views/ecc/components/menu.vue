@@ -1,6 +1,6 @@
 <template>
   <div class="bg-ecc-menu">
-    <div class="bg-mu-t"></div>
+    <!-- <div class="bg-mu-t"></div> -->
     <div class="bg-mu-u">
       <div class="bg-mu-uc">
         <el-menu
@@ -111,7 +111,7 @@ export default {
     > .bg-mu-t {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 62px;
-      background: url(../../../assets/img/aorise-logo.png) center center no-repeat;
+      // background: url(../../../assets/img/aorise-logo.png) center center no-repeat;
     }
     > .bg-mu-u {
       height: 100%;
