@@ -2,9 +2,11 @@
   <div class="bg-release">
     <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>发布消息</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}">消息管理</el-breadcrumb-item>
-        <el-breadcrumb-item>查看公告</el-breadcrumb-item>
+        <el-breadcrumb-item>消息管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="gg">公告管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{name: 'system' }"  v-if="!gg">系统消息</el-breadcrumb-item>
+        <el-breadcrumb-item v-if="gg">查看公告</el-breadcrumb-item>
+        <el-breadcrumb-item  v-if="!gg">查看系统消息</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">

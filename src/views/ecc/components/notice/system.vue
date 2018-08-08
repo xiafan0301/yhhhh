@@ -125,7 +125,7 @@ export default {
     },
     modify () {
       this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
     },
     modifyxt () {
       this.visible2 = false;
