@@ -11,7 +11,7 @@
     <div class="bg-plate-sf">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item label="筛选查找">
-          <el-select v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;">
+          <el-select v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;" @change='handleChange'>
             <el-option  v-for="(item, index) in pageList" :label="item.pageName" :value="item.pageId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
@@ -98,6 +98,9 @@ export default {
           this.pageList = res.data.list;
         })
         .catch(() => {});
+    },
+    handleChange (value) {
+      this.searchForm.pageId = value;
     },
     searchFormSubmit () {
       this.pager.pageNum = 1;

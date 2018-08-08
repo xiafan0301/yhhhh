@@ -9,10 +9,10 @@
       <div>
         <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
           <el-form-item label="版块名称" prop='plateName'>
-            <el-input v-model="dataForm.plateName" placeholder="版块名称" maxlength='20'></el-input>
+            <el-input v-model="dataForm.plateName" placeholder="版块名称" :maxlength='maxlength'></el-input>
           </el-form-item>
           <el-form-item label="注释" prop='remark'>
-            <el-input v-model="dataForm.remark" placeholder="注释" maxlength='20'></el-input>
+            <el-input v-model="dataForm.remark" placeholder="注释" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
         <div v-for="(info, index) in plateInfoList" :key="'info'+index">
@@ -186,6 +186,7 @@ export default {
   data () {
     return {
       typeArr: [],
+      maxlength: 20,
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),

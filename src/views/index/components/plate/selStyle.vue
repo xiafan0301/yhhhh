@@ -73,6 +73,7 @@ export default {
       this.axios.get('/plateServices/areaInfos/' + param + '')
         .then((res) => {
           if (res) {
+            console.log(res)
             let typeArr = [];
             let oneType = [];
             res.data.map((item, index) => {

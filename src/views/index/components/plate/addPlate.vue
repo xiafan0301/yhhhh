@@ -11,7 +11,7 @@
           </el-breadcrumb-item>
           <el-breadcrumb-item>
             <div style='background: #F2F2F2; height: 21px;line-height:21px;padding:0 5px;border-radius:3px'>
-              <span style='color: #0785FD;font-size:14px;'>添加/修改版块</span>
+              <span style='color: #0785FD;font-size:14px;'>添加版块</span>
               <i class='el-icon-close' @click='closePage' style='cursor: pointer'></i>
             </div>
           </el-breadcrumb-item>
