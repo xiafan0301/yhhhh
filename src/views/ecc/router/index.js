@@ -60,7 +60,7 @@ export default new Router({
           children: [
             {path: 'eventList', name: 'event-list', component: eventList},
             {path: 'addEvent', name: 'add-event', component: addEvent},
-            {path: 'addMsg', name: 'add-message', component: addMsg},
+            {path: 'addMsg/:status', name: 'add-message', component: addMsg},
             {path: 'eventDetail', name: 'event-detail', component: eventDetail},
             {path: 'eventEnd', name: 'event-end', component: eventEnd},
             {path: 'unreatedEvent', name: 'event-untreated', component: unreatedEvent},
@@ -72,7 +72,7 @@ export default new Router({
           path: 'ctc',
           component: ctc,
           children: [
-            {path: 'ctc-list', name: 'ctc-list', component: ctcList},
+            {path: 'ctcList', name: 'ctc-list', component: ctcList},
             {path: 'ctcDetail', name: 'ctc-detail', component: ctcDetail},
             {path: 'rePlanList', name: 'replan-list', component: rePlanList},
             {path: 'replanDetail', name: 'replan-detail', component: replanDetail}

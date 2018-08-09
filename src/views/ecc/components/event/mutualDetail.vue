@@ -180,14 +180,14 @@ export default {
 <style lang='scss' scoped>
   .mutual-detail {
     padding: 20px;
-    .event-detail-header {
+    .mutual-detail-header {
       margin-bottom: 20px;
     }
     .mutual-detail-body {
       width: 100%;
       .basic-mutual,.mutual-progress{
         background: #fff;
-        margin-bottom: 2%;
+        margin-bottom: 1%;
         .basic-header-mutual,.mutual-progress-header {
           width: 100%;
           display: flex;
@@ -304,7 +304,7 @@ export default {
       }
     }
     .operation-btn-mutual {
-      margin-top: 2%;
+      margin-top: 1%;
     }
     /deep/ .el-dialog__header {
       background: #F0F0F0 !important;

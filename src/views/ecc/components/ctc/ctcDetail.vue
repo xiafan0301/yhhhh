@@ -118,7 +118,7 @@
       </div>
     </div>
     <div class='operation-btn-ctc-detail'>
-      <el-button>返回</el-button>
+      <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff'>确定</el-button>
     </div>
   </div>
@@ -165,6 +165,9 @@ export default {
   methods: {
     selectMorePlan () { // 查看更多预案
       this.$router.push({name: 'replan-list'});
+    },
+    back () {
+      this.$router.back(-1);
     }
   }
 }

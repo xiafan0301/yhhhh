@@ -38,6 +38,7 @@
           <li v-for="(item, index) in positionObj" :key="'item'+index">
             <template v-if='item.canChecked === true'>
               <div class="grid-content bg-purple"
+                :title="[item.isChecked === true ? titleTip : '']"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
                 <template v-if='item.isChecked === true'>
@@ -73,6 +74,7 @@ export default {
     return {
       relationValue: '',
       skipDisabled: true,
+      titleTip: '',
       btnDisabled: true,
       tips: '请把版块绑定到要展示的页面上',
       styleObj: {
@@ -275,10 +277,12 @@ export default {
             });
             if (data.length > 0) {
               this.tips = '请在目标页面上选择版块要展示的位置';
+              this.titleTip = '该位置已占用，请选择其它位置';
               this.btnDisabled = true;
+            } else {
+              this.titleTip = '该页面没有空余位置可更换，请操作下一步按钮（如需更换，请先到版块管理列表中先删除对应的位置）';
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-            console.log(this.positionObj)
           }
         })
         .catch(() => {});
@@ -290,11 +294,11 @@ export default {
       this.positionObj.map((item, index) => {
         item.finishChecked = false;
         // item.isChecked = false;
-        if (item.id === num) {
+        if (num === item.id) {
           item = Object.assign(item, {finishChecked: true});
-          this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+          this.tips = '您可选择若点击该版块是否可跳转到其它页面，或将该版块替换到其它空余位置，设置完成后操作下一步按钮';
           this.btnDisabled = false;
-          item.name = '展示到该位置';
+          item.name = '当前版块';
         } else if (item.isChecked !== true) {
           item.name = '替换到该位置';
           item.canChecked = true;
@@ -422,13 +426,13 @@ export default {
         }
       }
       .checkedContent {
-        border-color: #ddd;
+        border-color: #B1ADAD;
         span {
-          color: #ddd;
+          color: #B1ADAD;
         }
         .map-button {
           background-color: transparent;
-          color: #ddd;
+          color: #B1ADAD;
           border: 0;
         }
       }
@@ -442,6 +446,7 @@ export default {
         }
       }
       .canChecked {
+        border-color: #0785FD;
         span {
           color: #0785FD;
         }

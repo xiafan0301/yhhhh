@@ -38,11 +38,11 @@
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
                         <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
                           <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="text" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -127,8 +127,92 @@
                     <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
                       <tr>
                         <td>{{itemNameFour[index + '_' + info.serialNumber]}}</td>
-                        <td><input type="text" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </template>
+            <template v-else-if="info.areaDataType === 5">
+              <div style="margin-top:5%;">
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{configCountFour = info.mainMinCount}}</span>
+                <div class="ecl2-cr-list">
+                  <p class="list-title">第一步：添加项</p>
+                  <table class="plate-table" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>单位</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in info.mainMinCount" :key="'item'+index">
+                        <td>
+                          <input type="text" v-model="itemNameFour[index + '_' + info.serialNumber]" placeholder='请填写'>
+                        </td>
+                        <td>
+                          <input type="text" v-model="valueUnitFour[index + '_' + info.serialNumber]" placeholder='请填写'>
+                        </td>
+                        <td width='15%'>
+                          <template v-if="info.mainMinCount > 1">
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
+                              @click="deleteChildDataListFour(itemNameFour[index + '_' + info.serialNumber], index, info.serialNumber)"
+                            />
+                          </template>
+                          <template v-if='info.serialNumber === 3'>
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
+                          </template>
+                          <template v-else-if='info.serialNumber === 5'>
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour(itemNameFour[index + '_' + info.serialNumber], valueUnitFour[index + '_' + info.serialNumber], index, info.mainMaxCount, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
+                          </template>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ecl2-cr-list" style="margin-top: 40px;">
+                  <p class="list-title">第二步：添加数值</p>
+                  <table class="plate-table" style="width: 100%;" >
+                    <thead>
+                    <tr>
+                      <th>项名称</th>
+                      <th>值</th>
+                      <!-- <th>同比值(%)</th> -->
+                    </tr>
+                    </thead>
+                    <tbody v-for="(items, index) in info.mainMinCount" :key="'items'+index">
+                      <tr>
+                        <td>{{itemNameFour[index + '_' + info.serialNumber]}}</td>
+                        <td><input type="number" v-model="valueContentFour[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <!-- <td><input type="text" v-model="percentValue[index + '_' + info.serialNumber]" placeholder='请填写'></td> -->
                       </tr>
                     </tbody>
                   </table>

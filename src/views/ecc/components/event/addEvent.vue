@@ -61,14 +61,27 @@
         </el-form>
       </div>
       <div class='operation-btn'>
-        <el-button>返回</el-button>
+        <el-button @click='back'>返回</el-button>
         <el-button>保存</el-button>
-        <el-button style='background: #0785FD;color:#fff'>去调度指挥</el-button>
+        <el-button style='background: #0785FD;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
+export default {
+  data () {
+    return {}
+  },
+  methods: {
+    skipCtcDetail () { // 跳到调度指挥方案制定页面
+      this.$router.push({name: 'ctc-detail'});
+    },
+    back () {
+      this.$router.back(-1);
+    }
+  }
+}
 </script>
 <style lang="scss">
   .addEvent {

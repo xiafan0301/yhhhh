@@ -4,7 +4,7 @@
       <el-breadcrumb>
         <el-breadcrumb-item>
           <span style="color:#0785FD;font-size:14px;">版块管理</span>
-          <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i>
+          <!-- <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i> -->
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -31,7 +31,7 @@
             {{scope.row.serialNumber | filterPagePosition}}
           </template>
         </el-table-column>
-        <el-table-column prop="configCode" label="样式编码" min-width="180"></el-table-column>
+        <el-table-column prop="configCode" label="示图编码" min-width="180"></el-table-column>
         <el-table-column prop="pageName" label="所属页面" min-width="120" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">

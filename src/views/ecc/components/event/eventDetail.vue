@@ -224,8 +224,8 @@
       </div>
     </div>
     <div class='operation-btn-event'>
-      <el-button>返回</el-button>
-      <el-button>再次调度</el-button>
+      <el-button @click='back'>返回</el-button>
+      <el-button class='skipCtcDetail' @click='skipCtcDetail'>再次调度</el-button>
       <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
       <!-- <el-button>返回</el-button> -->
       <!-- <el-button type="primary" style='background: #0785FD'>保存</el-button> -->
@@ -237,6 +237,7 @@
 export default {
   data () {
     return {
+      dialogFormVisible: false,
       pagination: {
         total: 1000,
         pageNum: 1,
@@ -264,6 +265,12 @@ export default {
   methods: {
     skipEventEnd () { // 跳到事件结束页面
       this.$router.push({name: 'event-end'});
+    },
+    skipCtcDetail () {
+      this.$router.push({name: 'ctc-detail'});
+    },
+    back () { // 返回上一页
+      this.$router.back(-1);
     }
   }
 }

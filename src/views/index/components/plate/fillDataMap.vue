@@ -9,7 +9,12 @@
       <div class='position-select'>
         <div>
           <span>位置1</span>
-          <el-select v-model='relationValue1' :class="{isActive: borderActive === 1}" placeholder="请选择地图版块数据类型" @change="changeMapType1">
+          <el-select v-model='relationValue1'
+            :class="{isActive: borderActive === 1}" 
+            placeholder="请选择地图版块数据类型" 
+            @change="changeMapType1"
+            @focus='focusMap(1)'
+          >
             <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList1'
@@ -22,7 +27,13 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="请选择地图版块数据类型" @change='changeMapType2'>
+          <el-select
+            v-model="relationValue2"
+            :class="{isActive: borderActive === 2}"
+            placeholder="请选择地图版块数据类型"
+            @change='changeMapType2'
+            @focus='focusMap(2)'
+          >
             <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList2'
@@ -35,7 +46,7 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图版块数据类型" @change='changeMapType3'>
+          <el-select @focus='focusMap(3)' v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图版块数据类型" @change='changeMapType3'>
             <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList3'
@@ -48,7 +59,7 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图版块数据类型" @change='changeMapType4'>
+          <el-select @focus='focusMap(4)' v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图版块数据类型" @change='changeMapType4'>
             <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList4'
@@ -117,6 +128,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList1.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 2'>
@@ -166,6 +181,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList2.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 3'>
@@ -215,6 +234,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList3.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 4'>
@@ -264,6 +287,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList4.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
         </div>
@@ -317,6 +344,7 @@ export default {
       positionId3: '',
       positionId4: '',
       positionList: [],
+      mapTypeList: [],
       mapTypeList1: [], // 位置1地图应用类型列表
       mapTypeList2: [], // 位置2地图应用类型列表
       mapTypeList3: [], // 位置3地图应用类型列表
@@ -414,10 +442,11 @@ export default {
     this.axios.get('/mapServices/dataTypes')
       .then((res) => {
         if (res) {
-          this.mapTypeList1 = res.data;
-          this.mapTypeList2 = res.data;
-          this.mapTypeList3 = res.data;
-          this.mapTypeList4 = res.data;
+          this.mapTypeList = JSON.parse(JSON.stringify(res.data));
+          this.mapTypeList1 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList2 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList3 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList4 = JSON.parse(JSON.stringify(this.mapTypeList));
         }
       })
       .catch(() => {})
@@ -632,6 +661,49 @@ export default {
           }
         })
         .catch(() => {});
+    },
+    focusMap (num) {
+      if (num === 1) {
+        this.isChanged = 1;
+        this.borderActive = 1;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue3 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList1 = mapObj;
+      } else if (num === 2) {
+        this.isChanged = 2;
+        this.borderActive = 2;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue1 || item.typeName === this.relationValue3 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList2 = mapObj;
+      } else if (num === 3) {
+        this.isChanged = 3;
+        this.borderActive = 3;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue1 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList3 = mapObj;
+      } else if (num === 4) {
+        this.isChanged = 4;
+        this.borderActive = 4;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue3 || item.typeName === this.relationValue1) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList4 = mapObj;
+      } 
     },
     changeMapType1 (value) { // 位置1的选择框change方法
       this.dataList1 = [];
@@ -913,5 +985,15 @@ export default {
   }
   .el-select.isActive .el-input .el-input__inner {
     border-color: #409EFF;
+  }
+  .warn-content {
+    margin: 2% auto;
+    text-align: center;
+    i {
+      color: rgb(248, 86, 15);
+    }
+    span {
+      color: rgb(248, 86, 15);
+    }
   }
 </style>

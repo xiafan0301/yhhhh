@@ -32,7 +32,8 @@ export default {
       allPlateList: [], // 所有的版块
       plateInfo: {
         configId: '',
-        markUrl: ''
+        markUrl: '',
+        configCode: '',
       }, // 新增版块信息
       // 选择样式
       styleRadio: ''
@@ -56,6 +57,13 @@ export default {
       this.axios.get('/plateStyleServices/configs', {params})
         .then((res) => {
           if (res) {
+            if (this.styleType === 2) {
+              this.styleRadio = res.data[0].configId;
+              this.plateInfo.configId = res.data[0].configId;
+              this.plateInfo.markUrl = res.data[0].markUrl;
+              this.plateInfo.configCode = res.data[0].configCode;
+              this.$store.commit('setPlateInfo', {plateInfo: res.data[0]});
+            }
             this.allPlateList = res.data;
           }
         })
@@ -65,6 +73,7 @@ export default {
       this.styleRadio = val.configId;
       this.plateInfo.configId = val.configId;
       this.plateInfo.markUrl = val.markUrl;
+      this.plateInfo.configCode = val.configCode;
       this.$store.commit('setPlateInfo', {plateInfo: val});
     },
     nextStep () {
@@ -73,12 +82,11 @@ export default {
       this.axios.get('/plateServices/areaInfos/' + param + '')
         .then((res) => {
           if (res) {
-            console.log(res)
             let typeArr = [];
             let oneType = [];
             res.data.map((item, index) => {
               oneType.push(item.configCount);
-              if (item.areaDataType !== 1 && item.areaDataType !== 4) {
+              if (item.areaDataType === 2 || item.areaDataType === 3) {
                 typeArr.push(item);
               }
             });

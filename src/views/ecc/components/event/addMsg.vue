@@ -3,7 +3,7 @@
     <div class='add-msg-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>添加消息</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>{{status}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='add-msg-body'>
@@ -52,6 +52,24 @@
   </div>
 </template>
 <script>
+export default {
+  data () {
+    return {
+      status: '' // 添加或修改消息
+    }
+  },
+  mounted () {
+    console.log(this.$route.params.status)
+    if (this.$route.params.status === 'add') {
+      this.status = '添加消息';
+    } else if (this.$route.params.status === 'modify') {
+      this.status = '修改消息';
+    }
+  },
+  methods: {
+
+  }
+}
 </script>
 <style lang="scss">
   .add-msg-person {

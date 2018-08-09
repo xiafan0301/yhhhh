@@ -55,7 +55,7 @@ export default {
             {
               id: '2-1',
               name: '调度指挥',
-              url: '/ctc'
+              url: '/ctc/ctcList'
             }
           ]
         },

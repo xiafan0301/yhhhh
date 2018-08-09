@@ -5,7 +5,7 @@
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>APP互助消息管理</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-msg' @click='skipAddMsg'>添加消息</el-button>
+      <el-button class='selectBtn add-msg' @click="skipAddMsg('add')">添加消息</el-button>
     </div>
     <div class="clearfix search-person">
       <el-form style="float: left;width:100%" :inline="true" :model='selectForm' class="demo-form-inline" size="small">
@@ -39,13 +39,25 @@
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px' @click='skipPersonDetail'>查看</el-button>
           <i style="display: inline-block; width:1px;height:11px;background:#0785FD;margin: 0 3px 0 3px"></i>
-          <el-button type='text' style='color:#0785FD;font-size:14px'>修改</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px' @click="skipAddMsg('modify')">修改</el-button>
           <i style="display: inline-block; width:1px;height:11px;background:#0785FD;margin: 0 3px 0 3px"></i>
-          <el-button type='text' style='color:#0785FD;font-size:14px'>删除</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px' @click='deleteVisiable = true'>删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <div is='pagination'></div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="deleteVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>删除后APP端将无法再查看，是否确认删除?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click="deleteVisiable = false">确定删除</el-button>
+        <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -54,6 +66,7 @@ export default {
   components: {pagination},
   data () {
     return {
+      deleteVisiable: false,
       selectForm: {
         beginDate: '',
         endDate: ''
@@ -72,8 +85,9 @@ export default {
   mounted () {
   },
   methods: {
-    skipAddMsg () { // 跳转到添加消息页面
-      this.$router.push({name: 'add-message'});
+    skipAddMsg (status) { // 跳转到添加消息页面
+    console.log(status)
+      this.$router.push({name: 'add-message', params: {status: status}});
     },
     skipPersonDetail () { // 查看
       this.$router.push({name: 'mutual-detail'});
@@ -116,6 +130,27 @@ export default {
       >thead th {
         color: #555555 !important;
       }
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>
