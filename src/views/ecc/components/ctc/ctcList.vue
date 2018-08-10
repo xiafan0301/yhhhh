@@ -19,12 +19,12 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 110px;">
-          <el-select placeholder="事件状态" style="width: 100%;">
+          <el-select placeholder="事件状态" style="width: 100%;" v-model='selectForm.reportTimeStart'>
             <el-option label="全部状态" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item style="width: 110px;">
-          <el-select placeholder="事件等级" style="width: 100%;">
+          <el-select placeholder="事件等级" style="width: 100%;" v-model='selectForm.reportTimeStart'>
             <el-option label="全部等级" :value="0"></el-option>
           </el-select>
         </el-form-item>
@@ -34,22 +34,22 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table border style="width: 100%">
-      <el-table-column label="事件编号" align='center'></el-table-column>
-      <el-table-column label="事件类型" align='center'></el-table-column>
-      <el-table-column label="事件等级" align='center'></el-table-column>
-      <el-table-column label="受理时间" align='center'></el-table-column>
-      <el-table-column label="事件地点" align='center'></el-table-column>
-      <el-table-column label="新反馈数" align='center'></el-table-column>
+    <el-table style="width: 100%" :data='ctcDataList'>
+      <el-table-column prop='eventCode' label="事件编号" align='center'></el-table-column>
+      <el-table-column prop='eventType' label="事件类型" align='center'></el-table-column>
+      <el-table-column prop='eventLevel' label="事件等级" align='center'></el-table-column>
+      <el-table-column prop='assignTime' label="受理时间" align='center'></el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center'></el-table-column>
+      <el-table-column prop='number' label="新反馈数" align='center'></el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button>查看</el-button>
-          <el-button>调度/再次调度</el-button>
-          <el-button>结束</el-button>
+          <el-button type='text'>查看</el-button>
+          <el-button type='text' @click='skipCtcDetail'>调度/再次调度</el-button>
+          <el-button type='text'>结束</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div is='pagination'></div>
+    <!-- <div is='pagination'></div> -->
   </div>
 </template>
 <script>
@@ -61,7 +61,15 @@ export default {
       selectForm: {
         beginDate: '',
         endDate: ''
-      }
+      },
+      ctcDataList: [{
+        eventCode: '1111111111',
+        eventType: '自然灾害类',
+        eventLevel: 'Ⅰ级（特大）',
+        assignTime: '2018-2-13 19:10',
+        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+        number: 4
+      }]
     }
   },
   computed: {
@@ -69,9 +77,11 @@ export default {
   mounted () {
   },
   methods: {
-    // skipAddEvent () {
-    //   this.$router.push({name: 'add-event'});
-    // }
+    skipLookEvent () { // 查看事件分布
+    },
+    skipCtcDetail () { // 跳到调度指挥页面
+      this.$router.push({name: 'ctc-detail'});
+    }
   }
 }
 </script>
@@ -105,5 +115,4 @@ export default {
       background: #0785FD;
     }
   }
-  
 </style>

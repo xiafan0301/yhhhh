@@ -224,9 +224,9 @@
       </div>
     </div>
     <div class='operation-btn-event'>
-      <el-button>返回</el-button>
-      <el-button>再次调度</el-button>
-      <el-button type="primary" style='background: #0785FD' @click='skipEventEnd'>事件结束</el-button>
+      <el-button @click='back'>返回</el-button>
+      <el-button class='skipCtcDetail' @click='skipCtcDetail'>再次调度</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
       <!-- <el-button>返回</el-button> -->
       <!-- <el-button type="primary" style='background: #0785FD'>保存</el-button> -->
       <!-- <el-button type="primary" style='background: #FB796C;border-color:#FB796C'>修改</el-button> -->
@@ -237,33 +237,40 @@
 export default {
   data () {
     return {
+      dialogFormVisible: false,
       pagination: {
         total: 1000,
         pageNum: 1,
         pageSize: 10
       },
       options1: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
       value: ''
     }
   },
   methods: {
     skipEventEnd () { // 跳到事件结束页面
       this.$router.push({name: 'event-end'});
+    },
+    skipCtcDetail () {
+      this.$router.push({name: 'ctc-detail'});
+    },
+    back () { // 返回上一页
+      this.$router.back(-1);
     }
   }
 }
@@ -305,7 +312,6 @@ export default {
             font-size: 14px;
             margin-left: 2%;
           }
-          
         }
         .event-status {
           color: #fff;

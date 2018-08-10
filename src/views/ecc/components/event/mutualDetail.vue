@@ -112,7 +112,7 @@
     </div>
     <div class='operation-btn-mutual'>
       <el-button>返回</el-button>
-      <el-button type="primary" style='background: #0785FD' @click='mutualEndVisiable = true'>宣布结束</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='mutualEndVisiable = true'>宣布结束</el-button>
     </div>
     <el-dialog
       title="操作提示"
@@ -152,21 +152,21 @@ export default {
         pageSize: 10
       },
       options1: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
       value: ''
     }
   },
@@ -180,14 +180,14 @@ export default {
 <style lang='scss' scoped>
   .mutual-detail {
     padding: 20px;
-    .event-detail-header {
+    .mutual-detail-header {
       margin-bottom: 20px;
     }
     .mutual-detail-body {
       width: 100%;
       .basic-mutual,.mutual-progress{
         background: #fff;
-        margin-bottom: 2%;
+        margin-bottom: 1%;
         .basic-header-mutual,.mutual-progress-header {
           width: 100%;
           display: flex;
@@ -214,7 +214,6 @@ export default {
             font-size: 14px;
             margin-left: 2%;
           }
-          
         }
         .mutual-status {
           color: #fff;
@@ -304,7 +303,7 @@ export default {
       }
     }
     .operation-btn-mutual {
-      margin-top: 2%;
+      margin-top: 1%;
     }
     /deep/ .el-dialog__header {
       background: #F0F0F0 !important;
