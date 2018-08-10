@@ -175,18 +175,18 @@
                             <input type="text" v-model="item.valueUnit" class='childUnitThree' placeholder='请填写'>
                           </td>
                           <td>
-                            <template v-if='childCheckBox === true'>
+                            <!-- <template v-if='childCheckBox === true'> -->
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 @change="changeGrapFlagThree($event, index)"
                               />
-                            </template>
+                            <!-- </template>
                             <template v-else>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 disabled
                               />
-                            </template>
+                            </template> -->
                           </td>
                           <td>
                             <el-switch
@@ -949,16 +949,29 @@ export default {
     },
     childDataListThree: { // 监听类型三的子项
       handler: function (newVal) {
+        // console.log(newVal)
+        // console.log(this.contentItemListThree)
         this.contentItemListThree.map((items, index) => {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {
               item.contentName = this.childDataListThree[idx].contentName;
               item.valueUnit = this.childDataListThree[idx].valueUnit;
+              // if (item.graphicFieldFlag === true) {
+              //   const data = newVal.filter((value) => {
+              //     return value.valueUnit === item.valueUnit;
+              //   });
+              //   console.log(data)
+              // }
             });
           }
         });
+        newVal.map((item, index) => {
+          if (item.graphicFieldFlag === true) {
+
+          }
+        });
         this.checkBoxThree = this.judgeUnitThree(); // 判断所有的单位是否一致
-        this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
+        // this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
       },
       deep: true
     },
