@@ -175,18 +175,18 @@
                             <input type="text" v-model="item.valueUnit" class='childUnitThree' placeholder='请填写'>
                           </td>
                           <td>
-                            <template v-if='childCheckBox === true'>
+                            <!-- <template v-if='childCheckBox === true'> -->
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 @change="changeGrapFlagThree($event, index)"
                               />
-                            </template>
+                            <!-- </template>
                             <template v-else>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 disabled
                               />
-                            </template>
+                            </template> -->
                           </td>
                           <td>
                             <el-switch
@@ -883,14 +883,14 @@ export default {
         });
       },
       deep: true
-    },
-    numberObjThree: {
-      handler: function (newVal) {
-        console.log(this.numberObjThree)
-        console.log(newVal)
-      },
-      deep: true
     }
+    // numberObjThree: {
+    //   handler: function (newVal) {
+    //     console.log(this.numberObjThree)
+    //     console.log(newVal)
+    //   },
+    //   deep: true
+    // }
   },
   mounted () {
     this.setInitialData(); // 初始化数据
