@@ -10,8 +10,8 @@
         <div>
           <span>位置1</span>
           <el-select v-model='relationValue1'
-            :class="{isActive: borderActive === 1}" 
-            placeholder="请选择地图版块数据类型" 
+            :class="{isActive: borderActive === 1}"
+            placeholder="请选择地图版块数据类型"
             @change="changeMapType1"
             @focus='focusMap(1)'
           >
@@ -474,6 +474,7 @@ export default {
     },
     nextStep () {
       let totalDataList = [], dataArrOne, dataArrFour, dataArrThree, dataArrTwo;
+      let deleteFlag1, deleteFlag2, deleteFlag3, deleteFlag4;
       this.positionIdList.map((item, index) => {
         if (item.serialNumber === 31) {
           this.positionId1 = item.positionId;
@@ -485,10 +486,42 @@ export default {
           this.positionId4 = item.positionId;
         }
       });
-      let deleteFlag1 = this.relationValue1 !== '' ? false : this.plateId1 === '' ? false : true;
-      let deleteFlag2 = this.relationValue2 !== '' ? false : this.plateId2 === '' ? false : true;
-      let deleteFlag3 = this.relationValue3 !== '' ? false : this.plateId3 === '' ? false : true;
-      let deleteFlag4 = this.relationValue4 !== '' ? false : this.plateId4 === '' ? false : true;
+      if (this.relationValue1 !== '') {
+        deleteFlag1 = false;
+      } else {
+        if (this.plateId1 === '') {
+          deleteFlag1 = false;
+        } else {
+          deleteFlag1 = true;
+        }
+      }
+      if (this.relationValue2 !== '') {
+        deleteFlag2 = false;
+      } else {
+        if (this.plateId2 === '') {
+          deleteFlag2 = false;
+        } else {
+          deleteFlag2 = true;
+        }
+      }
+      if (this.relationValue3 !== '') {
+        deleteFlag3 = false;
+      } else {
+        if (this.plateId3 === '') {
+          deleteFlag3 = false;
+        } else {
+          deleteFlag3 = true;
+        }
+      }
+      if (this.relationValue4 !== '') {
+        deleteFlag4 = false;
+      } else {
+        if (this.plateId4 === '') {
+          deleteFlag4 = false;
+        } else {
+          deleteFlag4 = true;
+        }
+      }
       if (this.relationValue1 !== '') {
         dataArrOne = {
           pageId: this.$store.state.mapPageId,
@@ -615,7 +648,7 @@ export default {
           typeId: this.typeId4,
           contentItemList: []
         };
-         this.dataList4.map((item, index) => {
+        this.dataList4.map((item, index) => {
           if (item.name || item.value || item.unit) {
             const data = {
               itemName: item.name,
@@ -703,7 +736,7 @@ export default {
           }
         });
         this.mapTypeList4 = mapObj;
-      } 
+      }
     },
     changeMapType1 (value) { // 位置1的选择框change方法
       this.dataList1 = [];
@@ -759,6 +792,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList2 = res.data;
+                this.isActive2 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -793,6 +827,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList3 = res.data;
+                this.isActive3 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -826,6 +861,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList4 = res.data;
+                this.isActive4 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',

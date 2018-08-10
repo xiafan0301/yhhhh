@@ -31,7 +31,7 @@
     <el-table
       style="width: 100%"
       :data='reservePlanList'
-      highlight-current-row 
+      highlight-current-row
       class='ctc-table'
     >
       <el-table-column label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
@@ -65,31 +65,31 @@ export default {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'

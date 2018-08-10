@@ -86,7 +86,6 @@ export default {
   },
   methods: {
     skipAddMsg (status) { // 跳转到添加消息页面
-    console.log(status)
       this.$router.push({name: 'add-message', params: {status: status}});
     },
     skipPersonDetail () { // 查看

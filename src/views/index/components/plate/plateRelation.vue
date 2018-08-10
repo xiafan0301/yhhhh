@@ -361,7 +361,6 @@ export default {
         }
       }
     }
-    
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
@@ -389,7 +388,6 @@ export default {
           }
         }
       }
-      
       .grid-content {
         box-shadow: 2px 1px 8px rgba(79,84,90,0.31);
         border-radius: 4px;

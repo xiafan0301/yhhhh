@@ -98,7 +98,7 @@
             <el-table
               style="width: 100%"
               :data='reservePlanList'
-              highlight-current-row 
+              highlight-current-row
               class='ctc-table'
                max-height="372"
             >
@@ -131,31 +131,31 @@ export default {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      },{
+      }, {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'

@@ -382,8 +382,8 @@ export default {
           items.contentSubItemList.map((item, idx) => {
             if (item.serialNumber === 1) {
               item.contentName = this.parentDataFour3[index].itemName;
-              item.valueUnit = this.childDataFour3[idx].valueUnit;
-              item.valueContent = this.childDataFour3[idx].valueContent;
+              item.valueUnit = this.childDataFour3[index].valueUnit;
+              item.valueContent = this.childDataFour3[index].valueContent;
             }
           });
         });
@@ -400,8 +400,8 @@ export default {
           items.contentSubItemList.map((item, idx) => {
             if (item.serialNumber === 1) {
               item.contentName = this.parentDataFour5[index].itemName;
-              item.valueUnit = this.childDataFour5[idx].valueUnit;
-              item.valueContent = this.childDataFour5[idx].valueContent;
+              item.valueUnit = this.childDataFour5[index].valueUnit;
+              item.valueContent = this.childDataFour5[index].valueContent;
             }
           });
         });
@@ -416,8 +416,8 @@ export default {
         this.contentItemListFour3.map((item, index) => {
           item.contentSubItemList.map((value, idx) => {
             if (value.serialNumber === 1) {
-              value.valueUnit = this.childDataFour3[idx].valueUnit;
-              value.valueContent = this.childDataFour3[idx].valueContent;
+              value.valueUnit = this.childDataFour3[index].valueUnit;
+              value.valueContent = this.childDataFour3[index].valueContent;
             }
           });
         });
@@ -429,11 +429,37 @@ export default {
         this.contentItemListFour5.map((item, index) => {
           item.contentSubItemList.map((value, idx) => {
             if (value.serialNumber === 1) {
-              value.valueUnit = this.childDataFour5[idx].valueUnit;
-              value.valueContent = this.childDataFour5[idx].valueContent;
+              value.valueUnit = this.childDataFour5[index].valueUnit;
+              value.valueContent = this.childDataFour5[index].valueContent;
             }
           });
         });
+      },
+      deep: true
+    },
+    valueContentFour5: {
+      handler: function (newVal) {
+        for (let i in newVal) {
+          let str = i.split('_');
+          if (newVal[i] !== undefined) {
+            this.contentItemListFour5[parseInt(str[0])].contentSubItemList[0].valueContent = newVal[i];
+          } else {
+            this.contentItemListFour5[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+          }
+        }
+      },
+      deep: true
+    },
+    valueContentFour3: {
+      handler: function (newVal) {
+        for (let i in newVal) {
+          let str = i.split('_');
+          if (newVal[i] !== undefined) {
+            this.contentItemListFour3[parseInt(str[0])].contentSubItemList[0].valueContent = newVal[i];
+          } else {
+            this.contentItemListFour3[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+          }
+        }
       },
       deep: true
     }
@@ -452,26 +478,26 @@ export default {
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
       let data = {}, numberFour3 = [], numberFour5 = [];
+      let fourThree = JSON.parse(JSON.stringify(this.contentItemListFour3));
+      let fourFive = JSON.parse(JSON.stringify(this.contentItemListFour5));
       for (let i in this.valueContentFour3) {
-        numberFour3.push(this.valueContentFour3[i]);
+        let str = i.split('_');
+        if (this.valueContentFour3[i] !== undefined) {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour3[i];
+        } else {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
       for (let i in this.valueContentFour5) {
-        numberFour5.push(this.valueContentFour5[i]);
+        let str = i.split('_');
+        if (this.valueContentFour5[i] !== undefined) {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour5[i];
+        } else {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
-      let objFour3 = JSON.parse(JSON.stringify(this.contentItemListFour3));
-      let objFour5 = JSON.parse(JSON.stringify(this.contentItemListFour5));
-      objFour3.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour3[index];
-        });
-      });
-      objFour5.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour5[index];
-        });
-      });
-      this.contentItemListFour3 = objFour3;
-      this.contentItemListFour5 = objFour5;
+      this.contentItemListFour3 = fourThree;
+      this.contentItemListFour5 = fourFive;
       for (let i in this.itemName) {
         let str = i.split('_');
         if (this.percentValueOne[i] !== undefined) {
@@ -757,12 +783,14 @@ export default {
           }
         });
         let valueFour3 = {}, percentFour3 = {};
+        console.log(this.contentItemListFour3)
         this.contentItemListFour3.map((item, index) => {
           valueFour3[index + '_' + sortNumber] = item.contentSubItemList[0].valueContent;
-          percentFour3[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
+          // percentFour3[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
         });
+        console.log(valueFour3)
         this.valueContentFour3 = valueFour3;
-        this.percentValue3 = percentFour3;
+        // this.percentValue3 = percentFour3;
         this.isActive3 = this.parentDataFour3.length - 1;
       } else if (sortNumber === 5) {
         this.parentDataFour5.splice(idx, 1);
@@ -775,10 +803,10 @@ export default {
         let valueFour5 = {}, percentFour5 = {};
         this.contentItemListFour5.map((item, index) => {
           valueFour5[index + '_' + sortNumber] = item.contentSubItemList[0].valueContent;
-          percentFour5[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
+          // percentFour5[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
         });
         this.valueContentFour5 = valueFour5;
-        this.percentValue5 = percentFour5;
+        // this.percentValue5 = percentFour5;
         this.isActive5 = this.parentDataFour5.length - 1;
       }
     },

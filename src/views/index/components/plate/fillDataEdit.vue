@@ -844,9 +844,8 @@ export default {
             });
           }
         });
-        console.log(this.contentItemListThree);
         this.checkBoxThree = this.judgeUnitThree(); // 判断所有的单位是否一致
-        this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
+        // this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
       },
       deep: true
     },
@@ -884,6 +883,13 @@ export default {
         });
       },
       deep: true
+    },
+    numberObjThree: {
+      handler: function (newVal) {
+        console.log(this.numberObjThree)
+        console.log(newVal)
+      },
+      deep: true
     }
   },
   mounted () {
@@ -899,65 +905,39 @@ export default {
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
       this.contentItemListOne = [];
-      let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
+      let threeObj = JSON.parse(JSON.stringify(this.contentItemListThree));
+      let twoObj = JSON.parse(JSON.stringify(this.contentItemListTwo));
+      let fourObj = JSON.parse(JSON.stringify(this.contentItemListFour));
       for (let i in this.numberObjThree) {
-        numberThree.push(this.numberObjThree[i]);
-      }
-      for (let i in this.numberObj) {
-        numberTwo.push(this.numberObj[i]);
-      }
-      for (let i in this.valueContentFour) {
-        numberFour.push(this.valueContentFour[i]);
+        let str = i.split('_');
+        if (this.numberObjThree !== undefined) {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = '';
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObjThree[i];
+        }
       }
       for (let i in this.numberLayerObjThree) {
-        numberLayerThree.push(this.numberLayerObjThree[i]);
+        let str = i.split('_');
+        if (this.numberLayerObjThree !== undefined) {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = '';
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = this.numberLayerObjThree[i];
+        }
       }
-      let obj = JSON.parse(JSON.stringify(this.contentItemListThree)); // 改变一下该数组的内存地址，防止其他地方的改变影响现在的操作
-      let objTwo = JSON.parse(JSON.stringify(this.contentItemListTwo));
-      let objFour = JSON.parse(JSON.stringify(this.contentItemListFour));
-      obj.map((items, index) => {
-        let length;
-        if (this.checkedLayerMerge === true) {
-          length = items.contentSubItemList.length - 1;
+      for (let i in this.numberObj) {
+        let str = i.split('_');
+        twoObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObj[i];
+      }
+      for (let i in this.valueContentFour) {
+        if (this.valueContentFour[i] !== undefined) {
+          fourObj[parseInt[i]].contentSubItemList[parseInt[i]].valueContent = this.valueContentFour[i];
         } else {
-          length = items.contentSubItemList.length;
+          fourObj[parseInt[i]].contentSubItemList[parseInt[i]].valueContent = '';
         }
-        const data = index * length;
-        const newArr = numberThree.slice(data, length * (index + 1));
-        const newLayerArr = numberLayerThree.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          console.log(idx,item.valueContent)
-          if (item.isMerge !== true) {
-            item.valueContent = newArr[idx];
-            item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
-          } else {
-            item.valueContent = item.valueContent;
-          }
-        });
-      });
-      objTwo.map((items, index) => {
-        let length;
-        if (this.checkedMerge === true) {
-          length = items.contentSubItemList.length - 1;
-        } else {
-        length = items.contentSubItemList.length;
-        }
-        const data = index * length;
-        const newArr = numberTwo.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          if (item.isMerge !== true) {
-          item.valueContent = newArr[idx];
-          }
-        });
-      });
-      objFour.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour[index];
-        });
-      });
-      this.contentItemListThree = obj;
-      this.contentItemListTwo = objTwo;
-      this.contentItemListFour = objFour;
+      }
+      this.contentItemListTwo = twoObj;
+      this.contentItemListThree = threeObj;
+      this.contentItemListFour = fourObj;
       this.contentItemListTwo.map((items, index) => {
         if (items.itemName !== '') {
           items.serialNumber = index + 1;
@@ -1587,20 +1567,34 @@ export default {
           let result = 0;
           for (let j = 0; j < childLength; j++) {
             if (this.childDataListTwo[j].supernatantFieldFlag === true) {
-              if (this.numberObj[i + '_' + j] !== undefined) {
+              if (this.numberObj[i + '_' + j] !== undefined && this.numberObj[i + '_' + j] !== '') {
                 result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
               }
             }
-            data = {
-              contentName: '',
-              valueContent: result,
-              valueUnit: this.childDataListTwo[0].valueUnit,
-              serialNumber: 1,
-              graphicFieldFlag: false,
-              supernatantFieldFlag: true,
-              sumFlag: true,
-              contnetSubItemExtendList: [],
-              isMerge: true
+            if (result === 0) {
+              data = {
+                contentName: '',
+                valueContent: '',
+                valueUnit: this.childDataListTwo[0].valueUnit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: true,
+                sumFlag: true,
+                contnetSubItemExtendList: [],
+                isMerge: true
+              }
+            } else {
+              data = {
+                contentName: '',
+                valueContent: result,
+                valueUnit: this.childDataListTwo[0].valueUnit,
+                serialNumber: 1,
+                graphicFieldFlag: false,
+                supernatantFieldFlag: true,
+                sumFlag: true,
+                contnetSubItemExtendList: [],
+                isMerge: true
+              }
             }
           }
           this.contentItemListTwo[i].contentSubItemList.push(data);
@@ -1713,12 +1707,12 @@ export default {
         });
         if (result === false) {
           this.checkBoxTip = '单位不一致';
-          this.contentItemListTwo.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListTwo[idx].graphicFieldFlag = false;
-            });
-          });
+          // this.contentItemListTwo.map((items, index) => {
+          //   items.contentSubItemList.map((item, idx) => {
+          //     items.contentSubItemList[idx].graphicFieldFlag = false;
+          //     this.childDataListTwo[idx].graphicFieldFlag = false;
+          //   });
+          // });
         }
       } else {
         this.checkBoxTip = '单位不能为空，请先填写单位';
@@ -1726,43 +1720,41 @@ export default {
       }
       return result;
     },
-    judgeUnitChild () { // 类型三的判断子项的单位是否为空或不一样
-      let valueArr = [];
-      let result;
-      const valueUnit = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      for (let i = 0; i < valueUnit.length; i++) {
-        valueArr.push(valueUnit[i].value);
-      }
-      if (valueArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        result = valueArr.every((value, index, valueArr) => {
-          return value === valueArr[0];
-        });
-        if (result === false) {
-          this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
-          });
-        }
-      } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
-        return false;
-      }
-      return result;
-    },
+    // judgeUnitChild () { // 类型三的判断子项的单位是否为空或不一样
+    //   let valueArr = [];
+    //   let result;
+    //   const valueUnit = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
+    //   for (let i = 0; i < valueUnit.length; i++) {
+    //     valueArr.push(valueUnit[i].value);
+    //   }
+    //   if (valueArr.indexOf('') === -1) {
+    //     this.checkBoxTip = '';
+    //     result = valueArr.every((value, index, valueArr) => {
+    //       return value === valueArr[0];
+    //     });
+    //     if (result === false) {
+    //       this.checkBoxTip = '单位不一致';
+    //       this.contentItemListThree.map((items, index) => {
+    //         items.contentSubItemList.map((item, idx) => {
+    //           items.contentSubItemList[idx].graphicFieldFlag = false;
+    //           this.childDataListThree[idx].graphicFieldFlag = false;
+    //         });
+    //       });
+    //     }
+    //   } else {
+    //     this.checkBoxTip = '单位不能为空，请先填写单位';
+    //     return false;
+    //   }
+    //   return result;
+    // },
     judgeUnitThree () { // 类型三的判断单位是否为空或不一样
       let childUnitArr = [], layerUnitArr = [];
       let childResult, layerResult;
-      const childUnitThree = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      const layerUnitThree = document.getElementsByClassName('layerUnitThree'); // 获取浮层所有的单位
-      for (let i = 0; i < childUnitThree.length; i++) {
-        childUnitArr.push(childUnitThree[i].value);
+      for (let i = 0; i < this.childDataListThree.length; i++) {
+        childUnitArr.push(this.childDataListThree[i].valueUnit);
       }
-      for (let i = 0; i < layerUnitThree.length; i++) {
-        layerUnitArr.push(layerUnitThree[i].value);
+      for (let i = 0; i < this.layerDataListThree.length; i++) {
+        layerUnitArr.push(this.layerDataListThree[i].valueUnit);
       }
       if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
         this.checkBoxTip = '';
@@ -1774,12 +1766,12 @@ export default {
         });
         if (childResult === false || layerResult === false) {
           this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
-          });
+          // this.contentItemListThree.map((items, index) => {
+          //   items.contentSubItemList.map((item, idx) => {
+          //     items.contentSubItemList[idx].graphicFieldFlag = false;
+          //     this.childDataListThree[idx].graphicFieldFlag = false;
+          //   });
+          // });
         }
       } else {
         this.checkBoxTip = '单位不能为空，请先填写单位';

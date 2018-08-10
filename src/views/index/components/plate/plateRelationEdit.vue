@@ -324,13 +324,13 @@ export default {
             });
             if (this.skipPausePageList.length > 0) {
               this.skipPausePageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
-              if (item.pageName === this.relationValue) {
-                item.isDisabled = true;
-              } else {
-                item.isDisabled = false;
-              }
-            });
-            this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
+                if (item.pageName === this.relationValue) {
+                  item.isDisabled = true;
+                } else {
+                  item.isDisabled = false;
+                }
+              });
+              this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
             }
             this.relationPageList = JSON.parse(JSON.stringify(this.relationPausePageList));
             this.relationPageList.map((item) => {

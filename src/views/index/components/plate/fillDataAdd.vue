@@ -839,16 +839,25 @@ export default {
     },
     numberObj: {
       handler: function (newVal) {
-        for (let i in newVal) {
-          let str = i.split('_');
-          if (newVal[i] !== undefined) {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = newVal[i];
-            });
-          } else {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = '';
-            });
+        if (newVal) {
+          const parentLength = this.parentDataListTwo.length; // 获取主项的长度
+          const childLength = this.childDataListTwo.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListTwo[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedMerge === true) {
+              if (childResult === 0) {
+                this.contentItemListTwo[i].contentSubItemList[childLength - 1].valueContent = '';
+              } else {
+                this.contentItemListTwo[i].contentSubItemList[childLength - 1].valueContent = childResult;
+              }
+            }
           }
         }
       },
@@ -907,7 +916,7 @@ export default {
         newVal.map((item, index) => {
           unitArr.push(item.valueUnit);
         });
-        // const 
+        // const
         // this.childDataListTwo.map((item, index) => {
         //   if (item.graphicFieldFlag === true) {
         //     const valueUnit = item.valueUnit;
@@ -987,11 +996,62 @@ export default {
         });
       },
       deep: true
+    },
+    numberObjThree: {
+      handler: function (newVal) {
+        if (newVal) {
+          const parentLength = this.parentDataListThree.length; // 获取主项的长度
+          const childLength = this.childDataListThree.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedLayerMerge === true) {
+              if (childResult === 0) {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].valueContent = '';
+              } else {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].valueContent = childResult;
+              }
+            }
+          }
+        }
+      },
+      deep: true
+    },
+    numberLayerObjThree: {
+      handler: function (newVal) {
+        if (newVal) {
+          const parentLength = this.parentDataListThree.length; // 获取主项的长度
+          const childLength = this.childDataListThree.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let layerResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  layerResult = parseInt(layerResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedLayerMerge === true) {
+              if (layerResult === 0) {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].contnetSubItemExtendList[0].valueContent = '';
+              } else {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].contnetSubItemExtendList[0].valueContent = layerResult;
+              }
+            }
+          }
+        }
+      },
+      deep: true
     }
   },
   methods: {
     preStep () {
-      console.log('1111', this.$store.state.plateInfo)
       this.$store.commit('setProgressIndex', {progressIndex: 2});
       this.isActiveChild = 0;
       this.isActiveParent = 0;
@@ -1002,62 +1062,39 @@ export default {
     },
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
-      let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
+      let threeObj = JSON.parse(JSON.stringify(this.contentItemListThree));
+      let twoObj = JSON.parse(JSON.stringify(this.contentItemListTwo));
+      let fourObj = JSON.parse(JSON.stringify(this.contentItemListFour));
       for (let i in this.numberObjThree) {
-        numberThree.push(this.numberObjThree[i]);
+        let str = i.split('_');
+        if (this.numberObjThree !== undefined) {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = '';
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObjThree[i];
+        }
       }
       for (let i in this.numberLayerObjThree) {
-        numberLayerThree.push(this.numberLayerObjThree[i]);
+        let str = i.split('_');
+        if (this.numberLayerObjThree !== undefined) {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = '';
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = this.numberLayerObjThree[i];
+        }
       }
       for (let i in this.numberObj) {
-        numberTwo.push(this.numberObj[i]);
+        let str = i.split('_');
+        twoObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObj[i];
       }
       for (let i in this.valueContentFour) {
-        numberFour.push(this.valueContentFour[i]);
+        if (this.valueContentFour[i] !== undefined) {
+          fourObj[parseInt[i]].contentSubItemList[parseInt[i]].valueContent = this.valueContentFour[i];
+        } else {
+          fourObj[parseInt[i]].contentSubItemList[parseInt[i]].valueContent = '';
+        }
       }
-      let obj = JSON.parse(JSON.stringify(this.contentItemListThree)); // 改变一下该数组的内存地址，防止其他地方的改变影响现在的操作
-      let objTwo = JSON.parse(JSON.stringify(this.contentItemListTwo));
-      let objFour = JSON.parse(JSON.stringify(this.contentItemListFour));
-      obj.map((items, index) => {
-        let length;
-        if (this.checkedLayerMerge === true) {
-          length = items.contentSubItemList.length - 1;
-        } else {
-          length = items.contentSubItemList.length;
-        }
-        const data = index * length;
-        const newArr = numberThree.slice(data, length * (index + 1));
-        const newLayerArr = numberLayerThree.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          if (item.sumFlag !== true) {
-            item.valueContent = newArr[idx];
-            item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
-          }
-        });
-      });
-      objTwo.map((items, index) => {
-        let length;
-        if (this.checkedMerge === true) {
-          length = items.contentSubItemList.length - 1;
-        } else {
-          length = items.contentSubItemList.length;
-        }
-        const data = index * length;
-        const newArr = numberTwo.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          if (item.isMerge !== true) {
-            item.valueContent = newArr[idx];
-          }
-        });
-      });
-      objFour.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour[index];
-        });
-      });
-      this.contentItemListThree = obj;
-      this.contentItemListTwo = objTwo;
-      this.contentItemListFour = objFour;
+      this.contentItemListTwo = twoObj;
+      this.contentItemListThree = threeObj;
+      this.contentItemListFour = fourObj;
       this.contentItemListTwo.map((item) => {
         if (item.itemName !== '') {
           this.dataObjTwo[0].contentItemList.push(item);
@@ -1563,8 +1600,11 @@ export default {
           let result = 0;
           for (let j = 0; j < childLength; j++) {
             if (this.childDataListTwo[j].supernatantFieldFlag === true) {
-              if (this.numberObj[i + '_' + j] !== undefined) {
+              if (this.numberObj[i + '_' + j] !== undefined || this.numberObj[i + '_' + j] !== '') {
                 result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
+              }
+              if (result === 0) {
+                result = '';
               }
               data = {
                 contentName: '',
@@ -1600,7 +1640,7 @@ export default {
           let childResult = 0, layerResult = 0, data;
           for (let j = 0; j < childLength; j++) {
             if (this.childDataListThree[j].supernatantFieldFlag === true) {
-              if (this.numberObjThree[i + '_' + j] !== undefined && this.numberObjThree[i + '_' + j] !== '' ) {
+              if (this.numberObjThree[i + '_' + j] !== undefined && this.numberObjThree[i + '_' + j] !== '') {
                 childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
               }
               if (this.numberLayerObjThree[i + '_' + j] !== undefined && this.numberLayerObjThree[i + '_' + j] !== '') {
@@ -1696,9 +1736,9 @@ export default {
     judgeUnitChild () { // 类型三的判断子项的单位是否为空或不一样
       let valueArr = [];
       let result;
-      const valueUnit = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      for (let i = 0; i < valueUnit.length; i++) {
-        valueArr.push(valueUnit[i].value);
+      // const valueUnit = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
+      for (let i = 0; i < this.childDataListTwo.length; i++) {
+        valueArr.push(this.childDataListTwo[i].valueUnit);
       }
       if (valueArr.indexOf('') === -1) {
         this.checkBoxTip = '';
@@ -1707,12 +1747,12 @@ export default {
         });
         if (result === false) {
           this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
-          });
+          // this.contentItemListThree.map((items, index) => {
+          //   items.contentSubItemList.map((item, idx) => {
+          //     items.contentSubItemList[idx].graphicFieldFlag = false;
+          //     this.childDataListThree[idx].graphicFieldFlag = false;
+          //   });
+          // });
         }
       } else {
         this.checkBoxTip = '单位不能为空，请先填写单位';
@@ -1723,13 +1763,13 @@ export default {
     judgeUnitThree () { // 类型三的判断单位是否为空或不一样
       let childUnitArr = [], layerUnitArr = [];
       let childResult, layerResult;
-      const childUnitThree = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      const layerUnitThree = document.getElementsByClassName('layerUnitThree'); // 获取浮层所有的单位
-      for (let i = 0; i < childUnitThree.length; i++) {
-        childUnitArr.push(childUnitThree[i].value);
+      // const childUnitThree = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
+      // const layerUnitThree = document.getElementsByClassName('layerUnitThree'); // 获取浮层所有的单位
+      for (let i = 0; i < this.childDataListThree.length; i++) {
+        childUnitArr.push(this.childDataListThree[i].valueUnit);
       }
-      for (let i = 0; i < layerUnitThree.length; i++) {
-        layerUnitArr.push(layerUnitThree[i].value);
+      for (let i = 0; i < this.layerDataListThree.length; i++) {
+        layerUnitArr.push(this.layerDataListThree[i].valueUnit);
       }
       if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
         this.checkBoxTip = '';
@@ -1741,12 +1781,12 @@ export default {
         });
         if (childResult === false || layerResult === false) {
           this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
-          });
+          // this.contentItemListThree.map((items, index) => {
+          //   items.contentSubItemList.map((item, idx) => {
+          //     items.contentSubItemList[idx].graphicFieldFlag = false;
+          //     this.childDataListThree[idx].graphicFieldFlag = false;
+          //   });
+          // });
         }
       } else {
         this.checkBoxTip = '单位不能为空，请先填写单位';

@@ -487,18 +487,51 @@ export default {
           }
         });
         this.mapTypeList4 = mapObj;
-      } 
+      }
     },
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
     },
     nextStep () {
       let totalDataList = [], dataArrOne, dataArrThree, dataArrFour, dataArrTwo;
+      let deleteFlag1, deleteFlag2, deleteFlag3, deleteFlag4;
       const pageId = this.$store.state.mapPageId;
-      let deleteFlag1 = this.relationValue1 !== '' ? false : this.plateId1 === '' ? false : true;
-      let deleteFlag2 = this.relationValue2 !== '' ? false : this.plateId2 === '' ? false : true;
-      let deleteFlag3 = this.relationValue3 !== '' ? false : this.plateId3 === '' ? false : true;
-      let deleteFlag4 = this.relationValue4 !== '' ? false : this.plateId4 === '' ? false : true;
+      if (this.relationValue1 !== '') {
+        deleteFlag1 = false;
+      } else {
+        if (this.plateId1 === '') {
+          deleteFlag1 = false;
+        } else {
+          deleteFlag1 = true;
+        }
+      }
+      if (this.relationValue2 !== '') {
+        deleteFlag2 = false;
+      } else {
+        if (this.plateId2 === '') {
+          deleteFlag2 = false;
+        } else {
+          deleteFlag2 = true;
+        }
+      }
+      if (this.relationValue3 !== '') {
+        deleteFlag3 = false;
+      } else {
+        if (this.plateId3 === '') {
+          deleteFlag3 = false;
+        } else {
+          deleteFlag3 = true;
+        }
+      }
+      if (this.relationValue4 !== '') {
+        deleteFlag4 = false;
+      } else {
+        if (this.plateId4 === '') {
+          deleteFlag4 = false;
+        } else {
+          deleteFlag4 = true;
+        }
+      }
       this.positionIdList.map((item, index) => {
         if (item.serialNumber === 31) {
           this.positionId1 = item.positionId;

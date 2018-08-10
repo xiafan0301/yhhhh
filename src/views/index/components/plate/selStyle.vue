@@ -33,7 +33,7 @@ export default {
       plateInfo: {
         configId: '',
         markUrl: '',
-        configCode: '',
+        configCode: ''
       }, // 新增版块信息
       // 选择样式
       styleRadio: ''
