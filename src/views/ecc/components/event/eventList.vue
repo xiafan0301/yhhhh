@@ -1,5 +1,5 @@
 <template>
-  <div class="ba-not">
+  <div class="event-data-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
@@ -132,7 +132,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .ba-not {
+  .event-data-list {
     padding: 20px;
     .header {
       margin-bottom: 10px;

@@ -38,11 +38,11 @@
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
                         <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
                           <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="text" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -147,8 +147,8 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td>{{items.itemName}}</td>
-                          <td><input type="text" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="text" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="number" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="number" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -157,8 +157,123 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td>{{items.itemName}}</td>
-                          <td><input type="text" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="text" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="number" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="number" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </table>
+                </div>
+              </div>
+            </template>
+            <template v-else-if="info.areaDataType === 5">
+              <div style="margin-top:5%;">
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <div class="ecl2-cr-list">
+                  <p class="list-title">第一步：添加项</p>
+                  <table class="plate-table" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>单位</th>
+                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                    </tr>
+                    </thead>
+                    <template v-if ='info.serialNumber === 3'>
+                      <tbody>
+                        <tr v-for="(item, index) in parentDataFour3" :key="'item'+index">
+                          <td>
+                            <input type="text" v-model="item.itemName" placeholder='请填写'>
+                          </td>
+                          <td>
+                            <input type="text" v-model="childDataFour3[index].valueUnit" placeholder='请填写'>
+                          </td>
+                          <td width='15%'>
+                            <template v-if="parentDataFour3.length > 1">
+                              <img
+                                :src="reduceImg"
+                                style="cursor: pointer;"
+                                @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-if='isActive3 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour3(item.itemName, childDataFour3[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                    <template v-if ='info.serialNumber === 5'>
+                      <tbody>
+                        <tr v-for="(item, index) in parentDataFour5" :key="'item'+index">
+                          <td>
+                            <input type="text" v-model="item.itemName" placeholder='请填写'>
+                          </td>
+                          <td>
+                            <input type="text" v-model="childDataFour5[index].valueUnit" placeholder='请填写'>
+                          </td>
+                          <td width='15%'>
+                            <template v-if="parentDataFour5.length > 1">
+                              <img
+                                :src="reduceImg"
+                                style="cursor: pointer;"
+                                @click="deleteChildDataListFour(item.itemName, index, info.serialNumber)"
+                              />
+                            </template>
+                            <template v-if='isActive5 === index'>
+                              <img
+                                :src="addImg"
+                                style="cursor: pointer;"
+                                @click="addChildDataListFour5(item.itemName, childDataFour5[index].valueUnit, index, info.mainMaxCount)"
+                              />
+                            </template>
+                            <template v-else>
+                              <img
+                                :src="unactiveImg"
+                              />
+                            </template>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </table>
+                </div>
+                <div class="ecl2-cr-list" style="margin-top: 40px;">
+                  <p class="list-title">第二步：添加数值</p>
+                  <table class="plate-table" style="width: 100%;" >
+                    <thead>
+                    <tr>
+                      <th>项名称</th>
+                      <th>值</th>
+                      <!-- <th>同比值(%)</th> -->
+                    </tr>
+                    </thead>
+                    <template v-if ='info.serialNumber === 3'>
+                      <tbody v-for="(items, index) in contentItemListFour3" :key="'items'+index">
+                        <tr>
+                          <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
+                          <td>{{items.itemName}}</td>
+                          <td><input type="number" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td> -->
+                        </tr>
+                      </tbody>
+                    </template>
+                    <template v-if ='info.serialNumber === 5'>
+                      <tbody v-for="(items, index) in contentItemListFour5" :key="'items'+index">
+                        <tr>
+                          <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
+                          <td>{{items.itemName}}</td>
+                          <td><input type="number" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td> -->
                         </tr>
                       </tbody>
                     </template>
@@ -267,8 +382,8 @@ export default {
           items.contentSubItemList.map((item, idx) => {
             if (item.serialNumber === 1) {
               item.contentName = this.parentDataFour3[index].itemName;
-              item.valueUnit = this.childDataFour3[idx].valueUnit;
-              item.valueContent = this.childDataFour3[idx].valueContent;
+              item.valueUnit = this.childDataFour3[index].valueUnit;
+              item.valueContent = this.childDataFour3[index].valueContent;
             }
           });
         });
@@ -285,8 +400,8 @@ export default {
           items.contentSubItemList.map((item, idx) => {
             if (item.serialNumber === 1) {
               item.contentName = this.parentDataFour5[index].itemName;
-              item.valueUnit = this.childDataFour5[idx].valueUnit;
-              item.valueContent = this.childDataFour5[idx].valueContent;
+              item.valueUnit = this.childDataFour5[index].valueUnit;
+              item.valueContent = this.childDataFour5[index].valueContent;
             }
           });
         });
@@ -301,8 +416,8 @@ export default {
         this.contentItemListFour3.map((item, index) => {
           item.contentSubItemList.map((value, idx) => {
             if (value.serialNumber === 1) {
-              value.valueUnit = this.childDataFour3[idx].valueUnit;
-              value.valueContent = this.childDataFour3[idx].valueContent;
+              value.valueUnit = this.childDataFour3[index].valueUnit;
+              value.valueContent = this.childDataFour3[index].valueContent;
             }
           });
         });
@@ -314,11 +429,37 @@ export default {
         this.contentItemListFour5.map((item, index) => {
           item.contentSubItemList.map((value, idx) => {
             if (value.serialNumber === 1) {
-              value.valueUnit = this.childDataFour5[idx].valueUnit;
-              value.valueContent = this.childDataFour5[idx].valueContent;
+              value.valueUnit = this.childDataFour5[index].valueUnit;
+              value.valueContent = this.childDataFour5[index].valueContent;
             }
           });
         });
+      },
+      deep: true
+    },
+    valueContentFour5: {
+      handler: function (newVal) {
+        for (let i in newVal) {
+          let str = i.split('_');
+          if (newVal[i] !== undefined) {
+            this.contentItemListFour5[parseInt(str[0])].contentSubItemList[0].valueContent = newVal[i];
+          } else {
+            this.contentItemListFour5[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+          }
+        }
+      },
+      deep: true
+    },
+    valueContentFour3: {
+      handler: function (newVal) {
+        for (let i in newVal) {
+          let str = i.split('_');
+          if (newVal[i] !== undefined) {
+            this.contentItemListFour3[parseInt(str[0])].contentSubItemList[0].valueContent = newVal[i];
+          } else {
+            this.contentItemListFour3[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+          }
+        }
       },
       deep: true
     }
@@ -337,26 +478,26 @@ export default {
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
       let data = {}, numberFour3 = [], numberFour5 = [];
+      let fourThree = JSON.parse(JSON.stringify(this.contentItemListFour3));
+      let fourFive = JSON.parse(JSON.stringify(this.contentItemListFour5));
       for (let i in this.valueContentFour3) {
-        numberFour3.push(this.valueContentFour3[i]);
+        let str = i.split('_');
+        if (this.valueContentFour3[i] !== undefined) {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour3[i];
+        } else {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
       for (let i in this.valueContentFour5) {
-        numberFour5.push(this.valueContentFour5[i]);
+        let str = i.split('_');
+        if (this.valueContentFour5[i] !== undefined) {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour5[i];
+        } else {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
-      let objFour3 = JSON.parse(JSON.stringify(this.contentItemListFour3));
-      let objFour5 = JSON.parse(JSON.stringify(this.contentItemListFour5));
-      objFour3.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour3[index];
-        });
-      });
-      objFour5.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour5[index];
-        });
-      });
-      this.contentItemListFour3 = objFour3;
-      this.contentItemListFour5 = objFour5;
+      this.contentItemListFour3 = fourThree;
+      this.contentItemListFour5 = fourFive;
       for (let i in this.itemName) {
         let str = i.split('_');
         if (this.percentValueOne[i] !== undefined) {
@@ -642,12 +783,14 @@ export default {
           }
         });
         let valueFour3 = {}, percentFour3 = {};
+        console.log(this.contentItemListFour3)
         this.contentItemListFour3.map((item, index) => {
           valueFour3[index + '_' + sortNumber] = item.contentSubItemList[0].valueContent;
-          percentFour3[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
+          // percentFour3[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
         });
+        console.log(valueFour3)
         this.valueContentFour3 = valueFour3;
-        this.percentValue3 = percentFour3;
+        // this.percentValue3 = percentFour3;
         this.isActive3 = this.parentDataFour3.length - 1;
       } else if (sortNumber === 5) {
         this.parentDataFour5.splice(idx, 1);
@@ -660,10 +803,10 @@ export default {
         let valueFour5 = {}, percentFour5 = {};
         this.contentItemListFour5.map((item, index) => {
           valueFour5[index + '_' + sortNumber] = item.contentSubItemList[0].valueContent;
-          percentFour5[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
+          // percentFour5[index + '_' + sortNumber] = item.contentSubItemList[1].valueContent;
         });
         this.valueContentFour5 = valueFour5;
-        this.percentValue5 = percentFour5;
+        // this.percentValue5 = percentFour5;
         this.isActive5 = this.parentDataFour5.length - 1;
       }
     },
@@ -770,6 +913,154 @@ export default {
                         } else if (items.serialNumber === 5) {
                           this.contentItemListFour5 = JSON.parse(JSON.stringify(items.contentItemList));
                           this.isActive5 = this.parentDataFour5.length - 1;
+                        }
+                      } else {
+                        const parentData = {
+                          itemName: '',
+                          plateAreaId: '',
+                          serialNumber: 1
+                        }
+                        const childData = {
+                          contentName: '',
+                          valueContent: '',
+                          valueUnit: '',
+                          serialNumber: 1,
+                          graphicFieldFlag: true,
+                          supernatantFieldFlag: true,
+                          sumFlag: false
+                        }
+                        const data = {
+                          itemName: '',
+                          plateAreaId: '',
+                          serialNumber: 1,
+                          contentSubItemList: [{
+                            contentName: '',
+                            valueContent: '',
+                            valueUnit: '',
+                            serialNumber: 1,
+                            graphicFieldFlag: true,
+                            supernatantFieldFlag: true,
+                            sumFlag: false
+                          }]
+                        }
+                        if (items.serialNumber === 3) {
+                          this.parentDataFour3.push(parentData);
+                          this.childDataFour3.push(childData);
+                          this.contentItemListFour3.push(data);
+                          this.isActive3 = 0;
+                        } else if (items.serialNumber === 5) {
+                          this.parentDataFour5.push(parentData);
+                          this.childDataFour5.push(childData);
+                          this.contentItemListFour5.push(data);
+                          this.isActive5 = 0;
+                        }
+                      }
+                    } else if (items.areaDataType === 5) {
+                      if (items.contentItemList.length > 0) {
+                        items.contentItemList.map((item, index) => {
+                          item.plateAreaId = items.plateAreaId;
+                          if (items.serialNumber === 3) {
+                            let childData;
+                            const data = {
+                              itemName: item.itemName,
+                              plateAreaId: items.plateAreaId,
+                              serialNumber: item.serialNumber
+                            }
+                            this.parentDataFour3.push(data);
+                            if (item.contentSubItemList.length > 0) {
+                              item.contentSubItemList.map((value, idx) => {
+                                // if (value.serialNumber === 2) {
+                                //   this.percentValue3[index + '_' + items.serialNumber] = value.valueContent;
+                                // } else {
+                                childData = {
+                                  contentName: value.contentName,
+                                  valueContent: value.valueContent,
+                                  valueUnit: value.valueUnit,
+                                  serialNumber: value.serialNumber,
+                                  graphicFieldFlag: value.graphicFieldFlag,
+                                  supernatantFieldFlag: value.supernatantFieldFlag,
+                                  sumFlag: value.sumFlag
+                                }
+                                this.valueContentFour3[index + '_' + items.serialNumber] = value.valueContent;
+                                this.childDataFour3.push(childData);
+                                // }
+                              });
+                            }
+                          } else if (items.serialNumber === 5) {
+                            let childData;
+                            const data = {
+                              itemName: item.itemName,
+                              plateAreaId: items.plateAreaId,
+                              serialNumber: item.serialNumber
+                            }
+                            this.parentDataFour5.push(data);
+                            if (item.contentSubItemList.length > 0) {
+                              item.contentSubItemList.map((value, idx) => {
+                                // if (value.serialNumber === 2) {
+                                //   this.percentValue5[index + '_' + items.serialNumber] = value.valueContent;
+                                // } else {
+                                childData = {
+                                  contentName: value.contentName,
+                                  valueContent: value.valueContent,
+                                  valueUnit: value.valueUnit,
+                                  serialNumber: value.serialNumber,
+                                  graphicFieldFlag: value.graphicFieldFlag,
+                                  supernatantFieldFlag: value.supernatantFieldFlag,
+                                  sumFlag: value.sumFlag
+                                }
+                                this.valueContentFour5[index + '_' + items.serialNumber] = value.valueContent;
+                                this.childDataFour5.push(childData);
+                                // }
+                              });
+                            }
+                          }
+                        });
+                        if (items.serialNumber === 3) {
+                          this.contentItemListFour3 = JSON.parse(JSON.stringify(items.contentItemList));
+                          this.isActive3 = this.parentDataFour3.length - 1;
+                        } else if (items.serialNumber === 5) {
+                          this.contentItemListFour5 = JSON.parse(JSON.stringify(items.contentItemList));
+                          this.isActive5 = this.parentDataFour5.length - 1;
+                        }
+                      } else {
+                        const parentData = {
+                          itemName: '',
+                          plateAreaId: '',
+                          serialNumber: 1
+                        }
+                        const childData = {
+                          contentName: '',
+                          valueContent: '',
+                          valueUnit: '',
+                          serialNumber: 1,
+                          graphicFieldFlag: true,
+                          supernatantFieldFlag: true,
+                          sumFlag: false
+                        }
+                        const data = {
+                          itemName: '',
+                          plateAreaId: '',
+                          serialNumber: 1,
+                          contentSubItemList: [{
+                            contentName: '',
+                            valueContent: '',
+                            valueUnit: '',
+                            serialNumber: 1,
+                            graphicFieldFlag: true,
+                            supernatantFieldFlag: true,
+                            sumFlag: false
+                          }]
+                        }
+                        if (items.serialNumber === 3) {
+                          this.parentDataFour3.push(parentData);
+                          this.childDataFour3.push(childData);
+                          this.contentItemListFour3.push(data);
+                          this.isActive3 = 0;
+                        } else if (items.serialNumber === 5) {
+                          this.parentDataFour5.push(parentData);
+                          this.childDataFour5.push(childData);
+                          this.contentItemListFour5.push(data);
+                          this.isActive5 = 0;
                         }
                       }
                     }

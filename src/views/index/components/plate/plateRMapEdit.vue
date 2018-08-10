@@ -15,12 +15,12 @@
           </el-option>
         </el-select>
       </div>
-      <span class='advice' v-show='fisrtTip'>*请选择要修改的页面</span>
+      <!-- <span class='advice' v-show='fisrtTip'>*请选择要修改的页面</span>
       <span class='advice' v-show='isRepace'>
         *该页面已存在地图版块，是否替换？
         <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
         <el-button id='preBtn' size='small' @click='handleNo'>否</el-button>
-      </span>
+      </span> -->
     </div>
     <div class="relation-map">
       <img :src='imgUrl' class='map-img' />
@@ -51,7 +51,7 @@
     </div>
   </div>
   <div class="plate-ecl-b">
-    <span style='color:red;float:left;margin-left:5%'>{{tips}}</span>
+    <span class='advice'>{{tips}}</span>
     <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' calss='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
@@ -63,7 +63,7 @@ export default {
   props: ['dataList'],
   data () {
     return {
-      tips: '',
+      tips: '如不将版块修改到其它页面，请操作下一步按钮',
       fisrtTip: true,
       isRepace: false,
       btnDisabled: true,
@@ -161,20 +161,22 @@ export default {
       this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
         .then((res) => {
           if (res) {
-            console.log(res.data)
             this.plateList = res.data;
             if (res.data.length > 0) {
-              this.fisrtTip = false;
-              this.isRepace = true;
-              this.btnDisabled = true;
+              // this.fisrtTip = false;
+              // this.isRepace = true;
+              // this.btnDisabled = true;
+              this.tips = '该页面已存在地图版块，如需替换则请操作下一步按钮';
+              this.btnDisabled = false;
               this.$emit('getMapDataList', res.data);
             } else {
               this.positionObj.forEach((item, index) => {
                 item.canChecked = true;
                 item.name = '空';
                 this.btnDisabled = false;
-                this.fisrtTip = false;
-                this.isRepace = false;
+                this.tips = '操作下一步按钮继续';
+                // this.fisrtTip = false;
+                // this.isRepace = false;
               });
               this.$emit('getMapDataList', []);
             }
@@ -288,10 +290,10 @@ export default {
           font-size: 14px;
         }
       }
-      .advice {
-        color: #F8560F;
-        font-size: 14px;
-      }
+      // .advice {
+      //   color: #F8560F;
+      //   font-size: 14px;
+      // }
     }
     .relation-map {
       background: url('../../../../assets/img/temp/map@3x.png') no-repeat;
@@ -395,5 +397,10 @@ export default {
     border-left:7px solid #fff;
     border-top:5px solid transparent;
     border-bottom:5px solid transparent;
+  }
+  .advice {
+    color: #F8560F;
+    font-size: 14px;
+    margin-right: 5%;
   }
 </style>
