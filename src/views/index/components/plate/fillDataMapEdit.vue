@@ -8,9 +8,9 @@
     <div class="plate-ecl2-cr">
       <div class='position-select'>
         <div>
-          <span>位置1</span>
-          <el-select @focus='focusMap(1)' v-model='relationValue1' placeholder="请选择地图版块数据类型" :class="{isActive: borderActive === 1}" @change="changeMapType1">
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <span><span style='color:red'>*</span>位置1</span>
+          <el-select @focus='focusMap(1)' v-model='relationValue1' placeholder="请选择地图数据类型" :class="{isActive: borderActive === 1}" @change="changeMapType1">
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList1'
               :key='item.dataTypeId'
@@ -22,8 +22,8 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select @focus='focusMap(2)' v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="请选择地图版块数据类型" @change='changeMapType2'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select @focus='focusMap(2)' v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="请选择地图数据类型" @change='changeMapType2'>
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList2'
               :key='item.dataTypeId'
@@ -35,8 +35,8 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select @focus='focusMap(3)' v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图版块数据类型" @change='changeMapType3'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select @focus='focusMap(3)' v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图数据类型" @change='changeMapType3'>
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList3'
               :key='item.dataTypeId'
@@ -48,8 +48,8 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select @focus='focusMap(4)' v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图版块数据类型" @change='changeMapType4'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select @focus='focusMap(4)' v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图数据类型" @change='changeMapType4'>
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList4'
               :key='item.dataTypeId'
@@ -91,7 +91,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
@@ -144,7 +144,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList2.length > 1">
@@ -197,7 +197,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList3.length > 1">
@@ -250,7 +250,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList4.length > 1">
@@ -288,8 +288,9 @@
     </div>
   </div>
   <div class="plate-ecl-b">
+    <span class='advice'>{{warnTip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep" type="primary" class='selectBtn' :disabled='submitDisabled' :style="[submitDisabled === true ? styleObj : '']">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -303,6 +304,11 @@ export default {
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       tip: '',
+      warnTip: '',
+      styleObj: {
+        background: '#ddd'
+      },
+      submitDisabled: false,
       borderActive: 1,
       isActive1: 0,
       isActive2: 0,
@@ -435,6 +441,26 @@ export default {
         this.plateId2 = '';
         this.plateId3 = '';
         this.plateId4 = '';
+      }
+    },
+    dataList1 (newVal) {
+      if (this.dataList1.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList2 (newVal) {
+      if (this.dataList2.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList3 (newVal) {
+      if (this.dataList3.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList4 (newVal) {
+      if (this.dataList4.length > 0) {
+        this.submitDisabled = false;
       }
     }
   },
@@ -694,27 +720,34 @@ export default {
       const params = {
         visPlates: totalDataList
       }
-      this.axios.put('/plateServices/platesBatch', params.visPlates)
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.$message({
-                showClose: true,
-                message: '修改版块成功',
-                type: 'success'
-              });
-              this.$router.push({name: 'plate-list'});
-              this.$store.commit('setProgressIndex', {progressIndex: 4});
-            } else {
-              this.$message({
-                showClose: true,
-                message: '修改版块失败',
-                type: 'error'
-              });
+      if (totalDataList.length > 0) {
+        this.submitDisabled = false;
+        this.warnTip = '';
+        this.axios.put('/plateServices/platesBatch', params.visPlates)
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.$message({
+                  showClose: true,
+                  message: '修改版块成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'plate-list'});
+                this.$store.commit('setProgressIndex', {progressIndex: 4});
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '修改版块失败',
+                  type: 'error'
+                });
+              }
             }
-          }
-        })
-        .catch(() => {});
+          })
+          .catch(() => {});
+      } else {
+        this.submitDisabled = true;
+        this.warnTip = '请先录入一个位置信息';
+      }
     },
     changeMapType1 (value) { // 位置1的选择框change方法
       if (value) {
@@ -981,6 +1014,11 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .advice {
+    color: #F8560F;
+    font-size: 14px;
+    margin-right: 5%;
   }
   .selectBtn {
     background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */

@@ -9,7 +9,7 @@
       <div>
         <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
           <el-form-item label="版块名称" prop='plateName'>
-            <el-input v-model="dataForm.plateName" placeholder="版块名称" :maxlength='maxlength'></el-input>
+            <el-input v-model="dataForm.plateName" placeholder="版块名称" :maxlength='maxlength' @change='changePlateName($event)'></el-input>
           </el-form-item>
           <el-form-item label="注释" prop='remark'>
             <el-input v-model="dataForm.remark" placeholder="注释" :maxlength='maxlength'></el-input>
@@ -288,7 +288,7 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep('dataForm')" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep('dataForm')" :disabled='submitDisabled' type="primary" class='selectBtn' :style="[submitDisabled === true ? styleObj : '']">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -300,6 +300,10 @@ export default {
     return {
       typeArr: [],
       maxlength: 20,
+      submitDisabled: true,
+      styleObj: {
+        background: '#ddd'
+      },
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
@@ -527,29 +531,27 @@ export default {
     },
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
-      let data = {}, numberFour3 = [], numberFour5 = [];
-      // let fourThree = JSON.parse(JSON.stringify(this.contentItemListFour3));
-      // let fourFive = JSON.parse(JSON.stringify(this.contentItemListFour5));
+      let data = {};
+      let fourThree = JSON.parse(JSON.stringify(this.contentItemListFour3));
+      let fourFive = JSON.parse(JSON.stringify(this.contentItemListFour5));
       for (let i in this.valueContentFour3) {
-        numberFour3.push(this.valueContentFour3[i]);
+        let str = i.split('_');
+        if (this.valueContentFour3[i] !== undefined && this.valueContentFour3[i] !== '') {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour3[i];
+        } else {
+          fourThree[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
       for (let i in this.valueContentFour5) {
-        numberFour5.push(this.valueContentFour5[i]);
+        let str = i.split('_');
+        if (this.valueContentFour5[i] !== undefined && this.valueContentFour5[i] !== '') {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = this.valueContentFour5[i];
+        } else {
+          fourFive[parseInt(str[0])].contentSubItemList[0].valueContent = '';
+        }
       }
-      let objFour3 = JSON.parse(JSON.stringify(this.contentItemListFour3));
-      let objFour5 = JSON.parse(JSON.stringify(this.contentItemListFour5));
-      objFour3.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour3[index];
-        });
-      });
-      objFour5.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour5[index];
-        });
-      });
-      this.contentItemListFour3 = objFour3;
-      this.contentItemListFour5 = objFour5;
+      this.contentItemListFour3 = fourThree;
+      this.contentItemListFour5 = fourFive;
       for (let i in this.itemName) {
         let str = i.split('_');
         if (this.percentValueOne[i] !== undefined) {
@@ -708,7 +710,7 @@ export default {
         this.$refs[dataForm].validate((valid) => {
           if (valid) {
             this.tip = '';
-            this.axios.put('/plateServices/plateBatch', params.visPlates)
+            this.axios.post('/plateServices/plateBatch', params.visPlates)
               .then((res) => {
                 if (res) {
                   if (res.data.length > 0) {
@@ -854,6 +856,13 @@ export default {
         });
         this.valueContentFour5 = valueFour5;
         this.isActive5 = this.parentDataFour5.length - 1;
+      }
+    },
+    changePlateName (value) {
+      if (value) {
+        this.submitDisabled = false;
+      } else {
+        this.submitDisabled = true;
       }
     }
   }

@@ -41,10 +41,10 @@ export default {
   },
   created () {
     this.getAllPlateList();
-    // this.$store.commit('setStyleType', {styleType: 1});
   },
   methods: {
     changeStyleType (type) {
+      this.styleRadio = '';
       this.styleType = type;
       this.getAllPlateList();
       this.$store.commit('setStyleType', {styleType: type});

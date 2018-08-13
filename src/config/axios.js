@@ -5,13 +5,18 @@ import Vue from 'vue';
 import axios from 'axios';
 import ElementUI from 'element-ui';
 // import store from '@/store/store.js';
-import { ajaxCtx } from '@/config/config.js';
+import { ajaxCtx, ajaxCtx2 } from '@/config/config.js';
 // axios支持跨域cookie
 axios.defaults.withCredentials = true;
 // axios添加一个请求拦截器u
+// /suersevice/...  A2/suersevice/...
 axios.interceptors.request.use((config) => {
   if (config.url.indexOf('http') !== 0) {
-    config.url = ajaxCtx + config.url;
+    if (config.url.indexOf('A2') === 0) {
+      config.url = ajaxCtx2 + config.url;
+    } else {
+      config.url = ajaxCtx + config.url;
+    }
   }
   let r = '_r=' + new Date().getTime();
   if (config.url.indexOf('?') > 0) {
