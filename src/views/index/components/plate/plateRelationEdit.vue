@@ -4,8 +4,8 @@
     <div class="relation-title">
       <div class="page-left">
         <span><span style='color:red'>*</span>关联页面</span>
-        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages' class='relationPage'>
+          <!-- <el-option value=''>请选择</el-option> -->
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
@@ -378,7 +378,8 @@ export default {
                 }
               });
               this.titleTip = '';
-              this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+              // this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+              this.tips = '如不将版块修改到其它页面，请操作下一步按钮';
               this.titleTip = '该位置已占用，请选择其它位置';
               this.btnDisabled = false;
             } else {
@@ -570,5 +571,11 @@ export default {
     color: #F8560F;
     font-size: 14px;
     margin-right: 5%;
+  }
+  .relationPage /deep/ .el-input__inner {
+    border: 1px solid red !important;
+  }
+  .relationPage /deep/ .el-input__inner:focus {
+    border: 1px solid #0785FD !important;
   }
 </style>

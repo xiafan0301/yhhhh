@@ -4,8 +4,8 @@
     <div class="relation-title">
       <div class="page-left">
         <span><span style='color:red'>*</span>关联页面</span>
-        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages' class='relationPage'>
+          <!-- <el-option value=''>请选择</el-option> -->
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
@@ -331,5 +331,11 @@ export default {
     color: #F8560F;
     font-size: 14px;
     margin-right: 5%;
+  }
+  .relationPage /deep/ .el-input__inner {
+    border: 1px solid red !important;
+  }
+  .relationPage /deep/ .el-input__inner:focus {
+    border: 1px solid #0785FD !important;
   }
 </style>
