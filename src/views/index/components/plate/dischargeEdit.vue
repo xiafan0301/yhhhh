@@ -28,10 +28,10 @@
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #DDDDDD'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -59,9 +59,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <template v-if ='info.serialNumber === 3'>
@@ -174,9 +174,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <template v-if ='info.serialNumber === 3'>

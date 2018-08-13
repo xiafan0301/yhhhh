@@ -28,10 +28,10 @@
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #ddd'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #ddd'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -69,15 +69,16 @@
                   >
                   </el-option>
                 </el-select>
+                <i class='el-icon-question' style='color: #F8560F;font-size:20px' title='关联后基础数据项行数和图标数据数据主项行数一致'></i>
               </div>
               <div class="ecl2-cr-list">
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #ddd'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #ddd'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -106,8 +107,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                       <tr>
-                        <th style='border-left: 1px solid #ddd'>主项名称</th>
-                        <th style='border-right: 1px solid #ddd'>操作</th>
+                        <th>主项名称</th>
+                        <th>操作</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -143,11 +144,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd;'>子项名称</th>
+                      <th>子项名称</th>
                       <th style="width: 80px">单位</th>
                       <th style="width: 80px">直接显示</th>
                       <th style="width: 80px">浮层显示</th>
-                      <th style='border-right: 1px solid #ddd'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
@@ -237,9 +238,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>子项名称</th>
+                      <th>子项名称</th>
                       <th>浮层并列项名称</th>
-                      <th width='150px' style='border-right: 1px solid #ddd'>单位</th>
+                      <th width='150px'>单位</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
@@ -290,17 +291,17 @@
                   <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
                     <thead>
                       <tr>
-                        <th width='80px' rowspan='2' style='border-right: 1px solid #DDDDDD;border-left: 1px solid #DDDDDD'>主项</th>
-                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:0'>子项</th>
-                        <th colspan='3' style='text-align: center;border-right: 1px solid #DDDDDD;border-bottom:0' width='300px'>浮层并列项</th>
+                        <th width='80px' rowspan='2' style='border-right:1px solid #ddd'>主项</th>
+                        <th colspan='3' style='text-align: center;border-bottom:1px solid #ddd;border-right:1px solid #ddd'>子项</th>
+                        <th colspan='3' style='text-align: center;border-bottom:1px solid #ddd' width='300px'>浮层并列项</th>
                       </tr>
                       <tr>
                         <th width='115px'>子项名称</th>
                         <th width='70px'>值</th>
-                        <th style='border-right: 1px solid #DDDDDD' width='70px'>单位</th>
+                        <th width='70px' style='border-right:1px solid #ddd'>单位</th>
                         <th width='120px'>浮层并列项名称</th>
                         <th width='70px'>值</th>
-                        <th width='70px' style='border-right: 1px solid #DDDDDD'>单位</th>
+                        <th width='70px'>单位</th>
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -339,8 +340,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>主项名称</th>
-                      <th style='border-right: 1px solid #ddd'>操作</th>
+                      <th>主项名称</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -378,17 +379,17 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd; width:30%'>子项名称</th>
+                      <th style='width:30%'>子项名称</th>
                       <th style="width: 150px">单位</th>
                       <th style="width: 80px">直接显示</th>
                       <th style="width: 80px">浮层显示</th>
-                      <th style='border-right: 1px solid #ddd'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
                       <template v-if="item.sumFlag === true">
                         <tr class='mergetr'>
-                          <td>合计(<input v-model='item.contentName' type='text' style="text-align:center;width:50%" placeholder='请填写' />)</td>
+                          <td>合计(<input v-model='item.contentName' type='text' style="text-align:center;width:50% !important" placeholder='请填写' />)</td>
                           <td>{{item.valueUnit}}</td>
                           <td></td>
                           <td>
@@ -496,10 +497,10 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>主项</th>
+                      <th>主项</th>
                       <th style="width: 150px">子项</th>
                       <th style="width: 80px">值</th>
-                      <th style='border-right: 1px solid #ddd'>单位</th>
+                      <th>单位</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -537,9 +538,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #ddd'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -582,9 +583,9 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>项名称</th>
+                      <th>项名称</th>
                       <th>值</th>
-                      <th style='border-right: 1px solid #ddd'>同比值(%)</th>
+                      <th>同比值(%)</th>
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
@@ -607,9 +608,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #ddd'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -652,7 +653,7 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #ddd;width:50%'>项名称</th>
+                      <th style='width:50%'>项名称</th>
                       <th>值</th>
                     </tr>
                     </thead>
@@ -691,6 +692,7 @@ export default {
       maxNumber: '',
       rowspan: 0,
       submitDisabled: false,
+      // plateConfigInfoArr: [],
       styleObj: {
         background: '#ddd'
       },
@@ -708,6 +710,7 @@ export default {
       isActiveParent: '',
       isActiveChild: '',
       configCount: 0,
+      configCountPre: '',
       configCountFour: 1,
       plateAreaId: {},
       indexValue: 0,
@@ -742,7 +745,8 @@ export default {
         plateId: '',
         plateType: 1,
         remark: '',
-        contentItemList: []
+        contentItemList: [],
+        areaRelationList: []
       }],
       parentDataListTwo: [], // 类型二的主项列表
       childDataListTwo: [], // 类型二子项列表
@@ -1007,7 +1011,12 @@ export default {
   },
   mounted () {
     this.setInitialData(); // 初始化数据
-    this.numberObjThree = JSON.parse(JSON.stringify(this.numberObjThree))
+    // this.plateConfigInfoArr = this.$store.state.plateConfigInfo;
+    this.$store.state.plateConfigInfo.map((item) => {
+      if (item.serialNumber === 6) {
+        this.configCountPre = item.configCount;
+      }
+    });
   },
   methods: {
     preStep () {
@@ -1161,6 +1170,15 @@ export default {
           this.dataObjTwo[0].contentItemList.push(items);
         }
       });
+      if (this.value !== '不关联') {
+        const areaList = {
+          plateAreaId: this.parentDataListTwo[0].plateAreaId,
+          relationPlateAreaId: this.plateAreaId[2]
+        }
+        this.dataObjTwo[0].areaRelationList.push(areaList);
+      } else {
+        this.dataObjTwo[0].areaRelationList = [];
+      }
       this.dataObjTwo[0].positionId = this.dataList.positionId;
       this.dataObjTwo[0].pageId = this.dataList.pageId;
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
@@ -1930,9 +1948,9 @@ export default {
     },
     changeRelation (value, number) {
       if (value === '不关联') {
-        this.$store.state.plateConfigInfo.map((item, index) => {
-          if (item.serialNumber === number) {
-            item.configCount = this.$store.state.oneType[index];
+        this.$store.state.plateConfigInfo.map((items, index) => {
+          if (items.serialNumber === number) {
+            items.configCount = this.$store.state.oneType[index];
           }
         });
       } else {
@@ -1946,18 +1964,14 @@ export default {
               item.configCount = this.parentDataListTwo.length;
             }
           });
-        } else if (obj.areaDataType === 3) {
-          this.$store.state.plateConfigInfo.map((item, index) => {
-            if (item.serialNumber === number) {
-              item.configCount = this.parentDataListThree.length;
-            }
-          });
         }
       }
     },
     setInitialData () {
+      console.log(this.$store.state.editPlateInfo)
       const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
       const configId = this.$store.state.editPlateInfo.configId;
+      let plateConfigInfoObj = JSON.parse(JSON.stringify(this.$store.state.plateConfigInfo));
       this.dataForm = {
         plateName: this.$store.state.editPlateInfo.plateName,
         remark: this.$store.state.editPlateInfo.remark
@@ -1965,6 +1979,7 @@ export default {
       this.axios.get('/plateServices/areaInfos/' + configId + '')
         .then((res) => {
           if (res) {
+            this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
             let typeArr = [];
             let oneType = [];
             res.data.map((item, index) => {
@@ -1992,6 +2007,16 @@ export default {
                         });
                       }
                     } else if (items.areaDataType === 2) {
+                      const areaRelationList = this.$store.state.editPlateInfo.areaRelationList;
+                      if (areaRelationList.length > 0) {
+                        this.value = '位置' + items.serialNumber;
+                        plateConfigInfoObj.map((itm, idx) => {
+                          if (itm.areaDataType === 6) {
+                            itm.configCount = items.contentItemList.length;
+                          }
+                        });
+                        this.$store.commit('setConfigInfo', {plateConfigInfo: plateConfigInfoObj});
+                      }
                       let unitArr = [];
                       if (items.contentItemList.length > 0) {
                         let length;
@@ -2077,6 +2102,7 @@ export default {
                         this.parentDataListTwo.push(parentData);
                         this.childDataListTwo.push(childData);
                         this.contentItemListTwo.push(data);
+                        console.log(this.parentDataListTwo)
                         this.isActiveChild = 0;
                         this.isActiveParent = 0;
                       }
@@ -2371,7 +2397,6 @@ export default {
                 });
               }
             });
-            this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
             this.$store.commit('setType', {typeArr: typeArr});
             this.$store.commit('setOneType', {oneType: oneType});
           }
@@ -2475,14 +2500,14 @@ export default {
   .plate-table {
     >tbody td input {
       max-width: 100% !important;
-      width: 75% !important;
+      width: 100% !important;
       min-width: 25% !important;
       text-align: left;
     }
     thead tr th {
       font-weight: 400 !important;
       font-size: 14px;
-      border-top: 1px solid #ddd;
+      // border-top: 1px solid #ddd;
       background-color: #F7F7F7 !important;
     }
     thead th, tbody tr, thead tr th, tbody tr td {
