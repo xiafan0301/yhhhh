@@ -100,6 +100,7 @@
             <template v-if="info.areaDataType === 3">
               <div style="margin-top:5%;">
                 <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{maxNumber = info.subMaxCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -175,10 +176,18 @@
                             <input type="text" v-model="item.valueUnit" class='childUnitThree' placeholder='请填写'>
                           </td>
                           <td>
-                            <el-switch
-                              v-model="item.graphicFieldFlag"
-                              @change="changeGrapFlagThree($event, index)"
-                            />
+                            <template v-if='childDataListThree.length === 1'>
+                              <el-switch
+                                v-model="item.graphicFieldFlag"
+                                disabled
+                              />
+                            </template>
+                            <template v-else>
+                              <el-switch
+                                v-model="item.graphicFieldFlag"
+                                @change="changeGrapFlagThree($event, index)"
+                              />
+                            </template>
                           </td>
                           <td>
                             <el-switch
@@ -258,7 +267,7 @@
                     <template v-if='checkBoxThree === true'>
                       <el-checkbox
                         v-model="checkedLayerMerge"
-                        @change="changeLayerMerge"
+                        @change="changeLayerMerge($event, info.subMaxCount)"
                       >
                         添加浮层子项合计项
                       </el-checkbox>
@@ -323,6 +332,7 @@
             <template v-if="info.areaDataType === 2">
               <div style="margin-top:5%;">
                 <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{maxNumber = info.subMaxCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
@@ -403,6 +413,12 @@
                                 disabled
                               />
                             </template>
+                            <template v-else-if='childDataListTwo.length === 1'>
+                              <el-switch
+                                v-model="item.graphicFieldFlag"
+                                disabled
+                              />
+                            </template>
                             <template v-else>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
@@ -422,7 +438,7 @@
                                 <img
                                   :src='reduceImg'
                                   style="cursor: pointer;"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
+                                  @click="deleteContentListTwo(item.contentName, idx, info.subMaxCount)"
                                 />
                               </template>
                             </template>
@@ -431,7 +447,7 @@
                                 <img
                                   :src='reduceImg'
                                   style="cursor: pointer;"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
+                                  @click="deleteContentListTwo(item.contentName, idx, info.subMaxCount)"
                                 />
                               </template>
                             </template>
@@ -456,7 +472,7 @@
                     <div class="checkbox">
                       <el-checkbox
                         v-model="checkedMerge"
-                        @change="changeMerge"
+                        @change="changeMerge($event, info.subMaxCount)"
                       >
                         添加浮层合计项
                       </el-checkbox>
@@ -668,6 +684,7 @@ export default {
     return {
       typeArr: [],
       maxlength: 20,
+      maxNumber: '', // 子项的最大项
       styleObj: {
         background: '#ddd'
       },
@@ -910,50 +927,26 @@ export default {
     },
     childDataListTwo: { // 监听类型二的子项
       handler: function (newVal) {
-        // let unitArr = [], resultArr = [];
-        // this.contentItemListTwo.map((items, index) => {
-        //   if (items.contentSubItemList) {
-        //     items.contentSubItemList.map((item, idx) => {
-        //       // if (item.isMerge === true) {
-        //       //   if (result === false) {
-        //       //     this.checkedMerge = false; // 将浮层合并项设为未选中
-        //       //     this.childDataListTwo.splice(length - 1, 1);
-        //       //     items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
-        //       //     return;
-        //       //   }
-        //       // }
-        //       item.contentName = this.childDataListTwo[idx].contentName;
-        //       item.valueUnit = this.childDataListTwo[idx].valueUnit;
-        //       if (item.graphicFieldFlag === true) {
-        //         resultArr = newVal.filter((value) => {
-        //           return value.valueUnit === item.valueUnit;
-        //         });
-        //       }
-        //     });
-        //   }
-        // });
-        // if (resultArr.length > 0) {
-        //   this.childDataListTwo.map((value) => {
-        //     if (value.graphicFieldFlag === true) {
-        //       resultArr.map((item) => {
-        //         if (item.valueUnit === value.valueUnit) {
-        //           value.graphicFieldFlag = true;
-        //         } else {
-        //           value.graphicFieldFlag = false;
-        //         }
-        //       });
-        //     }
-        //   });
-        // }
-        // this.contentItemListTwo.map((items) => {
-        //   items.contentSubItemList.map((item, idx) => {
-        //     item.graphicFieldFlag = this.childDataListTwo[idx].graphicFieldFlag;
-        //   });
-        // });
         let result = [];
+        let unitArr = [];
+        newVal.map((item, index) => {
+          unitArr.push(item.valueUnit);
+        });
         this.contentItemListTwo.map((items, index) => {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {
+              const length = unitArr.length;
+              const resultArr = unitArr.every((value, index, unitArr) => {
+                return value === unitArr[length - 1];
+              });
+              if (item.isMerge === true) {
+                if (resultArr === false) {
+                  this.checkedMerge = false; // 将浮层合并项设为未选中
+                  this.childDataListTwo.splice(length - 1, 1);
+                  items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
+                  return;
+                }
+              }
               item.contentName = this.childDataListTwo[idx].contentName;
               item.valueUnit = this.childDataListTwo[idx].valueUnit;
               if (item.graphicFieldFlag === true) {
@@ -964,9 +957,8 @@ export default {
             });
           }
         });
-        console.log(result)
         if (result.length > 0) {
-          this.childDataListTwo.map((list) => {
+          this.childDataListTwo.map((list, index) => {
             if (list.graphicFieldFlag === true) {
               result.map((item) => {
                 if (item.valueUnit === list.valueUnit) {
@@ -1006,6 +998,7 @@ export default {
         if (result.length > 0) {
           this.childDataListThree.map((value) => {
             if (value.graphicFieldFlag === true) {
+              console.log(value)
               result.map((item) => {
                 if (item.valueUnit === value.valueUnit) {
                   value.graphicFieldFlag = true;
@@ -1611,7 +1604,7 @@ export default {
       });
       this.isActiveParent = this.parentDataListFour.length - 1;
     },
-    deleteContentListTwo (name, idx) { // 类型二的删除子项
+    deleteContentListTwo (name, idx, maxNumber) { // 类型二的删除子项
       this.childDataListTwo.splice(idx, 1);
       this.contentItemListTwo.map((items, index) => {
         items.contentSubItemList.map((item, num) => {
@@ -1620,6 +1613,21 @@ export default {
           }
         });
       });
+      if (this.checkedMerge === true) {
+        if (this.childDataListTwo.length === 2) {
+          this.childDataListTwo[0].graphicFieldFlag = true;
+          this.contentItemListTwo.map((items, index) => {
+            items.contentSubItemList[0].graphicFieldFlag = true;
+          });
+        }
+      } else {
+        if (this.childDataListTwo.length === 1) {
+          this.childDataListTwo[0].graphicFieldFlag = true;
+          this.contentItemListTwo.map((items) => {
+            items.graphicFieldFlag = true;
+          });
+        }
+      }
       this.isActiveChild = this.childDataListTwo.length - 1;
     },
     deleteContentListThree (name, idx) { // 类型三的删除子项
@@ -1632,6 +1640,21 @@ export default {
           }
         });
       });
+      if (this.checkedLayerMerge === true) {
+        if (this.childDataListThree.length === 2) {
+          this.childDataListThree[0].graphicFieldFlag = true;
+          this.contentItemListThree.map((items, index) => {
+            this.contentSubItemList[0].graphicFieldFlag = true;
+          });
+        }
+      } else {
+        if (this.childDataListThree.length === 1) {
+          this.childDataListThree[0].graphicFieldFlag = true;
+          this.contentItemListThree.map((items) => {
+            items.graphicFieldFlag = true;
+          });
+        }
+      }
       this.isActiveChild = this.childDataListThree.length - 1;
     },
     changeGrapFlag (value, index) { // 类型二的改变直接显示的switch
@@ -1639,17 +1662,18 @@ export default {
         return value.valueUnit === this.childDataListTwo[index].valueUnit;
       });
       this.contentItemListTwo.map((items) => {
-        items.contentSubItemList.map((item, index) => {
-          if (checkResult.length > 0) {
-            checkResult.map((list) => {
-              if (item.graphicFieldFlag === true) {
-                if (list.valueUnit === item.valueUnit) {
-                  item.graphicFieldFlag = value;
-                }
-              }
-            })
-          }
-        });
+        items.contentSubItemList[index].graphicFieldFlag = value;
+        // items.contentSubItemList.map((item, index) => {
+        //   if (checkResult.length > 0) {
+        //     checkResult.map((list) => {
+        //       if (item.graphicFieldFlag === true) {
+        //         if (list.valueUnit === item.valueUnit) {
+        //           item.graphicFieldFlag = value;
+        //         }
+        //       }
+        //     })
+        //   }
+        // });
       });
       this.childDataListTwo[index].graphicFieldFlag = value;
     },
@@ -1684,163 +1708,176 @@ export default {
         items.contentSubItemList[index].supernatantFieldFlag = value;
       });
     },
-    changeMerge (value) { // 类型二的勾选合并项
-      let data;
-      const parentLength = this.parentDataListTwo.length; // 获取主项的长度
-      const childLength = this.childDataListTwo.length; // 获取子项的长度
-      if (value === true) {
-        for (let i = 0; i < parentLength; i++) {
-          let result = 0;
-          for (let j = 0; j < childLength; j++) {
-            if (this.childDataListTwo[j].supernatantFieldFlag === true) {
-              if (this.numberObj[i + '_' + j] !== undefined || this.numberObj[i + '_' + j] !== '') {
-                result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
-              }
-              if (result === 0) {
-                result = '';
-              }
-              data = {
-                contentName: '',
-                valueContent: result,
-                valueUnit: this.childDataListTwo[0].valueUnit,
-                serialNumber: 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: true,
-                contnetSubItemExtendList: [],
-                isMerge: true
+    changeMerge (value, maxNumber) { // 类型二的勾选合并项
+      if (maxNumber > 1) {
+        let data;
+        const parentLength = this.parentDataListTwo.length; // 获取主项的长度
+        const childLength = this.childDataListTwo.length; // 获取子项的长度
+        if (value === true) {
+          for (let i = 0; i < parentLength; i++) {
+            let result = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListTwo[j].supernatantFieldFlag === true) {
+                if (this.numberObj[i + '_' + j] !== undefined || this.numberObj[i + '_' + j] !== '') {
+                  result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
+                }
+                if (result === 0) {
+                  result = '';
+                }
+                data = {
+                  contentName: '',
+                  valueContent: result,
+                  valueUnit: this.childDataListTwo[0].valueUnit,
+                  serialNumber: 1,
+                  graphicFieldFlag: false,
+                  supernatantFieldFlag: true,
+                  sumFlag: true,
+                  contnetSubItemExtendList: [],
+                  isMerge: true
+                }
               }
             }
+            this.contentItemListTwo[i].contentSubItemList.push(data);
           }
-          this.contentItemListTwo[i].contentSubItemList.push(data);
+          this.childDataListTwo.push(data);
+        } else {
+          const childLength = this.childDataListTwo.length;
+          this.childDataListTwo.splice(childLength - 1, 1);
+          this.contentItemListTwo.map((items, index) => {
+            const length = items.contentSubItemList.length;
+            items.contentSubItemList.splice(length - 1, 1);
+          });
         }
-        this.childDataListTwo.push(data);
-      } else {
-        const childLength = this.childDataListTwo.length;
-        this.childDataListTwo.splice(childLength - 1, 1);
-        this.contentItemListTwo.map((items, index) => {
-          const length = items.contentSubItemList.length;
-          items.contentSubItemList.splice(length - 1, 1);
-        });
       }
     },
-    changeLayerMerge (value) { // 类型三的勾选浮层合并项
-      const parentLength = this.parentDataListThree.length; // 获取主项的长度
-      const childLength = this.childDataListThree.length; // 获取子项的长度
-      let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
-      if (value === true) {
-        for (let i = 0; i < parentLength; i++) {
-          let childResult = 0, layerResult = 0, data;
-          for (let j = 0; j < childLength; j++) {
-            if (this.childDataListThree[j].supernatantFieldFlag === true) {
-              if (this.numberObjThree[i + '_' + j] !== undefined && this.numberObjThree[i + '_' + j] !== '') {
-                childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
-              }
-              if (this.numberLayerObjThree[i + '_' + j] !== undefined && this.numberLayerObjThree[i + '_' + j] !== '') {
-                layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[i + '_' + j]));
+    changeLayerMerge (value, maxNumber) { // 类型三的勾选浮层合并项
+      if (maxNumber > 1) {
+        const parentLength = this.parentDataListThree.length; // 获取主项的长度
+        const childLength = this.childDataListThree.length; // 获取子项的长度
+        let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
+        if (value === true) {
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0, layerResult = 0, data;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (this.numberObjThree[i + '_' + j] !== undefined && this.numberObjThree[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
+                }
+                if (this.numberLayerObjThree[i + '_' + j] !== undefined && this.numberLayerObjThree[i + '_' + j] !== '') {
+                  layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[i + '_' + j]));
+                }
               }
             }
-          }
-          if (childResult === 0) {
-            childResult = '';
-          }
-          if (layerResult === 0) {
-            layerResult = '';
-          }
-          childData = {
-            contentName: '',
-            valueContent: childResult,
-            valueUnit: this.childDataListThree[0].valueUnit,
-            serialNumber: this.childDataListThree.length + 1,
-            graphicFieldFlag: false,
-            supernatantFieldFlag: true,
-            sumFlag: true,
-            isMerge: true
-          };
-          layerData = {
-            contentName: '',
-            valueContent: layerResult,
-            valueUnit: this.layerDataListThree[0].valueUnit,
-            serialNumber: 1,
-            isMerge: true
-          };
-          data = {
-            contentName: '',
-            valueContent: childResult,
-            valueUnit: this.childDataListThree[0].valueUnit,
-            serialNumber: this.childDataListThree.length + 1,
-            graphicFieldFlag: false,
-            supernatantFieldFlag: true,
-            sumFlag: true,
-            isMerge: true,
-            contnetSubItemExtendList: [{
+            if (childResult === 0) {
+              childResult = '';
+            }
+            if (layerResult === 0) {
+              layerResult = '';
+            }
+            childData = {
+              contentName: '',
+              valueContent: childResult,
+              valueUnit: this.childDataListThree[0].valueUnit,
+              serialNumber: this.childDataListThree.length + 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              isMerge: true
+            };
+            layerData = {
               contentName: '',
               valueContent: layerResult,
               valueUnit: this.layerDataListThree[0].valueUnit,
               serialNumber: 1,
               isMerge: true
-            }]
+            };
+            data = {
+              contentName: '',
+              valueContent: childResult,
+              valueUnit: this.childDataListThree[0].valueUnit,
+              serialNumber: this.childDataListThree.length + 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              isMerge: true,
+              contnetSubItemExtendList: [{
+                contentName: '',
+                valueContent: layerResult,
+                valueUnit: this.layerDataListThree[0].valueUnit,
+                serialNumber: 1,
+                isMerge: true
+              }]
+            }
+            this.contentItemListThree[i].contentSubItemList.push(data);
           }
-          this.contentItemListThree[i].contentSubItemList.push(data);
+          this.childDataListThree.push(childData);
+          this.layerDataListThree.push(layerData);
+        } else {
+          this.childDataListThree.splice(childLength - 1, 1);
+          this.layerDataListThree.splice(childLength - 1, 1);
+          this.contentItemListThree.map((item) => {
+            item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
+          });
         }
-        this.childDataListThree.push(childData);
-        this.layerDataListThree.push(layerData);
-      } else {
-        this.childDataListThree.splice(childLength - 1, 1);
-        this.layerDataListThree.splice(childLength - 1, 1);
-        this.contentItemListThree.map((item) => {
-          item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
-        });
       }
     },
     judgeUnit () { // 类型二的判断单位是否为空或不一样
-      let valueArr = [];
-      let result;
-      // const valueUnit = document.getElementsByClassName('valueUnit'); // 获取子项所有的单位
-      for (let i = 0; i < this.childDataListTwo.length; i++) {
-        valueArr.push(this.childDataListTwo[i].valueUnit);
-      }
-      if (valueArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        result = valueArr.every((value, index, valueArr) => {
-          return value === valueArr[0];
-        });
-        if (result === false) {
-          this.checkBoxTip = '单位不一致';
+      if (this.maxNumber > 1) {
+        let valueArr = [];
+        let result;
+        for (let i = 0; i < this.childDataListTwo.length; i++) {
+          valueArr.push(this.childDataListTwo[i].valueUnit);
         }
+        if (valueArr.indexOf('') === -1) {
+          this.checkBoxTip = '';
+          result = valueArr.every((value, index, valueArr) => {
+            return value === valueArr[0];
+          });
+          if (result === false) {
+            this.checkBoxTip = '单位不一致';
+          }
+        } else {
+          this.checkBoxTip = '单位不能为空，请先填写单位';
+          return false;
+        }
+        return result;
       } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
+        this.checkBoxTip = '只有一项子项，不能勾选';
         return false;
       }
-      return result;
     },
     judgeUnitThree () { // 类型三的判断单位是否为空或不一样
-      let childUnitArr = [], layerUnitArr = [];
-      let childResult, layerResult;
-      for (let i = 0; i < this.childDataListThree.length; i++) {
-        childUnitArr.push(this.childDataListThree[i].valueUnit);
-      }
-      for (let i = 0; i < this.layerDataListThree.length; i++) {
-        layerUnitArr.push(this.layerDataListThree[i].valueUnit);
-      }
-      if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        childResult = childUnitArr.every((value, index, childUnitArr) => {
-          return value === childUnitArr[0];
-        });
-        layerResult = layerUnitArr.every((value, index, layerUnitArr) => {
-          return value === layerUnitArr[0];
-        });
-        if (childResult === false || layerResult === false) {
-          this.checkBoxTip = '单位不一致';
+      if (this.maxNumber > 1) {
+        let childUnitArr = [], layerUnitArr = [];
+        let childResult, layerResult;
+        for (let i = 0; i < this.childDataListThree.length; i++) {
+          childUnitArr.push(this.childDataListThree[i].valueUnit);
+        }
+        for (let i = 0; i < this.layerDataListThree.length; i++) {
+          layerUnitArr.push(this.layerDataListThree[i].valueUnit);
+        }
+        if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
+          this.checkBoxTip = '';
+          childResult = childUnitArr.every((value, index, childUnitArr) => {
+            return value === childUnitArr[0];
+          });
+          layerResult = layerUnitArr.every((value, index, layerUnitArr) => {
+            return value === layerUnitArr[0];
+          });
+          if (childResult === false || layerResult === false) {
+            this.checkBoxTip = '单位不一致';
+          }
+        } else {
+          this.checkBoxTip = '单位不能为空，请先填写单位';
+          return false;
+        }
+        if (childResult && layerResult) {
+          return true;
+        } else {
+          return false;
         }
       } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
-        return false;
-      }
-      if (childResult && layerResult) {
-        return true;
-      } else {
+        this.checkBoxTip = '只有一项子项，不能勾选';
         return false;
       }
     },
