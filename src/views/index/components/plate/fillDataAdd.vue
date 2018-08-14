@@ -28,10 +28,10 @@
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #DDDDDD'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -69,15 +69,16 @@
                   >
                   </el-option>
                 </el-select>
+                <i class='el-icon-question' style='color: #F8560F;font-size:20px' title='关联后基础数据项行数和图标数据数据主项行数一致'></i>
               </div>
               <div class="ecl2-cr-list">
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #DDDDDD'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
@@ -106,8 +107,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>主项名称</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -142,11 +143,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
@@ -235,9 +236,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>浮层并列项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                      <th>单位</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
@@ -288,9 +289,9 @@
                   <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
                     <thead>
                       <tr>
-                        <th rowspan='2' style='border-left: 1px solid #DDDDDD;border-right: 1px solid #DDDDDD'>主项</th>
-                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:0'>子项</th>
-                        <th colspan='3' style='text-align: center;border-right: 1px solid #DDDDDD;borde-bottom:0'>浮层并列项</th>
+                        <th rowspan='2' style='border-right: 1px solid #DDDDDD'>主项</th>
+                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:1px solid #ddd'>子项</th>
+                        <th colspan='3' style='text-align: center;border-bottom:1px solid #ddd'>浮层并列项</th>
                       </tr>
                       <tr>
                         <th>子项名称</th>
@@ -298,7 +299,7 @@
                         <th style='border-right: 1px solid #DDDDDD'>单位</th>
                         <th>浮层并列项名称</th>
                         <th>值</th>
-                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                        <th>单位</th>
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -338,8 +339,8 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>主项名称</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -378,11 +379,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
@@ -495,10 +496,10 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项</th>
+                      <th>主项</th>
                       <th>子项</th>
                       <th>值</th>
-                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                      <th>单位</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -538,9 +539,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -579,9 +580,9 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>值</th>
-                      <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                      <th>同比值(%)</th>
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
@@ -604,9 +605,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -645,7 +646,7 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                       <tr>
-                        <th style='border-left: 1px solid #DDDDDD;width:50%'>项名称</th>
+                        <th style='width:50%'>项名称</th>
                         <th>值</th>
                       </tr>
                     </thead>
@@ -737,7 +738,8 @@ export default {
         plateType: 1,
         plateId: '',
         remark: '',
-        contentItemList: []
+        contentItemList: [],
+        areaRelationList: []
       }],
       parentDataListTwo: [{
         itemName: '',
@@ -1241,6 +1243,15 @@ export default {
           this.dataObjTwo[0].contentItemList.push(item);
         }
       });
+      if (this.value !== '不关联') {
+        const areaList = {
+          plateAreaId: this.parentDataListTwo[0].plateAreaId,
+          relationPlateAreaId: this.plateAreaId[2]
+        }
+        this.dataObjTwo[0].areaRelationList.push(areaList);
+      } else {
+        this.dataObjTwo[0].areaRelationList = [];
+      }
       this.dataObjTwo[0].positionId = this.dataList.positionId;
       this.dataObjTwo[0].pageId = this.dataList.pageId;
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
@@ -1310,16 +1321,12 @@ export default {
       } else {
         this.tip = '请先填写主项';
       }
-      if (this.value.length > 0) {
-        for (let i = 0; i < this.value.length; i++) {
-          if (this.value[i] !== undefined && this.value[i] !== '不关联') {
-            this.$store.state.plateConfigInfo.map((item, index) => {
-              if (item.serialNumber === i) {
-                item.configCount = this.parentDataListTwo.length;
-              }
-            });
+      if (this.value !== '不关联') {
+        this.$store.state.plateConfigInfo.map((item, index) => {
+          if (item.serialNumber === 2) {
+            item.configCount = this.parentDataListTwo.length;
           }
-        }
+        });
       }
     },
     addparentDataThree (name, idx, maxNumber) { // 类型三添加主项
@@ -1897,12 +1904,6 @@ export default {
           this.$store.state.plateConfigInfo.map((item, index) => {
             if (item.serialNumber === number) {
               item.configCount = this.parentDataListTwo.length;
-            }
-          });
-        } else if (obj.areaDataType === 3) {
-          this.$store.state.plateConfigInfo.map((item, index) => {
-            if (item.serialNumber === number) {
-              item.configCount = this.parentDataListThree.length;
             }
           });
         }
