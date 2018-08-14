@@ -1,5 +1,5 @@
 <template>
-  <div class="ba-not">
+  <div class="event-data-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
@@ -107,7 +107,8 @@ export default {
       this.$router.push({name: 'add-event'});
     },
     skipEventDetail () { // 跳转到事件详情页面
-      this.$router.push({name: 'event-detail'});
+      // this.$router.push({name: 'event-detail'});
+      this.$router.push({name: 'event-untreated'});
     },
     getEventList () { // 根据默认刷选条件获取事件列表
     },
@@ -131,7 +132,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .ba-not {
+  .event-data-list {
     padding: 20px;
     .header {
       margin-bottom: 10px;

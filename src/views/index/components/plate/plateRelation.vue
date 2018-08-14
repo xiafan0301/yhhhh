@@ -3,9 +3,9 @@
   <div class="plate-relation clearfix">
     <div class="relation-title">
       <div class="page-left">
-        <span>关联页面</span>
-        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
-          <el-option value=''>请选择</el-option>
+        <span><span style='color:red'>*</span>关联页面</span>
+        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages' class='relationPage'>
+          <!-- <el-option value=''>请选择</el-option> -->
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
@@ -19,8 +19,8 @@
       </div>
       <div class="page-right">
         <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages' :disabled='skipDisabled'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="skipValue" placeholder="不跳转" @change='skipPages' :disabled='skipDisabled'>
+          <el-option value=''>不跳转</el-option>
           <el-option
             v-for="item in skipPageList"
             :key="item.pageId"
@@ -38,9 +38,15 @@
           <li v-for="(item, index) in positionObj" :key="'item'+index">
             <template v-if='item.canChecked === true'>
               <div class="grid-content bg-purple"
+                :title="[item.isChecked === true ? titleTip : '']"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
-                <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
+                <template v-if='item.isChecked === true'>
+                  <button class="map-button">{{item.name}}</button>
+                </template>
+                <template v-else>
+                  <button class="map-button" @click='selectPosition(item.id)'>{{item.name}}</button>
+                </template>
               </div>
             </template>
             <template v-else>
@@ -68,6 +74,7 @@ export default {
     return {
       relationValue: '',
       skipDisabled: true,
+      titleTip: '',
       btnDisabled: true,
       tips: '请把版块绑定到要展示的页面上',
       styleObj: {
@@ -128,7 +135,9 @@ export default {
       .then((res) => {
         if (res) {
           if (res.data.list.length > 0) {
-            res.data.list.map((items, index) => {
+            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
+            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
+            this.relationPageList.map((items, index) => {
               const list = items.plateList.filter((item, idx) => {
                 return item.plateType === 1;
               });
@@ -137,8 +146,6 @@ export default {
               }
             });
           }
-          this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
-          this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
         }
       })
       .catch(() => {});
@@ -208,6 +215,12 @@ export default {
         } else {
           item.isDisabled = false;
         }
+        const list = item.plateList.filter((value, idx) => {
+          return value.plateType === 1;
+        });
+        if (list.length === 6) {
+          item.isDisabled = true;
+        }
       });
       this.newDataList.jumpPageId = obj.pageId;
     },
@@ -264,7 +277,10 @@ export default {
             });
             if (data.length > 0) {
               this.tips = '请在目标页面上选择版块要展示的位置';
+              this.titleTip = '该位置已占用，请选择其它位置';
               this.btnDisabled = true;
+            } else {
+              this.titleTip = '该页面没有空余位置可更换，请操作下一步按钮（如需更换，请先到版块管理列表中先删除对应的位置）';
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
@@ -278,11 +294,11 @@ export default {
       this.positionObj.map((item, index) => {
         item.finishChecked = false;
         // item.isChecked = false;
-        if (item.id === num) {
+        if (num === item.id) {
           item = Object.assign(item, {finishChecked: true});
-          this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+          this.tips = '您可选择若点击该版块是否可跳转到其它页面，或将该版块替换到其它空余位置，设置完成后操作下一步按钮';
           this.btnDisabled = false;
-          item.name = '展示到该位置';
+          item.name = '当前版块';
         } else if (item.isChecked !== true) {
           item.name = '替换到该位置';
           item.canChecked = true;
@@ -311,18 +327,7 @@ export default {
         default:
           break;
       }
-    },
-    // againSelect (num) { // 重新选择位置
-    //   this.positionObj.map((item, index) => {
-    //     if (item.isChecked === false) {
-    //       item.canChecked = true;
-    //       item.finishChecked = false;
-    //     }
-    //   });
-    //   this.tips = '*点击选择要展示的位置按钮';
-    //   this.btnDisabled = true;
-    //   this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-    // }
+    }
   }
 }
 </script>
@@ -356,7 +361,6 @@ export default {
         }
       }
     }
-    
     .relation-map {
       width: 96%;
       margin: 2% 2% 3% 2%;
@@ -384,7 +388,6 @@ export default {
           }
         }
       }
-      
       .grid-content {
         box-shadow: 2px 1px 8px rgba(79,84,90,0.31);
         border-radius: 4px;
@@ -421,13 +424,13 @@ export default {
         }
       }
       .checkedContent {
-        border-color: #ddd;
+        border-color: #B1ADAD;
         span {
-          color: #ddd;
+          color: #B1ADAD;
         }
         .map-button {
           background-color: transparent;
-          color: #ddd;
+          color: #B1ADAD;
           border: 0;
         }
       }
@@ -441,6 +444,7 @@ export default {
         }
       }
       .canChecked {
+        border-color: #0785FD;
         span {
           color: #0785FD;
         }
@@ -472,5 +476,11 @@ export default {
     color: #F8560F;
     font-size: 14px;
     margin-right: 5%;
+  }
+  .relationPage /deep/ .el-input__inner {
+    border: 1px solid red !important;
+  }
+  .relationPage /deep/ .el-input__inner:focus {
+    border: 1px solid #0785FD !important;
   }
 </style>

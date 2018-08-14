@@ -8,9 +8,13 @@
     <div class="plate-ecl2-cr">
       <div class='position-select'>
         <div>
-          <span>位置1</span>
-          <el-select v-model='relationValue1' :class="{isActive: borderActive === 1}" placeholder="请选择地图版块数据类型" @change="changeMapType1">
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <span><span style='color:red'>*</span>位置1</span>
+          <el-select v-model='relationValue1'
+            :class="{isActive: borderActive === 1}"
+            placeholder="请选择地图数据类型"
+            @change="changeMapType1"
+            @focus='focusMap(1)'
+          >
             <el-option
               v-for='item in mapTypeList1'
               :key='item.dataTypeId'
@@ -22,8 +26,14 @@
         </div>
         <div>
           <span>位置2</span>
-          <el-select v-model="relationValue2" :class="{isActive: borderActive === 2}" placeholder="请选择地图版块数据类型" @change='changeMapType2'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select
+            v-model="relationValue2"
+            :class="{isActive: borderActive === 2}"
+            placeholder="请选择地图数据类型"
+            @change='changeMapType2'
+            @focus='focusMap(2)'
+          >
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList2'
               :key='item.dataTypeId'
@@ -35,8 +45,8 @@
         </div>
         <div>
           <span>位置3</span>
-          <el-select v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图版块数据类型" @change='changeMapType3'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select @focus='focusMap(3)' v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图数据类型" @change='changeMapType3'>
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList3'
               :key='item.dataTypeId'
@@ -48,8 +58,8 @@
         </div>
         <div>
           <span>位置4</span>
-          <el-select v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图版块数据类型" @change='changeMapType4'>
-            <el-option value=''>请选择地图版块数据类型</el-option>
+          <el-select @focus='focusMap(4)' v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图数据类型" @change='changeMapType4'>
+            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
             <el-option
               v-for='item in mapTypeList4'
               :key='item.dataTypeId'
@@ -91,7 +101,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
@@ -117,6 +127,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList1.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 2'>
@@ -140,7 +154,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList2.length > 1">
@@ -166,6 +180,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList2.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 3'>
@@ -189,7 +207,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList3.length > 1">
@@ -215,6 +233,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList3.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
           <template v-if='isChanged === 4'>
@@ -238,7 +260,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="text" v-model="item.value" placeholder="请填值">
+                    <input type="number" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList4.length > 1">
@@ -264,6 +286,10 @@
                 </tr>
               </tbody>
             </table>
+            <div class='warn-content' v-show='this.dataList4.length === 0'>
+              <i class='el-icon-warning'></i>
+              <span>选择地图数据类型后才能录入信息</span>
+            </div>
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
         </div>
@@ -272,8 +298,9 @@
     </div>
   </div>
   <div class="plate-ecl-b">
+    <span class='advice'>{{warnTip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="nextStep" type="primary" class='selectBtn' :disabled='submitDisabled' :style="[submitDisabled === true ? styleObj : '']">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -287,6 +314,11 @@ export default {
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
       tip: '',
+      warnTip: '',
+      styleObj: {
+        background: '#ddd'
+      },
+      submitDisabled: false,
       borderActive: 1,
       isActive1: 0,
       isActive2: 0,
@@ -317,6 +349,7 @@ export default {
       positionId3: '',
       positionId4: '',
       positionList: [],
+      mapTypeList: [],
       mapTypeList1: [], // 位置1地图应用类型列表
       mapTypeList2: [], // 位置2地图应用类型列表
       mapTypeList3: [], // 位置3地图应用类型列表
@@ -408,16 +441,37 @@ export default {
         this.dataList3 = [];
         this.dataList4 = [];
       }
+    },
+    dataList1 (newVal) {
+      if (this.dataList1.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList2 (newVal) {
+      if (this.dataList2.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList3 (newVal) {
+      if (this.dataList3.length > 0) {
+        this.submitDisabled = false;
+      }
+    },
+    dataList4 (newVal) {
+      if (this.dataList4.length > 0) {
+        this.submitDisabled = false;
+      }
     }
   },
   mounted () {
     this.axios.get('/mapServices/dataTypes')
       .then((res) => {
         if (res) {
-          this.mapTypeList1 = res.data;
-          this.mapTypeList2 = res.data;
-          this.mapTypeList3 = res.data;
-          this.mapTypeList4 = res.data;
+          this.mapTypeList = JSON.parse(JSON.stringify(res.data));
+          this.mapTypeList1 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList2 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList3 = JSON.parse(JSON.stringify(this.mapTypeList));
+          this.mapTypeList4 = JSON.parse(JSON.stringify(this.mapTypeList));
         }
       })
       .catch(() => {})
@@ -445,6 +499,7 @@ export default {
     },
     nextStep () {
       let totalDataList = [], dataArrOne, dataArrFour, dataArrThree, dataArrTwo;
+      let deleteFlag1, deleteFlag2, deleteFlag3, deleteFlag4;
       this.positionIdList.map((item, index) => {
         if (item.serialNumber === 31) {
           this.positionId1 = item.positionId;
@@ -456,10 +511,42 @@ export default {
           this.positionId4 = item.positionId;
         }
       });
-      let deleteFlag1 = this.relationValue1 !== '' ? false : this.plateId1 === '' ? false : true;
-      let deleteFlag2 = this.relationValue2 !== '' ? false : this.plateId2 === '' ? false : true;
-      let deleteFlag3 = this.relationValue3 !== '' ? false : this.plateId3 === '' ? false : true;
-      let deleteFlag4 = this.relationValue4 !== '' ? false : this.plateId4 === '' ? false : true;
+      if (this.relationValue1 !== '') {
+        deleteFlag1 = false;
+      } else {
+        if (this.plateId1 === '') {
+          deleteFlag1 = false;
+        } else {
+          deleteFlag1 = true;
+        }
+      }
+      if (this.relationValue2 !== '') {
+        deleteFlag2 = false;
+      } else {
+        if (this.plateId2 === '') {
+          deleteFlag2 = false;
+        } else {
+          deleteFlag2 = true;
+        }
+      }
+      if (this.relationValue3 !== '') {
+        deleteFlag3 = false;
+      } else {
+        if (this.plateId3 === '') {
+          deleteFlag3 = false;
+        } else {
+          deleteFlag3 = true;
+        }
+      }
+      if (this.relationValue4 !== '') {
+        deleteFlag4 = false;
+      } else {
+        if (this.plateId4 === '') {
+          deleteFlag4 = false;
+        } else {
+          deleteFlag4 = true;
+        }
+      }
       if (this.relationValue1 !== '') {
         dataArrOne = {
           pageId: this.$store.state.mapPageId,
@@ -586,7 +673,7 @@ export default {
           typeId: this.typeId4,
           contentItemList: []
         };
-         this.dataList4.map((item, index) => {
+        this.dataList4.map((item, index) => {
           if (item.name || item.value || item.unit) {
             const data = {
               itemName: item.name,
@@ -611,27 +698,77 @@ export default {
       const params = {
         visPlates: totalDataList
       }
-      this.axios.put('/plateServices/platesBatch', params.visPlates)
-        .then((res) => {
-          if (res) {
-            if (res.data.length > 0) {
-              this.$message({
-                showClose: true,
-                message: '添加版块成功',
-                type: 'success'
-              });
-              this.$router.push({name: 'plate-list'});
-              this.$store.commit('setProgressIndex', {progressIndex: 4});
-            } else {
-              this.$message({
-                showClose: true,
-                message: '添加版块失败',
-                type: 'error'
-              });
+      if (totalDataList.length <= 0) {
+        this.submitDisabled = true;
+        this.warnTip = '请先录入一个位置信息';
+      } else {
+        this.submitDisabled = false;
+        this.warnTip = '';
+        this.axios.put('/plateServices/platesBatch', params.visPlates)
+          .then((res) => {
+            if (res) {
+              if (res.data.length > 0) {
+                this.$message({
+                  showClose: true,
+                  message: '添加版块成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'plate-list'});
+                this.$store.commit('setProgressIndex', {progressIndex: 4});
+              } else {
+                this.$message({
+                  showClose: true,
+                  message: '添加版块失败',
+                  type: 'error'
+                });
+              }
             }
+          })
+          .catch(() => {});
+      }
+    },
+    focusMap (num) {
+      if (num === 1) {
+        this.isChanged = 1;
+        this.borderActive = 1;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue3 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
           }
-        })
-        .catch(() => {});
+        });
+        this.mapTypeList1 = mapObj;
+      } else if (num === 2) {
+        this.isChanged = 2;
+        this.borderActive = 2;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue1 || item.typeName === this.relationValue3 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList2 = mapObj;
+      } else if (num === 3) {
+        this.isChanged = 3;
+        this.borderActive = 3;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue1 || item.typeName === this.relationValue4) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList3 = mapObj;
+      } else if (num === 4) {
+        this.isChanged = 4;
+        this.borderActive = 4;
+        let mapObj = JSON.parse(JSON.stringify(this.mapTypeList));
+        mapObj.map((item, index) => {
+          if (item.typeName === this.relationValue2 || item.typeName === this.relationValue3 || item.typeName === this.relationValue1) {
+            item.isDisabled = true;
+          }
+        });
+        this.mapTypeList4 = mapObj;
+      }
     },
     changeMapType1 (value) { // 位置1的选择框change方法
       this.dataList1 = [];
@@ -687,6 +824,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList2 = res.data;
+                this.isActive2 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -721,6 +859,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList3 = res.data;
+                this.isActive3 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -754,6 +893,7 @@ export default {
             if (res) {
               if (res.data.length > 0) {
                 this.dataList4 = res.data;
+                this.isActive4 = res.data.length - 1;
               } else {
                 const data = {
                   name: '',
@@ -864,6 +1004,11 @@ export default {
   .bg-plate-ecl {
     height: 100%;
   }
+  .advice {
+    color: #F8560F;
+    font-size: 14px;
+    margin-right: 5%;
+  }
   .selectBtn {
     background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
     background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
@@ -913,5 +1058,15 @@ export default {
   }
   .el-select.isActive .el-input .el-input__inner {
     border-color: #409EFF;
+  }
+  .warn-content {
+    margin: 2% auto;
+    text-align: center;
+    i {
+      color: rgb(248, 86, 15);
+    }
+    span {
+      color: rgb(248, 86, 15);
+    }
   }
 </style>

@@ -16,9 +16,14 @@ import eventList from '@/views/ecc/components/event/eventList.vue'
 import addEvent from '@/views/ecc/components/event/addEvent.vue'
 import addMsg from '@/views/ecc/components/event/addMsg.vue'
 import eventDetail from '@/views/ecc/components/event/eventDetail.vue'
+import eventEnd from '@/views/ecc/components/event/eventEnd.vue'
+import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue'
 import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue'
+import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue'
 // 调度指挥
+import ctc from '@/views/ecc/components/ctc/ctc.vue'
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
+
 // 应急库
 import emergency from '@/views/ecc/components/emergency/emergency.vue'
 import emergencyPlanList from '@/views/ecc/components/emergency/planList.vue'
@@ -26,6 +31,11 @@ import emergencyAddPlan from '@/views/ecc/components/emergency/addPlan.vue'
 import emergencyMaterialList from '@/views/ecc/components/emergency/materialList.vue'
 import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
 import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
+
+import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
+import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
+import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
+
 Vue.use(Router);
 
 export default new Router({
@@ -65,16 +75,22 @@ export default new Router({
           children: [
             {path: 'eventList', name: 'event-list', component: eventList},
             {path: 'addEvent', name: 'add-event', component: addEvent},
-            {path: 'addMsg', name: 'add-message', component: addMsg},
+            {path: 'addMsg/:status', name: 'add-message', component: addMsg},
             {path: 'eventDetail', name: 'event-detail', component: eventDetail},
-            {path: 'mutualPerson', name: 'mutual-person', component: mutualPerson}
+            {path: 'eventEnd', name: 'event-end', component: eventEnd},
+            {path: 'unreatedEvent', name: 'event-untreated', component: unreatedEvent},
+            {path: 'mutualPerson', name: 'mutual-person', component: mutualPerson},
+            {path: 'mutualDetail', name: 'mutual-detail', component: mutualDetail}
           ]
         },
         {
           path: 'ctc',
-          component: ctcList,
+          component: ctc,
           children: [
-            {path: '', name: 'ctc-list', component: ctcList}
+            {path: 'ctcList', name: 'ctc-list', component: ctcList},
+            {path: 'ctcDetail', name: 'ctc-detail', component: ctcDetail},
+            {path: 'rePlanList', name: 'replan-list', component: rePlanList},
+            {path: 'replanDetail', name: 'replan-detail', component: replanDetail}
           ]
         }
       ]

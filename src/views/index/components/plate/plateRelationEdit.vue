@@ -3,9 +3,9 @@
   <div class="plate-relation clearfix">
     <div class="relation-title">
       <div class="page-left">
-        <span>关联页面</span>
-        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages'>
-          <el-option value=''>请选择</el-option>
+        <span><span style='color:red'>*</span>关联页面</span>
+        <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages' class='relationPage'>
+          <!-- <el-option value=''>请选择</el-option> -->
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
@@ -19,8 +19,8 @@
       </div>
       <div class="page-right">
         <span>跳转页面</span>
-        <el-select v-model="skipValue" placeholder="请选择" @change='skipPages'>
-          <el-option value=''>请选择</el-option>
+        <el-select v-model="skipValue" placeholder="不跳转" @change='skipPages'>
+          <el-option value=''>不跳转</el-option>
           <el-option
             v-for="item in skipPageList"
             :key="item.pageId"
@@ -38,13 +38,23 @@
           <li v-for="(item, index) in positionObj" :key="'item'+index">
             <template v-if='item.canChecked === true'>
               <div class="grid-content bg-purple"
+                :title="[item.isChecked === true ? titleTip : '']"
                 :class="[item.isChecked === true ? 'checkedContent' : item.finishChecked === true ? 'finishChecked' : 'canChecked']">
                 <span>{{item.position}}</span>
+                <template v-if='item.isChecked === true'>
+                  <button
+                    class="map-button"
+                  >
+                    {{item.name}}
+                  </button>
+                </template>
+                <template v-else>
                   <button
                     class="map-button"
                     @click='selectPosition(item.id)'>
                     {{item.name}}
                   </button>
+                </template>
               </div>
             </template>
             <template v-else>
@@ -71,6 +81,7 @@ export default {
   data () {
     return {
       relationValue: '',
+      titleTip: '',
       btnDisabled: false,
       currentPage: '',
       tips: '',
@@ -110,6 +121,7 @@ export default {
       checkedPageId: '', // 选中的页面id
       plateList: [], // 该页面已经有哪些版块被占用
       relationPageList: [], // 所有的关联页面
+      relationPausePageList: [],
       skipPageList: [], // 所有的跳转页面
       skipPausePageList: [],
       newDataList: {
@@ -161,6 +173,12 @@ export default {
           item.isDisabled = true;
         } else {
           item.isDisabled = false;
+        }
+        const list = item.plateList.filter((value, idx) => {
+          return value.plateType === 1;
+        });
+        if (list.length === 6) {
+          item.isDisabled = true;
         }
       });
       this.newDataList.jumpPageId = obj.pageId;
@@ -215,10 +233,12 @@ export default {
             });
             if (data.length > 0) {
               this.tips = '请在目标页面上选择版块要展示的位置';
+              this.titleTip = '该位置已占用，请选择其它位置';
               this.btnDisabled = true;
             } else {
               this.tips = '该页面所有位置已经被占，请重新选择';
               this.btnDisabled = true;
+              this.titleTip = '该页面没有空余位置可更换，请操作下一步按钮（如需更换，请先到版块管理列表中先删除对应的位置）';
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
@@ -282,6 +302,7 @@ export default {
       const jumpPageId = this.$store.state.editPlateInfo.visPagePlate.jumpPageId;
       const positionId = this.$store.state.editPlateInfo.visPagePlate.positionId;
       const plateId = this.$store.state.editPlateInfo.plateId;
+      const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
       this.newDataList = {
         jumpPageId: jumpPageId,
         pageId: pageId,
@@ -291,6 +312,8 @@ export default {
       this.axios.get('/pageServices/pages', {params})
         .then((res) => {
           if (res && res.data.list) {
+            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
+            this.relationPausePageList = JSON.parse(JSON.stringify(res.data.list));
             res.data.list.map((item) => {
               if (item.pageId === pageId) {
                 this.relationValue = item.pageName;
@@ -298,24 +321,27 @@ export default {
               } else if (item.pageId === jumpPageId) {
                 this.skipValue = item.pageName;
               }
-               const list = item.plateList.filter((value, idx) => {
+            });
+            if (this.skipPausePageList.length > 0) {
+              this.skipPausePageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
+                if (item.pageName === this.relationValue) {
+                  item.isDisabled = true;
+                } else {
+                  item.isDisabled = false;
+                }
+              });
+              this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
+            }
+            this.relationPageList = JSON.parse(JSON.stringify(this.relationPausePageList));
+            this.relationPageList.map((item) => {
+              const list = item.plateList.filter((value, idx) => {
                 return value.plateType === 1;
               });
               if (list.length === 6) {
                 item.isDisabled = true;
               }
             });
-            this.relationPageList = JSON.parse(JSON.stringify(res.data.list));
-            this.skipPausePageList = JSON.parse(JSON.stringify(res.data.list));
           }
-          this.skipPageList = this.skipPausePageList;
-          this.skipPageList.map((item, index) => { // 当点击关联页面时，对应的跳转页面的值不能点
-            if (item.pageName === this.relationValue) {
-              item.isDisabled = true;
-            } else {
-              item.isDisabled = false;
-            }
-          });
         })
         .catch(() => {});
       this.axios.get('/pageServices/pages/' + pageId + '')
@@ -328,7 +354,10 @@ export default {
                   item.canChecked = true;
                   if (items.serialNumber === item.id) {
                     item.isChecked = true;
-                    // item.finishChecked = true;
+                    if (serialNumber === item.id) {
+                      item.isChecked = false;
+                      item.finishChecked = true;
+                    }
                     item.name = items.plateName;
                   }
                 });
@@ -348,10 +377,14 @@ export default {
                   item.isSerialNumber = true;
                 }
               });
-              this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+              this.titleTip = '';
+              // this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+              this.tips = '如不将版块修改到其它页面，请操作下一步按钮';
+              this.titleTip = '该位置已占用，请选择其它位置';
               this.btnDisabled = false;
             } else {
               this.tips = '该页面其他位置已经被占，不能更换位置';
+              this.titleTip = '该页面没有空余位置可更换，请操作下一步按钮（如需更换，请先到版块管理列表中先删除对应的位置）';
               this.btnDisabled = false;
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
@@ -489,13 +522,13 @@ export default {
         }
       }
       .checkedContent {
-        border-color: #ddd;
+        border-color: #B1ADAD;
         span {
-          color: #ddd;
+          color: #B1ADAD;
         }
         .map-button {
           background-color: transparent;
-          color: #ddd;
+          color: #B1ADAD;
           border: 0;
         }
       }
@@ -509,6 +542,7 @@ export default {
         }
       }
       .canChecked {
+        border-color: #0785FD;
         span {
           color: #0785FD;
         }
@@ -537,5 +571,11 @@ export default {
     color: #F8560F;
     font-size: 14px;
     margin-right: 5%;
+  }
+  .relationPage /deep/ .el-input__inner {
+    border: 1px solid red !important;
+  }
+  .relationPage /deep/ .el-input__inner:focus {
+    border: 1px solid #0785FD !important;
   }
 </style>

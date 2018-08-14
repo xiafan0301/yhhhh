@@ -3,7 +3,7 @@
     <div class='add-msg-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>添加消息</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>{{status}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='add-msg-body'>
@@ -14,6 +14,7 @@
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px'>
             <el-input style='width: 500px' placeholder='请选择事发地点...'></el-input>
+            <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
@@ -45,12 +46,30 @@
       </div>
       <div class='operation-btn-msg'>
         <el-button>返回</el-button>
-        <el-button type="primary" style='background: #0785FD;'>确认发布</el-button>
+        <el-button style='background: #0785FD;color:#fff'>确认发布</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
+export default {
+  data () {
+    return {
+      status: '' // 添加或修改消息
+    }
+  },
+  mounted () {
+    console.log(this.$route.params.status)
+    if (this.$route.params.status === 'add') {
+      this.status = '添加消息';
+    } else if (this.$route.params.status === 'modify') {
+      this.status = '修改消息';
+    }
+  },
+  methods: {
+
+  }
+}
 </script>
 <style lang="scss">
   .add-msg-person {

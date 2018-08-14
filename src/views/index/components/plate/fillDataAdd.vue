@@ -9,10 +9,10 @@
       <div>
         <el-form :inline="true" :model="dataForm" class="demo-form-inline" ref='dataForm' :rules='rules' size="small">
           <el-form-item label="版块名称" prop='plateName'>
-            <el-input v-model="dataForm.plateName" placeholder="必填" maxlength='20'></el-input>
+            <el-input v-model="dataForm.plateName" placeholder="必填" :maxlength='maxlength' @change='changePlateName($event)'></el-input>
           </el-form-item>
           <el-form-item label="注释" prop='remark'>
-            <el-input v-model="dataForm.remark" placeholder="选填" maxlength='20'></el-input>
+            <el-input v-model="dataForm.remark" placeholder="选填" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
         <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
@@ -24,9 +24,40 @@
               <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
               <span v-show='false'>{{configCount = info.configCount}}</span>
               <span v-show='false'>{{plateAreaId[info.serialNumber] = info.plateAreaId}}</span>
+              <div class="ecl2-cr-list">
+                <table class="plate-table" style="width: 100%;">
+                  <thead>
+                  <tr>
+                    <th>项</th>
+                    <th>值</th>
+                    <th>单位</th>
+                    <th>同比值(%)</th>
+                  </tr>
+                  </thead>
+                  <template v-if='info.configCount !== 0'>
+                    <tbody v-for='(item, index) in info.configCount' :key='index'>
+                      <tr>
+                        <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td>
+                          <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
+                        </td>
+                        <td><input type="number" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </template>
+                </table>
+              </div>
+            </div>
+          </template>
+          <template v-if="info.areaDataType === 6">
+            <div style="margin-top:3%;">
+              <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+              <span v-show='false'>{{configCount = info.configCount}}</span>
+              <span v-show='false'>{{plateAreaId[info.serialNumber] = info.plateAreaId}}</span>
               <div v-show="$store.state.typeArr.length > 0">
                 <span>关联图表主项数：</span>
-                <el-select v-model="value[info.serialNumber]" placeholder="请选择" @change='changeRelation($event, info.serialNumber)'>
+                <el-select v-model="value" placeholder="请选择" @change='changeRelation($event, info.serialNumber)'>
                   <el-option
                     :value="noRelation"
                   >
@@ -38,26 +69,27 @@
                   >
                   </el-option>
                 </el-select>
+                <i class='el-icon-question' style='color: #F8560F;font-size:20px' title='关联后基础数据项行数和图标数据数据主项行数一致'></i>
               </div>
               <div class="ecl2-cr-list">
                 <table class="plate-table" style="width: 100%;">
                   <thead>
                   <tr>
-                    <th style='border-left: 1px solid #DDDDDD'>项</th>
+                    <th>项</th>
                     <th>值</th>
                     <th>单位</th>
-                    <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                    <th>同比值(%)</th>
                   </tr>
                   </thead>
                   <template v-if='info.configCount !== 0'>
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
                         <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
                           <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="text" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -69,13 +101,14 @@
             <template v-if="info.areaDataType === 3">
               <div style="margin-top:5%;">
                 <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{maxNumber = info.subMaxCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>主项名称</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -110,11 +143,11 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in childDataListThree" :key="'item'+index">
@@ -124,7 +157,7 @@
                           <td>
                             合计(<input type="text" v-model="item.contentName" placeholder='请填写'>)
                           </td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                           <td></td>
                           <td>
                             <el-switch
@@ -144,16 +177,16 @@
                             <input type="text" v-model="item.valueUnit" class='childUnitThree' placeholder='请填写'>
                           </td>
                           <td>
-                            <template v-if='childCheckBox === true'>
+                            <template v-if='childDataListThree.length === 1'>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
-                                @change="changeGrapFlagThree($event, index)"
+                                disabled
                               />
                             </template>
                             <template v-else>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
-                                disabled
+                                @change="changeGrapFlagThree($event, index)"
                               />
                             </template>
                           </td>
@@ -203,24 +236,24 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>浮层并列项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                      <th>单位</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, index) in layerDataListThree" :key="'item'+index">
                       <template v-if='item.isMerge === true'>
                         <tr class='mergetr'>
-                          <td>合计（{{childDataListThree[index].contentName}}）</td>
+                          <td class='cannot-modify'>合计（{{childDataListThree[index].contentName}}）</td>
                           <td>
                             合计(<input type="text" v-model="item.contentName" placeholder='请填写'>)
                           </td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                         </tr>
                       </template>
                       <template v-else>
                         <tr>
-                          <td>{{childDataListThree[index].contentName}}</td>
+                          <td class='cannot-modify'>{{childDataListThree[index].contentName}}</td>
                           <td>
                             <input type="text" v-model="item.contentName" placeholder='请填写'>
                           </td>
@@ -235,7 +268,7 @@
                     <template v-if='checkBoxThree === true'>
                       <el-checkbox
                         v-model="checkedLayerMerge"
-                        @change="changeLayerMerge"
+                        @change="changeLayerMerge($event, info.subMaxCount)"
                       >
                         添加浮层子项合计项
                       </el-checkbox>
@@ -256,9 +289,9 @@
                   <table class="plate-table" style="width: 100%;" cellpadding="1" cellspacing="1">
                     <thead>
                       <tr>
-                        <th rowspan='2' style='border-left: 1px solid #DDDDDD;border-right: 1px solid #DDDDDD'>主项</th>
-                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:0'>子项</th>
-                        <th colspan='3' style='text-align: center;border-right: 1px solid #DDDDDD;borde-bottom:0'>浮层并列项</th>
+                        <th rowspan='2' style='border-right: 1px solid #DDDDDD'>主项</th>
+                        <th colspan='3' style='border-right: 1px solid #DDDDDD;text-align: center;border-bottom:1px solid #ddd'>子项</th>
+                        <th colspan='3' style='text-align: center;border-bottom:1px solid #ddd'>浮层并列项</th>
                       </tr>
                       <tr>
                         <th>子项名称</th>
@@ -266,7 +299,7 @@
                         <th style='border-right: 1px solid #DDDDDD'>单位</th>
                         <th>浮层并列项名称</th>
                         <th>值</th>
-                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                        <th>单位</th>
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -283,13 +316,13 @@
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                         <template v-else>
-                          <td>{{items.itemName}}</td>
-                          <td>{{list.contentName}}</td>
-                          <td><input type="text" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
-                          <td>{{list.valueUnit}}</td>
-                          <td>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
-                          <td>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td class='cannot-modify'>{{list.contentName}}</td>
+                          <td><input type="number" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{list.valueUnit}}</td>
+                          <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].contentName}}</td>
+                          <td><input type="number" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
                         </template>
                       </tr>
                     </tbody>
@@ -300,13 +333,14 @@
             <template v-if="info.areaDataType === 2">
               <div style="margin-top:5%;">
                 <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <span v-show='false'>{{maxNumber = info.subMaxCount}}</span>
                 <div class="ecl2-cr-list">
                   <p class="list-title">第一步：添加主项</p>
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项名称</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>主项名称</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -345,18 +379,18 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>子项名称</th>
+                      <th>子项名称</th>
                       <th>单位</th>
                       <th>直接显示</th>
                       <th>浮层显示</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody v-for="(item, idx) in childDataListTwo" :key="'item'+idx">
                       <template v-if="item.isMerge === true">
                         <tr class='mergetr'>
                           <td>合计(<input v-model='item.contentName' type='text' style="padding-left:3%;" placeholder='请填写' />)</td>
-                          <td>{{item.valueUnit}}</td>
+                          <td class='cannot-modify'>{{item.valueUnit}}</td>
                           <td></td>
                           <td>
                             <el-switch
@@ -373,16 +407,23 @@
                           <td><input type="text" v-model="item.contentName" placeholder='请填写'></td>
                           <td><input type="text" v-model="item.valueUnit" class='valueUnit' placeholder='请填写'></td>
                           <td>
-                            <template v-if='isCheckBox === true'>
+                            <!-- <template v-if='isCheckBox === true'> -->
+                            <template v-if="$store.state.plateInfo.configCode === 'plate015' || $store.state.plateInfo.configCode === 'plate041'">
                               <el-switch
                                 v-model="item.graphicFieldFlag"
-                                @change="changeGrapFlag($event, idx)"
+                                disabled
+                              />
+                            </template>
+                            <template v-else-if='childDataListTwo.length === 1'>
+                              <el-switch
+                                v-model="item.graphicFieldFlag"
+                                disabled
                               />
                             </template>
                             <template v-else>
                               <el-switch
                                 v-model="item.graphicFieldFlag"
-                                disabled
+                                @change="changeGrapFlag($event, idx)"
                               />
                             </template>
                           </td>
@@ -398,7 +439,7 @@
                                 <img
                                   :src='reduceImg'
                                   style="cursor: pointer;"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
+                                  @click="deleteContentListTwo(item.contentName, idx, info.subMaxCount)"
                                 />
                               </template>
                             </template>
@@ -407,7 +448,7 @@
                                 <img
                                   :src='reduceImg'
                                   style="cursor: pointer;"
-                                  @click="deleteContentListTwo(item.contentName, idx)"
+                                  @click="deleteContentListTwo(item.contentName, idx, info.subMaxCount)"
                                 />
                               </template>
                             </template>
@@ -432,7 +473,7 @@
                     <div class="checkbox">
                       <el-checkbox
                         v-model="checkedMerge"
-                        @change="changeMerge"
+                        @change="changeMerge($event, info.subMaxCount)"
                       >
                         添加浮层合计项
                       </el-checkbox>
@@ -455,10 +496,10 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>主项</th>
+                      <th>主项</th>
                       <th>子项</th>
                       <th>值</th>
-                      <th style='border-right: 1px solid #DDDDDD'>单位</th>
+                      <th>单位</th>
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -467,16 +508,16 @@
                       <tr v-for="(value,idx) in item.contentSubItemList" :key="'value'+idx">
                         <span v-show='false'>{{value.serialNumber = parseInt(idx+1)}}</span>
                         <template v-if='value.isMerge === false'>
-                          <td>{{item.itemName}}</td>
-                          <td>{{value.contentName}}</td>
+                          <td class='cannot-modify'>{{item.itemName}}</td>
+                          <td class='cannot-modify'>{{value.contentName}}</td>
                           <td>
                             <input
-                              type="text"
+                              type="number"
                               v-model="numberObj[index + '_' + idx]"
                               placeholder='请填写'
                             >
                           </td>
-                          <td>{{value.valueUnit}}</td>
+                          <td class='cannot-modify'>{{value.valueUnit}}</td>
                         </template>
                         <template v-else>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
@@ -498,9 +539,9 @@
                   <table class="plate-table" style="width: 100%;">
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>单位</th>
-                      <th style='border-right: 1px solid #DDDDDD'>操作</th>
+                      <th>操作</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -539,17 +580,81 @@
                   <table class="plate-table" style="width: 100%;" >
                     <thead>
                     <tr>
-                      <th style='border-left: 1px solid #DDDDDD'>项名称</th>
+                      <th>项名称</th>
                       <th>值</th>
-                      <th style='border-right: 1px solid #DDDDDD'>同比值(%)</th>
+                      <th>同比值(%)</th>
                     </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
                       <tr>
                         <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                        <td>{{items.itemName}}</td>
+                        <td class='cannot-modify'>{{items.itemName}}</td>
                         <td><input type="text" v-model="valueContentFour[index]" placeholder='请填写'></td>
-                        <td><input type="text" v-model="percentValue[index]" placeholder='请填写'></td>
+                        <td><input type="number" v-model="percentValue[index]" placeholder='请填写'></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </template>
+             <template v-if="info.areaDataType === 5">
+              <div style="margin-top:5%;">
+                <h2 style='font-weight: bold'>位置{{info.serialNumber}}</h2>
+                <div class="ecl2-cr-list">
+                  <p class="list-title">第一步：添加项</p>
+                  <table class="plate-table" style="width: 100%;">
+                    <thead>
+                    <tr>
+                      <th>项名称</th>
+                      <th>单位</th>
+                      <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(item, index) in parentDataListFour" :key="'item'+index">
+                        <td>
+                          <input type="text" v-model="item.itemName" placeholder='请填写'>
+                        </td>
+                        <td>
+                          <input type="text" v-model="childDataListFour[index].valueUnit" placeholder='请填写'>
+                        </td>
+                        <td width='15%'>
+                          <template v-if="parentDataListFour.length > 1">
+                            <img
+                              :src='reduceImg'
+                              style="cursor: pointer;"
+                              @click="deleteChildDataListFour(item.itemName, index)"
+                            />
+                          </template>
+                          <template v-if='isActiveParent === index'>
+                            <img
+                              :src="addImg"
+                              style="cursor: pointer;"
+                              @click="addChildDataListFour(item.itemName, childDataListFour[index].valueUnit, index, info.mainMaxCount)"
+                            />
+                          </template>
+                          <template v-else>
+                            <img :src="unactiveImg" />
+                          </template>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="ecl2-cr-list" style="margin-top: 40px;">
+                  <p class="list-title">第二步：添加数值</p>
+                  <table class="plate-table" style="width: 100%;" >
+                    <thead>
+                      <tr>
+                        <th style='width:50%'>项名称</th>
+                        <th>值</th>
+                      </tr>
+                    </thead>
+                    <tbody v-for="(items, index) in contentItemListFour" :key="'items'+index">
+                      <tr>
+                        <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
+                        <td class='cannot-modify'>{{items.itemName}}</td>
+                        <td><input type="number" v-model="valueContentFour[index]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </table>
@@ -565,7 +670,10 @@
   <div class="plate-ecl-b">
     <span style='color:red;float:left;margin-left:5%'>{{tip}}</span>
     <el-button id='preBtn' @click.native="preStep">&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
-    <el-button @click.native="nextStep('dataForm')" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button
+      @click.native="nextStep('dataForm')"
+      type="primary" class='selectBtn'
+      :disabled='submitDisabled' :style="[submitDisabled === true ? styleObj : '']">&nbsp;&nbsp;&nbsp;&nbsp;完成&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
 </template>
@@ -576,6 +684,12 @@ export default {
   data () {
     return {
       typeArr: [],
+      maxlength: 20,
+      maxNumber: '', // 子项的最大项
+      styleObj: {
+        background: '#ddd'
+      },
+      submitDisabled: true,
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
@@ -606,7 +720,7 @@ export default {
       checkBoxTip: '单位不能为空，请先填写单位', // 浮层合并项提示语
       percentValue: [], // 类型四的同比值
       percentValueOne: {}, // 类型一的同比值
-      value: [],
+      value: '不关联',
       dataForm: {
         plateName: '',
         remark: ''
@@ -624,7 +738,8 @@ export default {
         plateType: 1,
         plateId: '',
         remark: '',
-        contentItemList: []
+        contentItemList: [],
+        areaRelationList: []
       }],
       parentDataListTwo: [{
         itemName: '',
@@ -741,16 +856,25 @@ export default {
     },
     numberObj: {
       handler: function (newVal) {
-        for (let i in newVal) {
-          let str = i.split('_');
-          if (newVal[i] !== undefined) {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = newVal[i];
-            });
-          } else {
-            this.contentItemListTwo.map((items, index) => {
-              items.contentSubItemList[parseInt(str[1])].valueContent = '';
-            });
+        if (newVal) {
+          const parentLength = this.parentDataListTwo.length; // 获取主项的长度
+          const childLength = this.childDataListTwo.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListTwo[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedMerge === true) {
+              if (childResult === 0) {
+                this.contentItemListTwo[i].contentSubItemList[childLength - 1].valueContent = '';
+              } else {
+                this.contentItemListTwo[i].contentSubItemList[childLength - 1].valueContent = childResult;
+              }
+            }
           }
         }
       },
@@ -790,16 +914,22 @@ export default {
       handler: function (newVal) {
         this.contentItemListFour.map((items, index) => {
           items.contentSubItemList.map((item, idx) => {
-            item.contentName = this.childDataListFour[idx].contentName;
-            item.valueUnit = this.childDataListFour[idx].valueUnit;
-            item.valueContent = this.childDataListFour[idx].valueContent;
+            if (item.valueUnit !== this.childDataListFour[index].valueUnit) {
+              this.childDataListFour.map((value) => {
+                value.valueUnit = this.childDataListFour[index].valueUnit;
+              });
+            }
+            item.contentName = this.childDataListFour[index].contentName;
+            item.valueUnit = this.childDataListFour[index].valueUnit;
+            item.valueContent = this.childDataListFour[index].valueContent;
           });
         });
       },
       deep: true
     },
     childDataListTwo: { // 监听类型二的子项
-      handler: function (newVal, oldVal) {
+      handler: function (newVal) {
+        let result = [];
         let unitArr = [];
         newVal.map((item, index) => {
           unitArr.push(item.valueUnit);
@@ -808,23 +938,44 @@ export default {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {
               const length = unitArr.length;
-              const result = unitArr.every((value, index, unitArr) => {
+              const resultArr = unitArr.every((value, index, unitArr) => {
                 return value === unitArr[length - 1];
               });
               if (item.isMerge === true) {
-                if (result === false) {
+                if (resultArr === false) {
                   this.checkedMerge = false; // 将浮层合并项设为未选中
                   this.childDataListTwo.splice(length - 1, 1);
                   items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
-                  items.contentSubItemList[idx].graphicFieldFlag = false; // 将直接显示设为false
-                  this.childDataListTwo[idx].graphicFieldFlag = false; // 将直接显示设为false
                   return;
                 }
               }
               item.contentName = this.childDataListTwo[idx].contentName;
               item.valueUnit = this.childDataListTwo[idx].valueUnit;
+              if (item.graphicFieldFlag === true) {
+                result = newVal.filter((value) => {
+                  return value.valueUnit === item.valueUnit;
+                });
+              }
             });
           }
+        });
+        if (result.length > 0) {
+          this.childDataListTwo.map((list, index) => {
+            if (list.graphicFieldFlag === true) {
+              result.map((item) => {
+                if (item.valueUnit === list.valueUnit) {
+                  list.graphicFieldFlag = true;
+                } else {
+                  list.graphicFieldFlag = false;
+                }
+              });
+            }
+          });
+        }
+        this.contentItemListTwo.map((items) => {
+          items.contentSubItemList.map((item, idx) => {
+            item.graphicFieldFlag = this.childDataListTwo[idx].graphicFieldFlag;
+          });
         });
         this.isCheckBox = this.judgeUnit();
       },
@@ -832,16 +983,40 @@ export default {
     },
     childDataListThree: { // 监听类型三的子项
       handler: function (newVal) {
+        let result = [];
         this.contentItemListThree.map((items, index) => {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {
               item.contentName = this.childDataListThree[idx].contentName;
               item.valueUnit = this.childDataListThree[idx].valueUnit;
+              if (item.graphicFieldFlag === true) {
+                result = newVal.filter((value) => {
+                  return value.valueUnit === item.valueUnit;
+                });
+              }
             });
           }
         });
+        if (result.length > 0) {
+          this.childDataListThree.map((value) => {
+            if (value.graphicFieldFlag === true) {
+              console.log(value)
+              result.map((item) => {
+                if (item.valueUnit === value.valueUnit) {
+                  value.graphicFieldFlag = true;
+                } else {
+                  value.graphicFieldFlag = false;
+                }
+              });
+            }
+          });
+        }
+        this.contentItemListThree.map((items) => {
+          items.contentSubItemList.map((item, idx) => {
+            item.graphicFieldFlag = this.childDataListThree[idx].graphicFieldFlag;
+          });
+        });
         this.checkBoxThree = this.judgeUnitThree(); // 判断所有的单位是否一致
-        this.childCheckBox = this.judgeUnitChild(); // 判断子项的单位是否一样
       },
       deep: true
     },
@@ -879,6 +1054,58 @@ export default {
         });
       },
       deep: true
+    },
+    numberObjThree: {
+      handler: function (newVal) {
+        if (newVal) {
+          const parentLength = this.parentDataListThree.length; // 获取主项的长度
+          const childLength = this.childDataListThree.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedLayerMerge === true) {
+              if (childResult === 0) {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].valueContent = '';
+              } else {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].valueContent = childResult;
+              }
+            }
+          }
+        }
+      },
+      deep: true
+    },
+    numberLayerObjThree: {
+      handler: function (newVal) {
+        if (newVal) {
+          const parentLength = this.parentDataListThree.length; // 获取主项的长度
+          const childLength = this.childDataListThree.length; // 获取子项的长度
+          for (let i = 0; i < parentLength; i++) {
+            let layerResult = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (newVal[i + '_' + j] !== undefined && newVal[i + '_' + j] !== '') {
+                  layerResult = parseInt(layerResult + parseInt(newVal[i + '_' + j]));
+                }
+              }
+            }
+            if (this.checkedLayerMerge === true) {
+              if (layerResult === 0) {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].contnetSubItemExtendList[0].valueContent = '';
+              } else {
+                this.contentItemListThree[i].contentSubItemList[childLength - 1].contnetSubItemExtendList[0].valueContent = layerResult;
+              }
+            }
+          }
+        }
+      },
+      deep: true
     }
   },
   methods: {
@@ -893,62 +1120,43 @@ export default {
     },
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
-      let numberThree = [], numberLayerThree = [], numberTwo = [], numberFour = [];
+      let threeObj = JSON.parse(JSON.stringify(this.contentItemListThree));
+      let twoObj = JSON.parse(JSON.stringify(this.contentItemListTwo));
+      let fourObj = JSON.parse(JSON.stringify(this.contentItemListFour));
       for (let i in this.numberObjThree) {
-        numberThree.push(this.numberObjThree[i]);
+        let str = i.split('_');
+        if (this.numberObjThree[i] !== undefined && this.numberObjThree[i] !== '') {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObjThree[i];
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = '';
+        }
       }
       for (let i in this.numberLayerObjThree) {
-        numberLayerThree.push(this.numberLayerObjThree[i]);
+        let str = i.split('_');
+        if (this.numberLayerObjThree[i] !== undefined && this.numberLayerObjThree[i] !== '') {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = this.numberLayerObjThree[i];
+        } else {
+          threeObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].contnetSubItemExtendList[0].valueContent = '';
+        }
       }
       for (let i in this.numberObj) {
-        numberTwo.push(this.numberObj[i]);
+        let str = i.split('_');
+        if (this.numberObj[i] !== undefined && this.numberObj[i] !== '') {
+          twoObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = this.numberObj[i];
+        } else {
+          twoObj[parseInt(str[0])].contentSubItemList[parseInt(str[1])].valueContent = '';
+        }
       }
       for (let i in this.valueContentFour) {
-        numberFour.push(this.valueContentFour[i]);
+        if (this.valueContentFour[i] !== undefined && this.valueContentFour[i] !== '') {
+          fourObj[parseInt(i)].contentSubItemList[0].valueContent = this.valueContentFour[i];
+        } else {
+          fourObj[parseInt(i)].contentSubItemList[0].valueContent = '';
+        }
       }
-      let obj = JSON.parse(JSON.stringify(this.contentItemListThree)); // 改变一下该数组的内存地址，防止其他地方的改变影响现在的操作
-      let objTwo = JSON.parse(JSON.stringify(this.contentItemListTwo));
-      let objFour = JSON.parse(JSON.stringify(this.contentItemListFour));
-      obj.map((items, index) => {
-        let length;
-        if (this.checkedLayerMerge === true) {
-          length = items.contentSubItemList.length - 1;
-        } else {
-          length = items.contentSubItemList.length;
-        }
-        const data = index * length;
-        const newArr = numberThree.slice(data, length * (index + 1));
-        const newLayerArr = numberLayerThree.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          if (item.sumFlag !== true) {
-            item.valueContent = newArr[idx];
-            item.contnetSubItemExtendList[0].valueContent = newLayerArr[idx];
-          }
-        });
-      });
-      objTwo.map((items, index) => {
-        let length;
-        if (this.checkedMerge === true) {
-          length = items.contentSubItemList.length - 1;
-        } else {
-          length = items.contentSubItemList.length;
-        }
-        const data = index * length;
-        const newArr = numberTwo.slice(data, length * (index + 1));
-        items.contentSubItemList.map((item, idx) => {
-          if (item.isMerge !== true) {
-            item.valueContent = newArr[idx];
-          }
-        });
-      });
-      objFour.map((items, index) => {
-        items.contentSubItemList.map((item, idx) => {
-          item.valueContent = numberFour[index];
-        });
-      });
-      this.contentItemListThree = obj;
-      this.contentItemListTwo = objTwo;
-      this.contentItemListFour = objFour;
+      this.contentItemListTwo = twoObj;
+      this.contentItemListThree = threeObj;
+      this.contentItemListFour = fourObj;
       this.contentItemListTwo.map((item) => {
         if (item.itemName !== '') {
           this.dataObjTwo[0].contentItemList.push(item);
@@ -1035,6 +1243,15 @@ export default {
           this.dataObjTwo[0].contentItemList.push(item);
         }
       });
+      if (this.value !== '不关联') {
+        const areaList = {
+          plateAreaId: this.parentDataListTwo[0].plateAreaId,
+          relationPlateAreaId: this.plateAreaId[2]
+        }
+        this.dataObjTwo[0].areaRelationList.push(areaList);
+      } else {
+        this.dataObjTwo[0].areaRelationList = [];
+      }
       this.dataObjTwo[0].positionId = this.dataList.positionId;
       this.dataObjTwo[0].pageId = this.dataList.pageId;
       this.dataObjTwo[0].jumpPageId = this.dataList.jumpPageId;
@@ -1072,6 +1289,7 @@ export default {
           }
         });
       }
+      // this.submitDisabled = true;
     },
     addparentDataTwo (name, idx, maxNumber) { // 类型二添加主项
       let arr = [];
@@ -1103,16 +1321,12 @@ export default {
       } else {
         this.tip = '请先填写主项';
       }
-      if (this.value.length > 0) {
-        for (let i = 0; i < this.value.length; i++) {
-          if (this.value[i] !== undefined && this.value[i] !== '不关联') {
-            this.$store.state.plateConfigInfo.map((item, index) => {
-              if (item.serialNumber === i) {
-                item.configCount = this.parentDataListTwo.length;
-              }
-            });
+      if (this.value !== '不关联') {
+        this.$store.state.plateConfigInfo.map((item, index) => {
+          if (item.serialNumber === 2) {
+            item.configCount = this.parentDataListTwo.length;
           }
-        }
+        });
       }
     },
     addparentDataThree (name, idx, maxNumber) { // 类型三添加主项
@@ -1175,7 +1389,7 @@ export default {
           const childData = {
             contentName: '',
             valueContent: '',
-            valueUnit: '',
+            valueUnit: this.childDataListFour[0].valueUnit,
             serialNumber: 1,
             graphicFieldFlag: false,
             supernatantFieldFlag: false,
@@ -1188,7 +1402,7 @@ export default {
             contentSubItemList: [{
               contentName: '',
               valueContent: '',
-              valueUnit: '',
+              valueUnit: this.childDataListFour[0].valueUnit,
               serialNumber: 1,
               graphicFieldFlag: false,
               supernatantFieldFlag: false,
@@ -1212,16 +1426,31 @@ export default {
       } else {
         if (this.childDataListTwo.length < maxNumber) {
           this.tip = '';
-          const data = {
-            contentName: '',
-            valueContent: '',
-            valueUnit: '',
-            serialNumber: this.childDataListTwo.length + 1,
-            graphicFieldFlag: false,
-            supernatantFieldFlag: false,
-            sumFlag: false,
-            contnetSubItemExtendList: [],
-            isMerge: false
+          let data;
+          if (this.$store.state.plateInfo.configCode === 'plate015' || this.$store.state.plateInfo.configCode === 'plate041') {
+            data = {
+              contentName: '',
+              valueContent: '',
+              valueUnit: '',
+              serialNumber: this.childDataListTwo.length + 1,
+              graphicFieldFlag: true,
+              supernatantFieldFlag: false,
+              sumFlag: false,
+              contnetSubItemExtendList: [],
+              isMerge: false
+            }
+          } else {
+            data = {
+              contentName: '',
+              valueContent: '',
+              valueUnit: '',
+              serialNumber: this.childDataListTwo.length + 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: false,
+              sumFlag: false,
+              contnetSubItemExtendList: [],
+              isMerge: false
+            }
           }
           if (this.checkedMerge === true) {
             this.checkedMerge = false; // 将浮层合并项的值设为false
@@ -1382,7 +1611,7 @@ export default {
       });
       this.isActiveParent = this.parentDataListFour.length - 1;
     },
-    deleteContentListTwo (name, idx) { // 类型二的删除子项
+    deleteContentListTwo (name, idx, maxNumber) { // 类型二的删除子项
       this.childDataListTwo.splice(idx, 1);
       this.contentItemListTwo.map((items, index) => {
         items.contentSubItemList.map((item, num) => {
@@ -1391,6 +1620,21 @@ export default {
           }
         });
       });
+      if (this.checkedMerge === true) {
+        if (this.childDataListTwo.length === 2) {
+          this.childDataListTwo[0].graphicFieldFlag = true;
+          this.contentItemListTwo.map((items, index) => {
+            items.contentSubItemList[0].graphicFieldFlag = true;
+          });
+        }
+      } else {
+        if (this.childDataListTwo.length === 1) {
+          this.childDataListTwo[0].graphicFieldFlag = true;
+          this.contentItemListTwo.map((items) => {
+            items.graphicFieldFlag = true;
+          });
+        }
+      }
       this.isActiveChild = this.childDataListTwo.length - 1;
     },
     deleteContentListThree (name, idx) { // 类型三的删除子项
@@ -1403,13 +1647,42 @@ export default {
           }
         });
       });
+      if (this.checkedLayerMerge === true) {
+        if (this.childDataListThree.length === 2) {
+          this.childDataListThree[0].graphicFieldFlag = true;
+          this.contentItemListThree.map((items, index) => {
+            this.contentSubItemList[0].graphicFieldFlag = true;
+          });
+        }
+      } else {
+        if (this.childDataListThree.length === 1) {
+          this.childDataListThree[0].graphicFieldFlag = true;
+          this.contentItemListThree.map((items) => {
+            items.graphicFieldFlag = true;
+          });
+        }
+      }
       this.isActiveChild = this.childDataListThree.length - 1;
     },
     changeGrapFlag (value, index) { // 类型二的改变直接显示的switch
-      this.childDataListTwo[index].graphicFieldFlag = value;
+      let checkResult = this.childDataListTwo.filter((value) => {
+        return value.valueUnit === this.childDataListTwo[index].valueUnit;
+      });
       this.contentItemListTwo.map((items) => {
         items.contentSubItemList[index].graphicFieldFlag = value;
+        // items.contentSubItemList.map((item, index) => {
+        //   if (checkResult.length > 0) {
+        //     checkResult.map((list) => {
+        //       if (item.graphicFieldFlag === true) {
+        //         if (list.valueUnit === item.valueUnit) {
+        //           item.graphicFieldFlag = value;
+        //         }
+        //       }
+        //     })
+        //   }
+        // });
       });
+      this.childDataListTwo[index].graphicFieldFlag = value;
     },
     changeSuperFlag (value, index) { // 类型二的改变浮层显示的switch
       this.childDataListTwo[index].supernatantFieldFlag = value;
@@ -1418,10 +1691,23 @@ export default {
       });
     },
     changeGrapFlagThree (value, index) { // 类型三的改变直接显示的switch
-      this.childDataListThree[index].graphicFieldFlag = value;
-      this.contentItemListThree.map((items) => {
-        items.contentSubItemList[index].graphicFieldFlag = value;
+      let checkResult = this.childDataListThree.filter((value) => {
+        return value.valueUnit === this.childDataListThree[index].valueUnit;
       });
+      this.contentItemListThree.map((items) => {
+        items.contentSubItemList.map((item, index) => {
+          if (checkResult.length > 0) {
+            checkResult.map((list) => {
+              if (item.graphicFieldFlag === true) {
+                if (list.valueUnit === item.valueUnit) {
+                  item.graphicFieldFlag = value;
+                }
+              }
+            })
+          }
+        });
+      });
+      this.childDataListThree[index].graphicFieldFlag = value;
     },
     changeSuperFlagThree (value, index) { // 类型三的改变浮层显示的switch
       this.childDataListThree[index].supernatantFieldFlag = value;
@@ -1429,195 +1715,176 @@ export default {
         items.contentSubItemList[index].supernatantFieldFlag = value;
       });
     },
-    changeMerge (value) { // 类型二的勾选合并项
-      let data;
-      const parentLength = this.parentDataListTwo.length; // 获取主项的长度
-      const childLength = this.childDataListTwo.length; // 获取子项的长度
-      if (value === true) {
-        for (let i = 0; i < parentLength; i++) {
-          let result = 0;
-          for (let j = 0; j < childLength; j++) {
-            if (this.childDataListTwo[j].supernatantFieldFlag === true) {
-              if (this.numberObj[i + '_' + j] !== undefined) {
-                result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
-              }
-              data = {
-                contentName: '',
-                valueContent: result,
-                valueUnit: this.childDataListTwo[0].valueUnit,
-                serialNumber: 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: true,
-                contnetSubItemExtendList: [],
-                isMerge: true
+    changeMerge (value, maxNumber) { // 类型二的勾选合并项
+      if (maxNumber > 1) {
+        let data;
+        const parentLength = this.parentDataListTwo.length; // 获取主项的长度
+        const childLength = this.childDataListTwo.length; // 获取子项的长度
+        if (value === true) {
+          for (let i = 0; i < parentLength; i++) {
+            let result = 0;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListTwo[j].supernatantFieldFlag === true) {
+                if (this.numberObj[i + '_' + j] !== undefined || this.numberObj[i + '_' + j] !== '') {
+                  result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
+                }
+                if (result === 0) {
+                  result = '';
+                }
+                data = {
+                  contentName: '',
+                  valueContent: result,
+                  valueUnit: this.childDataListTwo[0].valueUnit,
+                  serialNumber: 1,
+                  graphicFieldFlag: false,
+                  supernatantFieldFlag: true,
+                  sumFlag: true,
+                  contnetSubItemExtendList: [],
+                  isMerge: true
+                }
               }
             }
+            this.contentItemListTwo[i].contentSubItemList.push(data);
           }
-          this.contentItemListTwo[i].contentSubItemList.push(data);
+          this.childDataListTwo.push(data);
+        } else {
+          const childLength = this.childDataListTwo.length;
+          this.childDataListTwo.splice(childLength - 1, 1);
+          this.contentItemListTwo.map((items, index) => {
+            const length = items.contentSubItemList.length;
+            items.contentSubItemList.splice(length - 1, 1);
+          });
         }
-        this.childDataListTwo.push(data);
-      } else {
-        const childLength = this.childDataListTwo.length;
-        this.childDataListTwo.splice(childLength - 1, 1);
-        this.contentItemListTwo.map((items, index) => {
-          const length = items.contentSubItemList.length;
-          items.contentSubItemList.splice(length - 1, 1);
-        });
       }
     },
-    changeLayerMerge (value) { // 类型三的勾选浮层合并项
-      const parentLength = this.parentDataListThree.length; // 获取主项的长度
-      const childLength = this.childDataListThree.length; // 获取子项的长度
-      let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
-      if (value === true) {
-        for (let i = 0; i < parentLength; i++) {
-          let childResult = 0, layerResult = 0, data;
-          for (let j = 0; j < childLength; j++) {
-            if (this.childDataListThree[j].supernatantFieldFlag === true) {
-              if (this.numberObjThree[i + '_' + j] !== undefined) {
-                childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
-              }
-              if (this.numberLayerObjThree[j] !== '') {
-                layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[i + '_' + j]));
+    changeLayerMerge (value, maxNumber) { // 类型三的勾选浮层合并项
+      if (maxNumber > 1) {
+        const parentLength = this.parentDataListThree.length; // 获取主项的长度
+        const childLength = this.childDataListThree.length; // 获取子项的长度
+        let childData, layerData, layerArr = [], childResult = 0, layerResult = 0;
+        if (value === true) {
+          for (let i = 0; i < parentLength; i++) {
+            let childResult = 0, layerResult = 0, data;
+            for (let j = 0; j < childLength; j++) {
+              if (this.childDataListThree[j].supernatantFieldFlag === true) {
+                if (this.numberObjThree[i + '_' + j] !== undefined && this.numberObjThree[i + '_' + j] !== '') {
+                  childResult = parseInt(childResult + parseInt(this.numberObjThree[i + '_' + j]));
+                }
+                if (this.numberLayerObjThree[i + '_' + j] !== undefined && this.numberLayerObjThree[i + '_' + j] !== '') {
+                  layerResult = parseInt(layerResult + parseInt(this.numberLayerObjThree[i + '_' + j]));
+                }
               }
             }
-          }
-          childData = {
-            contentName: '',
-            valueContent: childResult,
-            valueUnit: this.childDataListThree[0].valueUnit,
-            serialNumber: this.childDataListThree.length + 1,
-            graphicFieldFlag: false,
-            supernatantFieldFlag: true,
-            sumFlag: true,
-            isMerge: true
-          };
-          layerData = {
-            contentName: '',
-            valueContent: layerResult,
-            valueUnit: this.layerDataListThree[0].valueUnit,
-            serialNumber: 1,
-            isMerge: true
-          };
-          data = {
-            contentName: '',
-            valueContent: childResult,
-            valueUnit: this.childDataListThree[0].valueUnit,
-            serialNumber: this.childDataListThree.length + 1,
-            graphicFieldFlag: false,
-            supernatantFieldFlag: true,
-            sumFlag: true,
-            isMerge: true,
-            contnetSubItemExtendList: [{
+            if (childResult === 0) {
+              childResult = '';
+            }
+            if (layerResult === 0) {
+              layerResult = '';
+            }
+            childData = {
+              contentName: '',
+              valueContent: childResult,
+              valueUnit: this.childDataListThree[0].valueUnit,
+              serialNumber: this.childDataListThree.length + 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              isMerge: true
+            };
+            layerData = {
               contentName: '',
               valueContent: layerResult,
               valueUnit: this.layerDataListThree[0].valueUnit,
               serialNumber: 1,
               isMerge: true
-            }]
+            };
+            data = {
+              contentName: '',
+              valueContent: childResult,
+              valueUnit: this.childDataListThree[0].valueUnit,
+              serialNumber: this.childDataListThree.length + 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              isMerge: true,
+              contnetSubItemExtendList: [{
+                contentName: '',
+                valueContent: layerResult,
+                valueUnit: this.layerDataListThree[0].valueUnit,
+                serialNumber: 1,
+                isMerge: true
+              }]
+            }
+            this.contentItemListThree[i].contentSubItemList.push(data);
           }
-          this.contentItemListThree[i].contentSubItemList.push(data);
+          this.childDataListThree.push(childData);
+          this.layerDataListThree.push(layerData);
+        } else {
+          this.childDataListThree.splice(childLength - 1, 1);
+          this.layerDataListThree.splice(childLength - 1, 1);
+          this.contentItemListThree.map((item) => {
+            item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
+          });
         }
-        this.childDataListThree.push(childData);
-        this.layerDataListThree.push(layerData);
-      } else {
-        this.childDataListThree.splice(childLength - 1, 1);
-        this.layerDataListThree.splice(childLength - 1, 1);
-        this.contentItemListThree.map((item) => {
-          item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
-        });
       }
     },
     judgeUnit () { // 类型二的判断单位是否为空或不一样
-      let valueArr = [];
-      let result;
-      const valueUnit = document.getElementsByClassName('valueUnit'); // 获取子项所有的单位
-      for (let i = 0; i < valueUnit.length; i++) {
-        valueArr.push(valueUnit[i].value);
-      }
-      if (valueArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        result = valueArr.every((value, index, valueArr) => {
-          return value === valueArr[0];
-        });
-        if (result === false) {
-          this.checkBoxTip = '单位不一致';
-          this.contentItemListTwo.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListTwo[idx].graphicFieldFlag = false;
-            });
-          });
+      if (this.maxNumber > 1) {
+        let valueArr = [];
+        let result;
+        for (let i = 0; i < this.childDataListTwo.length; i++) {
+          valueArr.push(this.childDataListTwo[i].valueUnit);
         }
+        if (valueArr.indexOf('') === -1) {
+          this.checkBoxTip = '';
+          result = valueArr.every((value, index, valueArr) => {
+            return value === valueArr[0];
+          });
+          if (result === false) {
+            this.checkBoxTip = '单位不一致';
+          }
+        } else {
+          this.checkBoxTip = '单位不能为空，请先填写单位';
+          return false;
+        }
+        return result;
       } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
+        this.checkBoxTip = '只有一项子项，不能勾选';
         return false;
       }
-      return result;
-    },
-    judgeUnitChild () { // 类型三的判断子项的单位是否为空或不一样
-      let valueArr = [];
-      let result;
-      const valueUnit = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      for (let i = 0; i < valueUnit.length; i++) {
-        valueArr.push(valueUnit[i].value);
-      }
-      if (valueArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        result = valueArr.every((value, index, valueArr) => {
-          return value === valueArr[0];
-        });
-        if (result === false) {
-          this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
-          });
-        }
-      } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
-        return false;
-      }
-      return result;
     },
     judgeUnitThree () { // 类型三的判断单位是否为空或不一样
-      let childUnitArr = [], layerUnitArr = [];
-      let childResult, layerResult;
-      const childUnitThree = document.getElementsByClassName('childUnitThree'); // 获取子项所有的单位
-      const layerUnitThree = document.getElementsByClassName('layerUnitThree'); // 获取浮层所有的单位
-      for (let i = 0; i < childUnitThree.length; i++) {
-        childUnitArr.push(childUnitThree[i].value);
-      }
-      for (let i = 0; i < layerUnitThree.length; i++) {
-        layerUnitArr.push(layerUnitThree[i].value);
-      }
-      if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
-        this.checkBoxTip = '';
-        childResult = childUnitArr.every((value, index, childUnitArr) => {
-          return value === childUnitArr[0];
-        });
-        layerResult = layerUnitArr.every((value, index, layerUnitArr) => {
-          return value === layerUnitArr[0];
-        });
-        if (childResult === false || layerResult === false) {
-          this.checkBoxTip = '单位不一致';
-          this.contentItemListThree.map((items, index) => {
-            items.contentSubItemList.map((item, idx) => {
-              items.contentSubItemList[idx].graphicFieldFlag = false;
-              this.childDataListThree[idx].graphicFieldFlag = false;
-            });
+      if (this.maxNumber > 1) {
+        let childUnitArr = [], layerUnitArr = [];
+        let childResult, layerResult;
+        for (let i = 0; i < this.childDataListThree.length; i++) {
+          childUnitArr.push(this.childDataListThree[i].valueUnit);
+        }
+        for (let i = 0; i < this.layerDataListThree.length; i++) {
+          layerUnitArr.push(this.layerDataListThree[i].valueUnit);
+        }
+        if (childUnitArr.indexOf('') === -1 && layerUnitArr.indexOf('') === -1) {
+          this.checkBoxTip = '';
+          childResult = childUnitArr.every((value, index, childUnitArr) => {
+            return value === childUnitArr[0];
           });
+          layerResult = layerUnitArr.every((value, index, layerUnitArr) => {
+            return value === layerUnitArr[0];
+          });
+          if (childResult === false || layerResult === false) {
+            this.checkBoxTip = '单位不一致';
+          }
+        } else {
+          this.checkBoxTip = '单位不能为空，请先填写单位';
+          return false;
+        }
+        if (childResult && layerResult) {
+          return true;
+        } else {
+          return false;
         }
       } else {
-        this.checkBoxTip = '单位不能为空，请先填写单位';
-        return false;
-      }
-      if (childResult && layerResult) {
-        return true;
-      } else {
+        this.checkBoxTip = '只有一项子项，不能勾选';
         return false;
       }
     },
@@ -1639,13 +1906,14 @@ export default {
               item.configCount = this.parentDataListTwo.length;
             }
           });
-        } else if (obj.areaDataType === 3) {
-          this.$store.state.plateConfigInfo.map((item, index) => {
-            if (item.serialNumber === number) {
-              item.configCount = this.parentDataListThree.length;
-            }
-          });
         }
+      }
+    },
+    changePlateName (value) {
+      if (value) {
+        this.submitDisabled = false;
+      } else {
+        this.submitDisabled = true;
       }
     }
   }
@@ -1654,6 +1922,9 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .cannot-modify {
+    background: #eee;
   }
   .selectBtn {
     background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */

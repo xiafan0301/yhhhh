@@ -4,14 +4,14 @@
       <el-breadcrumb>
         <el-breadcrumb-item>
           <span style="color:#0785FD;font-size:14px;">版块管理</span>
-          <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i>
+          <!-- <i class='el-icon-arrow-right' style="color:#0785FD;font-size:14px;font-weight: bold"></i> -->
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item label="筛选查找">
-          <el-select v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;">
+          <el-select v-model="searchForm.pageId" placeholder="选择页面" style="width: 200px;" @change='handleChange'>
             <el-option  v-for="(item, index) in pageList" :label="item.pageName" :value="item.pageId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
@@ -31,7 +31,7 @@
             {{scope.row.serialNumber | filterPagePosition}}
           </template>
         </el-table-column>
-        <el-table-column prop="configCode" label="样式编码" min-width="180"></el-table-column>
+        <el-table-column prop="configCode" label="示图编码" min-width="180"></el-table-column>
         <el-table-column prop="pageName" label="所属页面" min-width="120" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -98,6 +98,9 @@ export default {
           this.pageList = res.data.list;
         })
         .catch(() => {});
+    },
+    handleChange (value) {
+      this.searchForm.pageId = value;
     },
     searchFormSubmit () {
       this.pager.pageNum = 1;

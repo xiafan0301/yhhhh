@@ -8,7 +8,7 @@
     </div>
     <div class='add-body'>
       <div class='add-form'>
-        <el-form class='form-content'>
+        <el-form class='form-content' inline-message :model='addForm' :rules='rules' ref='addForm'>
           <el-form-item label="上报人手机号" label-width='150px'>
             <el-input style='width: 500px' placeholder='请输入手机号'></el-input>
           </el-form-item>
@@ -61,14 +61,44 @@
         </el-form>
       </div>
       <div class='operation-btn'>
-        <el-button>返回</el-button>
-        <el-button>保存</el-button>
-        <el-button type="primary" style='background: #0785FD'>去调度指挥</el-button>
+        <el-button @click='back'>返回</el-button>
+        <el-button style='background: #0785FD;color:#fff'>保存</el-button>
+        <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
+import {valiPhone} from '@/utils/validator.js';
+export default {
+  data () {
+    return {
+      addForm: {
+        reporterPhone: '',
+        reportTime: '',
+        eventAddress: '',
+        eventDetail: '',
+        eventType: '',
+        eventLevel: '',
+        casualties: '',
+        flagType: '' // 事件性质
+      },
+      rules: {
+        reporterPhone: [
+          {required: true, message: '请输入手机号', trigger: 'blur'}
+        ]
+      }
+    }
+  },
+  methods: {
+    skipCtcDetail () { // 跳到调度指挥方案制定页面
+      this.$router.push({name: 'ctc-detail'});
+    },
+    back () {
+      this.$router.back(-1);
+    }
+  }
+}
 </script>
 <style lang="scss">
   .addEvent {
