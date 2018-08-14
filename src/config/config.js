@@ -46,7 +46,7 @@ if (process.env.NODE_ENV === 'production') {
 } else if (process.env.NODE_ENV === 'development') {
   sENV = 'dev';
 }
-console.log('environment', sENV)
+console.log('environment', sENV);
 // ajax default
 export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 // 文件上传地址

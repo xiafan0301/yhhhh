@@ -67,12 +67,12 @@ export default {
             {
               id: '3-1',
               name: '预案管理',
-              url: ''
+              url: '/emergency/planList'
             },
             {
               id: '3-2',
               name: '物资管理',
-              url: ''
+              url: '/emergency/materialList'
             }
           ]
         },

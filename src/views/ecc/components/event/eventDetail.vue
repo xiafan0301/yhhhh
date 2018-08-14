@@ -94,7 +94,7 @@
           <p class='event-progress-text'>事件进展</p>
         </div>
         <div class='event-progress-body'>
-          
+
         </div>
       </div>
       <div class='event-summary'>
@@ -123,7 +123,7 @@
   </div>
 </template>
 <<script>
-  
+
 </script>
 <style lang='scss' scoped>
   .event-detail {
@@ -162,7 +162,7 @@
             font-size: 14px;
             margin-left: 2%;
           }
-          
+
         }
         .event-status {
           color: #fff;

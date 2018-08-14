@@ -2,36 +2,27 @@
   <div class="ba-not">
     <div style="padding-bottom: 20px; position: relative">
       <el-breadcrumb separator="/">
-        <el-breadcrumb-item>消息管理</el-breadcrumb-item>
-        <el-breadcrumb-item>系统消息</el-breadcrumb-item>
+        <el-breadcrumb-item>应急库</el-breadcrumb-item>
+        <el-breadcrumb-item>预案管理</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">添加预案</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
-      <el-form style="float: left; margin-left: 20px; padding-top: 20px"  :inline="true" :model="searchForm" class="demo-form-inline" size="small">
+      <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
+            <el-option label="预案类型" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
+            <el-option label="适用事件等级" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
-            <el-option label="可用" :value="1"></el-option>
-            <el-option label="异常" :value="2"></el-option>
-          </el-select>
+          <el-input v-model="searchForm.deviceStatus" placeholder="搜索预案名称..." style="width: 220px" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
@@ -44,14 +35,15 @@
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column prop="deviceName" label="序号" width="50" :show-overflow-tooltip="true" type="index"></el-table-column>
-      <el-table-column prop="protocolType" label="消息类型" width="100">
+      <el-table-column prop="protocolType" label="预案名称" min-width="100">
         <template slot-scope="scope">
           <span v-if="scope.row.protocolType == 1">http</span>
           <span v-else-if="scope.row.deviceStatus == 2">https</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deviceIp" label="内容" min-width="140"></el-table-column>
-      <el-table-column prop="streamType" label="发布用户" width="100">
+      <el-table-column prop="deviceIp" label="预案类型" min-width="140"></el-table-column>
+      <el-table-column prop="channelId" label="适用事件等级" min-width="100"></el-table-column>
+      <el-table-column prop="streamType" label="创建用户" width="100">
         <template slot-scope="scope">
           <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
           <span v-if="scope.row.streamType == 1">main stream</span>
@@ -66,8 +58,7 @@
           <span v-else>否</span>
         </template>
       </el-table-column>
-      <el-table-column prop="deviceUserName" label="发布时间" width="120"></el-table-column>
-      <el-table-column prop="deviceUserPassword" label="发布状态" width="120"></el-table-column>
+      <el-table-column prop="deviceUserName" label="创建时间" width="120"></el-table-column>
       <el-table-column
         label="操作"
         width="150">
@@ -120,11 +111,11 @@ export default {
     },
     showEditDialog (flag) {
       // this.editDialogVisible = flag;
-      this.$router.push({name: 'notice-release', query: {release: false}});
+      this.$router.push({name: 'emergency-addPlan'});
     },
     modify () {
       this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
     },
     modifyxt () {
       this.visible2 = false;
@@ -132,7 +123,7 @@ export default {
     },
     see () {
       this.visible2 = false;
-      this.$router.push({name: 'notice-see', query: {modify: false}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-see', query: {modify: true}, params: {plateId: '0'}});
     }
   }
 }
