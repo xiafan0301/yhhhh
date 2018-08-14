@@ -122,8 +122,7 @@ export default {
       this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
     },
     see () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-see', query: {modify: true}, params: {plateId: '0'}});
+      this.$router.push({name: 'emergency-seePlan', query: {modify: true}, params: {plateId: '0'}});
     }
   }
 }

@@ -31,6 +31,7 @@ import emergencyAddPlan from '@/views/ecc/components/emergency/addPlan.vue'
 import emergencyMaterialList from '@/views/ecc/components/emergency/materialList.vue'
 import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
 import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
+import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue'
 
 import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
@@ -60,6 +61,7 @@ export default new Router({
           children: [
             {path: 'planList', name: 'emergency-planList', component: emergencyPlanList},
             {path: 'addPlan', name: 'emergency-addPlan', component: emergencyAddPlan},
+            {path: 'seePlan', name: 'emergency-seePlan', component: emergencySeePlan},
             {path: 'materialList', name: 'emergency-materialList', component: emergencyMaterialList},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
             {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
