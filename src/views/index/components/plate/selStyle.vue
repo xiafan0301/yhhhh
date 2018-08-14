@@ -73,7 +73,7 @@ export default {
       this.styleRadio = val.configId;
       this.plateInfo.configId = val.configId;
       this.plateInfo.markUrl = val.markUrl;
-      this.plateInfo.configCode = val.configCode;
+      // this.plateInfo.configCode = val.configCode;
       this.$store.commit('setPlateInfo', {plateInfo: val});
     },
     nextStep () {

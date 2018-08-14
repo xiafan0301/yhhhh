@@ -23,9 +23,19 @@ import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue'
 // 调度指挥
 import ctc from '@/views/ecc/components/ctc/ctc.vue'
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
+
+// 应急库
+import emergency from '@/views/ecc/components/emergency/emergency.vue'
+import emergencyPlanList from '@/views/ecc/components/emergency/planList.vue'
+import emergencyAddPlan from '@/views/ecc/components/emergency/addPlan.vue'
+import emergencyMaterialList from '@/views/ecc/components/emergency/materialList.vue'
+import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
+import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
+
 import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
+
 Vue.use(Router);
 
 export default new Router({
@@ -45,15 +55,20 @@ export default new Router({
           ]
         },
         {
-          path: 'system',
-          component: system,
-          name: 'system',
+          path: 'emergency',
+          component: emergency,
           children: [
-            {path: '', name: 'notice-atmanagementList', component: noticeAtmanagementList},
-            {path: 'release', name: 'notice-release', component: noticeRelease},
-            {path: 'modify', name: 'notice-modify', component: noticeModify}
+            {path: 'planList', name: 'emergency-planList', component: emergencyPlanList},
+            {path: 'addPlan', name: 'emergency-addPlan', component: emergencyAddPlan},
+            {path: 'materialList', name: 'emergency-materialList', component: emergencyMaterialList},
+            {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
+            {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
           ]
         },
+        {
+          path: 'system',
+          component: system,
+          name: 'system'},
         {
           path: 'event',
           component: event,

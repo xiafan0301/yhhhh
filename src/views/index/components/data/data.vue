@@ -12,13 +12,10 @@
             <el-option  v-for="(item, index) in pageList" :label="item.typeName" :value="item.dataTypeId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" @click="query">查询</el-button>
-        </el-form-item>
       </el-form>
       <!--贫困村添加-->
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
-      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
+      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false" :on-error="aa">
         <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="u[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
@@ -55,8 +52,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数" min-width="100"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数(户)" min-width="100"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数(人)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="100">
         </el-table-column>
         <el-table-column label="操作" min-width="120">
@@ -70,13 +67,13 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" key="1">
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="镇名" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column  label="坐标" min-width="220">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="人口数量" min-width="180"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="人口数量(人)" min-width="180"></el-table-column>
+        <el-table-column label="操作" min-width="80">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent > 0">修改</el-button>
@@ -86,16 +83,16 @@
       <!--  6 医疗机构表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="医疗机构名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="医疗机构名称" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="160">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="类型" min-width="180"></el-table-column>
-        <el-table-column prop="dataExtendList[3].valueContent" label="工作人员数" min-width="180"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="床位数" min-width="100"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="类型" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="床位数(床)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[3].valueContent" label="详细地址" min-width="150"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify6(scope)">修改</el-button>
@@ -106,15 +103,15 @@
        <!-- 5 教育资源表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="学校名" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="学校名" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="级别" min-width="180"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="师生人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="100"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="级别" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="师生人数(人)" min-width="100"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modifyjy5(scope)">修改</el-button>
@@ -125,14 +122,14 @@
       <!-- 4 停车场表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="停车场名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="停车场名称" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="停车位数量" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="180"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="停车位数量(个)" min-width="140"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="180"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
@@ -160,13 +157,13 @@
       <!-- 企业分布表格   块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="180"></el-table-column>
+        <el-table-column prop="locationName" label="镇名称" min-width="150"></el-table-column>
         <el-table-column label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="企业数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="企业数(家)" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
@@ -200,7 +197,7 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="外出务工人数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="外出务工人数(人)" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
@@ -234,8 +231,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="床位数量" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(床)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
@@ -286,7 +283,7 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="贫困人口数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="贫困人口数(人)" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
@@ -303,8 +300,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="投入金额（万元）" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详情地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="投入金额（万元）" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
@@ -321,7 +318,7 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="财政人员数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="财政人员数(人)" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent == ''">录入</el-button>
@@ -338,7 +335,7 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="党员分布数" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="党员分布数(人)" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text"  @click="modifyk3(scope)" v-if="scope.row.dataExtendList[0].valueContent <= 0">录入</el-button>
@@ -366,15 +363,15 @@
       <!-- 5 规上工业企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '61894e2c-7738-41af-b797-b8d735a44428'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上工业企业名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="规上工业企业名称" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -385,15 +382,15 @@
       <!-- 5 规上建筑企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '9487e07e-6b2f-49c6-b464-2216a680cc3e'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上建筑企业名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="规上建筑企业名称" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -404,15 +401,15 @@
       <!-- 5 规上商贸企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上商贸企业名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="规上商贸企业名称" min-width="150"></el-table-column>
+        <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="员工人数" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
@@ -432,22 +429,22 @@
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数量" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
+          <el-form-item label="床位数量(床)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="停车位数量" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
+          <el-form-item label="停车位数量(个)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="类型" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="工作人员数" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="工作人员数(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.teacher" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
             <el-input v-model="form.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="床位数(床)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.student" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
@@ -486,22 +483,22 @@
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
             <el-input v-model="form2.coordinate" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="人口数量" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" prop="addrs">
+          <el-form-item label="人口数量(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="企业数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" prop="addrs">
+          <el-form-item label="企业数(家)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="外出务工人数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" prop="addrs">
+          <el-form-item label="外出务工人数(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="贫困人口数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" prop="addrs">
+          <el-form-item label="贫困人口数(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="财政人员数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '3c7944d7-d874-4478-a25a-e75fc2020d96'" prop="addrs">
+          <el-form-item label="财政人员数(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '3c7944d7-d874-4478-a25a-e75fc2020d96'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label ="党员分布数" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" prop="addrs">
+          <el-form-item label ="党员分布数(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
           </el-form-item>
         </el-form>
@@ -522,22 +519,22 @@
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数量" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
+          <el-form-item label="床位数量(床)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="停车位数量" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
+          <el-form-item label="停车位数量(个)" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="类型" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="工作人员数" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="工作人员数(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.teacher" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
             <el-input v-model="form1.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="床位数(床)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.student" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
@@ -600,6 +597,7 @@
 export default {
   data () {
     return {
+      qureyId: '',
       // 贫困村
       plateList: [],
       pageNum: 1,
@@ -1077,17 +1075,17 @@ export default {
         'e5654a00-c642-44f3-a340-2827f51367d6': '公共车站名称'
       },
       poples: {
-        '4fce5edb-7092-4455-971b-6f8526d6a827': '贫困人数',
-        '61894e2c-7738-41af-b797-b8d735a44428': '员工人数',
-        '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '员工人数',
-        '9487e07e-6b2f-49c6-b464-2216a680cc3e': '员工人数',
-        '739fe4f5-49c6-42ca-ba87-76f5300ab5af': '师生人数'
+        '4fce5edb-7092-4455-971b-6f8526d6a827': '贫困人数(人)',
+        '61894e2c-7738-41af-b797-b8d735a44428': '员工人数(人)',
+        '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '员工人数(人)',
+        '9487e07e-6b2f-49c6-b464-2216a680cc3e': '员工人数(人)',
+        '739fe4f5-49c6-42ca-ba87-76f5300ab5af': '师生人数(人)'
       },
       households: {
-        '4fce5edb-7092-4455-971b-6f8526d6a827': '贫困户数',
-        '61894e2c-7738-41af-b797-b8d735a44428': '注册资金',
-        '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '注册资金',
-        '9487e07e-6b2f-49c6-b464-2216a680cc3e': '注册资金'
+        '4fce5edb-7092-4455-971b-6f8526d6a827': '贫困户数(户)',
+        '61894e2c-7738-41af-b797-b8d735a44428': '注册资金(万元)',
+        '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '注册资金(万元)',
+        '9487e07e-6b2f-49c6-b464-2216a680cc3e': '注册资金(万元)'
       }
     }
   },
@@ -1125,8 +1123,7 @@ export default {
       this.getPlateList();
     },
     // 点击事件
-    query: function () {
-      // this.getPlateList();
+    query: function (val) {
     },
     // 分页
     pagerSizeChange (val) {
@@ -1205,8 +1202,8 @@ export default {
       this.form.name = this.obj.locationName;
       this.form.households = this.obj.dataExtendList[1].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
-      this.form.pople = this.obj.dataExtendList[2].valueContent;
-      this.form.addrs = this.obj.dataExtendList[0].valueContent;
+      this.form.pople = this.obj.dataExtendList[0].valueContent;
+      this.form.addrs = this.obj.dataExtendList[2].valueContent;
     },
     sure5 (form) {
       this.$refs[form].validate((valid) => {
@@ -1217,8 +1214,8 @@ export default {
           params.longitude = this.form.coordinate.split(',')[0];
           params.latitude = this.form.coordinate.split(',')[1];
           params.dataExtendList[1].valueContent = this.form.households;
-          params.dataExtendList[2].valueContent = this.form.pople;
-          params.dataExtendList[0].valueContent = this.form.addrs;
+          params.dataExtendList[0].valueContent = this.form.pople;
+          params.dataExtendList[2].valueContent = this.form.addrs;
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
@@ -1268,10 +1265,10 @@ export default {
       };
       console.log(scope);
       this.form.name = this.obj.locationName;
-      this.form.level = this.obj.dataExtendList[1].valueContent;
+      this.form.level = this.obj.dataExtendList[0].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
-      this.form.pople = this.obj.dataExtendList[2].valueContent;
-      this.form.addrs = this.obj.dataExtendList[0].valueContent;
+      this.form.pople = this.obj.dataExtendList[1].valueContent;
+      this.form.addrs = this.obj.dataExtendList[2].valueContent;
     },
     surejy5 (form) {
       this.$refs[form].validate((valid) => {
@@ -1281,9 +1278,9 @@ export default {
           params.locationName = this.form.name;
           params.longitude = this.form.coordinate.split(',')[0];
           params.latitude = this.form.coordinate.split(',')[1];
-          params.dataExtendList[1].valueContent = this.form.level;
-          params.dataExtendList[2].valueContent = this.form.pople;
-          params.dataExtendList[0].valueContent = this.form.addrs;
+          params.dataExtendList[0].valueContent = this.form.level;
+          params.dataExtendList[1].valueContent = this.form.pople;
+          params.dataExtendList[2].valueContent = this.form.addrs;
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
@@ -1412,11 +1409,11 @@ export default {
         longitude: scope.row.longitude
       };
       this.form.name = this.obj.locationName;
-      this.form.level = this.obj.dataExtendList[2].valueContent;
+      this.form.level = this.obj.dataExtendList[0].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
-      this.form.teacher = this.obj.dataExtendList[3].valueContent;
-      this.form.student = this.obj.dataExtendList[1].valueContent;
-      this.form.addrs = this.obj.dataExtendList[0].valueContent;
+      this.form.teacher = this.obj.dataExtendList[1].valueContent;
+      this.form.student = this.obj.dataExtendList[2].valueContent;
+      this.form.addrs = this.obj.dataExtendList[3].valueContent;
       console.log(this.obj)
     },
     sure6 (form) {
@@ -1427,10 +1424,10 @@ export default {
           params.locationName = this.form.name;
           params.longitude = this.form.coordinate.split(',')[0];
           params.latitude = this.form.coordinate.split(',')[1];
-          params.dataExtendList[2].valueContent = this.form.level;
-          params.dataExtendList[3].valueContent = this.form.teacher;
-          params.dataExtendList[1].valueContent = this.form.student;
-          params.dataExtendList[0].valueContent = this.form.addrs;
+          params.dataExtendList[0].valueContent = this.form.level;
+          params.dataExtendList[1].valueContent = this.form.teacher;
+          params.dataExtendList[2].valueContent = this.form.student;
+          params.dataExtendList[3].valueContent = this.form.addrs;
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
@@ -1473,8 +1470,8 @@ export default {
       };
       this.form.name = this.obj.locationName;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
-      this.form.number = this.obj.dataExtendList[1].valueContent;
-      this.form.addrs = this.obj.dataExtendList[0].valueContent;
+      this.form.number = this.obj.dataExtendList[0].valueContent;
+      this.form.addrs = this.obj.dataExtendList[1].valueContent;
     },
     sure4 (form) {
       this.$refs[form].validate((valid) => {
@@ -1484,8 +1481,8 @@ export default {
           params.locationName = this.form.name;
           params.longitude = this.form.coordinate.split(',')[0];
           params.latitude = this.form.coordinate.split(',')[1];
-          params.dataExtendList[0].valueContent = this.form.addrs;
-          params.dataExtendList[1].valueContent = this.form.number;
+          params.dataExtendList[1].valueContent = this.form.addrs;
+          params.dataExtendList[0].valueContent = this.form.number;
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
@@ -1633,8 +1630,8 @@ export default {
           this.Tobjgsgy.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjgsgy.latitude = this.form1.coordinate.split(',')[1];
           this.Tobjgsgy.dataExtendList[1].valueContent = this.form1.households;
-          this.Tobjgsgy.dataExtendList[2].valueContent = this.form1.pople;
-          this.Tobjgsgy.dataExtendList[0].valueContent = this.form1.addrs;
+          this.Tobjgsgy.dataExtendList[0].valueContent = this.form1.pople;
+          this.Tobjgsgy.dataExtendList[2].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjgsgy)
             .then(res => {
               this.getPlateList();
@@ -1653,8 +1650,8 @@ export default {
           this.Tobjgsjz.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjgsjz.latitude = this.form1.coordinate.split(',')[1];
           this.Tobjgsjz.dataExtendList[1].valueContent = this.form1.households;
-          this.Tobjgsjz.dataExtendList[2].valueContent = this.form1.pople;
-          this.Tobjgsjz.dataExtendList[0].valueContent = this.form1.addrs;
+          this.Tobjgsjz.dataExtendList[0].valueContent = this.form1.pople;
+          this.Tobjgsjz.dataExtendList[2].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjgsjz)
             .then(res => {
               this.getPlateList();
@@ -1673,8 +1670,8 @@ export default {
           this.Tobjgssm.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjgssm.latitude = this.form1.coordinate.split(',')[1];
           this.Tobjgssm.dataExtendList[1].valueContent = this.form1.households;
-          this.Tobjgssm.dataExtendList[2].valueContent = this.form1.pople;
-          this.Tobjgssm.dataExtendList[0].valueContent = this.form1.addrs;
+          this.Tobjgssm.dataExtendList[0].valueContent = this.form1.pople;
+          this.Tobjgssm.dataExtendList[2].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjgssm)
             .then(res => {
               this.getPlateList();
@@ -1692,10 +1689,10 @@ export default {
           this.Tobjylzy.locationName = this.form1.name;
           this.Tobjylzy.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjylzy.latitude = this.form1.coordinate.split(',')[1];
-          this.Tobjylzy.dataExtendList[2].valueContent = this.form1.level;
-          this.Tobjylzy.dataExtendList[3].valueContent = this.form1.teacher;
-          this.Tobjylzy.dataExtendList[1].valueContent = this.form1.student;
-          this.Tobjylzy.dataExtendList[0].valueContent = this.form1.addrs;
+          this.Tobjylzy.dataExtendList[0].valueContent = this.form1.level;
+          this.Tobjylzy.dataExtendList[1].valueContent = this.form1.teacher;
+          this.Tobjylzy.dataExtendList[2].valueContent = this.form1.student;
+          this.Tobjylzy.dataExtendList[3].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjylzy)
             .then(res => {
               this.getPlateList();
@@ -1713,9 +1710,9 @@ export default {
           this.Tobjjyzy.locationName = this.form1.name;
           this.Tobjjyzy.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjjyzy.latitude = this.form1.coordinate.split(',')[1];
-          this.Tobjjyzy.dataExtendList[2].valueContent = this.form1.pople;
-          this.Tobjjyzy.dataExtendList[1].valueContent = this.form1.level;
-          this.Tobjjyzy.dataExtendList[0].valueContent = this.form1.addrs;
+          this.Tobjjyzy.dataExtendList[1].valueContent = this.form1.pople;
+          this.Tobjjyzy.dataExtendList[0].valueContent = this.form1.level;
+          this.Tobjjyzy.dataExtendList[2].valueContent = this.form1.addrs;
           this.axios.post('/mapServices/data', this.Tobjjyzy)
             .then(res => {
               this.getPlateList();
@@ -1733,8 +1730,8 @@ export default {
           this.Tobjtcc.locationName = this.form1.name;
           this.Tobjtcc.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjtcc.latitude = this.form1.coordinate.split(',')[1];
-          this.Tobjtcc.dataExtendList[0].valueContent = this.form1.addrs;
-          this.Tobjtcc.dataExtendList[1].valueContent = this.form1.number;
+          this.Tobjtcc.dataExtendList[1].valueContent = this.form1.addrs;
+          this.Tobjtcc.dataExtendList[0].valueContent = this.form1.number;
           this.axios.post('/mapServices/data', this.Tobjtcc)
             .then(res => {
               this.getPlateList();
@@ -1752,8 +1749,8 @@ export default {
           this.Tobjyljg.locationName = this.form1.name;
           this.Tobjyljg.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjyljg.latitude = this.form1.coordinate.split(',')[1];
-          this.Tobjyljg.dataExtendList[0].valueContent = this.form1.addrs;
-          this.Tobjyljg.dataExtendList[1].valueContent = this.form1.number;
+          this.Tobjyljg.dataExtendList[1].valueContent = this.form1.addrs;
+          this.Tobjyljg.dataExtendList[0].valueContent = this.form1.number;
           this.axios.post('/mapServices/data', this.Tobjyljg)
             .then(res => {
               this.getPlateList();
@@ -1771,8 +1768,8 @@ export default {
           this.Tobjfpxm.locationName = this.form1.name;
           this.Tobjfpxm.longitude = this.form1.coordinate.split(',')[0];
           this.Tobjfpxm.latitude = this.form1.coordinate.split(',')[1];
-          this.Tobjfpxm.dataExtendList[0].valueContent = this.form1.addrs;
-          this.Tobjfpxm.dataExtendList[1].valueContent = this.form1.number;
+          this.Tobjfpxm.dataExtendList[1].valueContent = this.form1.addrs;
+          this.Tobjfpxm.dataExtendList[0].valueContent = this.form1.number;
           this.axios.post('/mapServices/data', this.Tobjfpxm)
             .then(res => {
               this.getPlateList();
@@ -1897,16 +1894,31 @@ export default {
     },
     handlePreview (response, file, fileList) {
       console.log(response);
-      let _this = this;
-      _this.$msgbox({
-        title: '提示',
-        message: '上传成功',
-        showCancelButton: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消'
-      });
+      if (response.code === '00000000') {
+        let _this = this;
+        _this.$msgbox({
+          title: '提示',
+          message: '上传成功',
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        });
+      } else {
+        let _this = this;
+        _this.$msgbox({
+          title: '提示',
+          message: '上传失败',
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        });
+      }
       console.log();
       this.getPlateList();
+    },
+    aa (err, file, fileList) {
+      console.log(err);
+      console.log(file);
     },
     handleExceed (files, fileList) {
     },
@@ -1928,7 +1940,7 @@ export default {
   .bg-plate-sf {
     padding-top: 20px;
     position: relative;
-    height: 80px;
+    height: 71px;
     .add-plate-btn {
       position: absolute; top: 22px; right: 195px;
       background: linear-gradient(to top, #0785FD, #07BAFD);
@@ -1949,5 +1961,12 @@ export default {
       text-align: right;
       padding: 20px 20px 0 0;
     }
+  }
+  .el-select-dropdown__item.hover {
+    color:#fff;
+    background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */
+    background: -o-linear-gradient(#07BAFD, #0785FD); /* Opera 11.1 - 12.0 */
+    background: -moz-linear-gradient(#07BAFD, #0785FD); /* Firefox 3.6 - 15 */
+    background: linear-gradient(#07BAFD, #0785FD); /* 标准的语法 */
   }
 </style>
