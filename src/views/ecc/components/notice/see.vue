@@ -1,6 +1,6 @@
 <template>
   <div class="bg-release">
-    <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
+    <div style=" margin-bottom: 20px; position: relative">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="gg">公告管理</el-breadcrumb-item>
@@ -8,61 +8,37 @@
         <el-breadcrumb-item v-if="gg">查看公告</el-breadcrumb-item>
         <el-breadcrumb-item  v-if="!gg">查看系统消息</el-breadcrumb-item>
       </el-breadcrumb>
+      <div style="position: absolute; top: -10px; right: 0;">
+        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+      </div>
     </div>
     <div class="bg-release-cot">
-      <el-form ref="form" :model="form" label-width="80px" >
-        <el-form-item label="发布类型">
-          <el-radio label="公告" v-if="gg" v-model="form.resource"></el-radio>
-          <el-radio label="系统消息" v-if="!gg"  v-model="form.xtxx"></el-radio>
-        </el-form-item>
-        <el-form-item label="接收者">
-          <div style="display: inline-block">
-            <el-checkbox label="移动端" name="type"></el-checkbox>
-            <el-checkbox label="PC端" name="type" v-model="form.checked" v-if="form.resource == '公告'"></el-checkbox>
-          </div>
-          <div style="display: inline-block; margin-left: 20px;" v-if="form.resource == '公告'">
-            <el-select v-model="value" placeholder="请选择" size="mini" :disabled= "!form.checked">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </div>
-        </el-form-item>
-        <el-form-item label="主题">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="内容">
-          <el-input type="textarea" v-model="form.desc" style="display: inline-block; position: relative"  :autosize="{ minRows: 3, maxRows: 4}"></el-input>
-          <span style="display: inline-block; position: absolute; right: 10px;top: 45px">{{form.desc.length}}/100</span>
-        </el-form-item>
-        <el-form-item  v-if="form.resource == '公告'">
-          <el-upload
-            action=""
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove" >
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </el-form-item>
-        <el-form-item label="发送时间">
-          <el-radio-group v-model="form.resource" style="width: 100%">
-            <div style="width: 150px;float: left;" >;
-              <el-radio label="实时" style="line-height: 40px"></el-radio>
-              <el-radio label="定时"></el-radio>
-            </div>
-            <div  style="width: 200px;float: left;">
-              <el-input style=""  size = "mini"></el-input>
-            </div>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="onSubmit">立即创建</el-button>
-          <el-button>取消</el-button>
-        </el-form-item>
-      </el-form>
+      <ul class="listxf" v-if="gg">
+      <li><span class="title">接收者</span><span class="content">APP端、联动单位A、联动</span></li>
+      <li><span class="title">发布用户</span><span class="content"> admin（谭某）</span></li>
+      <li><span class="title">发布单位</span><span class="content"> 应急指挥中心</span></li>
+      <li><span class="title">主题</span><span class="content"> 关于举办《消防知识》培</span></li>
+      <li><span class="title" style="vertical-align: top">内容</span>
+        <span class="content"><el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
+      </li>
+      <li><span class="title"></span><img src='../../../../assets/img/temp/temp-t032.png' alt=""></li>
+      <li><span class="title">发送时间</span> <span class="content">2018-07-13 10:55:55</span></li>
+    </ul>
+      <ul class="listxf" v-if="!gg">
+        <li><span class="title">接收者</span><span class="content">APP端</span></li>
+        <li><span class="title">类型</span><span class="content"> 系统公告</span></li>
+        <li><span class="title">发布单位</span><span class="content"> 应急指挥中心</span></li>
+        <li><span class="title">主题</span><span class="content"> 关于举办《消防知识》培</span></li>
+        <li><span class="title" style="vertical-align: top">内容</span>
+          <span class="content"><el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
+        </li>
+        <li><span class="title"></span><img src='../../../../assets/img/temp/temp-t032.png' alt=""></li>
+        <li><span class="title">发送时间</span> <span class="content">2018-07-13 10:55:55</span></li>
+      </ul>
+    </div>
+    <div style="margin-top: 21px" >
+      <el-button >取消</el-button>
+      <el-button type="primary" @click="onSubmit" >确定</el-button>
     </div>
   </div>
 </template>
@@ -123,7 +99,34 @@ export default {
     padding: 20px;
   }
   .bg-release-cot {
-    width: 500px;
-    margin: 0 auto;
+    background-color: #FFFFFF;
+    padding-top: 55px;
+    box-sizing: border-box;
+    padding-left: 100px;
+    padding-bottom: 86px;
+  }
+  .listxf{
+    >li{
+      padding-bottom: 20px;
+      .title {
+        color: #222222;
+        font-size: 13px;
+        display: inline-block;
+        width: 100px;
+        text-align: right;
+      }
+      .content {
+        color: #777777;
+        font-size: 14px;
+        margin-left:2%;
+        text-align: left;
+        display: inline-block;
+      }
+      img{
+        width:100px ;
+        height: 100px;
+        margin-left: 2%;
+      }
+    }
   }
 </style>

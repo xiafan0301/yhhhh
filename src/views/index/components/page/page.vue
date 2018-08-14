@@ -13,7 +13,7 @@
               <el-input v-model="form.name" auto-complete="off"></el-input>
             </el-form-item>
           </el-form>
-          <div slot="footer" class="dialog-footer" style="text-align: center; padding-left: 20px" size="small">
+          <div slot="footer" class="dialog-footer" size="small">
             <el-button @click="dialogFormVisible = false">取 消</el-button>
             <el-button :loading="addPageLoading" type="primary" @click="addPage('form')">确 定</el-button>
           </div>
@@ -26,20 +26,21 @@
     <el-table-column
       type="index"
       label="序号"
-      width="103">
+      width="100">
     </el-table-column>
     <el-table-column
       prop="pageName"
       label="页面名称"
-      width="200">
+      min-width="100">
     </el-table-column>
     <el-table-column
       prop="plateList.length"
-      label="版块展示数量">
+      label="版块展示数量"
+      min-width="100">
     </el-table-column>
       <el-table-column
         label="版块详情"
-        width=""
+        min-width="220"
         :showOverflowTooltip = true>
         <template slot-scope="scope">
           <span v-for="(item, index)  in scope.row.plateList" :key="'fawe' + index" v-if="item">{{item.plateName}}/</span>
@@ -48,7 +49,7 @@
       <el-table-column
         prop="modular"
         label=""
-        width=" ">
+        min-width="100">
         <template slot-scope="scope">
           <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length > 0" style="padding-left: 10px">管理版块</el-button>
           <el-button @click.native="showEditDialog(scope.row)" type="text"  v-show="scope.row.plateList.length == 0">添加版块</el-button>
@@ -57,7 +58,7 @@
       <el-table-column
         prop="operation"
         label="操作"
-        width="">
+        min-width="100">
         <template slot-scope="scope">
           <el-button @click="modify(scope.row)" type="text"  >修改</el-button>
           <el-dialog title="修改" :visible.sync="dialogFormVisible1" width="500px">
@@ -92,9 +93,9 @@
           background
           @current-change="handleCurrentChange"
           @size-change="pagerSizeChange"
-          :current-page ="currentPage"
+          :current-page ="pageNum"
           :page-size="pagesize"
-          :page-sizes="[5, 10, 20, 50, 100]"
+          :page-sizes="[ 10, 20, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
@@ -147,7 +148,7 @@ export default {
     // 获取数据
     getAdviceList () {
       let params = {
-        pagesize: this.pagesize,
+        pageSize: this.pagesize,
         pageNum: this.pageNum
       };
       this.axios.get('/pageServices/pages', {params})

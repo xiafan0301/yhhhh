@@ -13,6 +13,7 @@
       </div>
     </div>
     <div class="bg-release-cot">
+      <div style="width: 500px">
       <el-form ref="form" :model="form" label-width="80px"  v-if="gg">
         <el-form-item label="接收者">
             <div style="display: inline-block">
@@ -34,8 +35,10 @@
           <el-input v-model="form.name" style="width: 500px"></el-input>
         </el-form-item>
         <el-form-item label="内容">
-          <el-input type="textarea" v-model="form.desc" style="display: inline-block; position: relative; width: 500px"  :autosize="{ minRows: 3, maxRows: 4}"></el-input>
-          <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/100</span>
+          <div style="width: 500px; position: relative">
+          <el-input type="textarea" v-model="form.desc" style="display: inline-block;"  :autosize="{ minRows: 5, maxRows: 7}" rows="7"></el-input>
+            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/100</span>
+          </div>
         </el-form-item>
         <el-form-item  >
           <el-upload
@@ -53,7 +56,7 @@
               <el-radio label="定时"></el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
-              <el-input style=""  size = "mini"></el-input>
+              <el-input style=""  size = "mini"> <i slot="suffix" class="el-input__icon el-icon-date" style="color: #0785FD"></i></el-input>
             </div>
           </el-radio-group>
         </el-form-item>
@@ -62,13 +65,15 @@
         <el-form-item label="接收者">
             <el-checkbox label="移动端" name="type" v-model="form1.resource"></el-checkbox>
         </el-form-item>
-        <el-form-item label="类型" size= "small">
-          <el-select v-model="form1.region" placeholder="系统消息" disabled>
+        <el-form-item label="类型">
+          <el-select v-model="form1.region" placeholder="系统消息" disabled style="width: 500px">
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
-          <el-input type="textarea" v-model="form1.desc" style="display: inline-block; position: relative"  :autosize="{ minRows: 3, maxRows: 4}"></el-input>
-          <span style="display: inline-block; position: absolute; right: 5px; bottom: -3px">{{form1.desc.length}}/100</span>
+          <div style="width: 500px; position: relative">
+          <el-input type="textarea" v-model="form1.desc" style="display: inline-block;"  :autosize="{ minRows: 7, maxRows: 8}" rows="7"></el-input>
+          <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/100</span>
+          </div>
         </el-form-item>
         <el-form-item label="发送时间">
           <el-radio-group v-model="form1.time" style="width: 100%">
@@ -77,11 +82,12 @@
               <el-radio label="定时"></el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
-              <el-input style=""  size = "mini"></el-input>
+              <el-input style=""  size = "mini"><i slot="suffix" class="el-input__icon el-icon-date" style="color: #0785FD"></i></el-input>
             </div>
           </el-radio-group>
         </el-form-item>
       </el-form >
+      </div>
     </div>
     <div style="margin-top: 21px" >
       <el-button >取消</el-button>
@@ -154,8 +160,6 @@ export default {
 <style lang="scss" scoped>
   .bg-release {
     padding: 20px;
-    height: 100%;
-    overflow: auto;
     background-color: #F0F3F4;
   }
   .bg-release-cot {
