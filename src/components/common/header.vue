@@ -19,13 +19,13 @@
     <el-dialog :visible.sync="pwdModal" :append-to-body="true" class="oa-pwd-modal" title="修改密码" width="500px" :loading="pwdModalLoading">
       <el-form ref="pwdForm" :model="pwdForm" :rules="rulePwdForm" label-width="120px" style="padding-right: 40px;">
         <el-form-item label="原密码" prop="oldPwd">
-          <el-input size="small" type="password" v-model="pwdForm.oldPwd" :maxlength="64"></el-input>
+          <el-input size="small" :type="passwordType" v-model="pwdForm.oldPwd" :maxlength="64" > <i @click="aa" slot="suffix" class="el-input__icon el-icon-view"></i></el-input>
         </el-form-item>
         <el-form-item label="新密码" prop="newPwd">
-          <el-input size="small" type="password" v-model="pwdForm.newPwd" :maxlength="64"></el-input>
+          <el-input size="small" type="password" v-model="pwdForm.newPwd" :maxlength="64" suffix-icon="el-icon-view"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="newPwdCheck">
-          <el-input size="small" type="password" v-model="pwdForm.newPwdCheck" :maxlength="64"></el-input>
+          <el-input size="small" type="password" v-model="pwdForm.newPwdCheck" :maxlength="64" suffix-icon="el-icon-view"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -64,6 +64,7 @@ export default {
       }
     };
     return {
+      passwordType: 'password',
       pwdModal: false,
       pwdModalLoading: false,
       pwdForm: {
@@ -87,6 +88,8 @@ export default {
         ]
       }
     }
+  },
+  computed: {
   },
   methods: {
     pwdSubmit (name) {
@@ -156,6 +159,14 @@ export default {
       }).then(action => {
       });
       // window.location.href = './index.html#/login';
+    },
+    aa () {
+      if (this.passwordType === 'text') {
+        this.passwordType = 'password';
+      } else if (this.passwordType === 'password') {
+        this.passwordType = 'text'
+      }
+      // this.passwordType = 'text'
     }
   }
 }
