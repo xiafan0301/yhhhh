@@ -9,57 +9,66 @@
     <div class='untreated-body'>
       <div class='untreated-header'>
         <div class='flag'></div>
-        <p class='untreated-text'>事件编号：XPZ180724001</p>
+        <p class='untreated-text'>事件编号：{{detailForm.eventCode}}</p>
       </div>
-      <div class='event-status-untreated'>未处理</div>
+      <div class='event-status-untreated'>
+        <img src='../../../../assets/img/temp/untreated.png' />
+      </div>
       <div class='untreated-form'>
-        <el-form class='untreated-form-content'>
+        <el-form class='untreated-form-content' :model='detailForm' ref='detailForm' :rules='rules'>
           <el-form-item label="上报人手机号" label-width='150px'>
-            <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>1234567890</span>
+            <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{detailForm.reporterPhone}}</span>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px'>
-            <span style='color:#333333;font-size:13px'>2019-3-4 12:33</span>
+            <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
-          <el-form-item label="事发地点" label-width='150px'>
-            <el-input style='width: 500px' placeholder='请选择事发地点...'></el-input>
+          <el-form-item label="事发地点" label-width='150px' prop='eventAddress'>
+            <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
             <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span>
           </el-form-item>
-          <el-form-item label="事件情况" label-width='150px'>
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
+          <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
+            <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
-              list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
-            >
-              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-              <span class='add-img-text'>添加图片</span>
-            </el-upload>
+            <img
+              v-for='item in attachmentList'
+              :src='item.url'
+              :key='item.attachmentId'
+              class='img-list'
+            />
           </el-form-item>
-          <el-form-item label="事件类型" label-width='150px'>
-            <el-select  placeholder="请选择事件类型" style='width: 500px'>
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="事件类型" label-width='150px' prop='eventType'>
+            <el-select  placeholder="请选择事件类型" style='width: 500px' v-model='detailForm.eventType'>
+              <el-option
+                v-for="item in eventTypeList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="事件等级" label-width='150px'>
-            <el-select  placeholder="请选择事件等级" style='width: 500px'>
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="事件等级" label-width='150px' prop='eventLevel'>
+            <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='detailForm.eventLevel'>
+              <el-option
+                v-for="item in eventLevelList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="是否有人员伤亡" label-width='150px'>
-            <el-radio-group style='width: 330px'>
+          <el-form-item label="是否有人员伤亡" label-width='150px' prop='casualties'>
+            <el-radio-group style='width: 330px' v-model='detailForm.casualties'>
               <el-radio label="无"></el-radio>
               <el-radio label="不确定" style='margin-left:22%'></el-radio>
               <el-radio label="有" style='margin-left:22%'></el-radio>
             </el-radio-group>
-            <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数'></el-input><span style='margin-left:1%'>人</span>
+            <el-input v-show="detailForm.casualties === '有'" style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input><span v-show="detailForm.casualties === '有'" style='margin-left:1%'>人</span>
           </el-form-item>
-          <el-form-item label="事件性质" label-width='150px'>
-            <el-checkbox-group>
+          <el-form-item label="事件性质" label-width='150px' prop='flagType'>
+            <el-checkbox-group v-model='detailForm.flagType'>
               <el-checkbox label="应急事件" name="type"></el-checkbox>
               <el-checkbox label="民众互助" name="type"></el-checkbox>
             </el-checkbox-group>
@@ -69,48 +78,217 @@
     </div>
     <div class='operation-btn-untreated'>
       <el-button @click='back'>返回</el-button>
-      <el-button @click='dialogFormVisible = true'>关闭事件</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
+      <template v-if="detailForm.flagType.indexOf('民众互助') !== -1">
+        <el-button style='background: #0785FD;color:#fff' @click="modifyEvent('detailForm')">保存</el-button>
+      </template>
+      <template v-else>
+        <el-button style='background: #0785FD;color:#fff' @click='dialogFormVisible = true'>关闭事件</el-button>
+      </template>
+      <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
     </div>
     <el-dialog title="操作提示" :visible.sync="dialogFormVisible" center width='30%'>
       <p class='close-reason-p'>请选择关闭事件的原因:</p>
-      <el-form>
-        <el-form-item>
-          <el-select placeholder="请选择原因" style='width:100%'>
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+      <el-form :model='closeForm' :rules='closeRules' ref='closeForm'>
+        <el-form-item prop='closeReason'>
+          <el-select placeholder="请选择原因" style='width:100%' v-model='closeForm.closeReason'>
+            <el-option
+              v-for="item in closeReasonList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item>
-          <el-input placeholder='备注' type='textarea' rows='7'></el-input>
+        <el-form-item prop='closeRemark'>
+          <el-input placeholder='备注' type='textarea' rows='7' v-model='closeForm.closeRemark'></el-input>
         </el-form-item>
-         <el-form-item>
-          <el-checkbox>
+         <el-form-item prop='harassFlag'>
+          <el-checkbox v-model='closeForm.harassFlag'>
             <span>标为骚扰</span>
             <span>(2次被标为骚扰，将不允许用户再上报事件)</span>
           </el-checkbox>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button @click="dialogFormVisible = false" style='color:#fff;background:#0785FD'>确 定</el-button>
+        <el-button @click="resetForm('closeForm')">取 消</el-button>
+        <el-button style='color:#fff;background:#0785FD' @click="closeEvent('closeForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      dialogFormVisible: false
+      dialogFormVisible: false,
+      eventDetail: {}, // 事件详情
+      detailForm: { // 详情表单
+        eventId: '',
+        eventCode: '',
+        reporterPhone: '',
+        reportTime: '',
+        eventAddress: '',
+        eventDetail: '',
+        eventType: '',
+        eventLevel: '',
+        eventFlag: false,
+        mutualFlag: false,
+        casualties: '',
+        flagType: [] // 事件性质
+      },
+      rules: {
+        eventDetail: [
+          { max: 140, message: '最多可以输入140个字' }
+        ],
+        eventType: [
+          { required: true, message: '请选择事件类型', trigger: 'blur' }
+        ],
+        flagType: [
+          { required: true, message: '请选择事件性质', trigger: 'blur' }
+        ]
+      },
+      attachmentList: [], // 附件列表
+      eventLevelList: [],
+      eventTypeList: [],
+      closeReasonList: [], // 关闭原因类型
+      dieNumber: '', // 死亡人数
+      closeForm: { // 关闭事件表单
+        eventId: '',
+        closeReason: '',
+        closeRemark: '',
+        harassFlag: false // 是否骚扰
+      },
+      closeRules: {
+        closeReason: [
+          { required: true, message: '请选择关闭原因', trigger: 'blur' }
+        ],
+        closeRemark: [
+          {max: 1000, message: '最多可以输入1000个字'}
+        ]
+      }
     }
+  },
+  mounted () {
+    this.getEventDetail();
+    this.getEventType();
+    this.getEventLevel();
+    this.getCloseReason();
   },
   methods: {
     back () {
       this.$router.back(-1);
     },
+    handleRemove () {},
     skipCtcDetail () {
       this.$router.push({name: 'ctc-detail'});
+    },
+    getEventDetail () { // 获取事件详情
+      const eventId = this.$route.params.eventId;
+      this.closeForm.eventId = eventId;
+      if (eventId) {
+        this.axios.get('A2/eventServices/events/' + eventId)
+          .then((res) => {
+            if (res) {
+              this.attachmentList = res.data.attachmentList;
+              this.detailForm.eventId = eventId;
+              this.detailForm.eventCode = res.data.eventCode;
+              this.detailForm.reporterPhone = res.data.reporterPhone;
+              this.detailForm.reportTime = res.data.reportTime;
+              this.detailForm.eventDetail = res.data.eventDetail;
+              this.detailForm.eventAddress = res.data.eventAddress;
+              this.detailForm.eventLevel = res.data.eventLevel;
+              this.detailForm.eventType = res.data.eventType;
+              if (res.data.casualties === -1) {
+                this.detailForm.casualties = '不确定';
+              } else if (res.data.casualties === 0) {
+                this.detailForm.casualties = '无';
+              } else if (res.data.casualties > 0) {
+                this.detailForm.casualties = '有';
+                this.dieNumber = res.data.casualties;
+              }
+              if (res.data.eventFlag === true) {
+                this.detailForm.flagType.push('应急事件');
+              }
+              if (res.data.mutualFlag === true) {
+                this.detailForm.flagType.push('民众互助');
+              }
+            }
+          })
+          .catch(() => {})
+      }
+    },
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventTypeList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventLevelList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getCloseReason () { // 获取关闭原因类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.closeReasonId)
+        .then((res) => {
+          if (res && res.data) {
+            this.closeReasonList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    resetForm (form) { // 取消关闭事件
+      this.$refs[form].resetFields();
+      this.dialogFormVisible = false;
+    },
+    closeEvent (form) { // 关闭事件
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          const params = {
+            emiEvent: this.closeForm
+          }
+          this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, params.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$message({
+                  message: '关闭事件成功',
+                  type: 'success'
+                });
+                this.dialogFormVisible = false;
+                this.$router.push({name: 'event-list'});
+              } else {
+                this.$message.error('关闭事件失败');
+              }
+            })
+            .catch(() => {})
+        }
+      });
+    },
+    modifyEvent (form) { // 修改事件
+      console.log(this.detailForm)
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          if (this.detailForm.flagType.length > 0) {
+            this.detailForm.flagType.map((item, index) => {
+              if (item === '应急事件') {
+                this.detailForm.eventFlag = true;
+              }
+              if (item === '民众互助') {
+                this.detailForm.mutualFlag = true;
+              }
+            });
+          }
+        }
+      });
     }
   }
 }
@@ -145,7 +323,7 @@ export default {
       }
       .event-status-untreated {
         color: #fff;
-        background: #1ABC9C;
+        // background: #1ABC9C;
         width: 100px;
         height: 40px;
         border-radius: 2px;
@@ -171,27 +349,13 @@ export default {
     .operation-btn-untreated {
       margin-top: 2%;
     }
-    .el-upload--picture-card {
+    .img-list {
       width: 100px;
       height: 100px;
       line-height: 100px;
-      background-color: #EAEAEA;
+      margin-right: 6px;
+      border-radius: 6px;
       border: 1px solid #EAEAEA;
-      position: relative;
-      i {
-        margin: 0 auto;
-        font-weight: bold;
-      }
-      .add-img-text {
-        color: #C4C2C2;
-        font-size: 13px;
-        display: block;
-        width: 54px;
-        height: 13px;
-        position: absolute;
-        top: 25%;
-        left: 25%;
-      }
     }
     /deep/ .el-dialog__header {
       background: #F0F0F0 !important;
@@ -216,9 +380,6 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
-    }
-    /deep/ .el-form-item {
-      margin-bottom: 13px;
     }
     .close-reason-p {
       margin-bottom: 10px;
