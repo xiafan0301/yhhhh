@@ -1091,16 +1091,6 @@ export default {
     });
   },
   methods: {
-    // validateNumber (index, idx) {
-    //   const reg = /[^\-?\d.]/g;
-    //   if (!reg.test(this.numberObj[index + '_' + idx])) {
-    //     console.log('33333')
-    //     return;
-    //   } else {
-
-    //   }
-    //  // console.log('eeeee', this.numberObj[index + '_' + idx]);
-    // },
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
       this.isActiveChild = 0;
@@ -1727,6 +1717,7 @@ export default {
             })
           }
         });
+        items.contentSubItemList[index].graphicFieldFlag = value;
       });
       this.childDataListTwo[index].graphicFieldFlag = value;
     },
@@ -1752,6 +1743,7 @@ export default {
             })
           }
         });
+        items.contentSubItemList[index].graphicFieldFlag = value;
       });
       this.childDataListThree[index].graphicFieldFlag = value;
     },
