@@ -8,11 +8,12 @@
       <el-button class='selectBtn add-event' @click='skipAddEvent'>添加事件</el-button>
     </div>
     <div class="clearfix search">
-      <el-form :inline="true" :model='selectForm' class="demo-form-inline" size="small">
+      <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
         <el-form-item style="width: 250px;" prop='reportTime'>
           <el-date-picker
             v-model='selectForm.reportTime'
             type="daterange"
+            value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 100%;"
@@ -54,8 +55,8 @@
           <el-input placeholder='请输入提交者手机号或事件编号' style='width:110%' v-model='selectForm.phoneOrNumber'></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
-          <el-button class='btnClass'>重置</el-button>
+          <el-button type="primary" class='selectBtn btnClass' @click='selectEventList'>查询</el-button>
+          <el-button class='btnClass' @click="resetForm('selectForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -82,29 +83,30 @@
       </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color: #0785FD' @click='skipEventDetail'>查看详情</el-button>
+          <el-button type='text' style='color: #0785FD' @click='skipEventDetail(scope)'>查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div is='pagination'></div>
+    <!-- <div is='pagination'></div> -->
   </div>
 </template>
 <script>
 import pagination from '@/components/common/pagination.vue';
 import {dictType} from '@/config/data.js';
+import {formatDate} from '@/utils/method.js';
 export default {
   components: {pagination},
   data () {
     return {
       selectForm: {
         reportTime: [], // 时间
-        // reportTimeEnd: '', // 结束时间
         eventStatus: '', // 事件状态
         eventLevel: '全部等级', // 事件等级
         eventSource: '全部来源', // 事件来源
         phoneOrNumber: '' // 事件编号或提交人手机号
       },
       eventStatusList: [],
+      dictId: '', // 未处理的id
       eventLevelList: [],
       eventSourceList: [],
       eventDataList: [],
@@ -122,9 +124,13 @@ export default {
     skipAddEvent () { // 跳转到添加事件页面
       this.$router.push({name: 'add-event'});
     },
-    skipEventDetail () { // 跳转到事件详情页面
-      // this.$router.push({name: 'event-detail'});
-      this.$router.push({name: 'event-untreated'});
+    skipEventDetail (scope) { // 跳转到事件详情页面
+      console.log(scope)
+      if (scope.row.eventStatusName === '未处理') {
+        this.$router.push({name: 'event-untreated', params: {eventId: scope.row.eventId}});
+      } else {
+        this.$router.push({name: 'event-detail'});
+      }
     },
     getEventStatus () { // 获取事件状态
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
@@ -133,6 +139,7 @@ export default {
             res.data.map((item) => {
               if (item.dictContent === '未处理') {
                 this.selectForm.eventStatus = item.dictId;
+                this.dictId = item.dictId;
               }
             })
             this.eventStatusList = res.data;
@@ -159,18 +166,24 @@ export default {
         .catch(() => {})
     },
     getEventList () { // 分页获取事件
+      let eventLevel, eventSource;
       if (this.selectForm.eventLevel === '全部等级') {
-        this.selectForm.eventLevel = '';
+        eventLevel = '';
+      } else {
+        eventLevel = this.selectForm.eventLevel;
       }
       if (this.selectForm.eventSource === '全部来源') {
-        this.selectForm.eventSource = '';
+        eventSource = '';
+      } else {
+        eventSource = this.selectForm.eventSource;
       }
       const params = {
         'where.reportTimeStart': this.selectForm.reportTime[0],
         'where.reportTimeEnd': this.selectForm.reportTime[1],
         'where.eventStatus': this.selectForm.eventStatus,
-        'where.eventLevel': this.selectForm.eventLevel,
-        'where.eventSource': this.selectForm.eventSource,
+        'where.eventLevel': eventLevel,
+        'where.eventSource': eventSource,
+        'where.otherQuery': this.selectForm.phoneOrNumber,
         pageNum: this.pager.pageNum
       }
       this.axios.get('A2/eventServices/events/page', {params})
@@ -185,8 +198,19 @@ export default {
       const end = new Date();
       const start = new Date();
       start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-      this.selectForm.reportTime.push(start);
-      this.selectForm.reportTime.push(end);
+      const startDate = formatDate(start, 'yyyy-MM-dd');
+      const endDate = formatDate(end, 'yyyy-MM-dd');
+      this.selectForm.reportTime.push(startDate);
+      this.selectForm.reportTime.push(endDate);
+    },
+    selectEventList () { // 通过条件查询事件列表
+      this.getEventList();
+    },
+    resetForm (form) { // 重置查询条件
+      this.$refs[form].resetFields();
+      this.getOneMonth();
+      this.selectForm.eventStatus = this.dictId;
+      this.getEventList();
     }
   }
 }

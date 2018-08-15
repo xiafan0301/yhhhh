@@ -13,7 +13,7 @@
             <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
-            <el-date-picker type="date" placeholder="选择日期" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
+            <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
@@ -30,10 +30,11 @@
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
+              :on-success='handleSuccess'
+              :limit='9'
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
@@ -62,7 +63,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="是否有人员伤亡" label-width='150px' prop='casualties'>
-            <el-radio-group style='width: 330px' v-model='addForm.casualties' @change="changeRadio">
+            <el-radio-group style='width: 330px' v-model='addForm.casualties'>
               <el-radio label="无"></el-radio>
               <el-radio label="不确定" style='margin-left:22%'></el-radio>
               <el-radio label="有" style='margin-left:22%'></el-radio>
@@ -106,7 +107,8 @@ export default {
         eventLevel: '',
         casualties: '',
         eventFlag: true,
-        mutualFlag: false
+        mutualFlag: false,
+        attachmentList: [] // 附件列表
         // flagType: ['应急事件'] // 事件性质
       },
       rules: {
@@ -121,7 +123,8 @@ export default {
           { required: true, message: '请输入事件地点', trigger: 'blur' }
         ],
         eventDetail: [
-          { required: true, message: '请输入事件情况', trigger: 'blur' }
+          { required: true, message: '请输入事件情况', trigger: 'blur' },
+          { max: 140, message: '最多可以输入140个字' }
         ],
         eventType: [
           { required: true, message: '请选择事件类型', trigger: 'blur' }
@@ -142,10 +145,8 @@ export default {
     back (form) {
       this.$router.back(-1);
     },
-    changeRadio (value) { // 改变单选框的值
-      console.log(value)
-    },
     submitForm (form) { // 保存数据
+      // console.log(this.addForm)
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.addForm.casualties === '无') {
@@ -173,13 +174,7 @@ export default {
             .catch(() => {})
         }
       });
-      console.log(this.addForm)
-    },
-    handleRemove () {
-
-    },
-    handlePictureCardPreview () {
-
+      // console.log(this.addForm)
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
@@ -198,17 +193,27 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    handleSuccess (res, file) { // 图片上传成功
+      if (res && res.data) {
+        const data = {
+          attachmentType: dictType.enclosureTypeId,
+          url: res.data.newFileName
+        }
+        this.addForm.attachmentList.push(data);
+      }
+    },
+    handleRemove (file, fileList) { // 删除图片
+      if (file && file.response.data) {
+        if (this.addForm.attachmentList.length > 0) {
+          this.addForm.attachmentList.map((item, index) => {
+            if (item.url === file.response.data.newFileName) {
+              this.addForm.attachmentList.splice(index, 1);
+            }
+          });
+        }
+      }
     }
-    // getEventLevel () { // 获取事件来源
-    //   this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventSourceId)
-    //     .then((res) => {
-    //       console.log(res.data)
-    //       if (res && res.data) {
-    //         // this.eventLevelList = res.data;
-    //       }
-    //     })
-    //     .catch(() => {})
-    // }
   }
 }
 </script>
@@ -251,6 +256,10 @@ export default {
         top: 25%;
         left: 25%;
       }
+    }
+    .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
     }
     .address /deep/ .el-form-item__content {
       display: flex;
