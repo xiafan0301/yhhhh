@@ -369,8 +369,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -388,8 +388,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -407,8 +407,8 @@
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -781,7 +781,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '村名',
         longitude: 0
       },
       // 规上工业添加
@@ -804,7 +804,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '规上工业企业名称',
         longitude: 0
       },
       // 规上建筑添加
@@ -827,7 +827,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '规上建筑企业名称',
         longitude: 0
       },
       // 规上商贸添加
@@ -850,7 +850,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '规上商贸企业名称',
         longitude: 0
       },
       // 医疗资源添加
@@ -877,7 +877,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '医疗机构名称',
         longitude: 0
       },
       // 教育资源添加
@@ -900,7 +900,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '学校名',
         longitude: 0
       },
       // 停车场添加
@@ -919,7 +919,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '停车场名称',
         longitude: 0
       },
       // 养老机构添加
@@ -938,7 +938,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '养老机构名称',
         longitude: 0
       },
       // 扶贫项目添加
@@ -957,7 +957,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '项目名称',
         longitude: 0
       },
       // 空气监测站点添加
@@ -972,7 +972,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '空气监测站点名称',
         longitude: 0
       },
       // 水位监测站点添加
@@ -987,7 +987,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '水位监测站点名称',
         longitude: 0
       },
       // 文化添加旅游
@@ -1002,7 +1002,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '文化旅游建筑名称',
         longitude: 0
       },
       // 政务部门
@@ -1017,7 +1017,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '政务部门名称',
         longitude: 0
       },
       // 重点监控污染企业
@@ -1032,7 +1032,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '重点监控污染企业名称',
         longitude: 0
       },
       // 公共车站
@@ -1047,7 +1047,7 @@ export default {
         iconType: 0,
         latitude: 0,
         locationName: '',
-        locationTag: '',
+        locationTag: '公共车站名称',
         longitude: 0
       },
       // 下拉框

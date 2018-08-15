@@ -63,10 +63,10 @@
       </el-form>
       <el-form ref="form1" :model="form1" label-width="80px" v-if="!gg">
         <el-form-item label="接收者">
-            <el-checkbox label="移动端" name="type" v-model="form1.resource"></el-checkbox>
+            <el-checkbox label="移动端" name="type" v-model="form1.receive" disabled></el-checkbox>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="form1.region" placeholder="系统消息" disabled style="width: 500px">
+          <el-select v-model="form1.type" placeholder="系统消息" disabled style="width: 500px">
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
@@ -110,11 +110,8 @@ export default {
         time: ''
       },
       form1: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: true,
+        type: '',
+        receive: true,
         desc: '',
         checked: false,
         time: ''
@@ -136,7 +133,15 @@ export default {
         value: '选项5',
         label: '北京烤鸭'
       }],
-      value: ''
+      value: '',
+      obj: {
+        emiMessage: {
+          details: 'lkjkljkllklkjlkj',
+          messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+          terminal: 1,
+          title: 'string'
+        }
+      }
     }
   },
   computed: {
@@ -145,6 +150,21 @@ export default {
     this.gg = this.$route.query.release
   },
   methods: {
+    showEditDialog () {
+      let params = {
+        emiMessage: {
+          details: this.form1.desc,
+          messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+          terminal: 1,
+          title: 'string'
+        }
+      };
+      this.axios.post('A2/messageService', params)
+        .then((res) => {
+          console.log(res);
+          this.getTableData();
+        })
+    },
     onSubmit () {
     },
     handleRemove (file, fileList) {

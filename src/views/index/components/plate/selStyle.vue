@@ -6,7 +6,7 @@
         <span :class="{'ecl1-tab-sed': styleType === 2}" @click="changeStyleType(2)">地图区域</span>
       </div>
     </div>
-    <div class="plate-ecl1-c">
+    <div class="plate-ecl1-c" style='border-bottom: 1px solid #ddd'>
       <ul class="plate-ecl1-ul  plate-ecl1-ul1 clearfix">
         <li v-for="item in allPlateList" :key="item.configId">
             <img v-bind:src="item.thumbnailUrl" alt="">
@@ -19,7 +19,7 @@
       </ul>
     </div>
     <div class="plate-ecl-b">
-      <el-button :disabled="!styleRadio" @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+      <el-button :disabled="!styleRadio" :style="[!styleRadio ? styleObj : '']" @click.native="nextStep" type="primary" class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     </div>
   </div>
 </template>
@@ -36,7 +36,10 @@ export default {
         configCode: ''
       }, // 新增版块信息
       // 选择样式
-      styleRadio: ''
+      styleRadio: '',
+      styleObj: {
+        background: '#ddd'
+      }
     }
   },
   created () {
@@ -73,7 +76,7 @@ export default {
       this.styleRadio = val.configId;
       this.plateInfo.configId = val.configId;
       this.plateInfo.markUrl = val.markUrl;
-      // this.plateInfo.configCode = val.configCode;
+      this.plateInfo.configCode = val.configCode;
       this.$store.commit('setPlateInfo', {plateInfo: val});
     },
     nextStep () {
@@ -259,7 +262,7 @@ export default {
       float: left;
       text-align: center;
       > img {
-        width: 100%;
+        // width: 100%;
       }
       > ul {
         text-align: left;
