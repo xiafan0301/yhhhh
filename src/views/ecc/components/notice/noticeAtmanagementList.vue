@@ -82,11 +82,18 @@ export default {
   data () {
     return {
       searchForm: {
-        deviceName: '',
-        deviceAddress: '',
-        deviceIp: '',
-        deviceStatus: 0
+        beginTime: null,
+        endTime: null,
+        publishState: 0,
+        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
+        publishUnitId: '',
+        receiverId: '',
+        isReceive: '',
+        publishTime: ''
       },
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
       tableData: [{
         date: '2016-05-02',
         name: '王小虎',
@@ -108,9 +115,36 @@ export default {
   },
   computed: {
   },
+  created () {
+    this.getTableData();
+  },
   mounted () {
   },
   methods: {
+    getTableData () {
+      let params = {
+        // 'where.beginTime': this.searchForm.beginTime,
+        // 'where.endTime': this.searchForm.endTime,
+        // 'where.publishState': this.searchForm.publishState,
+        'where.messageType': this.searchForm.messageType,
+        // 'where.publishUnitId': this.searchForm.publishUnitId,
+        // 'where.receiverId': this.searchForm.receiverId,
+        // 'where.isReceive': this.searchForm.isReceive,
+        // 'where.publishTime': this.searchForm.publishTime,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.axios.get('A2/messageService/page?' + $.param(params))
+        .then((res) => {
+          if (res && res.data) {
+            this.tableData = res.data.list;
+            this.pagination.total = res.data.total;
+            console.log(res)
+          }
+        })
+        .catch(() => {
+        });
+    },
     edit () {
     },
     doSearch () {
