@@ -13,7 +13,7 @@
             <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
-            <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
+            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
@@ -117,7 +117,7 @@ export default {
           { validator: valiPhone, trigger: 'blur' }
         ],
         reportTime: [
-          { required: true, message: '请选择上报日期', trigger: 'blur' }
+          { required: true, message: '请选择上报时间', trigger: 'blur' }
         ],
         eventAddress: [
           { required: true, message: '请输入事件地点', trigger: 'blur' }

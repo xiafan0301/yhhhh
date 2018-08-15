@@ -7,19 +7,24 @@
       </el-breadcrumb>
     </div>
     <div class='event-end-body'>
-      <el-form class='event-end-form'>
+      <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules'>
         <el-form-item label="请确认事件等级" label-width='150px'>
-          <el-select  placeholder="请选择事件等级" style='width: 500px'>
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='endForm.eventLevel'>
+            <el-option
+              v-for="item in eventLevelList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="请输入事件总结" label-width='150px'>
-          <el-input type='textarea' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
+          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
         </el-form-item>
         <el-form-item style='margin-left: 150px'>
           <el-upload
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://10.16.4.50:8001/api/network/upload/new"
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
@@ -32,18 +37,72 @@
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff'>确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click="endEvent('endForm')">确定</el-button>
     </div>
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
-    return {}
+    return {
+      endForm: {
+        eventId: '',
+        eventLevel: '', // 事件等级
+        eventSummary: '' // 事件总结
+      },
+      rules: {
+        eventLevel: [
+          { required: true, message: '请选择事件等级', trigger: 'blur' }
+        ],
+        eventSummary: [
+          { max: 10000, message: '最多可以输入10000个字' }
+        ]
+      },
+      eventLevelList: [] // 事件等级列表
+    }
+  },
+  mounted () {
+    this.endForm.eventId = this.$route.params.eventId;
+    this.getEventLevel();
   },
   methods: {
     back () {
       this.$router.back(-1);
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventLevelList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    endEvent (form) { // 结束事件
+      console.log(this.endForm)
+      const eventId = this.$route.params.eventId;
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          const data = {
+            eventFinishDto: this.endForm
+          }
+          this.axios.put('A2/eventServices/events/finish/' + eventId, data.eventFinishDto)
+            .then((res) => {
+              if (res) {
+                console.log(res)
+                this.$message({
+                  message: '宣布事件结束成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'event-list'});
+              } else {
+                this.$message.error('宣布事件结束失败');
+              }
+            })
+            .catch(() => {})
+        }
+      });
     }
   }
 }

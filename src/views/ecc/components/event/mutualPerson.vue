@@ -45,7 +45,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div is='pagination'></div>
+    <!-- <div is='pagination'></div> -->
     <el-dialog
       title="操作提示"
       :visible.sync="deleteVisiable"
