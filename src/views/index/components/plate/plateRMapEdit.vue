@@ -52,7 +52,7 @@
   </div>
   <div class="plate-ecl-b">
     <span class='advice'>{{tips}}</span>
-    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="preStep" disabled style='background: #ddd;color:#fff;border-color:#ddd'>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' calss='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>

@@ -35,7 +35,7 @@
         <el-table-column prop="pageName" label="所属页面" min-width="120" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click='editPlate(scope.row.plateId)'>修改</el-button>
+            <el-button type="text" @click='editPlate(scope.row)'>修改</el-button>
             <i style="display: inline-block; width:1px;height:11px;background:rgba(221,221,221,1);margin: 0 12px 0 12px"></i>
             <el-button type="text" id='delete' class="vis-bg-del-btn" @click.native='deletePlate(scope.row.plateId)'>删除</el-button>
           </template>
@@ -168,14 +168,14 @@ export default {
         });
       });
     },
-    editPlate (plateId) { // 修改版块
-      if (plateId) {
-        this.axios.get('/plateServices/managers/' + plateId + '')
+    editPlate (plate) { // 修改版块
+      if (plate) {
+        this.axios.get('/plateServices/managers/' + plate.plateId + '')
           .then((res) => {
             if (res) {
-              console.log(res.data);
               const data = {
                 configId: res.data.configId,
+                configCode: plate.configCode,
                 markUrl: this.$store.state.plateInfo.markUrl
               };
               this.newDataList = {
