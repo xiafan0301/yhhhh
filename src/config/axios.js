@@ -13,7 +13,7 @@ axios.defaults.withCredentials = true;
 axios.interceptors.request.use((config) => {
   if (config.url.indexOf('http') !== 0) {
     if (config.url.indexOf('A2') === 0) {
-      config.url = ajaxCtx2 + config.url;
+      config.url = ajaxCtx2 + config.url.substring(2);
     } else {
       config.url = ajaxCtx + config.url;
     }

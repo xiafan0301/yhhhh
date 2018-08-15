@@ -1,6 +1,6 @@
 <template>
 <div class="bg-plate-ecl bg-plate-ecl2" v-show="this.$store.state.progressIndex === 3" style='width:100%'>
-  <div class="plate-ecl2-c clearfix">
+  <div class="plate-ecl2-c clearfix" style='border-bottom: 1px solid #ddd'>
     <h2>图表数据</h2>
     <div class="plate-ecl2-cl">
       <img :src="this.$store.state.plateInfo.markUrl" alt="" style="width:75%">
@@ -38,11 +38,11 @@
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
                         <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="number" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
                           <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="number" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -146,9 +146,9 @@
                       <tbody v-for="(items, index) in contentItemListFour3" :key="'items'+index">
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                          <td>{{items.itemName}}</td>
-                          <td><input type="number" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="number" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -156,9 +156,9 @@
                       <tbody v-for="(items, index) in contentItemListFour5" :key="'items'+index">
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                          <td>{{items.itemName}}</td>
-                          <td><input type="number" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="number" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -261,8 +261,8 @@
                       <tbody v-for="(items, index) in contentItemListFour3" :key="'items'+index">
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                          <td>{{items.itemName}}</td>
-                          <td><input type="number" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                           <!-- <td><input type="text" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td> -->
                         </tr>
                       </tbody>
@@ -271,8 +271,8 @@
                       <tbody v-for="(items, index) in contentItemListFour5" :key="'items'+index">
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
-                          <td>{{items.itemName}}</td>
-                          <td><input type="number" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td class='cannot-modify'>{{items.itemName}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                           <!-- <td><input type="text" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td> -->
                         </tr>
                       </tbody>
@@ -481,6 +481,7 @@ export default {
     },
     nextStep (dataForm) {
       this.dataObjTwo[0].contentItemList = [];
+      this.contentItemListOne = [];
       let data = {}, numberFour3 = [], numberFour5 = [];
       let fourThree = JSON.parse(JSON.stringify(this.contentItemListFour3));
       let fourFive = JSON.parse(JSON.stringify(this.contentItemListFour5));
@@ -1092,6 +1093,9 @@ export default {
 <style lang='scss'>
   .bg-plate-ecl {
     height: 100%;
+  }
+  .cannot-modify {
+    background: #eee;
   }
   .selectBtn {
     background: -webkit-linear-gradient(#07BAFD, #0785FD); /* Safari 5.1 - 6.0 */

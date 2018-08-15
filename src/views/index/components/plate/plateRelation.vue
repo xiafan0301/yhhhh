@@ -296,7 +296,7 @@ export default {
         // item.isChecked = false;
         if (num === item.id) {
           item = Object.assign(item, {finishChecked: true});
-          this.tips = '您可选择若点击该版块是否可跳转到其它页面，或将该版块替换到其它空余位置，设置完成后操作下一步按钮';
+          this.tips = '选择该版块是否跳转到其它页面、或替换到其它空余位置，设置完成后（可跳过）操作下一步按钮';
           this.btnDisabled = false;
           item.name = '当前版块';
         } else if (item.isChecked !== true) {
@@ -397,17 +397,17 @@ export default {
         line-height: 56px;
         position: relative;
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         margin-bottom: 10%;
         span {
           font-size: 14px;
-          float: left;
+          margin-left: 10%;
         }
         .map-button {
           border-radius:4px;
           height: 36px;
           margin-top:2%;
-          margin-right: -10%;
+          margin-right: 6%;
           border: 0;
           line-height: 36px;
           font-size: 14px;
