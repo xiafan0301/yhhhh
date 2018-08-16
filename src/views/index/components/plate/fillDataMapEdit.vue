@@ -720,6 +720,7 @@ export default {
       const params = {
         visPlates: totalDataList
       }
+      console.log(totalDataList)
       if (totalDataList.length > 0) {
         this.submitDisabled = false;
         this.warnTip = '';

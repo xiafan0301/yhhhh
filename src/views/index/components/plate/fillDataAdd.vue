@@ -943,54 +943,41 @@ export default {
     childDataListTwo: { // 监听类型二的子项
       handler: function (newVal) {
         let result = [];
-        let unitArr = [];
-        newVal.map((item, index) => {
-          unitArr.push(item.valueUnit);
-        });
+        console.log('33333')
+        console.log(this.contentItemListTwo)
         this.contentItemListTwo.map((items, index) => {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {
-              const length = unitArr.length;
-              const resultArr = unitArr.every((value, index, unitArr) => {
-                return value === unitArr[length - 1];
-              });
-              if (item.isMerge === true) {
-                if (resultArr === false) {
-                  this.checkedMerge = false; // 将浮层合并项设为未选中
-                  this.childDataListTwo.splice(length - 1, 1);
-                  items.contentSubItemList.splice(items.contentSubItemList.length - 1, 1);
-                  return;
-                }
-              }
+              // console.log(this.childDataListTwo[idx].valueUnit)
               item.contentName = this.childDataListTwo[idx].contentName;
               item.valueUnit = this.childDataListTwo[idx].valueUnit;
-              if (item.graphicFieldFlag === true) {
-                result = newVal.filter((value) => {
-                  return value.valueUnit === item.valueUnit;
-                });
-              }
+              // if (item.graphicFieldFlag === true) {
+              //   result = newVal.filter((value) => {
+              //     return value.valueUnit === item.valueUnit;
+              //   });
+              // }
             });
           }
         });
         if (this.$store.state.plateInfo.configCode !== 'plate015' && this.$store.state.plateInfo.configCode !== 'plate041') {
-          if (result.length > 0) {
-            this.childDataListTwo.map((list, index) => {
-              if (list.graphicFieldFlag === true) {
-                result.map((item) => {
-                  if (item.valueUnit === list.valueUnit) {
-                    list.graphicFieldFlag = true;
-                  } else {
-                    list.graphicFieldFlag = false;
-                  }
-                });
-              }
-            });
-          }
-          this.contentItemListTwo.map((items) => {
-            items.contentSubItemList.map((item, idx) => {
-              item.graphicFieldFlag = this.childDataListTwo[idx].graphicFieldFlag;
-            });
-          });
+          // if (result.length > 0) {
+          //   this.childDataListTwo.map((list, index) => {
+          //     if (list.graphicFieldFlag === true) {
+          //       result.map((item) => {
+          //         if (item.valueUnit === list.valueUnit) {
+          //           list.graphicFieldFlag = true;
+          //         } else {
+          //           list.graphicFieldFlag = false;
+          //         }
+          //       });
+          //     }
+          //   });
+          // }
+          // this.contentItemListTwo.map((items) => {
+          //   items.contentSubItemList.map((item, idx) => {
+          //     item.graphicFieldFlag = this.childDataListTwo[idx].graphicFieldFlag;
+          //   });
+          // });
         }
         this.isCheckBox = this.judgeUnit();
       },
@@ -1192,14 +1179,53 @@ export default {
       this.contentItemListTwo = twoObj;
       this.contentItemListThree = threeObj;
       this.contentItemListFour = fourObj;
-      this.contentItemListTwo.map((item) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
+      let twoUnit = [], threeUnit = [], twoValueContent = [], threeValueContent = [], threeLayerContent = [];
+      this.contentItemListTwo.map((items) => {
+        if (items.itemName !== '') {
+          this.dataObjTwo[0].contentItemList.push(items);
+          twoUnit = items.contentSubItemList.filter((list) => {
+            return list.graphicFieldFlag === false && list.supernatantFieldFlag === false;
+          });
+          if (this.checkedMerge === false) {
+            twoValueContent = items.contentSubItemList.filter((list) => {
+              return list.valueContent === '';
+            });
+          } else {
+            const length = items.contentSubItemList.length - 1;
+            for (let i = 0; i < length; i++) {
+              if (items.contentSubItemList[i].valueContent === '') {
+                twoValueContent.push(items.contentSubItemList[i]);
+              }
+            }
+          }
         }
       });
-      this.contentItemListThree.map((item, index) => {
-        if (item.itemName !== '') {
-          this.dataObjTwo[0].contentItemList.push(item);
+      this.contentItemListThree.map((items, index) => {
+        if (items.itemName !== '') {
+          this.dataObjTwo[0].contentItemList.push(items);
+          threeUnit = items.contentSubItemList.filter((list) => {
+            return list.graphicFieldFlag === false && list.supernatantFieldFlag === false;
+          });
+          if (this.checkedLayerMerge === false) {
+            threeLayerContent = items.contentSubItemList.filter((list) => {
+              return list.valueContent === '';
+            });
+            items.contentSubItemList.map((item) => {
+              if (item.contnetSubItemExtendList[0].valueContent === '') {
+                threeLayerContent.push(item.contnetSubItemExtendList[0]);
+              }
+            });
+          } else {
+            const length = items.contentSubItemList.length - 1;
+            for (let i = 0; i < length; i++) {
+              if (items.contentSubItemList[i].valueContent === '') {
+                threeValueContent.push(items.contentSubItemList[i]);
+              }
+              if (items.contentSubItemList[i].contnetSubItemExtendList[0].valueContent === '') {
+                threeLayerContent.push(items.contnetSubItemExtendList[0]);
+              }
+            }
+          }
         }
       });
       let data = {};
@@ -1297,34 +1323,41 @@ export default {
         }
         this.$refs[dataForm].validate((valid) => {
           if (valid) {
-            this.tip = '';
-            this.axios.post('/plateServices/plateBatch', params.visPlates)
-              .then((res) => {
-                if (res) {
-                  if (res.data.length > 0) {
-                    this.$message({
-                      showClose: true,
-                      message: '添加版块成功',
-                      type: 'success'
-                    });
-                    this.$store.commit('setProgressIndex', {progressIndex: 4});
-                    this.$router.push({name: 'plate-list'});
-                  } else {
-                    this.$message({
-                      showClose: true,
-                      message: '添加版块失败',
-                      type: 'error'
-                    });
+            if (twoUnit.length > 0 || threeUnit.length > 0) {
+              this.tip = '同一个子项中直接显示和浮层显示必须打开一个';
+            } else if (twoValueContent.length > 0 || threeLayerContent.length > 0 || threeValueContent.length > 0) {
+              this.tip = '子项的值不能为空';
+            } else {
+              this.tip = '';
+              this.axios.post('/plateServices/plateBatch', params.visPlates)
+                .then((res) => {
+                  if (res) {
+                    if (res.data.length > 0) {
+                      this.$message({
+                        showClose: true,
+                        message: '添加版块成功',
+                        type: 'success'
+                      });
+                      this.$store.commit('setProgressIndex', {progressIndex: 4});
+                      this.$router.push({name: 'plate-list'});
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        message: '添加版块失败',
+                        type: 'error'
+                      });
+                    }
                   }
-                }
-              })
-              .catch(() => {});
+                })
+                .catch(() => {});
+            }
           } else {
             this.tip = '请输入版块名称';
           }
         });
+      } else {
+        this.tip = '请将数据填写完整';
       }
-      // this.submitDisabled = true;
     },
     addparentDataTwo (name, idx, maxNumber) { // 类型二添加主项
       let arr = [];
@@ -1458,7 +1491,7 @@ export default {
               valueUnit: '',
               serialNumber: this.childDataListTwo.length + 1,
               graphicFieldFlag: true,
-              supernatantFieldFlag: false,
+              supernatantFieldFlag: true,
               sumFlag: false,
               contnetSubItemExtendList: [],
               isMerge: false
@@ -1470,7 +1503,7 @@ export default {
               valueUnit: '',
               serialNumber: this.childDataListTwo.length + 1,
               graphicFieldFlag: false,
-              supernatantFieldFlag: false,
+              supernatantFieldFlag: true,
               sumFlag: false,
               contnetSubItemExtendList: [],
               isMerge: false
@@ -1489,6 +1522,7 @@ export default {
           this.childDataListTwo.push(data);
           this.isActiveChild = index + 1;
         } else {
+          console.log('55555')
           this.tip = '子项可添加条数已达到上线';
         }
       }
@@ -1505,7 +1539,7 @@ export default {
             valueUnit: '',
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
-            supernatantFieldFlag: false,
+            supernatantFieldFlag: true,
             sumFlag: false,
             isMerge: false,
             contnetSubItemExtendList: [{
@@ -1522,7 +1556,7 @@ export default {
             valueUnit: '',
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
-            supernatantFieldFlag: false,
+            supernatantFieldFlag: true,
             sumFlag: false,
             isMerge: false
           };
@@ -1741,10 +1775,11 @@ export default {
       });
     },
     changeMerge (value, maxNumber) { // 类型二的勾选合并项
+      console.log(maxNumber)
       if (maxNumber > 1) {
-        let data;
         const parentLength = this.parentDataListTwo.length; // 获取主项的长度
         const childLength = this.childDataListTwo.length; // 获取子项的长度
+        let childData;
         if (value === true) {
           for (let i = 0; i < parentLength; i++) {
             let result = 0;
@@ -1753,25 +1788,25 @@ export default {
                 if (this.numberObj[i + '_' + j] !== undefined && this.numberObj[i + '_' + j] !== '') {
                   result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
                 }
-                if (result === 0) {
-                  result = '';
-                }
-                data = {
-                  contentName: '',
-                  valueContent: result,
-                  valueUnit: this.childDataListTwo[0].valueUnit,
-                  serialNumber: 1,
-                  graphicFieldFlag: false,
-                  supernatantFieldFlag: true,
-                  sumFlag: true,
-                  contnetSubItemExtendList: [],
-                  isMerge: true
-                }
               }
             }
-            this.contentItemListTwo[i].contentSubItemList.push(data);
+            if (result === 0) {
+              result = '';
+            }
+            childData = {
+              contentName: '',
+              valueContent: result,
+              valueUnit: this.childDataListTwo[0].valueUnit,
+              serialNumber: 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              contnetSubItemExtendList: [],
+              isMerge: true
+            }
+            this.contentItemListTwo[i].contentSubItemList.push(childData);
           }
-          this.childDataListTwo.push(data);
+          this.childDataListTwo.push(childData);
         } else {
           const childLength = this.childDataListTwo.length;
           this.childDataListTwo.splice(childLength - 1, 1);
@@ -1842,6 +1877,7 @@ export default {
             }
             this.contentItemListThree[i].contentSubItemList.push(data);
           }
+          console.log(childData)
           this.childDataListThree.push(childData);
           this.layerDataListThree.push(layerData);
         } else {

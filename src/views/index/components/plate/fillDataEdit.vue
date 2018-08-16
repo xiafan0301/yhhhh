@@ -1137,6 +1137,7 @@ export default {
       this.contentItemListTwo = twoObj;
       this.contentItemListThree = threeObj;
       this.contentItemListFour = fourObj;
+      let twoUnit = [], threeUnit = [], twoValueContent = [], threeValueContent = [], threeLayerContent = [];
       this.contentItemListTwo.map((items, index) => {
         if (items.itemName !== '') {
           items.serialNumber = index + 1;
@@ -1144,6 +1145,21 @@ export default {
             item.serialNumber = idx + 1;
           });
           this.dataObjTwo[0].contentItemList.push(items);
+          twoUnit = items.contentSubItemList.filter((list) => {
+            return list.graphicFieldFlag === false && list.supernatantFieldFlag === false;
+          });
+          if (this.checkedMerge === false) {
+            twoValueContent = items.contentSubItemList.filter((list) => {
+              return list.valueContent === '';
+            });
+          } else {
+            const length = items.contentSubItemList.length - 1;
+            for (let i = 0; i < length; i++) {
+              if (items.contentSubItemList[i].valueContent === '') {
+                twoValueContent.push(items.contentSubItemList[i]);
+              }
+            }
+          }
         }
       });
       this.contentItemListThree.map((items, index) => {
@@ -1153,6 +1169,29 @@ export default {
             item.serialNumber = idx + 1;
           });
           this.dataObjTwo[0].contentItemList.push(items);
+          threeUnit = items.contentSubItemList.filter((list) => {
+            return list.graphicFieldFlag === false && list.supernatantFieldFlag === false;
+          });
+          if (this.checkedLayerMerge === false) {
+            threeLayerContent = items.contentSubItemList.filter((list) => {
+              return list.valueContent === '';
+            });
+            items.contentSubItemList.map((item) => {
+              if (item.contnetSubItemExtendList[0].valueContent === '') {
+                threeLayerContent.push(item.contnetSubItemExtendList[0]);
+              }
+            });
+          } else {
+            const length = items.contentSubItemList.length - 1;
+            for (let i = 0; i < length; i++) {
+              if (items.contentSubItemList[i].valueContent === '') {
+                threeValueContent.push(items.contentSubItemList[i]);
+              }
+              if (items.contentSubItemList[i].contnetSubItemExtendList[0].valueContent === '') {
+                threeLayerContent.push(items.contnetSubItemExtendList[0]);
+              }
+            }
+          }
         }
       });
       let data = {};
@@ -1262,28 +1301,34 @@ export default {
         }
         this.$refs[dataForm].validate((valid) => {
           if (valid) {
-            this.tip = '';
-            this.axios.put('/plateServices/platesBatch', params.visPlates)
-              .then((res) => {
-                if (res) {
-                  if (res.data.length > 0) {
-                    this.$message({
-                      showClose: true,
-                      message: '修改版块成功',
-                      type: 'success'
-                    });
-                    this.$store.commit('setProgressIndex', {progressIndex: 4});
-                    this.$router.push({name: 'plate-list'});
-                  } else {
-                    this.$message({
-                      showClose: true,
-                      message: '修改版块失败',
-                      type: 'error'
-                    });
+            if (twoUnit.length > 0 || threeUnit.length > 0) {
+              this.tip = '同一个子项中直接显示和浮层显示必须打开一个';
+            } else if (twoValueContent.length > 0 || threeLayerContent.length > 0 || threeValueContent.length > 0) {
+              this.tip = '子项的值不能为空';
+            } else {
+              this.tip = '';
+              this.axios.put('/plateServices/platesBatch', params.visPlates)
+                .then((res) => {
+                  if (res) {
+                    if (res.data.length > 0) {
+                      this.$message({
+                        showClose: true,
+                        message: '修改版块成功',
+                        type: 'success'
+                      });
+                      this.$store.commit('setProgressIndex', {progressIndex: 4});
+                      this.$router.push({name: 'plate-list'});
+                    } else {
+                      this.$message({
+                        showClose: true,
+                        message: '修改版块失败',
+                        type: 'error'
+                      });
+                    }
                   }
-                }
-              })
-              .catch(() => {});
+                })
+                .catch(() => {});
+            }
           } else {
             this.tip = '请输入版块名称';
           }
@@ -1451,7 +1496,7 @@ export default {
               valueUnit: '',
               serialNumber: this.childDataListTwo.length + 1,
               graphicFieldFlag: true,
-              supernatantFieldFlag: false,
+              supernatantFieldFlag: true,
               sumFlag: false,
               contnetSubItemExtendList: [],
               isMerge: false
@@ -1463,7 +1508,7 @@ export default {
               valueUnit: '',
               serialNumber: this.childDataListTwo.length + 1,
               graphicFieldFlag: false,
-              supernatantFieldFlag: false,
+              supernatantFieldFlag: true,
               sumFlag: false,
               contnetSubItemExtendList: [],
               isMerge: false
@@ -1484,22 +1529,6 @@ export default {
       if (name === '' && unit === '') {
         this.tip = '请填写信息';
       } else {
-        if (this.checkedLayerMerge === true) {
-          this.checkedLayerMerge = false; // 将浮层合并项的值设为false
-          this.childDataListThree.splice(this.childDataListThree.length - 1, 1);
-          this.layerDataListThree.splice(this.layerDataListThree.length - 1, 1);
-          this.contentItemListThree.map((item) => {
-            item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
-          });
-        }
-        this.contentItemListThree.map((items, index) => {
-          items.contentSubItemList.map((item, idx) => {
-            numThree[index + '_' + idx] = item.valueContent;
-            numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
-          });
-        });
-        this.numberLayerObjThree = numLayerThree;
-        this.numberObjThree = numThree;
         if (this.childDataListThree.length < maxNumber) {
           this.tip = '';
           const data = {
@@ -1508,7 +1537,7 @@ export default {
             valueUnit: '',
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
-            supernatantFieldFlag: false,
+            supernatantFieldFlag: true,
             sumFlag: false,
             isMerge: false,
             contnetSubItemExtendList: [{
@@ -1525,7 +1554,7 @@ export default {
             valueUnit: '',
             serialNumber: this.childDataListThree.length + 1,
             graphicFieldFlag: false,
-            supernatantFieldFlag: false,
+            supernatantFieldFlag: true,
             sumFlag: false,
             isMerge: false
           };
@@ -1539,6 +1568,22 @@ export default {
           this.contentItemListThree.map((item) => {
             item.contentSubItemList.push(data);
           });
+          if (this.checkedLayerMerge === true) {
+            this.checkedLayerMerge = false; // 将浮层合并项的值设为false
+            this.childDataListThree.splice(this.childDataListThree.length - 1, 1);
+            this.layerDataListThree.splice(this.layerDataListThree.length - 1, 1);
+            this.contentItemListThree.map((item) => {
+              item.contentSubItemList.splice(item.contentSubItemList.length - 1, 1);
+            });
+          }
+          this.contentItemListThree.map((items, index) => {
+            items.contentSubItemList.map((item, idx) => {
+              numThree[index + '_' + idx] = item.valueContent;
+              numLayerThree[index + '_' + idx] = item.contnetSubItemExtendList[0].valueContent;
+            });
+          });
+          this.numberLayerObjThree = numLayerThree;
+          this.numberObjThree = numThree;
           this.childDataListThree.push(childData);
           this.layerDataListThree.push(value);
           this.isActiveChild = index + 1;
@@ -1706,17 +1751,18 @@ export default {
         return value.valueUnit === this.childDataListTwo[index].valueUnit;
       });
       this.contentItemListTwo.map((items) => {
-        items.contentSubItemList.map((item, index) => {
-          if (checkResult.length > 0) {
-            checkResult.map((list) => {
-              if (item.graphicFieldFlag === true) {
-                if (list.valueUnit === item.valueUnit) {
-                  item.graphicFieldFlag = value;
-                }
-              }
-            })
-          }
-        });
+        // items.contentSubItemList[index].graphicFieldFlag = value;
+        // items.contentSubItemList.map((item, index) => {
+        //   if (checkResult.length > 0) {
+        //     checkResult.map((list) => {
+        //       if (item.graphicFieldFlag === true) {
+        //         if (list.valueUnit === item.valueUnit) {
+        //           item.graphicFieldFlag = value;
+        //         }
+        //       }
+        //     })
+        //   }
+        // });
         items.contentSubItemList[index].graphicFieldFlag = value;
       });
       this.childDataListTwo[index].graphicFieldFlag = value;
@@ -1766,30 +1812,30 @@ export default {
                 result = parseInt(result + parseInt(this.numberObj[i + '_' + j]));
               }
             }
-            if (result === 0) {
-              data = {
-                contentName: '',
-                valueContent: '',
-                valueUnit: this.childDataListTwo[0].valueUnit,
-                serialNumber: 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: true,
-                contnetSubItemExtendList: [],
-                isMerge: true
-              }
-            } else {
-              data = {
-                contentName: '',
-                valueContent: result,
-                valueUnit: this.childDataListTwo[0].valueUnit,
-                serialNumber: 1,
-                graphicFieldFlag: false,
-                supernatantFieldFlag: true,
-                sumFlag: true,
-                contnetSubItemExtendList: [],
-                isMerge: true
-              }
+          }
+          if (result === 0) {
+            data = {
+              contentName: '',
+              valueContent: '',
+              valueUnit: this.childDataListTwo[0].valueUnit,
+              serialNumber: 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              contnetSubItemExtendList: [],
+              isMerge: true
+            }
+          } else {
+            data = {
+              contentName: '',
+              valueContent: result,
+              valueUnit: this.childDataListTwo[0].valueUnit,
+              serialNumber: 1,
+              graphicFieldFlag: false,
+              supernatantFieldFlag: true,
+              sumFlag: true,
+              contnetSubItemExtendList: [],
+              isMerge: true
             }
           }
           this.contentItemListTwo[i].contentSubItemList.push(data);
@@ -2132,7 +2178,7 @@ export default {
                           valueUnit: '',
                           serialNumber: 1,
                           graphicFieldFlag: false,
-                          supernatantFieldFlag: false,
+                          supernatantFieldFlag: true,
                           sumFlag: false,
                           contnetSubItemExtendList: [],
                           isMerge: false
@@ -2147,7 +2193,7 @@ export default {
                             valueUnit: '',
                             serialNumber: 1,
                             graphicFieldFlag: false,
-                            supernatantFieldFlag: false,
+                            supernatantFieldFlag: true,
                             sumFlag: false,
                             contnetSubItemExtendList: [],
                             isMerge: false
@@ -2241,7 +2287,7 @@ export default {
                           valueUnit: '',
                           serialNumber: 1,
                           graphicFieldFlag: false,
-                          supernatantFieldFlag: false,
+                          supernatantFieldFlag: true,
                           sumFlag: false,
                           contnetSubItemExtendList: [],
                           isMerge: false
@@ -2263,7 +2309,7 @@ export default {
                             valueUnit: '',
                             serialNumber: 1,
                             graphicFieldFlag: false,
-                            supernatantFieldFlag: false,
+                            supernatantFieldFlag: true,
                             sumFlag: false,
                             contnetSubItemExtendList: [{
                               contentName: '',
