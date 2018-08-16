@@ -125,11 +125,12 @@ export default {
       this.$router.push({name: 'add-event'});
     },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      console.log(scope)
       if (scope.row.eventStatusName === '未处理') {
         this.$router.push({name: 'event-untreated', params: {eventId: scope.row.eventId}});
+      } else if (scope.row.eventStatusName === '已结束') {
+        this.$router.push({name: 'event-detail-end', params: {eventId: scope.row.eventId}});
       } else {
-        this.$router.push({name: 'event-detail'});
+        this.$router.push({name: 'event-detail-reat', params: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态

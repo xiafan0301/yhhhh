@@ -182,7 +182,7 @@ export default {
     },
     handleRemove () {},
     skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail'});
+      this.$router.push({name: 'ctc-detail', params: {eventId: this.$route.params.eventId}});
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.params.eventId;
@@ -274,7 +274,6 @@ export default {
       });
     },
     modifyEvent (form) { // 修改事件
-      console.log(this.detailForm)
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.detailForm.flagType.length > 0) {
@@ -287,7 +286,30 @@ export default {
               }
             });
           }
+          if (this.detailForm.casualties === '无') {
+            this.detailForm.casualties = 0;
+          } else if (this.detailForm.casualties === '不确定') {
+            this.detailForm.casualties = -1;
+          } else if (this.detailForm.casualties === '有') {
+            this.detailForm.casualties = this.dieNumber;
+          }
         }
+        const params = {
+          emiEvent: this.detailForm
+        }
+        this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, params.emiEvent)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '修改事件成功',
+                type: 'success'
+              });
+              this.$router.push({name: 'event-list'});
+            } else {
+              this.$message.error('修改事件失败');
+            }
+          })
+          .catch(() => {})
       });
     }
   }
