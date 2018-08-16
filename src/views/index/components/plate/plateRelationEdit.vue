@@ -70,7 +70,7 @@
   </div>
   <div class="plate-ecl-b">
     <span class='advice'>{{tips}}</span>
-    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="preStep" disabled style='background: #ddd;color:#fff'>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" :style="[btnDisabled === true ? styleObj : '']" :disabled='btnDisabled' @click.native='nextStep' class='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -184,6 +184,7 @@ export default {
       this.newDataList.jumpPageId = obj.pageId;
     },
     selectPages (value) {
+      const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
       if (value) {
         this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
       }
@@ -228,6 +229,12 @@ export default {
                 item.canChecked = true;
               });
             }
+            // this.positionObj.map((item) => {
+            //   if (serialNumber === item.id) {
+            //     item.isChecked = false;
+            //     item.finishChecked = true;
+            //   }
+            // });
             const data = this.positionObj.filter((item) => {
               return item.isChecked !== true;
             });
@@ -260,10 +267,10 @@ export default {
             item.isChecked = false;
           }
         }
-        if (item.id === num) {
+        if (num === item.id) {
           item.name = plateName;
           item.finishChecked = true;
-          this.tips = '您可选择点击该版块是否可跳转到其它页面，或替换到其它空余位置，设置完成后执行下一步';
+          this.tips = '选择该版块是否跳转到其它页面、或替换到其它空余位置，设置完成后（可跳过）操作下一步按钮';
           this.btnDisabled = false;
         } else if (item.isChecked !== true) {
           item.canChecked = true;
@@ -338,7 +345,9 @@ export default {
                 return value.plateType === 1;
               });
               if (list.length === 6) {
-                item.isDisabled = true;
+                if (this.currentPage !== item.pageName) {
+                  item.isDisabled = true;
+                }
               }
             });
           }
@@ -373,7 +382,7 @@ export default {
             if (data.length > 0) {
               const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
               this.positionObj.map((item) => {
-                if (item.id === serialNumber) {
+                if (serialNumber === item.id) {
                   item.isSerialNumber = true;
                 }
               });
@@ -493,18 +502,18 @@ export default {
         line-height: 56px;
         position: relative;
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         margin-bottom: 10%;
         span {
           font-size: 14px;
-          float: left;
+          margin-left: 10%;
         }
         .map-button {
           border-radius:4px;
           // width: 100px;
           height: 36px;
           margin-top:2%;
-          margin-right: -10%;
+          margin-right: 6%;
           border: 0;
           line-height: 36px;
           // padding: 0 10px;

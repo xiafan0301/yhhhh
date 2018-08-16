@@ -9,60 +9,79 @@
     <div class='add-body'>
       <div class='add-form'>
         <el-form class='form-content' inline-message :model='addForm' :rules='rules' ref='addForm'>
-          <el-form-item label="上报人手机号" label-width='150px'>
-            <el-input style='width: 500px' placeholder='请输入手机号'></el-input>
+          <el-form-item label="上报人手机号" label-width='150px' prop='reporterPhone'>
+            <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
-          <el-form-item label="上报时间" label-width='150px'>
-            <el-date-picker type="date" placeholder="选择日期" style="width: 500px;"></el-date-picker>
+          <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
+            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
-          <el-form-item label="事发地点" label-width='150px'>
-            <el-input style='width: 500px' placeholder='请选择事发地点...'></el-input>
+          <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
+            <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
+            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
           </el-form-item>
-          <el-form-item label="事件情况" label-width='150px'>
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
+          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
+            <el-input style='width: 500px' placeholder='请选择经度...' v-model='addForm.longitude'></el-input>
+          </el-form-item>
+          <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
+            <el-input style='width: 500px' placeholder='请选择纬度...' v-model='addForm.latitude'></el-input>
+          </el-form-item>
+          <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
+            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
-              :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
+              :on-success='handleSuccess'
+              :limit='9'
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
             </el-upload>
           </el-form-item>
-          <el-form-item label="事件类型" label-width='150px'>
-            <el-select  placeholder="请选择事件类型" style='width: 500px'>
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="事件类型" label-width='150px' prop='eventType'>
+            <el-select  placeholder="请选择事件类型" style='width: 500px' v-model="addForm.eventType">
+              <el-option
+                v-for="item in eventTypeList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="事件等级" label-width='150px'>
-            <el-select  placeholder="请选择事件等级" style='width: 500px'>
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="beijing"></el-option>
+          <el-form-item label="事件等级" label-width='150px' prop='eventLevel'>
+            <el-select  placeholder="请选择事件等级" style='width: 500px' v-model="addForm.eventLevel">
+              <el-option
+                v-for="item in eventLevelList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId"
+              >
+              </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="是否有人员伤亡" label-width='150px'>
-            <el-radio-group style='width: 330px'>
+          <el-form-item label="是否有人员伤亡" label-width='150px' prop='casualties'>
+            <el-radio-group style='width: 330px' v-model='addForm.casualties'>
               <el-radio label="无"></el-radio>
               <el-radio label="不确定" style='margin-left:22%'></el-radio>
               <el-radio label="有" style='margin-left:22%'></el-radio>
             </el-radio-group>
-            <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数'></el-input><span style='margin-left:1%'>人</span>
+            <template v-if="addForm.casualties === '有'">
+              <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input>
+              <span style='margin-left:1%'>人</span>
+            </template>
           </el-form-item>
           <el-form-item label="事件性质" label-width='150px'>
-            <el-checkbox-group>
-              <el-checkbox label="应急事件" name="type"></el-checkbox>
-              <el-checkbox label="民众互助" name="type"></el-checkbox>
-            </el-checkbox-group>
+            <el-checkbox label="应急事件" name="type" disabled v-model='addForm.eventFlag'></el-checkbox>
+            <el-checkbox label="民众互助" name="type" v-model='addForm.mutualFlag'></el-checkbox>
           </el-form-item>
         </el-form>
       </div>
       <div class='operation-btn'>
-        <el-button @click='back'>返回</el-button>
-        <el-button style='background: #0785FD;color:#fff'>保存</el-button>
+        <el-button @click="back('addForm')">返回</el-button>
+        <el-button style='background: #0785FD;color:#fff' @click="submitForm('addForm')">保存</el-button>
         <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
       </div>
     </div>
@@ -70,32 +89,130 @@
 </template>
 <script>
 import {valiPhone} from '@/utils/validator.js';
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isDefaultChecked: true,
+      dieNumber: '', // 死亡人数
       addForm: {
         reporterPhone: '',
         reportTime: '',
         eventAddress: '',
+        eventSource: 'cee2d05e-97b1-11e8-b784-db60b034ea83',
         eventDetail: '',
+        longitude: '', // 经度
+        latitude: '', // 纬度
         eventType: '',
         eventLevel: '',
         casualties: '',
-        flagType: '' // 事件性质
+        eventFlag: true,
+        mutualFlag: false,
+        attachmentList: [] // 附件列表
+        // flagType: ['应急事件'] // 事件性质
       },
       rules: {
         reporterPhone: [
-          {required: true, message: '请输入手机号', trigger: 'blur'}
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: valiPhone, trigger: 'blur' }
+        ],
+        reportTime: [
+          { required: true, message: '请选择上报时间', trigger: 'blur' }
+        ],
+        eventAddress: [
+          { required: true, message: '请输入事件地点', trigger: 'blur' }
+        ],
+        eventDetail: [
+          { required: true, message: '请输入事件情况', trigger: 'blur' },
+          { max: 140, message: '最多可以输入140个字' }
+        ],
+        eventType: [
+          { required: true, message: '请选择事件类型', trigger: 'blur' }
         ]
-      }
+      },
+      eventTypeList: [], // 事件类型列表
+      eventLevelList: [] // 事件等级
     }
+  },
+  mounted () {
+    this.getEventType();
+    this.getEventLevel();
   },
   methods: {
     skipCtcDetail () { // 跳到调度指挥方案制定页面
       this.$router.push({name: 'ctc-detail'});
     },
-    back () {
+    back (form) {
       this.$router.back(-1);
+    },
+    submitForm (form) { // 保存数据
+      // console.log(this.addForm)
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          if (this.addForm.casualties === '无') {
+            this.addForm.casualties = 0;
+          } else if (this.addForm.casualties === '不确定') {
+            this.addForm.casualties = -1;
+          } else if (this.addForm.casualties === '有') {
+            this.addForm.casualties = this.dieNumber;
+          }
+          const param = {
+            emiEvent: this.addForm
+          }
+          this.axios.post('A2/eventServices/event', param.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$message({
+                  message: '添加事件成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'event-list'});
+              } else {
+                this.$message.error('添加事件失败');
+              }
+            })
+            .catch(() => {})
+        }
+      });
+      // console.log(this.addForm)
+    },
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventTypeList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventLevelList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    handleSuccess (res, file) { // 图片上传成功
+      if (res && res.data) {
+        const data = {
+          attachmentType: dictType.enclosureTypeId,
+          url: res.data.newFileName
+        }
+        this.addForm.attachmentList.push(data);
+      }
+    },
+    handleRemove (file, fileList) { // 删除图片
+      if (file && file.response.data) {
+        if (this.addForm.attachmentList.length > 0) {
+          this.addForm.attachmentList.map((item, index) => {
+            if (item.url === file.response.data.newFileName) {
+              this.addForm.attachmentList.splice(index, 1);
+            }
+          });
+        }
+      }
     }
   }
 }
@@ -138,6 +255,19 @@ export default {
         position: absolute;
         top: 25%;
         left: 25%;
+      }
+    }
+    .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    .address /deep/ .el-form-item__content {
+      display: flex;
+      .map-ecc {
+        img {
+          padding-top: 5px;
+          padding-left: 5px;
+        }
       }
     }
   }

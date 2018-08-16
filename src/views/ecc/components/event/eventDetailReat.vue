@@ -11,65 +11,58 @@
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <p class='event-number'>事件编号：XPZ180724001</p>
+          <p class='event-number'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
-        <div class='event-status'>处理中</div>
+        <div class='event-status'>
+          <img src='../../../../assets/img/temp/treating.png' />
+        </div>
         <div class='basic-detail'>
           <div class='basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <span class='content'>自然灾害类</span>
-              <!-- <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
-                <el-option
-                  v-for="item in options1"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select> -->
+              <span class='content'>{{eventDetailObj.eventTypeName}}</span>
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <span class='content'>I极（特大）</span>
-              <!-- <el-select v-model="value" placeholder="请选择" style='width: 200px;'>
-                <el-option
-                  v-for="item in options1"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select> -->
+              <span class='content'>{{eventDetailObj.eventLevelName}}</span>
+
             </div>
-            <div><span class='title'>报案事件：</span><span class='content'>2017-4-2 15：00</span></div>
+            <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
               <span class='title'>报案人：</span>
-              <!-- <span class='content'>1234567890</span> -->
-              <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>1234567890</span>
+              <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>长沙市雨花区雀园路232号创谷工业园</span></div>
+            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
-            <div><span class='title'>人员伤亡：</span><span class='content'>无</span></div>
+            <div>
+              <span class='title'>人员伤亡：</span>
+              <template v-if='eventDetailObj.casualties == -1'>
+                <span class='content'>不确定</span>
+              </template>
+              <template v-else-if='eventDetailObj.casualties == 0'>
+                <span class='content'>无</span>
+              </template>
+              <template v-if='eventDetailObj.casualties > 0'>
+                <span class='content'>{{eventDetailObj.casualties}}</span>
+              </template>
+            </div>
           </div>
           <div class='basic-list'>
-            <div><span class='title'>事件情况：</span><span class='content'>园区门口有电动车起火</span></div>
+            <div><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
+            <img
+              v-for='item in eventDetailObj.attachmentList'
+              :src='item.url'
+              :key='item.attachmentId'
+            />
           </div>
         </div>
       </div>
-      <div class='ctc'>
+      <div class='ctc' v-show='eventDetailObj.taskList.length > 0'>
         <div class='ctc-header'>
           <div class='flag'></div>
           <p class='ctc-text'>调度指挥方案</p>
@@ -114,7 +107,7 @@
           </ul>
         </div>
       </div>
-      <div class='event-progress'>
+      <div class='event-progress' v-show='eventDetailObj.processingList.length > 0'>
         <div class='event-progress-header'>
           <div class='flag'></div>
           <p class='event-progress-text'>事件进展</p>
@@ -197,39 +190,20 @@
           </div>
         </div>
       </div>
-      <div class='event-summary'>
+      <div class='event-summary' v-show='eventDetailObj.eventSummary'>
         <div class='event-summary-header'>
           <div class='flag'></div>
           <p class='event-summary-text'>事件总结</p>
         </div>
         <div class='summary-content'>
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-          a啊打卡快乐圣诞节看拉克丝打了啊的就爱上了；拉萨巨大代价爱神的箭；啊实打实的静安寺
-        </div>
-      </div>
-      <div class='close-reason'>
-        <div class='close-reason-header'>
-          <div class='flag'></div>
-          <p class='close-reason-text'>被关闭的原因</p>
-        </div>
-        <div class='close-reason-body'>
-          <div class='detail'>阿斯顿杰拉德尽快离开的；两岸三地卡死了；阿斯达卡是</div>
-          <div class='divide'></div>
-          <div class='remark'>备注：lsdkjasljd卡死了较大利空打击爱上了就打算考虑的就是</div>
+          {{eventDetailObj.eventSummary}}
         </div>
       </div>
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button class='skipCtcDetail' @click='skipCtcDetail'>再次调度</el-button>
       <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
-      <!-- <el-button>返回</el-button> -->
-      <!-- <el-button type="primary" style='background: #0785FD'>保存</el-button> -->
-      <!-- <el-button type="primary" style='background: #FB796C;border-color:#FB796C'>修改</el-button> -->
+      <el-button style='background: #FB796C;color:#fff' class='skipCtcDetail' @click='skipCtcDetail'>再次调度</el-button>
     </div>
   </div>
 </template>
@@ -238,6 +212,7 @@ export default {
   data () {
     return {
       dialogFormVisible: false,
+      imgSrc: '', // 事件状态图片
       pagination: {
         total: 1000,
         pageNum: 1,
@@ -259,18 +234,59 @@ export default {
         value: '选项5',
         label: '北京烤鸭'
       }],
-      value: ''
+      value: '',
+      eventDetailObj: {} // 事件详情列表
     }
+  },
+  mounted () {
+    this.getEventDetail();
   },
   methods: {
     skipEventEnd () { // 跳到事件结束页面
-      this.$router.push({name: 'event-end'});
+      this.$router.push({name: 'event-end', params: {eventId: this.$route.params.eventId}});
     },
     skipCtcDetail () {
       this.$router.push({name: 'ctc-detail'});
     },
     back () { // 返回上一页
       this.$router.back(-1);
+    },
+    getEventDetail () { // 获取事件详情
+      const eventId = this.$route.params.eventId;
+      // this.closeForm.eventId = eventId;
+      if (eventId) {
+        this.axios.get('A2/eventServices/events/' + eventId)
+          .then((res) => {
+            if (res && res.data) {
+              console.log(res)
+              this.eventDetailObj = res.data;
+              // this.attachmentList = res.data.attachmentList;
+              // this.detailForm.eventId = eventId;
+              // this.detailForm.eventCode = res.data.eventCode;
+              // this.detailForm.reporterPhone = res.data.reporterPhone;
+              // this.detailForm.reportTime = res.data.reportTime;
+              // this.detailForm.eventDetail = res.data.eventDetail;
+              // this.detailForm.eventAddress = res.data.eventAddress;
+              // this.detailForm.eventLevel = res.data.eventLevel;
+              // this.detailForm.eventType = res.data.eventType;
+              // if (res.data.casualties === -1) {
+              //   this.detailForm.casualties = '不确定';
+              // } else if (res.data.casualties === 0) {
+              //   this.detailForm.casualties = '无';
+              // } else if (res.data.casualties > 0) {
+              //   this.detailForm.casualties = '有';
+              //   this.dieNumber = res.data.casualties;
+              // }
+              // if (res.data.eventFlag === true) {
+              //   this.detailForm.flagType.push('应急事件');
+              // }
+              // if (res.data.mutualFlag === true) {
+              //   this.detailForm.flagType.push('民众互助');
+              // }
+            }
+          })
+          .catch(() => {})
+      }
     }
   }
 }
@@ -315,7 +331,7 @@ export default {
         }
         .event-status {
           color: #fff;
-          background: #0785FD;
+          // background: #0785FD;
           width: 100px;
           height: 40px;
           border-radius: 2px;

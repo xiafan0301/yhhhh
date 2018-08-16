@@ -5,22 +5,17 @@
       <div class="page-left">
         <span><span style='color:red'>*</span>关联页面</span>
         <el-select v-model="relationValue" placeholder="选择页面" @change='selectPages' class='relationPage'>
-          <!-- <el-option value=''>请选择</el-option> -->
           <el-option
             v-for="item in relationPageList"
             :key="item.pageId"
             :value="item.pageName"
+            :disabled='item.isDisabled'
+            :title="[item.isDisabled === true ? '该页面已存在版块数据' : '']"
           >
             {{item.pageName}}
           </el-option>
         </el-select>
       </div>
-      <!-- <span class='advice' v-show='fisrtTip'>*请选择要修改的页面</span>
-      <span class='advice' v-show='isRepace'>
-        *该页面已存在地图版块，是否替换？
-        <el-button type='primary' id='sureBtn' size='small' @click='handleSure'>是</el-button>
-        <el-button id='preBtn' size='small' @click='handleNo'>否</el-button>
-      </span> -->
     </div>
     <div class="relation-map">
       <img :src='imgUrl' class='map-img' />
@@ -52,7 +47,7 @@
   </div>
   <div class="plate-ecl-b">
     <span class='advice'>{{tips}}</span>
-    <el-button id='preBtn' @click.native="preStep" disabled>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
+    <el-button @click.native="preStep" disabled style='background: #ddd;color:#fff;border-color:#ddd'>&nbsp;&nbsp;&nbsp;&nbsp;上一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
     <el-button type="primary" @click.native='nextStep' :disabled='btnDisabled' calss='selectBtn'>&nbsp;&nbsp;&nbsp;&nbsp;下一步&nbsp;&nbsp;&nbsp;&nbsp;</el-button>
   </div>
 </div>
@@ -158,32 +153,28 @@ export default {
         item.isChecked = false;
         item.name = '';
       });
-      this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
-        .then((res) => {
-          if (res) {
-            this.plateList = res.data;
-            if (res.data.length > 0) {
-              // this.fisrtTip = false;
-              // this.isRepace = true;
-              // this.btnDisabled = true;
-              this.tips = '该页面已存在地图版块，如需替换则请操作下一步按钮';
-              this.btnDisabled = false;
-              this.$emit('getMapDataList', res.data);
-            } else {
-              this.positionObj.forEach((item, index) => {
-                item.canChecked = true;
-                item.name = '空';
-                this.btnDisabled = false;
-                this.tips = '操作下一步按钮继续';
-                // this.fisrtTip = false;
-                // this.isRepace = false;
-              });
-              this.$emit('getMapDataList', []);
-            }
-            this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
-          }
-        })
-        .catch(() => {});
+      this.tips = '操作下一步按钮继续';
+      // this.axios.get('/plateServices/managers/byPageId/' + obj.pageId + '')
+      //   .then((res) => {
+      //     if (res) {
+      //       this.plateList = res.data;
+      //       if (res.data.length > 0) {
+      //         this.tips = '该页面已存在地图版块，如需替换则请操作下一步按钮';
+      //         this.btnDisabled = false;
+      //         this.$emit('getMapDataList', res.data);
+      //       } else {
+      //         this.positionObj.forEach((item, index) => {
+      //           item.canChecked = true;
+      //           item.name = '空';
+      //           this.btnDisabled = false;
+      //           this.tips = '操作下一步按钮继续';
+      //         });
+      //         // this.$emit('getMapDataList', []);
+      //       }
+      //       this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
+      //     }
+      //   })
+      //   .catch(() => {});
       this.$store.commit('setMapPageId', {mapPageId: obj.pageId});
     },
     setInitialData () {
@@ -198,11 +189,22 @@ export default {
             res.data.list.map((item) => {
               if (item.pageId === pageId) {
                 this.relationValue = item.pageName;
+                this.currentPage = item.pageName;
                 this.btnDisabled = false;
                 this.imgUrl = require('../../../../assets/img/temp/map_select.png');
               }
             });
             this.relationPageList = res.data.list;
+            this.relationPageList.map((item) => {
+              const list = item.plateList.filter((value, idx) => {
+                return value.plateType === 2;
+              });
+              if (list.length > 0) {
+                if (this.currentPage !== item.pageName) {
+                  item.isDisabled = true;
+                }
+              }
+            });
           }
         })
         .catch(() => {});
@@ -210,12 +212,13 @@ export default {
         .then((res) => {
           if (res) {
             this.plateList = res.data;
+            console.log(res.data)
             if (res.data.length > 0) {
               this.$emit('getMapDataList', res.data);
             } else {
               this.btnDisabled = false;
               this.fisrtTip = false;
-              this.$emit('getMapDataList', []);
+              // this.$emit('getMapDataList', []);
             }
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }

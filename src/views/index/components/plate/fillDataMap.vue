@@ -1,9 +1,9 @@
 <template>
 <div class="bg-plate-ecl bg-plate-ecl2" v-show="this.$store.state.progressIndex === 3" style='width:100%'>
-  <div class="plate-ecl2-c clearfix">
-    <h2>图表数据</h2>
+  <div class="plate-ecl2-c clearfix" style='border-bottom: 1px solid #ddd'>
+    <h2 style='font-weight: bold;padding: 0 190px 10px'>示例注解图 - {{this.$store.state.plateInfo.configCode}}</h2>
     <div class="plate-ecl2-cl">
-      <img :src="this.$store.state.plateInfo.markUrl" alt="" style="width:100%">
+      <img :src="this.$store.state.plateInfo.markUrl">
     </div>
     <div class="plate-ecl2-cr">
       <div class='position-select'>
@@ -15,6 +15,7 @@
             @change="changeMapType1"
             @focus='focusMap(1)'
           >
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList1'
               :key='item.dataTypeId'
@@ -33,7 +34,7 @@
             @change='changeMapType2'
             @focus='focusMap(2)'
           >
-            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList2'
               :key='item.dataTypeId'
@@ -46,7 +47,7 @@
         <div>
           <span>位置3</span>
           <el-select @focus='focusMap(3)' v-model="relationValue3" :class="{isActive: borderActive === 3}" placeholder="请选择地图数据类型" @change='changeMapType3'>
-            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList3'
               :key='item.dataTypeId'
@@ -59,7 +60,7 @@
         <div>
           <span>位置4</span>
           <el-select @focus='focusMap(4)' v-model="relationValue4" :class="{isActive: borderActive === 4}" placeholder="请选择地图数据类型" @change='changeMapType4'>
-            <!-- <el-option value=''>请选择地图版块数据类型</el-option> -->
+            <el-option value=''>请选择地图版块数据类型</el-option>
             <el-option
               v-for='item in mapTypeList4'
               :key='item.dataTypeId'
@@ -101,7 +102,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="number" v-model="item.value" placeholder="请填值">
+                    <input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList1.length > 1">
@@ -154,7 +155,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="number" v-model="item.value" placeholder="请填值">
+                    <input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList2.length > 1">
@@ -207,7 +208,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="number" v-model="item.value" placeholder="请填值">
+                    <input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList3.length > 1">
@@ -260,7 +261,7 @@
                     <input type="text" v-model="item.unit" placeholder="请填单位">
                   </td>
                   <td>
-                    <input type="number" v-model="item.value" placeholder="请填值">
+                    <input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="item.value" placeholder="请填值">
                   </td>
                   <td width='15%'>
                     <template v-if="dataList4.length > 1">

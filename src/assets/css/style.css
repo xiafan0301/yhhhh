@@ -79,3 +79,17 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 }
 .vis-bg-del-btn.is-disabled {
 }
+
+.map-p-dialog .el-dialog__body {
+  padding: 0 10px 10px 10px;
+}
+.amap-sug-result { z-index: 3001; }
+.map-p-marker {
+  font-size: 30px;
+  color: #999;
+}
+.map-p-marker-old {
+}
+.map-p-marker-new {
+  color: #409EFF;
+}
