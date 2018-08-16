@@ -174,7 +174,6 @@ export default {
             .catch(() => {})
         }
       });
-      // console.log(this.addForm)
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
@@ -196,9 +195,17 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
+        console.log(res.data)
         const data = {
-          attachmentType: dictType.enclosureTypeId,
-          url: res.data.newFileName
+          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
         }
         this.addForm.attachmentList.push(data);
       }

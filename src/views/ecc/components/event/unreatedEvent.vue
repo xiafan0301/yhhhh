@@ -22,9 +22,10 @@
           <el-form-item label="上报时间" label-width='150px'>
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
-          <el-form-item label="事发地点" label-width='150px' prop='eventAddress'>
+          <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
-            <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span>
+            <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span> -->
+            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
@@ -405,6 +406,15 @@ export default {
     }
     .close-reason-p {
       margin-bottom: 10px;
+    }
+    .address /deep/ .el-form-item__content {
+      display: flex;
+      .map-ecc {
+        img {
+          padding-top: 5px;
+          padding-left: 5px;
+        }
+      }
     }
   }
 </style>

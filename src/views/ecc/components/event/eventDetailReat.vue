@@ -11,7 +11,7 @@
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <p class='event-number'>事件编号：{{eventDetailObj.eventCode}}</p>
+          <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
           <img src='../../../../assets/img/temp/treating.png' />
@@ -253,36 +253,11 @@ export default {
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.params.eventId;
-      // this.closeForm.eventId = eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res && res.data) {
-              console.log(res)
               this.eventDetailObj = res.data;
-              // this.attachmentList = res.data.attachmentList;
-              // this.detailForm.eventId = eventId;
-              // this.detailForm.eventCode = res.data.eventCode;
-              // this.detailForm.reporterPhone = res.data.reporterPhone;
-              // this.detailForm.reportTime = res.data.reportTime;
-              // this.detailForm.eventDetail = res.data.eventDetail;
-              // this.detailForm.eventAddress = res.data.eventAddress;
-              // this.detailForm.eventLevel = res.data.eventLevel;
-              // this.detailForm.eventType = res.data.eventType;
-              // if (res.data.casualties === -1) {
-              //   this.detailForm.casualties = '不确定';
-              // } else if (res.data.casualties === 0) {
-              //   this.detailForm.casualties = '无';
-              // } else if (res.data.casualties > 0) {
-              //   this.detailForm.casualties = '有';
-              //   this.dieNumber = res.data.casualties;
-              // }
-              // if (res.data.eventFlag === true) {
-              //   this.detailForm.flagType.push('应急事件');
-              // }
-              // if (res.data.mutualFlag === true) {
-              //   this.detailForm.flagType.push('民众互助');
-              // }
             }
           })
           .catch(() => {})

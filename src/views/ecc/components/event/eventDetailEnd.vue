@@ -11,7 +11,7 @@
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <p class='event-number'>事件编号：{{eventDetailObj.eventCode}}</p>
+          <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
           <img src='../../../../assets/img/temp/end.png' />
@@ -283,7 +283,6 @@ export default {
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
-            console.log(res)
             if (res && res.data) {
               this.modifyForm.eventType = res.data.eventType;
               this.modifyForm.eventLevel = res.data.eventLevel;
