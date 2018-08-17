@@ -145,12 +145,16 @@
         <el-form-item label="地址" prop="deviceAddress">
           <el-input v-model="editForm.deviceAddress" placeholder="地址"></el-input>
         </el-form-item>
-        <el-form-item label="经度" prop="longitude">
+        <el-form-item label="坐标" prop="gps">
+          <el-input style="width: 80%;" v-model="editForm.gps" placeholder="经纬度，如：116.397563,39.908311"></el-input>
+          <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
+        </el-form-item>
+        <!--<el-form-item label="经度" prop="longitude">
           <el-input v-model="editForm.longitude" placeholder="经度"></el-input>
         </el-form-item>
         <el-form-item label="纬度" prop="latitude">
           <el-input v-model="editForm.latitude" placeholder="纬度"></el-input>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="设备状态">
           <el-select v-model="editForm.deviceStatus" placeholder="设备状态">
             <el-option label="可用" :value="1"></el-option>
@@ -163,11 +167,14 @@
         <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')">确 定</el-button>
       </span>
     </el-dialog>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
-import {checkIp4} from '@/utils/validator.js';
+import {checkIp4, checkGps} from '@/utils/validator.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
       searchForm: {
@@ -196,6 +203,7 @@ export default {
         deviceUserName: '',
         deviceUserPassword: '',
         deviceAddress: '',
+        gps: '',
         longitude: '',
         latitude: '',
         deviceStatus: 1
@@ -221,15 +229,22 @@ export default {
         deviceUserPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ],
-        longitude: [
+        gps: [
+          { required: true, message: '请输入坐标', trigger: 'blur' },
+          { validator: checkGps, trigger: 'blur' }
+        ]
+        /* longitude: [
           { required: true, message: '请输入经度', trigger: 'blur' }
         ],
         latitude: [
           { required: true, message: '请输入纬度', trigger: 'blur' }
-        ]
+        ] */
       },
       editObj: null,
       editSubmitLoading: false,
+
+      open: false,
+      oConfig: {},
 
       a: []
     }
@@ -277,7 +292,13 @@ export default {
       this.resetEditForm('editForm');
       if (item) {
         this.editObj = true;
-        this.editForm = Object.assign({}, item);
+        this.editForm = Object.assign({}, item, {
+          gps: item.longitude + ',' + item.latitude
+        });
+        this.oConfig = {
+          _name: item.deviceAddress,
+          center: [Number(item.longitude), Number(item.latitude)]
+        }
       } else {
         this.editObj = false;
         this.editReset();
@@ -295,7 +316,11 @@ export default {
     editSubmit (formRef) {
       this.$refs[formRef].validate((valid) => {
         if (valid) {
-          let params = this.editForm;
+          let aGps = this.editForm.gps.split(',');
+          let params = Object.assign({}, this.editForm, {
+            longitude: aGps[0],
+            latitude: aGps[1]
+          });
           this.editSubmitLoading = true;
           if (this.editObj) {
             this.axios.put('/cameraServices/devices/' + params.cameraId, params)
@@ -355,6 +380,17 @@ export default {
         }
       }).then(action => {
       });
+    },
+    selPosition () {
+      // 编辑状态
+      if (!this.editObj) {
+        this.oConfig = {};
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val) {
+      console.log('接收到的经纬度为：', val);
+      this.editForm.gps = val;
     }
   }
 }

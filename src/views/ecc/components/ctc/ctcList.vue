@@ -8,17 +8,18 @@
       <el-button class='selectBtn look-event' @click='skipLookEvent'>查看事件分布</el-button>
     </div>
     <div class="clearfix search-event" style="position: relative;width: 100%">
-      <el-form style="float: left;width:100%" :inline="true" :model='selectForm' class="demo-form-inline" size="small">
-        <el-form-item style="width: 280px;">
+      <el-form style="float: left;width:100%" :inline="true" ref='selectForm' :model='selectForm' class="demo-form-inline" size="small">
+        <el-form-item style="width: 280px;" prop='reportTime'>
           <el-date-picker
             v-model='selectForm.reportTime'
+            value-format="yyyy-MM-dd"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 100%;"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item style="width: 200px;">
+        <el-form-item style="width: 200px;" prop='eventType'>
           <el-select placeholder="事件类型" style="width: 100%;" v-model='selectForm.eventType'>
             <el-option value='全部类型'></el-option>
             <el-option
@@ -30,7 +31,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 150px;">
+        <el-form-item style="width: 150px;" prop='eventLevel'>
           <el-select placeholder="事件等级" style="width: 100%;" v-model='selectForm.eventLevel'>
             <el-option value="全部等级"></el-option>
             <el-option
@@ -43,18 +44,18 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn'>查询</el-button>
-          <el-button>重置</el-button>
+          <el-button type="primary" class='selectBtn' style='width: 80px' @click='selectData'>查询</el-button>
+          <el-button style='width: 80px' @click="resetForm('selectForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <el-table style="width: 100%" :data='ctcDataList'>
       <el-table-column prop='eventCode' label="事件编号" align='center'></el-table-column>
-      <el-table-column prop='eventType' label="事件类型" align='center'></el-table-column>
-      <el-table-column prop='eventLevel' label="事件等级" align='center'></el-table-column>
+      <el-table-column prop='eventTypeName' label="事件类型" align='center'></el-table-column>
+      <el-table-column prop='eventLevelName' label="事件等级" align='center'></el-table-column>
       <el-table-column prop='assignTime' label="受理时间" align='center'></el-table-column>
       <el-table-column prop='eventAddress' label="事件地点" align='center'></el-table-column>
-      <el-table-column prop='number' label="新反馈数" align='center'>
+      <el-table-column prop='feedbackNumber' label="新反馈数" align='center'>
         <template slot-scope="scope">
           <span style="color: #FB796C;" v-if="scope.row.number > 0">{{scope.row.number}}</span>
           <span style="color: #555555;" v-else>{{scope.row.number}}</span>
@@ -63,8 +64,8 @@
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px'>查看</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcDetail'>调度</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px'>结束</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcDetail(scope)'>调度</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcEnd(scope)'>结束</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -86,89 +87,100 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
       selectForm: {
+        eventFlag: true,
+        mutualFlag: false,
         reportTime: [],
+        eventStatus: '4037156e-97b5-11e8-b784-93a0bc9b77e5',
         eventLevel: '全部等级',
         eventType: '全部类型'
       },
-      ctcDataList: [{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 4
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 4
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 4
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 3
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 0
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 4
-      },{
-        eventCode: '1111111111',
-        eventType: '自然灾害类',
-        eventLevel: 'Ⅰ级（特大）',
-        assignTime: '2018-2-13 19:10',
-        eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-        number: 0
-      }],
+      // ctcDataList: [{
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 4
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 4
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 4
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 3
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 0
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 4
+      // }, {
+      //   eventCode: '1111111111',
+      //   eventType: '自然灾害类',
+      //   eventLevel: 'Ⅰ级（特大）',
+      //   assignTime: '2018-2-13 19:10',
+      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
+      //   number: 0
+      // }],
       eventLevelList: [],
       eventTypeList: [],
+      ctcDataList: [],
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
   computed: {
   },
   mounted () {
+    // this.getEventStatus();
+    this.getOneMonth();
     this.getEventLevel();
     this.getEventType();
+    this.getCtcDataList();
   },
   methods: {
     skipLookEvent () { // 查看事件分布
     },
-    skipCtcDetail () { // 跳到调度指挥页面
+    skipCtcDetail (scope) { // 跳到调度指挥页面
       this.$router.push({name: 'ctc-detail'});
+    },
+    skipCtcEnd (scope) { // 跳转到事件结束页面
+
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
-      this.getEventList();
+      this.getCtcDataList();
     },
     onSizeChange (val) {
       this.pagination.pageNum = 1;
       this.pagination.pageSize = val;
-      this.getEventList();
+      this.getCtcDataList();
     },
     getEventLevel () { // 获取事件等级
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
@@ -187,6 +199,70 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    // getEventStatus () { // 获取事件状态
+    //   this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
+    //     .then((res) => {
+    //       if (res) {
+    //         res.data.map((item) => {
+    //           if (item.dictContent === '处理中') {
+    //             console.log(item.dictId)
+    //             // this.selectForm.eventStatus = item.dictId;
+    //             // this.dictId = item.dictId;
+    //           }
+    //         })
+    //         // this.eventStatusList = res.data;
+    //       }
+    //     })
+    //     .catch(() => {})
+    // },
+    getOneMonth () { // 设置默认一个月
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+      const startDate = formatDate(start, 'yyyy-MM-dd');
+      const endDate = formatDate(end, 'yyyy-MM-dd');
+      this.selectForm.reportTime.push(startDate);
+      this.selectForm.reportTime.push(endDate);
+    },
+    getCtcDataList () { // 获取调度任务列表数据
+      let eventLevel, eventType;
+      if (this.selectForm.eventLevel === '全部等级') {
+        eventLevel = '';
+      } else {
+        eventLevel = this.selectForm.eventLevel;
+      }
+      if (this.selectForm.eventType === '全部类型') {
+        eventType = '';
+      } else {
+        eventType = this.selectForm.eventType;
+      }
+      const data = {
+        'where.eventFlag': this.selectForm.eventFlag,
+        'where.mutualFlag': this.selectForm.mutualFlag,
+        'where.reportTimeStart': this.selectForm.reportTime[0],
+        'where.reportTimeEnd': this.selectForm.reportTime[1],
+        'where.eventStatus': this.selectForm.eventStatus,
+        'where.eventType': eventType,
+        'where.eventLevel': eventLevel,
+        pageNum: this.pagination.pageNum
+      }
+      this.axios.get('A2/eventServices/events/page', {params: data})
+        .then((res) => {
+          console.log(res)
+          if (res && res.data.list) {
+            this.ctcDataList = res.data.list;
+            this.pagination.total = res.data.total;
+          }
+        })
+    },
+    selectData () { // 根据条件查询
+      this.getCtcDataList();
+    },
+    resetForm (form) { // 重置表单
+      this.$refs[form].resetFields();
+      this.getOneMonth();
+      this.getCtcDataList();
     }
   }
 }

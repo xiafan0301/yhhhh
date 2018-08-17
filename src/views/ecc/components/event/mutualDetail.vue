@@ -55,7 +55,7 @@
             </div>
           </div>
           <div class='basic-list'>
-            <div><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
+            <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
             <img
@@ -80,18 +80,18 @@
           <div class='flag'></div>
           <p class='mutual-progress-text'>
             APP端互助
-            <span style='color: #0785FD;font-size: 12px'>(5条评论)</span>
+            <span style='color: #0785FD;font-size: 12px'>({{this.pagination.total}}条评论)</span>
           </p>
         </div>
         <div class='mutual-progress-body'>
           <ul>
-            <li>
+            <li v-for="(item, index) in commentList" :key="'item'+index">
               <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
+                <p class='phone'>{{item.commentUserId}}</p>
+                <p class='time'>{{item.createTime}}</p>
               </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close' @click='closeCommentVisiable = true'></i>
+              <div class='info-detail'>{{item.content}}</div>
+              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
             </li>
             <li>
               <div class='info-top'>
@@ -99,7 +99,7 @@
                 <p class='time'>06-25 11:30</p>
               </div>
               <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close'></i>
+              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
             </li>
             <li>
               <div class='info-top'>
@@ -160,7 +160,7 @@
       center>
       <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn'>确定删除</el-button>
+        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
@@ -173,9 +173,11 @@ export default {
       closeCommentVisiable: false,
       mutualEndVisiable: false,
       imgUrl: '',
+      delCommentId: '', // 要删除的评论id
       eventDetailObj: {}, // 事件详情
+      commentList: [], // 评论列表
       pagination: {
-        total: 1000,
+        total: 0,
         pageNum: 1,
         pageSize: 10
       },
@@ -200,6 +202,7 @@ export default {
   },
   mounted () {
     this.getEventDetail();
+    this.getCommentList();
     if (this.$route.params.eventStatus === '处理中') {
       this.imgUrl = require('../../../../assets/img/temp/treating.png');
     } else {
@@ -212,6 +215,15 @@ export default {
     },
     skipEventEnd () { // 跳到事件结束页面
       this.$router.push({name: 'event-end'});
+    },
+    onPageChange (page) {
+      this.pagination.pageNum = page;
+      this.getCommentList();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
+      this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.params.eventId;
@@ -244,6 +256,43 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    getCommentList () { // 分页获取评论
+      const eventId = this.$route.params.eventId;
+      const data = {
+        'where.eventId': eventId,
+        pageNum: this.pagination.pageNum
+      }
+      this.axios.get('A2/eventServices/comments/page', data)
+        .then((res) => {
+          console.log(res)
+          if (res && res.data.list) {
+            this.commentList = res.data.list;
+            this.pagination.total = res.data.total;
+          }
+        })
+        .catch(() => {})
+    },
+    closeComment (id) {
+      this.delCommentId = id;
+      this.closeCommentVisiable = true;
+    },
+    deleteComment () { // 删除评论
+      if (this.delCommentId) {
+        this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '评论删除成功',
+                type: 'success'
+              });
+              this.getCommentList();
+            } else {
+              this.$message.error('评论删除失败');
+            }
+          })
+          .catch(() => {})
+      }
     }
   }
 }

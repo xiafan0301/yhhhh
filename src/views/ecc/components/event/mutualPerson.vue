@@ -164,6 +164,7 @@ export default {
         eventStatus = this.selectForm.eventStatus;
       }
       const params = {
+        'where.eventFlag': false,
         'where.mutualFlag': true,
         'where.reportTimeStart': this.selectForm.reportTime[0],
         'where.reportTimeEnd': this.selectForm.reportTime[1],

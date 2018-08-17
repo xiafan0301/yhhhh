@@ -212,6 +212,9 @@ export default {
     },
     modifyData (form) { // 修改事件
       const eventId = this.$route.params.eventId;
+      if (eventId) {
+        this.operationForm.eventId = eventId;
+      }
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.operationForm.radius === '不推送') {
