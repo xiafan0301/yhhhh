@@ -17,11 +17,11 @@
           <div class='ctc-detail-basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <span class='content'>{{eventDetailObj.eventTypeName}}</span>
+              <span class='content'>{{eventDetailObj.eventType}}</span>
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <span class='content'>{{eventDetailObj.eventLevelName}}</span>
+              <span class='content'>{{eventDetailObj.eventLevel}}</span>
             </div>
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
@@ -128,6 +128,7 @@
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
@@ -168,11 +169,17 @@ export default {
     }
   },
   mounted () {
-    this.getEventDetail();
+    if (this.$route.params.eventId) {
+      this.getEventDetail();
+    } else if (this.$route.params.addForm) {
+      this.getEventLevel();
+      this.getEventType();
+      this.eventDetailObj = this.$route.params.addForm;
+    }
   },
   methods: {
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'replan-list'});
+      this.$router.push({name: 'replan-list', params: {eventId: this.$route.params.eventId}});
     },
     back () {
       this.$router.back(-1);
@@ -194,6 +201,32 @@ export default {
     },
     skipEnableReplan () {
       this.$router.push({name: 'enable-replan'});
+    },
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            res.data.map((item) => {
+              if (item.dictId === this.$route.params.addForm.eventType) {
+                this.$route.params.addForm.eventType = item.dictContent;
+              }
+            });
+          }
+        })
+        .catch(() => {})
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            res.data.map((item) => {
+              if (item.dictId === this.$route.params.addForm.eventLevel) {
+                this.$route.params.addForm.eventLevel = item.dictContent;
+              }
+            });
+          }
+        })
+        .catch(() => {})
     }
   }
 }
