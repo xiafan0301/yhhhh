@@ -9,7 +9,7 @@
         <el-breadcrumb-item  v-if="!gg">发布系统消息</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog(gg)" icon="el-icon-plus">发布</el-button>
       </div>
     </div>
     <div class="bg-release-cot">
@@ -32,7 +32,7 @@
             </div>
         </el-form-item>
         <el-form-item label="主题">
-          <el-input v-model="form.name" style="width: 500px"></el-input>
+          <el-input v-model="form.title" style="width: 500px"></el-input>
         </el-form-item>
         <el-form-item label="内容">
           <div style="width: 500px; position: relative">
@@ -100,14 +100,14 @@ export default {
   data () {
     return {
       form: {
-        name: '',
         region: '',
         date1: '',
         date2: '',
         resource: '',
         desc: '',
         checked: false,
-        time: ''
+        time: '',
+        title: ''
       },
       form1: {
         type: '',
@@ -133,15 +133,7 @@ export default {
         value: '选项5',
         label: '北京烤鸭'
       }],
-      value: '',
-      obj: {
-        emiMessage: {
-          details: 'lkjkljkllklkjlkj',
-          messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
-          terminal: 1,
-          title: 'string'
-        }
-      }
+      value: ''
     }
   },
   computed: {
@@ -150,20 +142,40 @@ export default {
     this.gg = this.$route.query.release
   },
   methods: {
-    showEditDialog () {
-      let params = {
-        emiMessage: {
-          details: this.form1.desc,
-          messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
-          terminal: 1,
-          title: 'string'
-        }
-      };
-      this.axios.post('A2/messageService', params)
-        .then((res) => {
-          console.log(res);
-          this.getTableData();
-        })
+    showEditDialog (val) {
+      if (!val) {
+        let params = {
+          emiMessage: {
+            details: this.form1.desc,
+            messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+            terminal: 1,
+            title: 'string'
+          }
+        };
+        this.axios.post('A2/messageService', params)
+          .then((res) => {
+            console.log(res);
+          })
+      } else {
+        let params = {
+          emiMessage: {
+            details: this.form.desc,
+            messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
+            terminal: 1,
+            title: this.form.title
+          },
+          receiveRelations: [
+            {
+              messageId: 'string',
+              receiveUser: '移动端'
+            }
+          ]
+        };
+        this.axios.post('A2/messageService', params)
+          .then((res) => {
+            console.log(res);
+          })
+      }
     },
     onSubmit () {
     },
@@ -187,6 +199,9 @@ export default {
     padding-top: 55px;
     box-sizing: border-box;
     padding-left: 100px;
-    padding-bottom: 86px;
+    padding-bottom: 50px;
+  }
+  .el-form-item {
+    margin-bottom: 15px;
   }
 </style>

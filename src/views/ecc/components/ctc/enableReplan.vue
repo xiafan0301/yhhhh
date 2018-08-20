@@ -1,39 +1,38 @@
 <template>
-  <div class='ctc-detail'>
-    <div class='ctc-detail-header'>
+  <div class='enable-replan'>
+    <div class='enable-replan-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>方案制定</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>事件处理</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class='ctc-detail-body'>
-      <div class='ctc-detail-basic'>
-        <div class='ctc-detail-basic-header'>
+    <div class='enable-replan-detail-body'>
+      <div class='enable-replan-detail-basic'>
+        <div class='enable-replan-detail-basic-header'>
           <div class='flag'></div>
-          <p class='ctc-detail-basic-text'>基本信息</p>
-          <p class='ctc-detail-number'>事件编号：{{eventDetailObj.eventCode}}</p>
+          <p class='enable-replan-detail-basic-text'>基本信息</p>
+          <p class='enable-replan-detail-number'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
-        <div class='ctc-detail-basic-detail'>
-          <div class='ctc-detail-basic-list'>
+        <div class='enable-replan-detail-basic-detail'>
+          <div class='enable-replan-detail-basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <span class='content'>{{eventDetailObj.eventType}}</span>
+              <span class='content'>{{eventDetailObj.eventTypeName}}</span>
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <span class='content'>{{eventDetailObj.eventLevel}}</span>
+              <span class='content'>{{eventDetailObj.eventLevelName}}</span>
             </div>
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div>
               <span class='title'>报案人：</span>
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
-              <!-- <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>1234567890</span> -->
             </div>
             <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div>
               <span class='title'>人员伤亡：</span>
               <template v-if='eventDetailObj.casualties == -1'>
@@ -47,10 +46,10 @@
               </template>
             </div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div style='width:100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list ctc-detail-img-content'>
+          <div class='enable-replan-detail-basic-list enable-replan-detail-img-content'>
             <img
               v-for='item in eventDetailObj.attachmentList'
               :src='item.url'
@@ -59,25 +58,50 @@
           </div>
         </div>
       </div>
-      <div class='ctc-detail-bottom'>
-        <div class='ctc-idea-left'>
-          <div class='ctc-idea-header'>
+      <div class='enable-replan-detail-bottom'>
+        <div class='enable-replan-idea-left'>
+          <div class='enable-replan-idea-header'>
             <div class='flag'></div>
-            <p class='ctc-idea-text'>调度指挥方案</p>
+            <p class='enable-replan-idea-text'>调度指挥方案</p>
           </div>
-          <div class='ctc-idea-body'>
-            <el-form class='ctc-idea-form'>
+          <div class='enable-replan-list'>
+            <div class='enable-replan-list-num'>任务一</div>
+            <div class='enable-replan-list-body'>
+              <p>执行部门： 消防部</p>
+              <p>任务名称：紧急火灾</p>
+              <p>任务内容： 执行部门：消防部任务名称：紧急火灾任务内容：请芙蓉南路消防部组织好队伍，迅速前往XX进行灭火！</p>
+            </div>
+          </div>
+          <div class='enable-replan-list'>
+            <div class='enable-replan-list-num'>任务一</div>
+            <div class='enable-replan-list-body'>
+              <p>执行部门： 消防部</p>
+              <p>任务名称：紧急火灾</p>
+              <p>任务内容： 执行部门：消防部任务名称：紧急火灾任务内容：请芙蓉南路消防部组织好队伍，迅速前往XX进行灭火！</p>
+            </div>
+          </div>
+          <div class='enable-replan-list'>
+            <div class='enable-replan-list-num'>任务一</div>
+            <div class='enable-replan-list-body'>
+              <p>执行部门： 消防部</p>
+              <p>任务名称：紧急火灾</p>
+              <p>任务内容： 执行部门：消防部任务名称：紧急火灾任务内容：请芙蓉南路消防部组织好队伍，迅速前往XX进行灭火！</p>
+            </div>
+          </div>
+          <div class='divide'></div>
+          <div class='enable-replan-idea-body'>
+            <el-form class='enable-replan-idea-form'>
               <el-form-item label="执行部门" label-width='120px'>
-                <el-select  placeholder="请选择执行部门" style='width: 80%'>
+                <el-select  placeholder="请选择执行部门" style='width: 500px'>
                   <el-option label="全部" value="shanghai"></el-option>
                   <el-option label="部分" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="任务名称" label-width='120px'>
-                <el-input type="text" placeholder='请输入任务名称' style='width: 80%'></el-input>
+                <el-input type="text" placeholder='请输入任务名称' style='width: 500px'></el-input>
               </el-form-item>
               <el-form-item label="任务内容" label-width='120px'>
-                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%'></el-input>
+                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 500px'></el-input>
               </el-form-item>
               <el-form-item style='margin-left: 120px'>
                 <el-upload
@@ -93,42 +117,15 @@
             </el-form>
           </div>
         </div>
-        <div class='ctc-replan-right'>
-          <div class='ctc-replan-header'>
-            <div class='flag'></div>
-            <p class='ctc-replan-text'>推荐预案</p>
-          </div>
-          <div class='ctc-replan-table'>
-            <el-table
-              style="width: 100%"
-              :data='reservePlanList'
-              highlight-current-row
-              class='ctc-table'
-               max-height="372"
-            >
-              <el-table-column label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-              <el-table-column label="预案类型" prop='planType' align='center'></el-table-column>
-              <el-table-column label="适用等级" prop='levelList' align='center'></el-table-column>
-              <el-table-column label="操作" align='center'>
-                <template slot-scope="scope">
-                  <el-button type='text' style='color: #0785FD' @click="selectReplanDetail">查看</el-button>
-                  <el-button type='text' style='color: #0785FD' @click="skipEnableReplan">启用</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <div class='more-replan' @click='selectMorePlan'>更多预案</div>
-          </div>
-        </div>
       </div>
     </div>
-    <div class='operation-btn-ctc-detail'>
+    <div class='operation-btn-enable-replan-detail'>
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff'>确定</el-button>
     </div>
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
@@ -169,17 +166,11 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.eventId) {
-      this.getEventDetail();
-    } else if (this.$route.params.addForm) {
-      this.getEventLevel();
-      this.getEventType();
-      this.eventDetailObj = this.$route.params.addForm;
-    }
+    this.getEventDetail();
   },
   methods: {
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'replan-list', params: {eventId: this.$route.params.eventId}});
+      this.$router.push({name: 'replan-list'});
     },
     back () {
       this.$router.back(-1);
@@ -196,54 +187,25 @@ export default {
           .catch(() => {})
       }
     },
-    selectReplanDetail () { // 启用预案
+    selectReplanDetail () { // 查看预案详情
       this.$router.push({name: 'replan-detail'});
-    },
-    skipEnableReplan () {
-      this.$router.push({name: 'enable-replan'});
-    },
-    getEventType () { // 获取事件类型
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
-        .then((res) => {
-          if (res && res.data) {
-            res.data.map((item) => {
-              if (item.dictId === this.$route.params.addForm.eventType) {
-                this.$route.params.addForm.eventType = item.dictContent;
-              }
-            });
-          }
-        })
-        .catch(() => {})
-    },
-    getEventLevel () { // 获取事件等级
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
-        .then((res) => {
-          if (res && res.data) {
-            res.data.map((item) => {
-              if (item.dictId === this.$route.params.addForm.eventLevel) {
-                this.$route.params.addForm.eventLevel = item.dictContent;
-              }
-            });
-          }
-        })
-        .catch(() => {})
     }
   }
 }
 </script>
 <style lang='scss'>
-  .ctc-detail {
+  .enable-replan {
     padding: 20px;
     height: 100%;
-    .ctc-detail-header {
+    .enable-replan-header {
       margin-bottom: 10px;
     }
-    .ctc-detail-body {
+    .enable-replan-detail-body {
       width: 100%;
-      .ctc-detail-basic {
+      .enable-replan-detail-basic {
         background: #fff;
         margin-bottom: 0.7%;
-        .ctc-detail-basic-header {
+        .enable-replan-detail-basic-header {
           width: 100%;
           display: flex;
           p {
@@ -258,24 +220,24 @@ export default {
             border-bottom-right-radius: 5px;
             background: #0785FD;
           }
-          .ctc-detail-basic-text {
+          .enable-replan-detail-basic-text {
             color: #0785FD;
             font-size: 16px;
             font-weight: bold;
             margin-left: 1%;
           }
-          .ctc-detail-number {
+          .enable-replan-detail-number {
             color: #555555;
             font-size: 14px;
             margin-left: 2%;
           }
         }
-        .ctc-detail-basic-detail {
+        .enable-replan-detail-basic-detail {
           width: 100%;
           display:flex;
           padding: 20px;
           flex-direction: column;
-          .ctc-detail-basic-list {
+          .enable-replan-detail-basic-list {
             display: flex;
             flex-wrap: wrap;
             div {
@@ -295,7 +257,7 @@ export default {
               }
             }
           }
-          .ctc-detail-img-content {
+          .enable-replan-detail-img-content {
             width: 100%;
             padding-left: 80px;
             img {
@@ -307,17 +269,43 @@ export default {
           }
         }
       }
-      .ctc-detail-bottom {
+      .enable-replan-detail-bottom {
         width: 100%;
         display: flex;
-        .ctc-idea-left {
+        .enable-replan-idea-left {
           margin-right: 2%;
         }
-        .ctc-idea-left, .ctc-replan-right {
+        .enable-replan-idea-left{
           background: #fff;
-          width: 49%;
+          width: 100%;
           height: 50%;
-          .ctc-idea-header, .ctc-replan-header {
+          .divide {
+            width: 570px;
+            height:1px;
+            margin: 2% 0 2% 55px;
+            background: #EAEAEA;
+          }
+          .enable-replan-list {
+            width: 100%;
+            display: flex;
+            padding-top: 2%;
+            font-size: 14px;
+            margin-bottom: -1%;
+            .enable-replan-list-num {
+              text-align: right;
+              width: 120px;
+              color: #999999;
+            }
+            .enable-replan-list-body {
+              margin-left:1%;
+              width: 500px;
+              color: #555555;
+              p {
+                margin-bottom: 2%;
+              }
+            }
+          }
+          .enable-replan-idea-header{
             width: 100%;
             display: flex;
             p {
@@ -332,17 +320,17 @@ export default {
               border-bottom-right-radius: 5px;
               background: #0785FD;
             }
-            .ctc-idea-text, .ctc-replan-text {
+            .enable-replan-idea-text{
               color: #0785FD;
               font-size: 16px;
               font-weight: bold;
               margin-left: 1%;
             }
           }
-          .ctc-idea-body {
+          .enable-replan-idea-body {
             width: 100%;
-            .ctc-idea-form {
-              padding-top: 4%;
+            .enable-replan-idea-form {
+              padding-top: 1%;
               .el-upload--picture-card {
                 width: 100px;
                 height: 100px;
@@ -367,30 +355,10 @@ export default {
               }
             }
           }
-          .ctc-replan-table {
-            width: 100%;
-            .el-table td {
-              padding: 3px 0 !important;
-            }
-            .ctc-table {
-              padding-top:20px;
-            }
-            .more-replan {
-              color: #fff;
-              background: #0785FD;
-              width: 120px;
-              height: 40px;
-              margin: 3% auto;
-              text-align: center;
-              line-height: 40px;
-              border-radius: 20px;
-              cursor: pointer;
-            }
-          }
         }
       }
     }
-    .operation-btn-ctc-detail {
+    .operation-btn-enable-replan-detail {
       margin-top: 1%;
       margin-bottom: 1%;
     }

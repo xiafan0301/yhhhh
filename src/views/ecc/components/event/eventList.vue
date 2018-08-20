@@ -21,6 +21,7 @@
         </el-form-item>
         <el-form-item style="width: 110px;" prop='eventStatus'>
           <el-select placeholder="事件状态" style="width: 100%;" v-model='selectForm.eventStatus'>
+            <el-option value='全部状态'></el-option>
             <el-option
               v-for="item in eventStatusList"
               :key="item.dictId"
@@ -62,12 +63,27 @@
     </div>
     <el-table style="width: 100%" :data='eventDataList' highlight-current-row class='event-table'>
       <el-table-column label="事件编号" prop='eventCode' align='center'></el-table-column>
-      <el-table-column label="报案人" prop='reporterPhone' align='center'></el-table-column>
-      <el-table-column label="角色" prop='reporterRole' align='center'></el-table-column>
+      <el-table-column label="报案人" prop='reporterPhone' align='center'>
+        <template slot-scope="scope">
+          <span v-if='scope.row.reporterPhone'>{{scope.row.reporterPhone}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="角色" prop='reporterRole' align='center'>
+        <template slot-scope="scope">
+          <span v-if='scope.row.reporterRole'>{{scope.row.reporterRole}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="来源" prop='eventSourceName' align='center'></el-table-column>
       <el-table-column label="上报时间" prop='reportTime' align='center'></el-table-column>
       <el-table-column label="事件地点" prop='eventAddress' align='center'></el-table-column>
-      <el-table-column label="事件等级" prop='eventLevelName' align='center'></el-table-column>
+      <el-table-column label="事件等级" prop='eventLevelName' align='center'>
+        <template slot-scope="scope">
+          <span v-if='scope.row.eventLevelName'>{{scope.row.eventLevelName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
       <el-table-column label="事件状态" prop='eventStatusName' align='center'>
         <template slot-scope="scope">
           <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '未处理'">未处理</span>
@@ -83,19 +99,30 @@
       </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color: #0785FD' @click='skipEventDetail(scope)'>查看详情</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipEventDetail(scope)'>查看</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- <div is='pagination'></div> -->
+    <div style="text-align: right; padding-top: 10px;">
+      <template v-if="pagination.total > 0">
+        <el-pagination
+          background
+          :page-sizes="[5, 10, 20, 50, 100]"
+          @size-change="onSizeChange"
+          @current-change="onPageChange"
+          :current-page.sync="pagination.pageNum"
+          :page-size="pagination.pageSize"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="pagination.total">
+        </el-pagination>
+      </template>
+    </div>
   </div>
 </template>
 <script>
-import pagination from '@/components/common/pagination.vue';
 import {dictType} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
-  components: {pagination},
   data () {
     return {
       selectForm: {
@@ -110,7 +137,7 @@ export default {
       eventLevelList: [],
       eventSourceList: [],
       eventDataList: [],
-      pager: { total: 0, pageSize: 10, pageNum: 1 }
+      pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
   mounted () {
@@ -124,12 +151,22 @@ export default {
     skipAddEvent () { // 跳转到添加事件页面
       this.$router.push({name: 'add-event'});
     },
+    onPageChange (page) {
+      this.pagination.pageNum = page;
+      this.getEventList();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
+      this.getEventList();
+    },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      console.log(scope)
       if (scope.row.eventStatusName === '未处理') {
         this.$router.push({name: 'event-untreated', params: {eventId: scope.row.eventId}});
+      } else if (scope.row.eventStatusName === '已结束') {
+        this.$router.push({name: 'event-detail-end', params: {eventId: scope.row.eventId}});
       } else {
-        this.$router.push({name: 'event-detail'});
+        this.$router.push({name: 'event-detail-reat', params: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -166,7 +203,7 @@ export default {
         .catch(() => {})
     },
     getEventList () { // 分页获取事件
-      let eventLevel, eventSource;
+      let eventLevel, eventSource, eventStatus;
       if (this.selectForm.eventLevel === '全部等级') {
         eventLevel = '';
       } else {
@@ -177,19 +214,26 @@ export default {
       } else {
         eventSource = this.selectForm.eventSource;
       }
+      if (this.selectForm.eventStatus === '全部状态') {
+        eventStatus = '';
+      } else {
+        eventStatus = this.selectForm.eventStatus;
+      }
       const params = {
+        'where.eventFlag': true,
         'where.reportTimeStart': this.selectForm.reportTime[0],
         'where.reportTimeEnd': this.selectForm.reportTime[1],
-        'where.eventStatus': this.selectForm.eventStatus,
+        'where.eventStatus': eventStatus,
         'where.eventLevel': eventLevel,
         'where.eventSource': eventSource,
         'where.otherQuery': this.selectForm.phoneOrNumber,
-        pageNum: this.pager.pageNum
+        pageNum: this.pagination.pageNum
       }
       this.axios.get('A2/eventServices/events/page', {params})
         .then((res) => {
           if (res && res.data.list) {
             this.eventDataList = res.data.list;
+            this.pagination.total = res.data.total;
           }
         })
         .catch(() => {})
@@ -250,6 +294,9 @@ export default {
     }
     .el-table thead th {
       background-color: #FAFAFA !important;
+    }
+    .el-button+.el-button {
+      margin-left: 2px !important;
     }
   }
 </style>

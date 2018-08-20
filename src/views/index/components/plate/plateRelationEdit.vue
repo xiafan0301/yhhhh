@@ -184,6 +184,7 @@ export default {
       this.newDataList.jumpPageId = obj.pageId;
     },
     selectPages (value) {
+      const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
       if (value) {
         this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
       }
@@ -228,6 +229,12 @@ export default {
                 item.canChecked = true;
               });
             }
+            // this.positionObj.map((item) => {
+            //   if (serialNumber === item.id) {
+            //     item.isChecked = false;
+            //     item.finishChecked = true;
+            //   }
+            // });
             const data = this.positionObj.filter((item) => {
               return item.isChecked !== true;
             });
@@ -260,7 +267,7 @@ export default {
             item.isChecked = false;
           }
         }
-        if (item.id === num) {
+        if (num === item.id) {
           item.name = plateName;
           item.finishChecked = true;
           this.tips = '选择该版块是否跳转到其它页面、或替换到其它空余位置，设置完成后（可跳过）操作下一步按钮';
@@ -338,7 +345,9 @@ export default {
                 return value.plateType === 1;
               });
               if (list.length === 6) {
-                item.isDisabled = true;
+                if (this.currentPage !== item.pageName) {
+                  item.isDisabled = true;
+                }
               }
             });
           }
@@ -373,7 +382,7 @@ export default {
             if (data.length > 0) {
               const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
               this.positionObj.map((item) => {
-                if (item.id === serialNumber) {
+                if (serialNumber === item.id) {
                   item.isSerialNumber = true;
                 }
               });

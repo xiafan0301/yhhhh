@@ -192,13 +192,13 @@ export default {
         item.canChecked = false;
         item.finishChecked = false;
         item.isChecked = false;
-        item.name = '展示到该位置';
+        item.name = '';
       });
       this.tips = '请把版块绑定到要展示的页面上';
       this.skipPageList = [];
-      this.relationPageList.map((item) => {
-        item.isDisabled = false;
-      });
+      // this.relationPageList.map((item) => {
+      //   item.isDisabled = false;
+      // });
     },
     nextStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 3});

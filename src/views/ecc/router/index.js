@@ -15,15 +15,16 @@ import event from '@/views/ecc/components/event/event.vue'
 import eventList from '@/views/ecc/components/event/eventList.vue'
 import addEvent from '@/views/ecc/components/event/addEvent.vue'
 import addMsg from '@/views/ecc/components/event/addMsg.vue'
-import eventDetail from '@/views/ecc/components/event/eventDetail.vue'
+import eventDetailEnd from '@/views/ecc/components/event/eventDetailEnd.vue'
 import eventEnd from '@/views/ecc/components/event/eventEnd.vue'
 import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue'
+import eventDetailReat from '@/views/ecc/components/event/eventDetailReat.vue'
 import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue'
 import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue'
 // 调度指挥
 import ctc from '@/views/ecc/components/ctc/ctc.vue'
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
-
+import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
 // 应急库
 import emergency from '@/views/ecc/components/emergency/emergency.vue'
 import emergencyPlanList from '@/views/ecc/components/emergency/planList.vue'
@@ -32,11 +33,11 @@ import emergencyMaterialList from '@/views/ecc/components/emergency/materialList
 import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
 import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
 import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue'
-
-import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
+import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue'
+// 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
-
+import enableReplan from '@/views/ecc/components/ctc/enableReplan.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -63,6 +64,7 @@ export default new Router({
             {path: 'addPlan', name: 'emergency-addPlan', component: emergencyAddPlan},
             {path: 'seePlan', name: 'emergency-seePlan', component: emergencySeePlan},
             {path: 'materialList', name: 'emergency-materialList', component: emergencyMaterialList},
+            {path: 'addMaterial/:status', name: 'emergency-addMaterial', component: emergencyAddMaterial},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
             {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
           ]
@@ -78,7 +80,8 @@ export default new Router({
             {path: 'eventList', name: 'event-list', component: eventList},
             {path: 'addEvent', name: 'add-event', component: addEvent},
             {path: 'addMsg/:status', name: 'add-message', component: addMsg},
-            {path: 'eventDetail', name: 'event-detail', component: eventDetail},
+            {path: 'eventDetailEnd', name: 'event-detail-end', component: eventDetailEnd},
+            {path: 'eventDetailReat', name: 'event-detail-reat', component: eventDetailReat},
             {path: 'eventEnd', name: 'event-end', component: eventEnd},
             {path: 'unreatedEvent', name: 'event-untreated', component: unreatedEvent},
             {path: 'mutualPerson', name: 'mutual-person', component: mutualPerson},
@@ -92,7 +95,8 @@ export default new Router({
             {path: 'ctcList', name: 'ctc-list', component: ctcList},
             {path: 'ctcDetail', name: 'ctc-detail', component: ctcDetail},
             {path: 'rePlanList', name: 'replan-list', component: rePlanList},
-            {path: 'replanDetail', name: 'replan-detail', component: replanDetail}
+            {path: 'replanDetail', name: 'replan-detail', component: replanDetail},
+            {path: 'enableReplan', name: 'enable-replan', component: enableReplan}
           ]
         }
       ]

@@ -13,11 +13,11 @@
             <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
-            <el-date-picker value-format="yyyy-MM-dd" type="date" placeholder="选择日期" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
+            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
-            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
+            <div class='map-ecc' ><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
             <el-input style='width: 500px' placeholder='请选择经度...' v-model='addForm.longitude'></el-input>
@@ -82,17 +82,22 @@
       <div class='operation-btn'>
         <el-button @click="back('addForm')">返回</el-button>
         <el-button style='background: #0785FD;color:#fff' @click="submitForm('addForm')">保存</el-button>
-        <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
+        <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('addForm')">去调度指挥</el-button>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
 import {valiPhone} from '@/utils/validator.js';
 import {dictType} from '@/config/data.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      open: false,
+      oConfig: {},
       isDefaultChecked: true,
       dieNumber: '', // 死亡人数
       addForm: {
@@ -117,7 +122,7 @@ export default {
           { validator: valiPhone, trigger: 'blur' }
         ],
         reportTime: [
-          { required: true, message: '请选择上报日期', trigger: 'blur' }
+          { required: true, message: '请选择上报时间', trigger: 'blur' }
         ],
         eventAddress: [
           { required: true, message: '请输入事件地点', trigger: 'blur' }
@@ -139,14 +144,59 @@ export default {
     this.getEventLevel();
   },
   methods: {
-    skipCtcDetail () { // 跳到调度指挥方案制定页面
-      this.$router.push({name: 'ctc-detail'});
+    skipCtcDetail (form) { // 跳到调度指挥方案制定页面
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          if (this.addForm.casualties === '无') {
+            this.addForm.casualties = 0;
+          } else if (this.addForm.casualties === '不确定') {
+            this.addForm.casualties = -1;
+          } else if (this.addForm.casualties === '有') {
+            this.addForm.casualties = this.dieNumber;
+          }
+          const param = {
+            emiEvent: this.addForm
+          }
+          this.axios.post('A2/eventServices/event', param.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$message({
+                  message: '添加事件成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'ctc-detail', params: {addForm: this.addForm}});
+              } else {
+                this.$message.error('添加事件失败');
+              }
+            })
+            .catch(() => {})
+        }
+      });
+    },
+    showMap () {
+      if (this.addForm.eventAddress === '') {
+        this.oConfig = {};
+      } else {
+        this.oConfig = {
+          _name: this.addForm.eventAddress
+          // center: [Number(this.addForm.longitude), Number(this.addForm.latitude)]
+        }
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val) {
+      console.log('接收到的经纬度为：', val);
+      if (val) {
+        const str = val.split(',');
+        this.addForm.longitude = Number(str[0]);
+        this.addForm.latitude = Number(str[1]);
+      }
+      // this.editForm.gps = val;
     },
     back (form) {
       this.$router.back(-1);
     },
     submitForm (form) { // 保存数据
-      // console.log(this.addForm)
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.addForm.casualties === '无') {
@@ -174,7 +224,6 @@ export default {
             .catch(() => {})
         }
       });
-      // console.log(this.addForm)
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
@@ -196,9 +245,17 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
+        console.log(res.data)
         const data = {
-          attachmentType: dictType.enclosureTypeId,
-          url: res.data.newFileName
+          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
         }
         this.addForm.attachmentList.push(data);
       }

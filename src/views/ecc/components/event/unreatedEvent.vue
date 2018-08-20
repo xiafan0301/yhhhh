@@ -22,9 +22,10 @@
           <el-form-item label="上报时间" label-width='150px'>
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
-          <el-form-item label="事发地点" label-width='150px' prop='eventAddress'>
+          <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
-            <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span>
+            <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span> -->
+            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" @click='showMap' style='cursor:pointer' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
@@ -115,13 +116,18 @@
         <el-button style='color:#fff;background:#0785FD' @click="closeEvent('closeForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      open: false,
+      oConfig: {},
       dialogFormVisible: false,
       eventDetail: {}, // 事件详情
       detailForm: { // 详情表单
@@ -180,9 +186,28 @@ export default {
     back () {
       this.$router.back(-1);
     },
-    handleRemove () {},
+    showMap () {
+      if (this.detailForm.eventAddress === '') {
+        this.oConfig = {};
+      } else {
+        this.oConfig = {
+          _name: this.detailForm.eventAddress,
+          center: [Number(this.detailForm.longitude), Number(this.detailForm.latitude)]
+        }
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val) {
+      console.log('接收到的经纬度为：', val);
+      if (val) {
+        const str = val.split(',');
+        this.detailForm.longitude = Number(str[0]);
+        this.detailForm.latitude = Number(str[1]);
+      }
+      // this.editForm.gps = val;
+    },
     skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail'});
+      this.$router.push({name: 'ctc-detail', params: {eventId: this.$route.params.eventId}});
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.params.eventId;
@@ -191,6 +216,7 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res) {
+              console.log(res.data)
               this.attachmentList = res.data.attachmentList;
               this.detailForm.eventId = eventId;
               this.detailForm.eventCode = res.data.eventCode;
@@ -200,6 +226,8 @@ export default {
               this.detailForm.eventAddress = res.data.eventAddress;
               this.detailForm.eventLevel = res.data.eventLevel;
               this.detailForm.eventType = res.data.eventType;
+              this.detailForm.longitude = res.data.longitude;
+              this.detailForm.latitude = res.data.latitude;
               if (res.data.casualties === -1) {
                 this.detailForm.casualties = '不确定';
               } else if (res.data.casualties === 0) {
@@ -274,7 +302,6 @@ export default {
       });
     },
     modifyEvent (form) { // 修改事件
-      console.log(this.detailForm)
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.detailForm.flagType.length > 0) {
@@ -287,7 +314,30 @@ export default {
               }
             });
           }
+          if (this.detailForm.casualties === '无') {
+            this.detailForm.casualties = 0;
+          } else if (this.detailForm.casualties === '不确定') {
+            this.detailForm.casualties = -1;
+          } else if (this.detailForm.casualties === '有') {
+            this.detailForm.casualties = this.dieNumber;
+          }
         }
+        const params = {
+          emiEvent: this.detailForm
+        }
+        this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, params.emiEvent)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '修改事件成功',
+                type: 'success'
+              });
+              this.$router.push({name: 'event-list'});
+            } else {
+              this.$message.error('修改事件失败');
+            }
+          })
+          .catch(() => {})
       });
     }
   }
@@ -383,6 +433,15 @@ export default {
     }
     .close-reason-p {
       margin-bottom: 10px;
+    }
+    .address /deep/ .el-form-item__content {
+      display: flex;
+      .map-ecc {
+        img {
+          padding-top: 5px;
+          padding-left: 5px;
+        }
+      }
     }
   }
 </style>
