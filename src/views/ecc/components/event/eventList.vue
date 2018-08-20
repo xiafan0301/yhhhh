@@ -62,7 +62,7 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='eventDataList' highlight-current-row class='event-table'>
-      <el-table-column label="事件编号" prop='eventCode' align='center'></el-table-column>
+      <el-table-column fixed label="事件编号" prop='eventCode' align='center'></el-table-column>
       <el-table-column label="报案人" prop='reporterPhone' align='center'>
         <template slot-scope="scope">
           <span v-if='scope.row.reporterPhone'>{{scope.row.reporterPhone}}</span>
@@ -77,7 +77,7 @@
       </el-table-column>
       <el-table-column label="来源" prop='eventSourceName' align='center'></el-table-column>
       <el-table-column label="上报时间" prop='reportTime' align='center'></el-table-column>
-      <el-table-column label="事件地点" prop='eventAddress' align='center'></el-table-column>
+      <el-table-column label="事件地点" prop='eventAddress' align='center' show-overflow-tooltip></el-table-column>
       <el-table-column label="事件等级" prop='eventLevelName' align='center'>
         <template slot-scope="scope">
           <span v-if='scope.row.eventLevelName'>{{scope.row.eventLevelName}}</span>
@@ -127,7 +127,7 @@ export default {
     return {
       selectForm: {
         reportTime: [], // 时间
-        eventStatus: '', // 事件状态
+        eventStatus: '38a5dfa6-97b5-11e8-b784-d75706a2b83f', // 事件状态
         eventLevel: '全部等级', // 事件等级
         eventSource: '全部来源', // 事件来源
         phoneOrNumber: '' // 事件编号或提交人手机号
@@ -173,12 +173,6 @@ export default {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
         .then((res) => {
           if (res) {
-            res.data.map((item) => {
-              if (item.dictContent === '未处理') {
-                this.selectForm.eventStatus = item.dictId;
-                this.dictId = item.dictId;
-              }
-            })
             this.eventStatusList = res.data;
           }
         })
@@ -253,7 +247,7 @@ export default {
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
       this.getOneMonth();
-      this.selectForm.eventStatus = this.dictId;
+      // this.selectForm.eventStatus = this.dictId;
       this.getEventList();
     }
   }
@@ -292,8 +286,11 @@ export default {
       color: #fff;
       float: right;
     }
-    .el-table thead th {
+    /deep/ .el-table thead th {
       background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
     }
     .el-button+.el-button {
       margin-left: 2px !important;

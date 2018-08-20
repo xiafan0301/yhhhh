@@ -48,7 +48,7 @@
       highlight-current-row
       class='ctc-table'
     >
-      <el-table-column label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
       <el-table-column label="预案类型" prop='planType' align='center'></el-table-column>
       <el-table-column label="适用等级" prop='levelList' align='center'></el-table-column>
       <el-table-column label="操作" align='center'>
@@ -246,8 +246,11 @@ export default {
       color: #fff;
       float: right;
     }
-    .el-table thead th {
+    /deep/ .el-table thead th {
       background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
     }
     .el-button+.el-button {
       margin-left: 2px !important;

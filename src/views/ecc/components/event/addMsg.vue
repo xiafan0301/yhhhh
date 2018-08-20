@@ -27,16 +27,27 @@
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <el-upload
-              action="http://10.16.4.50:8001/api/network/upload/new"
-              list-type="picture-card"
-              :on-remove="handleRemove"
-              :on-success='handleSuccess'
-              :limit='9'
-            >
-              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-              <span class='add-img-text'>添加图片</span>
-            </el-upload>
+            <template v-if="this.$route.params.status !== 'add'">
+              <img
+                v-for='item in operationForm.attachmentList'
+                :src='item.url'
+                :key='item.attachmentId'
+                class='img-name'
+              />
+            </template>
+            <template v-else>
+              <el-upload
+                action="http://10.16.4.50:8001/api/network/upload/new"
+                list-type="picture-card"
+                :before-upload='handleBeforeUpload'
+                :on-remove="handleRemove"
+                :on-success='handleSuccess'
+                :limit='9'
+              >
+                <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+                <span class='add-img-text'>添加图片</span>
+              </el-upload>
+            </template>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>
@@ -122,7 +133,7 @@ export default {
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
         const data = {
-          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          attachmentType: dictType.imgId,
           url: res.data.newFileName,
           attachmentName: res.data.fileName,
           attachmentSize: res.data.fileSize,
@@ -136,7 +147,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response.data) {
+      if (file && file.response) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {
             if (item.url === file.response.data.newFileName) {
@@ -145,6 +156,17 @@ export default {
           });
         }
       }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     },
     submitData (form) { // 确认发布
       this.$refs[form].validate((valid) => {
@@ -198,6 +220,7 @@ export default {
               this.operationForm.longitude = res.data.longitude;
               this.operationForm.latitude = res.data.latitude;
               this.operationForm.eventDetail = res.data.eventDetail;
+              this.operationForm.attachmentList = res.data.attachmentList;
               if (res.data.radius) {
                 if (res.data.radius > 0) {
                   this.operationForm.radius = '推送';
@@ -261,6 +284,12 @@ export default {
           }
         }
       }
+    }
+    .img-name {
+      width: 100px;
+      height: 100px;
+      margin-right: 1%;
+      margin-top: 1%;
     }
     .operation-btn-msg {
       margin-top: 2%;

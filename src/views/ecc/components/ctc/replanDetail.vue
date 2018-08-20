@@ -13,10 +13,6 @@
           <p class='title'>预案名称</p>
           <p class='content'>{{replanDetail.planName}}</p>
         </li>
-        <!-- <li>
-          <p class='title'>关键词</p>
-          <p class='content'>火灾、消防</p>
-        </li> -->
         <li>
           <p class='title'>预案类型</p>
           <p class='content'>{{replanDetail.planType}}</p>
@@ -28,7 +24,7 @@
         <li>
           <p class='title'>预案正文</p>
           <p class='content'>
-            <el-input type='textarea' rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
+            <el-input type='textarea' disabled rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
           </p>
         </li>
         <li>
@@ -140,7 +136,7 @@ export default {
       }
     },
     back () {
-      this.$route.back(-1);
+      this.$router.back(-1);
     },
     openReplan () { // 启用预案
     }

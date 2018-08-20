@@ -17,11 +17,11 @@
           <div class='ctc-detail-basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <span class='content'>{{eventDetailObj.eventType}}</span>
+              <span class='content'>{{eventDetailObj.eventTypeName}}</span>
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <span class='content'>{{eventDetailObj.eventLevel}}</span>
+              <span class='content'>{{eventDetailObj.eventLevelName}}</span>
             </div>
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
@@ -59,36 +59,80 @@
           </div>
         </div>
       </div>
+      <div class='ctc-detail-first' v-show='eventDetailObj.taskList && eventDetailObj.taskList.length === 0'>
+        <div class='ctc-detail-first-header'>
+          <div class='flag'></div>
+          <p class='ctc-detail-first-text'>调度指挥方案</p>
+        </div>
+        <div class='ctc-detail-first-content'>
+          <ul v-for="(item, index) in eventDetailObj.taskList" :key="'item'+index">
+            <li>
+              <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
+            </li>
+            <li>
+              <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
+            </li>
+            <li>
+              <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
+            </li>
+            <li class='divide'></li>
+          </ul>
+          <ul>
+            <li>
+              <span class='title'>调度部门：</span><span class='content'>消防部</span>
+            </li>
+            <li>
+              <span class='title'>任务名称：</span><span class='content'>灭火</span>
+            </li>
+            <li>
+              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
+            </li>
+            <li class='divide'></li>
+          </ul>
+          <ul>
+            <li>
+              <span class='title'>调度部门：</span><span class='content'>消防部</span>
+            </li>
+            <li>
+              <span class='title'>任务名称：</span><span class='content'>灭火</span>
+            </li>
+            <li>
+              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
+            </li>
+            <li class='divide'></li>
+          </ul>
+        </div>
+      </div>
       <div class='ctc-detail-bottom'>
         <div class='ctc-idea-left'>
           <div class='ctc-idea-header'>
             <div class='flag'></div>
-            <p class='ctc-idea-text'>调度指挥方案</p>
+            <template v-if="eventDetailObj.taskList && eventDetailObj.taskList.length > 1">
+              <p class='ctc-idea-text'>再次调度指挥方案</p>
+            </template>
+            <template v-else>
+              <p class='ctc-idea-text'>调度指挥方案</p>
+            </template>
           </div>
           <div class='ctc-idea-body'>
-            <el-form class='ctc-idea-form'>
-              <el-form-item label="执行部门" label-width='120px'>
-                <el-select  placeholder="请选择执行部门" style='width: 80%'>
+            <el-form class='ctc-idea-form' :model='taskForm' ref='taskForm' :rules='rules'>
+              <el-form-item label="执行部门" label-width='120px' prop='departmentId'>
+                <el-select  placeholder="请选择执行部门" style='width: 80%' v-model='taskForm.departmentId'>
                   <el-option label="全部" value="shanghai"></el-option>
                   <el-option label="部分" value="beijing"></el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="任务名称" label-width='120px'>
-                <el-input type="text" placeholder='请输入任务名称' style='width: 80%'></el-input>
+              <el-form-item label="任务名称" label-width='120px' prop='taskName'>
+                <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='taskForm.taskName'></el-input>
               </el-form-item>
-              <el-form-item label="任务内容" label-width='120px'>
-                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%'></el-input>
+              <el-form-item label="任务内容" label-width='120px' prop='taskContent'>
+                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='taskForm.taskContent'></el-input>
               </el-form-item>
               <el-form-item style='margin-left: 120px'>
-                <el-upload
-                  action="https://jsonplaceholder.typicode.com/posts/"
-                  list-type="picture-card"
-                  :on-preview="handlePictureCardPreview"
-                  :on-remove="handleRemove"
-                >
+                <div class='add-task' @click="addTask('taskForm')">
                   <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
                   <span class='add-img-text'>添加任务</span>
-                </el-upload>
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -112,7 +156,7 @@
               <el-table-column label="操作" align='center'>
                 <template slot-scope="scope">
                   <el-button type='text' style='color: #0785FD' @click="selectReplanDetail">查看</el-button>
-                  <el-button type='text' style='color: #0785FD' @click="skipEnableReplan">启用</el-button>
+                  <el-button type='text' style='color: #0785FD' @click="skipEnableReplan(scope)">启用</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -165,7 +209,28 @@ export default {
         planName: '公共区域消防安全应急预案',
         planType: '事故灾难',
         levelList: 'IV'
-      }]
+      }],
+      rules: {
+        departmentId: [
+          { required: true, message: '请选择执行部门', trigger: 'blur' }
+        ],
+        taskName: [
+          { required: true, message: '请填写任务名称', trigger: 'blur' },
+          { max: 200, message: '最多可以输入200个字' }
+        ],
+        taskContent: [
+          { required: true, message: '请填写任务内容', trigger: 'blur' },
+          { max: 10000, message: '最多可以输入10000个字' }
+        ]
+      },
+      taskForm: {
+        eventId: '',
+        departmentName: '',
+        departmentId: '',
+        taskName: '',
+        taskContent: ''
+      },
+      taskList: [] // 要添加的任务列表
     }
   },
   mounted () {
@@ -196,11 +261,11 @@ export default {
           .catch(() => {})
       }
     },
-    selectReplanDetail () { // 启用预案
+    selectReplanDetail () { // 查看预案
       this.$router.push({name: 'replan-detail'});
     },
-    skipEnableReplan () {
-      this.$router.push({name: 'enable-replan'});
+    skipEnableReplan (scope) { // 启用预案
+      this.$router.push({name: 'enable-replan', params: {eventId: this.$route.params.eventId, planId: scope.row.planId}});
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
@@ -227,6 +292,12 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    addTask (form) { // 添加任务
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+        }
+      });
     }
   }
 }
@@ -240,10 +311,10 @@ export default {
     }
     .ctc-detail-body {
       width: 100%;
-      .ctc-detail-basic {
+      .ctc-detail-basic, .ctc-detail-first{
         background: #fff;
         margin-bottom: 0.7%;
-        .ctc-detail-basic-header {
+        .ctc-detail-basic-header, .ctc-detail-first-header {
           width: 100%;
           display: flex;
           p {
@@ -258,7 +329,7 @@ export default {
             border-bottom-right-radius: 5px;
             background: #0785FD;
           }
-          .ctc-detail-basic-text {
+          .ctc-detail-basic-text, .ctc-detail-first-text {
             color: #0785FD;
             font-size: 16px;
             font-weight: bold;
@@ -270,7 +341,7 @@ export default {
             margin-left: 2%;
           }
         }
-        .ctc-detail-basic-detail {
+        .ctc-detail-basic-detail, .ctc-detail-first-content {
           width: 100%;
           display:flex;
           padding: 20px;
@@ -304,6 +375,28 @@ export default {
               margin-right: 1%;
               margin-top: 1%;
             }
+          }
+          ul {
+            li {
+              line-height: 27px;
+              .title {
+                color: #222222;
+                font-size: 13px;
+              }
+              .content {
+                color: #777777;
+                font-size: 14px;
+                margin-left:1%;
+              }
+            }
+            .divide {
+              height:1px;
+              margin: 1% 0;
+              background: #EAEAEA;
+            }
+          }
+          & ul:last-child .divide {
+            display: none;
           }
         }
       }
@@ -343,14 +436,21 @@ export default {
             width: 100%;
             .ctc-idea-form {
               padding-top: 4%;
-              .el-upload--picture-card {
+              .add-task {
                 width: 100px;
                 height: 100px;
                 line-height: 100px;
                 background-color: #EAEAEA;
                 border: 1px solid #EAEAEA;
                 position: relative;
+                border-radius: 6px;
+                box-sizing: border-box;
+                display: inline-block;
+                text-align: center;
+                cursor: pointer;
+                outline: 0;
                 i {
+                  font-size: 28px;
                   margin: 0 auto;
                   font-weight: bold;
                 }

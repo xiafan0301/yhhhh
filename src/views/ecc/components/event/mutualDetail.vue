@@ -118,17 +118,19 @@
               <i class='el-icon-circle-close close'></i>
             </li>
           </ul>
-          <el-pagination
-            background
-            :page-sizes="[5, 10, 20, 50, 100]"
-            @size-change="onSizeChange"
-            @current-change="onPageChange"
-            :current-page.sync="pagination.pageNum"
-            :page-size="pagination.pageSize"
-            layout="prev, pager, next, jumper"
-            :total="pagination.total"
-          >
-          </el-pagination>
+          <template v-if='commentList && commentList.length > 5'>
+            <el-pagination
+              background
+              :page-sizes="[5, 10, 20, 50, 100]"
+              @size-change="onSizeChange"
+              @current-change="onPageChange"
+              :current-page.sync="pagination.pageNum"
+              :page-size="pagination.pageSize"
+              layout="prev, pager, next, jumper"
+              :total="pagination.total"
+            >
+            </el-pagination>
+          </template>
         </div>
       </div>
     </div>
@@ -148,7 +150,7 @@
       center>
       <span style='text-align:center'>确定要结束互助?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click="mutualEndVisiable = false">确定结束</el-button>
+        <el-button class='sureBtn' @click="sureEndEvent">确定结束</el-button>
         <el-button class='noSureBtn' @click="mutualEndVisiable = false">暂不结束</el-button>
       </span>
     </el-dialog>
@@ -239,6 +241,9 @@ export default {
       }
     },
     endEvent () { // 结束事件
+      this.mutualEndVisiable = true;
+    },
+    sureEndEvent () { // 结束事件
       const eventId = this.$route.params.eventId;
       this.axios.put('A2/eventServices/events/finish/' + eventId, {eventId: eventId})
         .then((res) => {
@@ -379,7 +384,7 @@ export default {
             padding-left: 80px;
             img {
               width: 100px;
-              height: 75px;
+              height: 100px;
               margin-right: 1%;
               margin-top: 1%;
             }

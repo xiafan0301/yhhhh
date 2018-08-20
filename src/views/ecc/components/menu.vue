@@ -5,12 +5,14 @@
       <div class="bg-mu-uc">
         <el-menu
           :router="true"
+          :unique-opened='true'
           :default-active="menuActive"
+          @open='selectIndex'
           class="el-menu-vertical-demo">
-          <el-submenu :index="item.id" v-for="(item, index) in menuList" :key="'ml' + index">
+          <el-submenu :index="item.id" :class="[(index + 1) == isActive ? 'el-submenu-active' : '']" v-for="(item, index) in menuList" :key="'ml' + index">
             <template slot="title">
-              <i :class="item.icon"></i>
-              <span>{{item.name}}</span>
+              <i :class="item.icon" ></i>
+              <span style='margin-left:3%'>{{item.name}}</span>
             </template>
             <template v-if="item.children && item.children.length > 0">
               <el-menu-item v-for="(sitem, sindex) in item.children" :key="'sml' + sindex"
@@ -23,17 +25,17 @@
   </div>
 </template>
 <script>
+import '@/assets/font/iconfont.css';
 export default {
   components: {},
   data () {
     return {
-      menuType: 1,
-      menuActive: null,
+      menuActive: '1',
       menuList: [
         {
           id: '1',
           name: '事件管理',
-          icon: 'el-icon-setting',
+          icon: 'icon-shijian',
           children: [
             {
               id: '1-1',
@@ -50,7 +52,7 @@ export default {
         {
           id: '2',
           name: '调度指挥',
-          icon: 'el-icon-location',
+          icon: 'icon-jiankong',
           children: [
             {
               id: '2-1',
@@ -62,7 +64,7 @@ export default {
         {
           id: '3',
           name: '应急库',
-          icon: 'el-icon-phone-outline',
+          icon: 'icon-yingjiyuan',
           children: [
             {
               id: '3-1',
@@ -79,7 +81,7 @@ export default {
         {
           id: '4',
           name: '消息管理',
-          icon: 'el-icon-news',
+          icon: 'icon-xiaoxi',
           children: [
             {
               id: '4-1',
@@ -93,12 +95,23 @@ export default {
             }
           ]
         }
-      ]
+      ],
+      isActive: '1'
     }
   },
   mounted () {
   },
-  methods: {}
+  methods: {
+    selectIndex (index) {
+      this.menuActive = index;
+      this.menuList.map((item) => {
+        if (index === item.id) {
+          console.log(item.id)
+          this.isActive = index;
+        }
+      });
+    }
+  }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -122,6 +135,28 @@ export default {
       }
     }
     .router-link-active, .bg-mu-u > li > a:hover{
+    }
+    .el-submenu-active {
+      background: #E6F7FF;
+      /deep/ .el-submenu__title {
+        color: #0785FD !important;
+      }
+      /deep/ .el-menu {
+        background: #E6F7FF;
+        /deep/ .el-menu-item {
+          color: #0785FD !important;
+        }
+        /deep/ .is-active {
+          background: #0785FD;
+          color: #fff !important;
+        }
+      }
+      .el-submenu__title i {
+        color: #0785FD !important;
+      }
+    }
+    /deep/ .el-submenu__title {
+      color: #666666 !important;
     }
   }
 </style>

@@ -32,6 +32,7 @@
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              :before-upload='handleBeforeUpload'
               :on-remove="handleRemove"
               :on-success='handleSuccess'
               :limit='9'
@@ -185,13 +186,11 @@ export default {
       this.open = !this.open;
     },
     mapPointSubmit (val) {
-      console.log('接收到的经纬度为：', val);
       if (val) {
         const str = val.split(',');
         this.addForm.longitude = Number(str[0]);
         this.addForm.latitude = Number(str[1]);
       }
-      // this.editForm.gps = val;
     },
     back (form) {
       this.$router.back(-1);
@@ -245,9 +244,8 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
-        console.log(res.data)
         const data = {
-          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          attachmentType: dictType.imgId,
           url: res.data.newFileName,
           attachmentName: res.data.fileName,
           attachmentSize: res.data.fileSize,
@@ -261,7 +259,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response.data) {
+      if (file && file.response) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
             if (item.url === file.response.data.newFileName) {
@@ -270,6 +268,17 @@ export default {
           });
         }
       }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     }
   }
 }
