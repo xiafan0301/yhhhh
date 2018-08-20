@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="modifypk5(scope)">修改</el-button>
+            <el-button type="text" @click="modifypk5(scope)" >修改</el-button>
             <el-button type="text" class="vis-bg-del-btn"  @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
@@ -424,7 +424,8 @@
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form.coordinate" auto-complete="off" ></el-input>
+            <el-input v-model="form.coordinate" auto-complete="off"  style="width: 80%"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
@@ -481,7 +482,8 @@
             <el-input v-model ="form2.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form2.coordinate" auto-complete="off"></el-input>
+            <el-input v-model="form2.coordinate" auto-complete="off" style="width: 80%"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="人口数量(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
@@ -514,7 +516,8 @@
             <el-input v-model="form1.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form1.coordinate" auto-complete="off"></el-input>
+            <el-input v-model="form1.coordinate" auto-complete="off" style="width: 80%;"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
@@ -591,13 +594,19 @@
         </el-pagination>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
+import mapPoint from '@/components/common/mapPoint.vue';
 import {valicoordinate} from '@/utils/validator.js';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      aa: '',
+      open: false,
+      oConfig: {},
       qureyId: '',
       // 贫困村
       plateList: [],
@@ -1111,6 +1120,23 @@ export default {
   mounted () {
   },
   methods: {
+    selPosition () {
+      // 编辑状态
+      if (!this.editObj) {
+        this.oConfig = {};
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val) {
+      console.log('接收到的经纬度为：', val);
+      if (this.dialogFormVisible1) {
+        this.form1.coordinate = val
+      } else if (this.dialogFormVisible) {
+        this.form.coordinate = val
+      } else if (this.dialogFormVisible2) {
+        this.form2.coordinate = val
+      }
+    },
     // 添加事件清空form表单
     fillIn (form) {
       this.dialogFormVisible1 = true;

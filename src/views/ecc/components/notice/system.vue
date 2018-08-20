@@ -12,25 +12,33 @@
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px"  :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="设备状态">
+          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="时间段">
             <el-option label="全部" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布状态">
+            <el-option label="待发送" :value="1"></el-option>
+            <el-option label="发送成功" :value="2"></el-option>
+            <el-option label="已撤销" :value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="消息类型">
+            <el-option
+              v-for="item in messageTypeList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
-            <el-option label="可用" :value="1"></el-option>
-            <el-option label="异常" :value="2"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
+            <el-option label="联动单位A" :value="0"></el-option>
+            <el-option label="联动单位B" :value="1"></el-option>
+            <el-option label="联动单位C" :value="2"></el-option>
+            <el-option label="应急指挥中心" :value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -43,31 +51,16 @@
       :data="tableData"
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column prop="deviceName" label="序号" width="50" :show-overflow-tooltip="true" type="index"></el-table-column>
-      <el-table-column prop="protocolType" label="消息类型" width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.protocolType == 1">http</span>
-          <span v-else-if="scope.row.deviceStatus == 2">https</span>
-        </template>
+      <el-table-column  label="序号" width="50" :show-overflow-tooltip="true" type="index"></el-table-column>
+      <el-table-column prop="messageType" label="消息类型" width="100">
       </el-table-column>
-      <el-table-column prop="deviceIp" label="内容" min-width="140"></el-table-column>
-      <el-table-column prop="streamType" label="发布用户" width="100">
-        <template slot-scope="scope">
-          <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
-          <span v-if="scope.row.streamType == 1">main stream</span>
-          <span v-else-if="scope.row.streamType == 2">sub-stream</span>
-          <span v-else-if="scope.row.streamType == 3">third stream</span>
-          <span v-else-if="scope.row.streamType == 4">transcode stream</span>
-        </template>
+      <el-table-column prop="details" label="内容" min-width="140"></el-table-column>
+      <el-table-column prop="publishUser" label="发布用户" width="100">
       </el-table-column>
-      <el-table-column prop="zeroChannelFlag" label="发布单位" width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.zeroChannelFlag">是</span>
-          <span v-else>否</span>
-        </template>
+      <el-table-column prop="publishUnit" label="发布单位" width="100">
       </el-table-column>
-      <el-table-column prop="deviceUserName" label="发布时间" width="120"></el-table-column>
-      <el-table-column prop="deviceUserPassword" label="发布状态" width="120"></el-table-column>
+      <el-table-column prop="publishTime" label="发布时间" width="120"></el-table-column>
+      <el-table-column prop="publishState" label="发布状态" width="120"></el-table-column>
       <el-table-column
         label="操作"
         width="150">
@@ -81,15 +74,23 @@
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
       searchForm: {
-        deviceName: '',
-        deviceAddress: '',
-        deviceIp: '',
-        deviceStatus: 0
+        beginTime: null,
+        endTime: null,
+        publishState: 0,
+        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+        publishUnitId: '',
+        receiverId: '',
+        isReceive: '',
+        publishTime: ''
       },
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
       tableData: [{
         date: '2016-05-02',
         name: '王小虎',
@@ -106,14 +107,47 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      }],
+      messageTypeList: []
     }
   },
   computed: {
   },
   mounted () {
   },
+  created () {
+    this.getMessageType();
+    this.getTableData();
+  },
   methods: {
+    getMessageType () {
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.messagetypeId)
+        .then((res) => {
+          this.messageTypeList = res.data;
+        })
+    },
+    getTableData () {
+      let params = {
+        // 'where.beginTime': this.searchForm.beginTime,
+        // 'where.endTime': this.searchForm.endTime,
+        // 'where.publishState': this.searchForm.publishState,
+        'where.messageType': this.searchForm.messageType,
+        // 'where.publishUnitId': this.searchForm.publishUnitId,
+        // 'where.receiverId': this.searchForm.receiverId,
+        // 'where.isReceive': this.searchForm.isReceive,
+        // 'where.publishTime': this.searchForm.publishTime,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.axios.get('A2/messageService/page?' + $.param(params))
+        .then((res) => {
+          console.log(res);
+          this.tableData = res.data.list;
+          this.pagination.total = res.data.total;
+        })
+        .catch(() => {
+        });
+    },
     edit () {
     },
     doSearch () {

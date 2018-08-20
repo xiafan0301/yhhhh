@@ -163,7 +163,13 @@ export default {
             messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
             terminal: 1,
             title: this.form.title
-          }
+          },
+          receiveRelations: [
+            {
+              messageId: 'string',
+              receiveUser: '移动端'
+            }
+          ]
         };
         this.axios.post('A2/messageService', params)
           .then((res) => {
