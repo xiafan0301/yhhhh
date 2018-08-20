@@ -1084,11 +1084,11 @@ export default {
   mounted () {
     this.setInitialData(); // 初始化数据
     // this.plateConfigInfoArr = this.$store.state.plateConfigInfo;
-    this.$store.state.plateConfigInfo.map((item) => {
-      if (item.serialNumber === 6) {
-        this.configCountPre = item.configCount;
-      }
-    });
+    // this.$store.state.plateConfigInfo.map((item) => {
+    //   if (item.serialNumber === 6) {
+    //     this.configCountPre = item.configCount;
+    //   }
+    // });
   },
   methods: {
     preStep () {
@@ -1360,7 +1360,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1408,7 +1408,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1462,7 +1462,7 @@ export default {
           this.parentDataListFour.push(parentData);
           this.contentItemListFour.push(value);
         } else {
-          this.tip = '项可添加条数已达到上线';
+          this.tip = '项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写信息';
@@ -1520,7 +1520,7 @@ export default {
           this.childDataListTwo.push(data);
           this.isActiveChild = index + 1;
         } else {
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },
@@ -1588,7 +1588,7 @@ export default {
           this.layerDataListThree.push(value);
           this.isActiveChild = index + 1;
         } else {
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },
@@ -2071,7 +2071,7 @@ export default {
     setInitialData () {
       const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
       const configId = this.$store.state.editPlateInfo.configId;
-      let plateConfigInfoObj = JSON.parse(JSON.stringify(this.$store.state.plateConfigInfo));
+      // let plateConfigInfoObj = JSON.parse(JSON.stringify(this.$store.state.plateConfigInfo));
       this.dataForm = {
         plateName: this.$store.state.editPlateInfo.plateName,
         remark: this.$store.state.editPlateInfo.remark
@@ -2110,12 +2110,12 @@ export default {
                       const areaRelationList = this.$store.state.editPlateInfo.areaRelationList;
                       if (areaRelationList.length > 0) {
                         this.value = '位置' + items.serialNumber;
-                        plateConfigInfoObj.map((itm, idx) => {
+                        this.$store.state.plateConfigInfo.map((itm, idx) => {
                           if (itm.areaDataType === 6) {
                             itm.configCount = items.contentItemList.length;
                           }
                         });
-                        this.$store.commit('setConfigInfo', {plateConfigInfo: plateConfigInfoObj});
+                        // this.$store.commit('setConfigInfo', {plateConfigInfo: plateConfigInfoObj});
                       }
                       let unitArr = [];
                       if (items.contentItemList.length > 0) {
@@ -2477,6 +2477,7 @@ export default {
                         this.isActiveParent = 0;
                       }
                     } else if (items.areaDataType === 6) {
+                      console.log('66666')
                       if (items.contentItemList.length > 0) {
                         items.contentItemList.map((item, index) => {
                           this.itemName[index + '_' + items.serialNumber] = item.itemName;

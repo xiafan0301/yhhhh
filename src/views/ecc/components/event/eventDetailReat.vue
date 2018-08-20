@@ -311,7 +311,7 @@ export default {
   },
   methods: {
     skipEventEnd () { // 跳到事件结束页面
-      this.$router.push({name: 'event-end', params: {eventId: this.$route.params.eventId}});
+      this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
     },
     skipCtcDetail () {
       this.$router.push({name: 'ctc-detail'});
@@ -329,7 +329,7 @@ export default {
       this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -341,7 +341,7 @@ export default {
       }
     },
     getCommentList () { // 分页获取评论列表
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/comments/page', eventId)
           .then((res) => {

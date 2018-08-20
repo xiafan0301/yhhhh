@@ -66,9 +66,9 @@ export default {
     }
   },
   mounted () {
-    this.endForm.eventId = this.$route.params.eventId;
-    if (this.$route.params.eventLevel) {
-      this.endForm.eventLevel = this.$route.params.eventLevel;
+    this.endForm.eventId = this.$route.query.eventId;
+    if (this.$route.query.eventLevel) {
+      this.endForm.eventLevel = this.$route.query.eventLevel;
     }
     this.getEventLevel();
   },
@@ -96,7 +96,7 @@ export default {
     },
     endEvent (form) { // 结束事件
       console.log(this.endForm)
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.$refs[form].validate((valid) => {
         if (valid) {
           const data = {

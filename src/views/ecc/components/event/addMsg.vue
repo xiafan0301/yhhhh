@@ -27,7 +27,7 @@
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <template v-if="this.$route.params.status !== 'add'">
+            <template v-if="this.$route.query.status !== 'add'">
               <img
                 v-for='item in operationForm.attachmentList'
                 :src='item.url'
@@ -70,7 +70,7 @@
       </div>
       <div class='operation-btn-msg'>
         <el-button @click='back'>返回</el-button>
-        <template v-if="this.$route.params.status === 'add'">
+        <template v-if="this.$route.query.status === 'add'">
           <el-button style='background: #0785FD;color:#fff' @click="submitData('operationForm')">确认发布</el-button>
         </template>
         <template v-else>
@@ -118,9 +118,9 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.status === 'add') {
+    if (this.$route.query.status === 'add') {
       this.status = '添加消息';
-    } else if (this.$route.params.status === 'modify') {
+    } else if (this.$route.query.status === 'modify') {
       this.status = '修改消息';
     }
     this.getDistance();
@@ -210,7 +210,7 @@ export default {
         .catch(() => {})
     },
     getAppEventDetail () {
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -234,7 +234,7 @@ export default {
       }
     },
     modifyData (form) { // 修改事件
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.operationForm.eventId = eventId;
       }

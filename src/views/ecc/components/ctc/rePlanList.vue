@@ -134,8 +134,8 @@ export default {
   computed: {
   },
   mounted () {
-    if (this.$route.params.eventId) {
-      this.eventId = this.$route.params.eventId;
+    if (this.$route.query.eventId) {
+      this.eventId = this.$route.query.eventId;
     }
     this.getEventLevel();
     this.getEventType();
@@ -152,7 +152,7 @@ export default {
       this.getReplanList();
     },
     selectReplanDetail (scope) { // 查看预案详情
-      this.$router.push({name: 'replan-detail', params: {planId: scope.row.planId}});
+      this.$router.push({name: 'replan-detail', query: {planId: scope.row.planId}});
     },
     getEventLevel () { // 获取事件等级
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)

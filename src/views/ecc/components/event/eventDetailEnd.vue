@@ -328,7 +328,7 @@ export default {
       this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.modifyForm.eventId = eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
@@ -365,7 +365,7 @@ export default {
     },
     handleSave () { // 保存修改
       if (this.modifyForm) {
-        this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, this.modifyForm)
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, this.modifyForm)
           .then((res) => {
             if (res) {
               this.$message({
@@ -381,7 +381,7 @@ export default {
       }
     },
     getCommentList () { // 分页获取评论列表
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/comments/page', eventId)
           .then((res) => {

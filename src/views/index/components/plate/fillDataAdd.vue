@@ -1384,7 +1384,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1428,7 +1428,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1471,7 +1471,7 @@ export default {
           this.contentItemListFour.push(data);
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '项可添加条数已达到上线';
+          this.tip = '项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写信息';
@@ -1523,7 +1523,7 @@ export default {
           this.isActiveChild = index + 1;
         } else {
           console.log('55555')
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },
@@ -1582,7 +1582,7 @@ export default {
           this.layerDataListThree.push(value);
           this.isActiveChild = index + 1;
         } else {
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },

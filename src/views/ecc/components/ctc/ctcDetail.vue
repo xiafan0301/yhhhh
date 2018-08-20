@@ -118,8 +118,13 @@
             <el-form class='ctc-idea-form' :model='taskForm' ref='taskForm' :rules='rules'>
               <el-form-item label="执行部门" label-width='120px' prop='departmentId'>
                 <el-select  placeholder="请选择执行部门" style='width: 80%' v-model='taskForm.departmentId'>
-                  <el-option label="全部" value="shanghai"></el-option>
-                  <el-option label="部分" value="beijing"></el-option>
+                  <el-option
+                    v-for="item in departmentList"
+                    :key="item.departmentId"
+                    :label="item.departmentName"
+                    :value="item.departmentId"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="任务名称" label-width='120px' prop='taskName'>
@@ -148,12 +153,12 @@
               :data='reservePlanList'
               highlight-current-row
               class='ctc-table'
-               max-height="372"
+              max-height="352"
             >
-              <el-table-column label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-              <el-table-column label="预案类型" prop='planType' align='center'></el-table-column>
-              <el-table-column label="适用等级" prop='levelList' align='center'></el-table-column>
-              <el-table-column label="操作" align='center'>
+              <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
+              <el-table-column fixed label="预案类型" prop='planType' align='center'></el-table-column>
+              <el-table-column fixed label="适用等级" prop='levelList' align='center'></el-table-column>
+              <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
                   <el-button type='text' style='color: #0785FD' @click="selectReplanDetail">查看</el-button>
                   <el-button type='text' style='color: #0785FD' @click="skipEnableReplan(scope)">启用</el-button>
@@ -167,7 +172,7 @@
     </div>
     <div class='operation-btn-ctc-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff'>确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='submitData'>确定</el-button>
     </div>
   </div>
 </template>
@@ -230,27 +235,29 @@ export default {
         taskName: '',
         taskContent: ''
       },
-      taskList: [] // 要添加的任务列表
+      taskList: [], // 要添加的任务列表
+      departmentList: [] // 部门列表
     }
   },
   mounted () {
-    if (this.$route.params.eventId) {
+    if (this.$route.query.eventId) {
       this.getEventDetail();
-    } else if (this.$route.params.addForm) {
+    } else if (this.$route.query.addForm) {
       this.getEventLevel();
       this.getEventType();
-      this.eventDetailObj = this.$route.params.addForm;
+      this.eventDetailObj = this.$route.query.addForm;
     }
+    this.getDepartmentList();
   },
   methods: {
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'replan-list', params: {eventId: this.$route.params.eventId}});
+      this.$router.push({name: 'replan-list', query: {eventId: this.$route.query.eventId}});
     },
     back () {
       this.$router.back(-1);
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -265,15 +272,15 @@ export default {
       this.$router.push({name: 'replan-detail'});
     },
     skipEnableReplan (scope) { // 启用预案
-      this.$router.push({name: 'enable-replan', params: {eventId: this.$route.params.eventId, planId: scope.row.planId}});
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
         .then((res) => {
           if (res && res.data) {
             res.data.map((item) => {
-              if (item.dictId === this.$route.params.addForm.eventType) {
-                this.$route.params.addForm.eventType = item.dictContent;
+              if (item.dictId === this.$route.query.addForm.eventType) {
+                this.$route.query.addForm.eventType = item.dictContent;
               }
             });
           }
@@ -285,10 +292,19 @@ export default {
         .then((res) => {
           if (res && res.data) {
             res.data.map((item) => {
-              if (item.dictId === this.$route.params.addForm.eventLevel) {
-                this.$route.params.addForm.eventLevel = item.dictContent;
+              if (item.dictId === this.$route.query.addForm.eventLevel) {
+                this.$route.query.addForm.eventLevel = item.dictContent;
               }
             });
+          }
+        })
+        .catch(() => {})
+    },
+    getDepartmentList () { // 获取部门列表
+      this.axios.get('A2/departmentServices/departments')
+        .then((res) => {
+          if (res && res.data) {
+            this.departmentList = res.data;
           }
         })
         .catch(() => {})
@@ -298,6 +314,24 @@ export default {
         if (valid) {
         }
       });
+    },
+    submitData () { // 调度指挥
+      if (this.taskList.length > 0) {
+        const eventId = this.$route.query.eventId;
+        const data = {
+          eventId: eventId,
+          taskList: this.taskList
+        }
+        this.axios.post('A2/taskServices/tasks/' + eventId, data)
+          .then((res) => {
+            if (res) {
+              console.log(res);
+            }
+          })
+          .catch(() => {});
+      } else {
+        this.$message.warn('请先添加任务');
+      }
     }
   }
 }
@@ -469,6 +503,7 @@ export default {
           }
           .ctc-replan-table {
             width: 100%;
+            margin-top: 20px;
             .el-table td {
               padding: 3px 0 !important;
             }
@@ -485,6 +520,12 @@ export default {
               line-height: 40px;
               border-radius: 20px;
               cursor: pointer;
+            }
+            /deep/ .el-table thead th {
+              background-color: #FAFAFA !important;
+            }
+            /deep/ .hover-row>td {
+              background-color: #E6F7FF !important;
             }
           }
         }

@@ -207,10 +207,10 @@ export default {
       // this.editForm.gps = val;
     },
     skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail', params: {eventId: this.$route.params.eventId}});
+      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.closeForm.eventId = eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
@@ -284,7 +284,7 @@ export default {
           const params = {
             emiEvent: this.closeForm
           }
-          this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, params.emiEvent)
+          this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
             .then((res) => {
               if (res) {
                 this.$message({
@@ -325,7 +325,7 @@ export default {
         const params = {
           emiEvent: this.detailForm
         }
-        this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, params.emiEvent)
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
           .then((res) => {
             if (res) {
               this.$message({

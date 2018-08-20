@@ -165,7 +165,7 @@ export default {
                   message: '添加事件成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'ctc-detail', params: {addForm: this.addForm}});
+                this.$router.push({name: 'ctc-detail', query: {addForm: this.addForm}});
               } else {
                 this.$message.error('添加事件失败');
               }

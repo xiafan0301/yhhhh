@@ -118,10 +118,10 @@ export default {
     skipLookEvent () { // 查看事件分布
     },
     skipCtcDetail (scope) { // 跳到调度指挥页面
-      this.$router.push({name: 'ctc-detail', params: {eventId: scope.row.eventId}});
+      this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});
     },
     skipCtcEnd (scope) { // 跳转到事件结束页面
-      this.$router.push({name: 'event-end', params: {eventId: scope.row.eventId, eventLevel: scope.row.eventLevel}});
+      this.$router.push({name: 'event-end', query: {eventId: scope.row.eventId, eventLevel: scope.row.eventLevel}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;

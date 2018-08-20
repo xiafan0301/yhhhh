@@ -106,7 +106,6 @@ export default {
       this.menuActive = index;
       this.menuList.map((item) => {
         if (index === item.id) {
-          console.log(item.id)
           this.isActive = index;
         }
       });

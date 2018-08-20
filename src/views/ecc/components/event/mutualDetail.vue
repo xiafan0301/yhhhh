@@ -31,7 +31,7 @@
           <div class='basic-list'>
             <div>
               <span class='title'>报案人：</span>
-              <template v-if="this.$route.params.eventStatus === '处理中'">
+              <template v-if="this.$route.query.eventStatus === '处理中'">
                 <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
               </template>
               <template v-else>
@@ -136,7 +136,7 @@
     </div>
     <div class='operation-btn-mutual'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="this.$route.params.eventStatus === '处理中'">
+      <template v-if="this.$route.query.eventStatus === '处理中'">
         <template v-if='eventDetailObj.eventFlag === false'>
           <el-button style='background: #0785FD;color:#fff' @click='endEvent'>宣布结束</el-button>
         </template>
@@ -205,7 +205,7 @@ export default {
   mounted () {
     this.getEventDetail();
     this.getCommentList();
-    if (this.$route.params.eventStatus === '处理中') {
+    if (this.$route.query.eventStatus === '处理中') {
       this.imgUrl = require('../../../../assets/img/temp/treating.png');
     } else {
       this.imgUrl = require('../../../../assets/img/temp/end.png');
@@ -228,7 +228,7 @@ export default {
       this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -244,7 +244,7 @@ export default {
       this.mutualEndVisiable = true;
     },
     sureEndEvent () { // 结束事件
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.axios.put('A2/eventServices/events/finish/' + eventId, {eventId: eventId})
         .then((res) => {
           if (res) {
@@ -263,7 +263,7 @@ export default {
         .catch(() => {})
     },
     getCommentList () { // 分页获取评论
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       const data = {
         'where.eventId': eventId,
         pageNum: this.pagination.pageNum

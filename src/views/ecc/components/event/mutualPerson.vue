@@ -112,13 +112,13 @@ export default {
   methods: {
     skipAddMsg (status, scope) { // 跳转到添加消息页面
       if (status === 'add') {
-        this.$router.push({name: 'add-message', params: {status: status}});
+        this.$router.push({name: 'add-message', query: {status: status}});
       } else {
-        this.$router.push({name: 'add-message', params: {status: status, eventId: scope.row.eventId}});
+        this.$router.push({name: 'add-message', query: {status: status, eventId: scope.row.eventId}});
       }
     },
     skipPersonDetail (scope) { // 查看
-      this.$router.push({name: 'mutual-detail', params: {eventId: scope.row.eventId, eventStatus: scope.row.eventStatusName}});
+      this.$router.push({name: 'mutual-detail', query: {eventId: scope.row.eventId, eventStatus: scope.row.eventStatusName}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;

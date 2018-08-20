@@ -236,7 +236,7 @@ export default {
       this.$router.back(-1);
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -248,7 +248,7 @@ export default {
       }
     },
     getReplanDetail () { // 获取预案详情
-      const planId = this.$route.params.planId;
+      const planId = this.$route.query.planId;
       if (planId) {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {

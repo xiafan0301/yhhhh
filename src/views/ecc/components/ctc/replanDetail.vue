@@ -124,7 +124,7 @@ export default {
   },
   methods: {
     getReplanDetail () { // 获取预案详情
-      const planId = this.$route.params.planId;
+      const planId = this.$route.query.planId;
       if (planId) {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {
