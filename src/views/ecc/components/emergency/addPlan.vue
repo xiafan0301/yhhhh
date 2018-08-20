@@ -11,52 +11,66 @@
       <div class='add-form-person'>
         <el-form class='form-content-person' :model="form">
           <el-form-item label="预案名称" label-width='150px'>
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
-              <el-option label="全部" value="shanghai"></el-option>
-              <el-option label="部分" value="beijing"></el-option>
-            </el-select>
+            <el-input  placeholder="请输入预案名称" style='width: 500px' v-model="form.planName">
+            </el-input>
           </el-form-item>
           <el-form-item label="预案类型" label-width='150px'>
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
-              <el-option label="全部" value="shanghai"></el-option>
-              <el-option label="部分" value="beijing"></el-option>
+            <el-select  placeholder="选择预案类型" style='width: 500px' v-model="form.planType">
+              <el-option
+                v-for="item in eventTypeList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="适用事件等级" label-width='150px'>
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
-              <el-option label="全部" value="shanghai"></el-option>
-              <el-option label="部分" value="beijing"></el-option>
+            <el-select  placeholder="选择事件等级(可多选)" style='width: 500px' v-model="form.levelList" multiple>
+              <el-option
+                v-for="item in eventLevelList"
+                :key="item.dictId"
+                :label="item.dictContent"
+                :value="item.dictId">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="预案正文" label-width='150px'>
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model="form.region"></el-input>
+            <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
           <el-form-item label="附件" label-width='150px'>
-            <el-input  style='width: 389px; position: relative;' placeholder='请选择事件详细情况...' v-model="form.name" class="xfinput">
+            <el-input  style='width: 389px; position: relative;' :placeholder='fileList3.name' v-model="form.attachmentName" class="xfinput" disabled>
             </el-input>
-            <el-button  type="primary" size="mini" style="position: absolute; left: 5px; top: 6px; background-color: #FAFAFA; border: 1px solid #EAEAEA" >
+            <el-upload style="display: inline-block"
+                       action="http://10.16.4.50:8001/api/network/upload/new"
+                       :on-success="handSuccess"
+                       :show-file-list="false"
+                       :auto-upload ="false"
+                       :file-list="fileList3"
+                       :before-upload="handpreview">
+              <el-button  type="primary" size="mini" style="position: absolute; left: 5px; top: 6px; background-color: #FAFAFA; border: 1px solid #EAEAEA" >
               <span style="font-size:12px;color:#555555">浏览..</span></el-button>
-            <el-button type="primary" size="medium">重新上传</el-button>
+            </el-upload>
+            <el-button type="primary" size="medium"  @click="submitUpload">上传</el-button>
           </el-form-item>
           <el-form-item label="响应处置" label-width='150px'>
             <div style="width: 500px;background-color:#FAFAFA; padding: 20px" >
             <el-form-item label="协同部门" label-position="left">
-              <el-input style="width: 358px"></el-input>
+              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.departmentId"></el-select>
             </el-form-item>
               <el-form-item label="任务名称" label-position="left">
-                <el-input style="width: 358px"></el-input>
+                <el-input style="width: 358px" placeholder='请输入任务名称' v-model="form.taskName" ></el-input>
               </el-form-item>
               <el-form-item label="任务名称" label-position="left">
-                <el-input type="textarea" style='width: 358px' placeholder='请选择事件详细情况...' rows='5' v-model="form.region"></el-input>
+                <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskContent"></el-input>
               </el-form-item>
             </div>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
             <el-upload
-              action="https://jsonplaceholder.typicode.com/posts/"
+              action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
               :on-preview="handlePictureCardPreview"
-              :on-remove="handleRemove"
+              :on-success="handleRemove"
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
@@ -72,17 +86,20 @@
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      fileList3: [],
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: '',
-        desc: '',
-        checked: false,
+        planName: '',
+        planType: '',
+        levelList: '',
+        planDetail: '',
+        attachmentName: '',
+        taskName: '',
+        taskContent: '',
+        departmentId: '',
         time: ''
       },
       form1: {
@@ -96,34 +113,79 @@ export default {
         time: ''
       },
       gg: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      plhType: '',
+      eventTypeList: [],
+      eventLevelList: [{dictId: '', dictContent: ''}],
+      attachmentList: [{
+        filename: '',
+        thumbnailUrl: '',
+        attachmentType: ''
+      }]
     }
   },
   computed: {
+  },
+  created () {
+    this.getEventLevel();
+    this.getEventType()
   },
   mounted () {
   },
   methods: {
     onSubmit () {
+      let params = {
+        attachmentName: this.form.attachmentName,
+        attachmentType: 'string',
+        createRealName: 'string',
+        createTime: 'string',
+        createUserId: 'string',
+        createUserName: 'string',
+        eventType: this.form.planType,
+        levelList: [
+          this.form.levelList
+        ],
+        planDetail: this.form.planDetail,
+        planId: 'string',
+        planName: this.form.planName,
+        taskList: [
+          {
+            departmentId: this.form.departmentId,
+            taskContent: this.form.taskContent,
+            taskId: 'string',
+            taskName: this.form.taskName
+          }
+        ],
+        url: 'string'
+      };
+      this.axios.post('A2/planServices/plan', params)
+        .then((res) => {
+          console.log(res);
+        })
     },
-    handleRemove (file, fileList) {
-      console.log(file, fileList);
+    getEventLevel () {
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          this.eventLevelList = res.data
+        })
+    },
+    getEventType () {
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          this.eventTypeList = res.data;
+        })
+    },
+    submitUpload () {
+      this.$refs.upload.submit();
+    },
+    handSuccess (response, file, fileList) {
+      console.log(response)
+    },
+    handpreview (file) {
+      console.log(file)
+    },
+    handleRemove (response, file, fileList) {
+      console.log(response);
+      this.attachmentList = response.data
     },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;

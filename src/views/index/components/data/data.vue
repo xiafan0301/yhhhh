@@ -15,7 +15,7 @@
       </el-form>
       <!--贫困村添加-->
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
-      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false" :on-error="aa">
+      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
         <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="u[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
@@ -58,7 +58,7 @@
         </el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
-            <el-button type="text" @click="modifypk5(scope)">修改</el-button>
+            <el-button type="text" @click="modifypk5(scope)" >修改</el-button>
             <el-button type="text" class="vis-bg-del-btn"  @click="shchu(scope)">删除</el-button>
           </template>
         </el-table-column>
@@ -140,8 +140,8 @@
       <!-- 3 空气检测站点表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '25c2ec86-a62e-45c2-a3e7-49a121a1f56d'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="空气监测站点名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="空气监测站点名称" min-width="130"></el-table-column>
+        <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -157,8 +157,8 @@
       <!-- 企业分布表格   块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="150"></el-table-column>
-        <el-table-column label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="镇名称" min-width="120"></el-table-column>
+        <el-table-column label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -174,8 +174,8 @@
       <!-- 3 水位监测表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '88ee0a59-19a0-4e42-b4d2-bae59634e110'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="水位监测站点名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="水位监测站点名称" min-width="140"></el-table-column>
+        <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -191,8 +191,8 @@
       <!--外出务工表格   块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="镇名称" min-width="100"></el-table-column>
+        <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -208,13 +208,13 @@
       <!-- 3 文化旅游表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd633bafc-74d0-4f0d-bea5-927ef2df4192'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="文化旅游建筑名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="文化旅游建筑名称" min-width="140"></el-table-column>
+        <el-table-column  label="坐标" min-width="110">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="140"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
@@ -225,7 +225,7 @@
       <!-- 4 养老机构表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'a649c4a2-314e-4490-bfee-ca3b7695057b'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="养老机构名称" min-width="180"></el-table-column>
+        <el-table-column prop="locationName" label="养老机构名称" min-width="120"></el-table-column>
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
@@ -243,8 +243,8 @@
       <!-- 3 政务部门表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd42795ca-dad6-4531-aed7-eb75f3d3646d'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="政务部门名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="政务部门名称" min-width="140"></el-table-column>
+        <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -260,8 +260,8 @@
       <!-- 3 重点监控污染企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'f90edff9-7f21-48e0-9ce4-472377825dae'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="重点监控污染企业名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="重点监控污染企业名称" min-width="120"></el-table-column>
+        <el-table-column  label="坐标" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -277,7 +277,7 @@
       <!--贫困人口分布表格 块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="180"></el-table-column>
+        <el-table-column prop="locationName" label="镇名称" min-width="130"></el-table-column>
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
@@ -294,7 +294,7 @@
       <!--  4 扶贫项目表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'dc42b85c-ee98-4895-bfc2-4c472a092170'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="项目名称" min-width="180"></el-table-column>
+        <el-table-column prop="locationName" label="项目名称" min-width="150"></el-table-column>
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
@@ -312,8 +312,8 @@
       <!--财政人员表格     块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '3c7944d7-d874-4478-a25a-e75fc2020d96'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="镇名称" min-width="140"></el-table-column>
+        <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -329,8 +329,8 @@
       <!--党员分布表格     块-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="镇名称" min-width="180"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="镇名称" min-width="140"></el-table-column>
+        <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
@@ -346,13 +346,13 @@
       <!-- 3 公共车站表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'e5654a00-c642-44f3-a340-2827f51367d6'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="公共车站名称" min-width="180"></el-table-column>
-        <el-table-column label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="公共车站名称" min-width="120"></el-table-column>
+        <el-table-column label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="130"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
@@ -424,7 +424,8 @@
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form.coordinate" auto-complete="off"></el-input>
+            <el-input v-model="form.coordinate" auto-complete="off"  style="width: 80%"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
@@ -481,7 +482,8 @@
             <el-input v-model ="form2.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form2.coordinate" auto-complete="off"></el-input>
+            <el-input v-model="form2.coordinate" auto-complete="off" style="width: 80%"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="人口数量(人)" :label-width="formLabelWidth" v-if="this.searchForm.dataTypeId == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" prop="addrs">
             <el-input v-model ="form2.addrs" auto-complete="off"></el-input>
@@ -514,7 +516,8 @@
             <el-input v-model="form1.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
-            <el-input v-model="form1.coordinate" auto-complete="off"></el-input>
+            <el-input v-model="form1.coordinate" auto-complete="off" style="width: 80%;"></el-input>
+            <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
           </el-form-item>
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
@@ -591,12 +594,19 @@
         </el-pagination>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
+import mapPoint from '@/components/common/mapPoint.vue';
+import {valicoordinate} from '@/utils/validator.js';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      aa: '',
+      open: false,
+      oConfig: {},
       qureyId: '',
       // 贫困村
       plateList: [],
@@ -641,7 +651,8 @@ export default {
           {required: true, message: '请输入名称', trigger: 'blur'}
         ],
         coordinate: [
-          {required: true, message: '请输入坐标', trigger: 'blur'}
+          {required: true, message: '请输入坐标', trigger: 'blur'},
+          { validator: valicoordinate, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '请输入地址', trigger: 'blur'}
@@ -675,7 +686,8 @@ export default {
           {required: true, message: '请输入名称', trigger: 'blur'}
         ],
         coordinate: [
-          {required: true, message: '请输入坐标', trigger: 'blur'}
+          {required: true, message: '请输入坐标', trigger: 'blur'},
+          { validator: valicoordinate, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '请输入地址', trigger: 'blur'}
@@ -709,7 +721,8 @@ export default {
           {required: true, message: '请输入名称', trigger: 'blur'}
         ],
         coordinate: [
-          {required: true, message: '请输入坐标', trigger: 'blur'}
+          {required: true, message: '请输入坐标', trigger: 'blur'},
+          { validator: valicoordinate, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '不能为空', trigger: 'blur'},
@@ -778,7 +791,7 @@ export default {
           }
         ],
         dataTypeId: '4fce5edb-7092-4455-971b-6f8526d6a827',
-        iconType: 0,
+        iconType: 8,
         latitude: 0,
         locationName: '',
         locationTag: '村名',
@@ -874,7 +887,7 @@ export default {
           }
         ],
         dataTypeId: 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce',
-        iconType: 0,
+        iconType: 1,
         latitude: 0,
         locationName: '',
         locationTag: '医疗机构名称',
@@ -897,7 +910,7 @@ export default {
           }
         ],
         dataTypeId: '739fe4f5-49c6-42ca-ba87-76f5300ab5af',
-        iconType: 0,
+        iconType: 9,
         latitude: 0,
         locationName: '',
         locationTag: '学校名',
@@ -916,7 +929,7 @@ export default {
           }
         ],
         dataTypeId: 'ac94e4c6-7e49-45c5-9610-1556245c45cf',
-        iconType: 0,
+        iconType: 7,
         latitude: 0,
         locationName: '',
         locationTag: '停车场名称',
@@ -935,7 +948,7 @@ export default {
           }
         ],
         dataTypeId: 'a649c4a2-314e-4490-bfee-ca3b7695057b',
-        iconType: 0,
+        iconType: 4,
         latitude: 0,
         locationName: '',
         locationTag: '养老机构名称',
@@ -969,7 +982,7 @@ export default {
           }
         ],
         dataTypeId: '25c2ec86-a62e-45c2-a3e7-49a121a1f56d',
-        iconType: 0,
+        iconType: 11,
         latitude: 0,
         locationName: '',
         locationTag: '空气监测站点名称',
@@ -984,7 +997,7 @@ export default {
           }
         ],
         dataTypeId: '88ee0a59-19a0-4e42-b4d2-bae59634e110',
-        iconType: 0,
+        iconType: 10,
         latitude: 0,
         locationName: '',
         locationTag: '水位监测站点名称',
@@ -999,7 +1012,7 @@ export default {
           }
         ],
         dataTypeId: 'd633bafc-74d0-4f0d-bea5-927ef2df4192',
-        iconType: 0,
+        iconType: 2,
         latitude: 0,
         locationName: '',
         locationTag: '文化旅游建筑名称',
@@ -1029,7 +1042,7 @@ export default {
           }
         ],
         dataTypeId: 'f90edff9-7f21-48e0-9ce4-472377825dae',
-        iconType: 0,
+        iconType: 12,
         latitude: 0,
         locationName: '',
         locationTag: '重点监控污染企业名称',
@@ -1044,7 +1057,7 @@ export default {
           }
         ],
         dataTypeId: 'e5654a00-c642-44f3-a340-2827f51367d6',
-        iconType: 0,
+        iconType: 5,
         latitude: 0,
         locationName: '',
         locationTag: '公共车站名称',
@@ -1107,6 +1120,23 @@ export default {
   mounted () {
   },
   methods: {
+    selPosition () {
+      // 编辑状态
+      if (!this.editObj) {
+        this.oConfig = {};
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val) {
+      console.log('接收到的经纬度为：', val);
+      if (this.dialogFormVisible1) {
+        this.form1.coordinate = val
+      } else if (this.dialogFormVisible) {
+        this.form.coordinate = val
+      } else if (this.dialogFormVisible2) {
+        this.form2.coordinate = val
+      }
+    },
     // 添加事件清空form表单
     fillIn (form) {
       this.dialogFormVisible1 = true;
@@ -1155,6 +1185,7 @@ export default {
             if (res && res.data) {
               this.plateList = res.data.list;
               this.total = res.data.total
+              console.log(res)
             }
           })
       }
@@ -1915,10 +1946,6 @@ export default {
       }
       console.log();
       this.getPlateList();
-    },
-    aa (err, file, fileList) {
-      console.log(err);
-      console.log(file);
     },
     handleExceed (files, fileList) {
     },

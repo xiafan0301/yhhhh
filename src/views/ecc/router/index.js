@@ -33,6 +33,7 @@ import emergencyMaterialList from '@/views/ecc/components/emergency/materialList
 import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
 import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
 import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue'
+import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue'
 // 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
@@ -63,6 +64,7 @@ export default new Router({
             {path: 'addPlan', name: 'emergency-addPlan', component: emergencyAddPlan},
             {path: 'seePlan', name: 'emergency-seePlan', component: emergencySeePlan},
             {path: 'materialList', name: 'emergency-materialList', component: emergencyMaterialList},
+            {path: 'addMaterial/:status', name: 'emergency-addMaterial', component: emergencyAddMaterial},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
             {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
           ]
