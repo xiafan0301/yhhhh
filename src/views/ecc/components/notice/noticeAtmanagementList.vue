@@ -12,20 +12,23 @@
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="设备状态">
+          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="时间段">
             <el-option label="全部" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布状态">
+            <el-option label="待发送" :value="1"></el-option>
+            <el-option label="发送成功" :value="2"></el-option>
+            <el-option label="已撤销" :value="3"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="设备状态">
-            <el-option label="全部" :value="0"></el-option>
-            <el-option label="可用" :value="1"></el-option>
-            <el-option label="异常" :value="2"></el-option>
+          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
+            <el-option label="联动单位A" :value="0"></el-option>
+            <el-option label="联动单位B" :value="1"></el-option>
+            <el-option label="联动单位C" :value="2"></el-option>
+            <el-option label="应急指挥中心" :value="2"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -39,32 +42,17 @@
       border
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column prop="deviceName" label="序号" width="50" :show-overflow-tooltip="true" type="index"></el-table-column>
-      <el-table-column prop="protocolType" label="主题" min-width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.protocolType == 1">http</span>
-          <span v-else-if="scope.row.deviceStatus == 2">https</span>
-        </template>
+      <el-table-column  label="序号" width="50"  type="index"></el-table-column>
+      <el-table-column prop="title" label="主题" min-width="100">
       </el-table-column>
-      <el-table-column prop="deviceIp" label="摘要" min-width="140"></el-table-column>
+      <el-table-column prop="details" label="摘要" min-width="140"></el-table-column>
       <el-table-column prop="channelId" label="接收者" width="100"></el-table-column>
-      <el-table-column prop="streamType" label="发布用户" width="100">
-        <template slot-scope="scope">
-          <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
-          <span v-if="scope.row.streamType == 1">main stream</span>
-          <span v-else-if="scope.row.streamType == 2">sub-stream</span>
-          <span v-else-if="scope.row.streamType == 3">third stream</span>
-          <span v-else-if="scope.row.streamType == 4">transcode stream</span>
-        </template>
+      <el-table-column prop="publishUser" label="发布用户" width="100">
       </el-table-column>
-      <el-table-column prop="zeroChannelFlag" label="发布单位" width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.zeroChannelFlag">是</span>
-          <span v-else>否</span>
-        </template>
+      <el-table-column prop="publishUser" label="发布单位" width="100">
       </el-table-column>
-      <el-table-column prop="deviceUserName" label="发布时间" width="120"></el-table-column>
-      <el-table-column prop="deviceUserPassword" label="发布状态" width="120"></el-table-column>
+      <el-table-column prop="publishTime" label="发布时间" width="120"></el-table-column>
+      <el-table-column prop="publishState" label="发布状态" width="120"></el-table-column>
       <el-table-column
         label="操作"
         width="150">
@@ -94,23 +82,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
   computed: {
@@ -136,11 +108,9 @@ export default {
       };
       this.axios.get('A2/messageService/page?' + $.param(params))
         .then((res) => {
-          if (res && res.data) {
-            this.tableData = res.data.list;
-            this.pagination.total = res.data.total;
-            console.log(res)
-          }
+          console.log(res);
+          this.tableData = res.data.list;
+          this.pagination.total = res.data.total;
         })
         .catch(() => {
         });

@@ -39,4 +39,15 @@ export const valiPhone = (rule, value, callback) => {
     }
   }
   callback();
-}
+};
+// 验证经纬度
+export const valicoordinate = (rule, value, callback) => {
+  if (value.split(',')[0] > 180) {
+    callback(new Error('经度必须少于180'));
+  } else {
+    if (value.split(',')[1] > 90) {
+      callback(new Error('纬度必须少于90'));
+    }
+  }
+  callback();
+};
