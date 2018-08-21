@@ -88,6 +88,18 @@ export default {
           content: '<div class="map-p-marker map-p-marker-new" title="新的位置"><i class="el-icon-location"></i></div>' // 自定义点标记覆盖物内容
         });
         _this.newMarker = marker;
+        AMap.service('AMap.Geocoder', function () { // 回调函数
+          let geocoder = new AMap.Geocoder({});
+          geocoder.getAddress([e.lnglat.getLng(), e.lnglat.getLat()], function (status, result) {
+            let sAddr = '';
+            if (status === 'complete' && result.info === 'OK') {
+              // 获得了有效的地址信息: result.regeocode.formattedAddress
+              // console.log(result.regeocode.formattedAddress);
+              sAddr = result.regeocode.formattedAddress;
+            }
+            _this.searchVal = sAddr;
+          });
+        });
       });
       // 注册监听，当选中某条记录时会触发
       let auto = new AMap.Autocomplete({
@@ -131,7 +143,7 @@ export default {
     },
     selSubmit () {
       // console.log('获取的经纬度为：', this.jwd);
-      this.$emit('mapPointSubmit', this.jwd)
+      this.$emit('mapPointSubmit', this.jwd, this.searchVal);
       this.dialogVisible = false;
     },
     select (e) {
