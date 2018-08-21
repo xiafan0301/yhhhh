@@ -42,6 +42,7 @@
             </el-input>
             <el-upload style="display: inline-block"
                        action="http://10.16.4.50:8001/api/network/upload/new"
+                       ref="upload"
                        :on-success="handSuccess"
                        :show-file-list="false"
                        :auto-upload ="false"
@@ -55,12 +56,19 @@
           <el-form-item label="响应处置" label-width='150px'>
             <div style="width: 500px;background-color:#FAFAFA; padding: 20px" >
             <el-form-item label="协同部门" label-position="left">
-              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.departmentId"></el-select>
+              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.departmentId">
+                <el-option
+                  v-for="item in  departmentsList"
+                  :key="item.departmentId"
+                  :label="item.departmentName"
+                  :value="item.departmentId">
+                </el-option>
+              </el-select>
             </el-form-item>
               <el-form-item label="任务名称" label-position="left">
                 <el-input style="width: 358px" placeholder='请输入任务名称' v-model="form.taskName" ></el-input>
               </el-form-item>
-              <el-form-item label="任务名称" label-position="left">
+              <el-form-item label="任务内容" label-position="left">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskContent"></el-input>
               </el-form-item>
             </div>
@@ -102,20 +110,10 @@ export default {
         departmentId: '',
         time: ''
       },
-      form1: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: true,
-        desc: '',
-        checked: false,
-        time: ''
-      },
-      gg: '',
       plhType: '',
       eventTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
+      departmentsList: [],
       attachmentList: [{
         filename: '',
         thumbnailUrl: '',
@@ -127,36 +125,30 @@ export default {
   },
   created () {
     this.getEventLevel();
-    this.getEventType()
+    this.getEventType();
+    this.getdepartments();
   },
   mounted () {
   },
   methods: {
     onSubmit () {
       let params = {
-        attachmentName: this.form.attachmentName,
-        attachmentType: 'string',
-        createRealName: 'string',
-        createTime: 'string',
-        createUserId: 'string',
-        createUserName: 'string',
+        attachmentName: '客家话',
+        attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
         eventType: this.form.planType,
-        levelList: [
-          this.form.levelList
-        ],
+        levelList: this.form.levelList,
         planDetail: this.form.planDetail,
-        planId: 'string',
         planName: this.form.planName,
         taskList: [
           {
             departmentId: this.form.departmentId,
             taskContent: this.form.taskContent,
-            taskId: 'string',
             taskName: this.form.taskName
           }
         ],
-        url: 'string'
+        url: 'http://swift.aorise.org:8090/v1/AUTH_a11ecbe53dd24868a9c5c76714419992/sc-edu-pub/image/66e1dd5e-e8b2-4faa-ae1f-ca753e228f20.png'
       };
+      console.log(params.taskList[0].departmentId);
       this.axios.post('A2/planServices/plan', params)
         .then((res) => {
           console.log(res);
@@ -172,6 +164,12 @@ export default {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
         .then((res) => {
           this.eventTypeList = res.data;
+        })
+    },
+    getdepartments () {
+      this.axios.get('A2/departmentServices/departments')
+        .then((res) => {
+          this.departmentsList = res.data;
         })
     },
     submitUpload () {

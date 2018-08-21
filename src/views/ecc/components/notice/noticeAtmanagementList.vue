@@ -6,7 +6,7 @@
         <el-breadcrumb-item>公告管理</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" icon="el-icon-plus">发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -43,22 +43,22 @@
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column  label="序号" width="50"  type="index"></el-table-column>
-      <el-table-column prop="title" label="主题" min-width="100">
+      <el-table-column prop="emiMessage.title" label="主题" min-width="100">
       </el-table-column>
-      <el-table-column prop="details" label="摘要" min-width="140"></el-table-column>
-      <el-table-column prop="channelId" label="接收者" width="100"></el-table-column>
-      <el-table-column prop="publishUser" label="发布用户" width="100">
+      <el-table-column prop="emiMessage.details" label="摘要" min-width="140"></el-table-column>
+      <el-table-column prop="receiveRelations" label="接收者" min-width="100"></el-table-column>
+      <el-table-column prop="publishUser" label="发布用户" min-width="100">
       </el-table-column>
-      <el-table-column prop="publishUser" label="发布单位" width="100">
+      <el-table-column prop="publishUser" label="发布单位" min-width="100">
       </el-table-column>
-      <el-table-column prop="publishTime" label="发布时间" width="120"></el-table-column>
-      <el-table-column prop="publishState" label="发布状态" width="120"></el-table-column>
+      <el-table-column prop="publishTime" label="发布时间" min-width="120"></el-table-column>
+      <el-table-column prop="publishState" label="发布状态" min-width="120"></el-table-column>
       <el-table-column
         label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text" slot="reference" @click="modify()">修改</el-button>
+          <el-button type="text"  @click="modify('modifyatgment')">修改</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -119,13 +119,12 @@ export default {
     },
     doSearch () {
     },
-    showEditDialog (flag) {
+    showEditDialog (status) {
       // this.editDialogVisible = flag;
-      this.$router.push({name: 'notice-release', query: {release: true}});
+      this.$router.push({name: 'notice-release', query: {status: status}});
     },
-    modify () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
+    modify (status) {
+      this.$router.push({name: 'notice-modify', query: {status: status}});
     },
     modifyxt () {
       this.visible2 = false;

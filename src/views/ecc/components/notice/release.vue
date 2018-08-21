@@ -3,18 +3,17 @@
     <div style=" margin-bottom: 20px; position: relative">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="gg">公告管理</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{name: 'system'}"  v-if="!gg">系统消息</el-breadcrumb-item>
-        <el-breadcrumb-item  v-if="gg">发布公告</el-breadcrumb-item>
-        <el-breadcrumb-item  v-if="!gg">发布系统消息</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="this.$route.query.status === 'atgment'">公告管理</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{name: 'system'}"  v-if="this.$route.query.status === 'system'">系统消息</el-breadcrumb-item>
+        <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(gg)" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog()" icon="el-icon-plus">发布</el-button>
       </div>
     </div>
     <div class="bg-release-cot">
       <div style="width: 500px">
-      <el-form ref="form" :model="form" label-width="80px"  v-if="gg">
+      <el-form ref="form" :model="form" label-width="80px"  v-if="this.$route.query.status === 'atgment'">
         <el-form-item label="接收者">
             <div style="display: inline-block">
             <el-checkbox label="移动端" name="type"></el-checkbox>
@@ -61,7 +60,7 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <el-form ref="form1" :model="form1" label-width="80px" v-if="!gg">
+      <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'system'">
         <el-form-item label="接收者">
             <el-checkbox label="移动端" name="type" v-model="form1.receive" disabled></el-checkbox>
         </el-form-item>
@@ -99,6 +98,7 @@
 export default {
   data () {
     return {
+      status: '',
       form: {
         region: '',
         date1: '',
@@ -115,31 +115,17 @@ export default {
         desc: '',
         checked: false,
         time: ''
-      },
-      gg: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      }
     }
   },
   computed: {
   },
   mounted () {
-    this.gg = this.$route.query.release
+    if (this.$route.query.status === 'atgment') {
+      this.status = '添加公告'
+    } else if (this.$route.query.status === 'system') {
+      this.status = '添加消息'
+    }
   },
   methods: {
     showEditDialog (val) {

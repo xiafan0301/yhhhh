@@ -10,4 +10,4 @@ export const dictType = { // 字典类型
   belongStageId: 'fa97082c-97ad-11e8-b862-4302e8dcc63f', // 归属阶段
   closeReasonId: 'dcbf5108-a039-11e8-be44-ef7e44e9c79d', // 关闭原因Id
   messagetypeId: '39728bba-9b6f-11e8-8a14-3f814d634dc1'// 消息类型ID
-}
+};

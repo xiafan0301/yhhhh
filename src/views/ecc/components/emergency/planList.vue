@@ -12,12 +12,12 @@
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
+          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="预案类型">
             <el-option label="预案类型" :value="0"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
+          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="适用事件等级">
             <el-option label="适用事件等级" :value="0"></el-option>
           </el-select>
         </el-form-item>
@@ -79,7 +79,7 @@ export default {
         deviceName: '',
         deviceAddress: '',
         deviceIp: '',
-        deviceStatus: 0
+        deviceStatus: ''
       },
       tableData: [{
         date: '2016-05-02',
