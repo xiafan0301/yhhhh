@@ -235,7 +235,7 @@
                     <i class='el-icon-circle-close close'></i>
                   </li>
                 </ul>
-                <template v-if='commentList && commentList.length > 5'>
+                <template v-if='this.pagination.total > 5'>
                   <el-pagination
                     background
                     :page-sizes="[5, 10, 20, 50, 100]"
@@ -296,7 +296,7 @@ export default {
       pagination: {
         total: 0,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       modifyForm: {
         eventLevel: '',
@@ -313,6 +313,7 @@ export default {
     this.getEventType();
     this.getEventLevel();
     this.getEventDetail();
+    this.getCommentList();
   },
   methods: {
     back () { // 返回上一页
@@ -382,8 +383,13 @@ export default {
     },
     getCommentList () { // 分页获取评论列表
       const eventId = this.$route.query.eventId;
+      const data = {
+        'where.eventId': eventId,
+        pageNum: this.pagination.pageNum,
+        pageSize: this.pagination.pageSize
+      }
       if (eventId) {
-        this.axios.get('A2/eventServices/comments/page', eventId)
+        this.axios.get('A2/eventServices/comments/page', {params: data})
           .then((res) => {
             // console.log(res)
             if (res && res.data.list) {

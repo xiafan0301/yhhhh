@@ -93,32 +93,8 @@
               <div class='info-detail'>{{item.content}}</div>
               <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
             </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
-            </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close'></i>
-            </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close'></i>
-            </li>
           </ul>
-          <template v-if='commentList && commentList.length > 5'>
+          <template v-if='this.pagination.total > 5'>
             <el-pagination
               background
               :page-sizes="[5, 10, 20, 50, 100]"
@@ -181,7 +157,7 @@ export default {
       pagination: {
         total: 0,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       options1: [{
         value: '选项1',
@@ -266,9 +242,10 @@ export default {
       const eventId = this.$route.query.eventId;
       const data = {
         'where.eventId': eventId,
-        pageNum: this.pagination.pageNum
+        pageNum: this.pagination.pageNum,
+        pageSize: this.pagination.pageSize
       }
-      this.axios.get('A2/eventServices/comments/page', data)
+      this.axios.get('A2/eventServices/comments/page', {params: data})
         .then((res) => {
           console.log(res)
           if (res && res.data.list) {
@@ -295,6 +272,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
+            this.closeCommentVisiable = false;
           })
           .catch(() => {})
       }
@@ -417,6 +395,7 @@ export default {
               }
               .close {
                 position: absolute;
+                cursor: pointer;
                 font-size: 21px;
                 color: #E9E8E8;
                 right: 2%;
