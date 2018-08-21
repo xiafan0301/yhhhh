@@ -31,7 +31,7 @@
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
               <!-- <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>1234567890</span> -->
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='ctc-detail-basic-list'>
             <div>
@@ -59,7 +59,7 @@
           </div>
         </div>
       </div>
-      <div class='ctc-detail-first' v-show='eventDetailObj.taskList && eventDetailObj.taskList.length === 0'>
+      <div class='ctc-detail-first' v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0'>
         <div class='ctc-detail-first-header'>
           <div class='flag'></div>
           <p class='ctc-detail-first-text'>调度指挥方案</p>
@@ -75,31 +75,7 @@
             <li>
               <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
             </li>
-            <li class='divide'></li>
-          </ul>
-          <ul>
-            <li>
-              <span class='title'>调度部门：</span><span class='content'>消防部</span>
-            </li>
-            <li>
-              <span class='title'>任务名称：</span><span class='content'>灭火</span>
-            </li>
-            <li>
-              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-            </li>
-            <li class='divide'></li>
-          </ul>
-          <ul>
-            <li>
-              <span class='title'>调度部门：</span><span class='content'>消防部</span>
-            </li>
-            <li>
-              <span class='title'>任务名称：</span><span class='content'>灭火</span>
-            </li>
-            <li>
-              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-            </li>
-            <li class='divide'></li>
+            <li v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0' class='divide'></li>
           </ul>
         </div>
       </div>
@@ -107,7 +83,7 @@
         <div class='ctc-idea-left'>
           <div class='ctc-idea-header'>
             <div class='flag'></div>
-            <template v-if="eventDetailObj.taskList && eventDetailObj.taskList.length > 1">
+            <template v-if="eventDetailObj.taskList && eventDetailObj.taskList.length > 0">
               <p class='ctc-idea-text'>再次调度指挥方案</p>
             </template>
             <template v-else>
@@ -116,7 +92,7 @@
           </div>
           <div class='ctc-idea-body'>
             <div class='ctc-idea-body-list' v-for='(item, index) in taskList' :key="'item'+index">
-              <div class='ctc-idea-body-list-detail'>
+              <div class='ctc-idea-body-list-detail' v-show='!item.isShow'>
                 <div class='ctc-idea-body-list-num'>任务{{index + 1}}</div>
                 <div class='ctc-idea-body-list-body'>
                   <p>执行部门： {{item.departmentName}}</p>
@@ -129,10 +105,10 @@
                   <span @click='deleteTask(index)'>删除</span>
                 </div>
               </div>
-               <div class='ctc-idea-body-modify-form' v-show="isShowModify === true">
+               <div class='ctc-idea-body-modify-form' v-show="item.isShow">
                 <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref='modifyTaskForm' :rules='rules'>
                   <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
-                    <el-select  placeholder="请选择执行部门" style='width: 490px' v-model='modifyTaskForm.departmentId'>
+                    <el-select  placeholder="请选择执行部门" style='width: 80%' v-model='modifyTaskForm.departmentId'>
                       <el-option
                         v-for="item in departmentList"
                         :key="item.departmentId"
@@ -143,42 +119,44 @@
                     </el-select>
                   </el-form-item>
                   <el-form-item label="任务名称" label-width='80px' prop='taskName'>
-                    <el-input type="text" placeholder='请输入任务名称' style='width: 490px' v-model='modifyTaskForm.taskName'></el-input>
+                    <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='modifyTaskForm.taskName'></el-input>
                   </el-form-item>
                   <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
-                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 490px' v-model='modifyTaskForm.taskContent'></el-input>
+                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='modifyTaskForm.taskContent'></el-input>
                   </el-form-item>
                   <el-form-item label-width='80px'>
-                    <el-button style='background: #0785FD;color:#fff' @click="modifyFormData('modifyTaskForm')">保存</el-button>
-                    <el-button @click="cancelModifyForm('modifyTaskForm')">取消</el-button>
+                    <el-button style='background: #0785FD;color:#fff' @click="modifyFormData('modifyTaskForm', index)">保存</el-button>
+                    <el-button @click="cancelModifyForm('modifyTaskForm', index)">取消</el-button>
                   </el-form-item>
                 </el-form>
               </div>
             </div>
             <div v-show='taskList.length > 0' class='ctc-idea-body-divide'></div>
-            <el-form class='ctc-idea-form' :model='taskForm' ref='taskForm' :rules='rules' :style="[taskList.length > 0 ? styleObj : '']">
-              <el-form-item label="执行部门" label-width='120px' prop='departmentId'>
-                <el-select @change='changeDepartment'  placeholder="请选择执行部门" style='width: 80%' v-model='taskForm.departmentId'>
-                  <el-option
-                    v-for="item in departmentList"
-                    :key="item.departmentId"
-                    :label="item.departmentName"
-                    :value="item.departmentId"
-                  >
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="任务名称" label-width='120px' prop='taskName'>
-                <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='taskForm.taskName'></el-input>
-              </el-form-item>
-              <el-form-item label="任务内容" label-width='120px' prop='taskContent'>
-                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='taskForm.taskContent'></el-input>
-              </el-form-item>
-              <el-form-item label="" label-width='120px' v-show='taskList.length > 0'>
-                <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
-                <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
-              </el-form-item>
-            </el-form>
+            <div class='ctc-idea-form'>
+              <el-form class='ctc-idea-form-add' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
+                <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+                  <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 80%' v-model='taskForm.departmentId'>
+                    <el-option
+                      v-for="item in departmentList"
+                      :key="item.departmentId"
+                      :label="item.departmentName"
+                      :value="item.departmentId"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+                <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+                  <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='taskForm.taskName'></el-input>
+                </el-form-item>
+                <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
+                  <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='taskForm.taskContent'></el-input>
+                </el-form-item>
+                <el-form-item label="" label-width='80px' v-show='taskList.length > 0'>
+                  <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
+                  <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
             <div class='add-task' @click="addTask('taskForm')">
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加任务</span>
@@ -203,7 +181,7 @@
               <el-table-column fixed label="适用等级" prop='levelList' align='center'></el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
-                  <el-button type='text' style='color: #0785FD' @click="selectReplanDetail">查看</el-button>
+                  <el-button type='text' style='color: #0785FD' @click="selectReplanDetail(scope)">查看</el-button>
                   <el-button type='text' style='color: #0785FD' @click="skipEnableReplan(scope)">启用</el-button>
                 </template>
               </el-table-column>
@@ -224,9 +202,6 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      styleObj: {
-        border: '1px solid #0785FD'
-      },
       isShowModify: false, // 是否显示要修改的表单
       isCurrentModify: '',
       eventDetailObj: {},
@@ -301,6 +276,7 @@ export default {
       this.eventDetailObj = this.$route.query.addForm;
     }
     this.getDepartmentList();
+    this.getReplanList();
   },
   methods: {
     selectMorePlan () { // 查看更多预案
@@ -321,14 +297,18 @@ export default {
         }
       });
     },
+    cancelModifyForm (form, index) { // 取消修改form
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.taskList[index].isShow = false;
+        }
+      });
+    },
     deleteTask (index) { // 删除任务
-      if (index) {
-        this.taskList.splice(index, 1);
-      }
+      this.taskList.splice(index, 1);
     },
     modifyTask (index) { // 修改任务
-      this.isShowModify = true;
-      // this.isCurrentModify = index;
+      this.taskList[index].isShow = true;
       this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
       this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
       this.modifyTaskForm.taskName = this.taskList[index].taskName;
@@ -346,8 +326,22 @@ export default {
           .catch(() => {})
       }
     },
-    selectReplanDetail () { // 查看预案
-      this.$router.push({name: 'replan-detail'});
+    getReplanList () { // 获取预案列表
+      const data = {
+        pageNum: -1
+      }
+      this.axios.get('A2/planServices/plans', {params: data})
+        .then((res) => {
+          if (res) {
+            console.log(res)
+            this.reservePlanList = res.data;
+          }
+        })
+        .catch(() => {});
+    },
+    selectReplanDetail (scope) { // 查看预案
+      console.log(scope.row.planId)
+      this.$router.push({name: 'replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
       this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
@@ -413,7 +407,13 @@ export default {
         this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
           .then((res) => {
             if (res) {
-              console.log(res);
+              this.$message({
+                message: '添加任务成功',
+                type: 'success'
+              });
+              this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+            } else {
+              this.$message.error('添加任务失败');
             }
           })
           .catch(() => {});
@@ -427,7 +427,13 @@ export default {
             this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
               .then((res) => {
                 if (res) {
-                  console.log(res);
+                  this.$message({
+                    message: '添加任务成功',
+                    type: 'success'
+                  });
+                  this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+                } else {
+                  this.$message.error('添加任务失败');
                 }
               })
               .catch(() => {});
@@ -572,8 +578,16 @@ export default {
             width: 100%;
             .ctc-idea-form {
               width: 90%;
-              padding-top: 2%;
+              margin-top: 2%;
               margin-left: 25px;
+              .ctc-idea-form-add {
+                padding-top: 2%;
+              }
+              .active {
+                &:hover {
+                  border: 1px solid #0785FD;
+                }
+              }
             }
             .add-task {
               width: 100px;
@@ -582,7 +596,7 @@ export default {
               background-color: #EAEAEA;
               border: 1px solid #EAEAEA;
               position: relative;
-              margin: 2% 0 4% 145px;
+              margin: 1% 0 2% 105px;
               border-radius: 6px;
               box-sizing: border-box;
               display: inline-block;
@@ -653,11 +667,8 @@ export default {
             }
             .ctc-idea-body-modify-form {
               width: 100%;
-              // margin-left: 25px;
-              // margin-top: 2%;
               .ctc-idea-body-list-form {
                 margin-top: 2%;
-                margin-left: 25px;
               }
               &:hover {
                 border: 1px solid #0785FD;

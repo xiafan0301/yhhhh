@@ -19,12 +19,12 @@
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
             <div class='map-ecc' ><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
+          <!-- <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
             <el-input style='width: 500px' placeholder='请选择经度...' v-model='addForm.longitude'></el-input>
           </el-form-item>
           <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
             <el-input style='width: 500px' placeholder='请选择纬度...' v-model='addForm.latitude'></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
           </el-form-item>
@@ -185,11 +185,12 @@ export default {
       }
       this.open = !this.open;
     },
-    mapPointSubmit (val) {
+    mapPointSubmit (val, address) {
       if (val) {
         const str = val.split(',');
         this.addForm.longitude = Number(str[0]);
         this.addForm.latitude = Number(str[1]);
+        this.addForm.eventAddress = address;
       }
     },
     back (form) {

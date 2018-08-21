@@ -93,7 +93,7 @@
     </div>
     <div class='operation-btn-replan-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD; color:#fff' @click='openReplan'>启用</el-button>
+      <el-button style='background: #0785FD; color:#fff' @click='skipOpenReplan'>启用</el-button>
     </div>
   </div>
 </template>
@@ -138,7 +138,8 @@ export default {
     back () {
       this.$router.back(-1);
     },
-    openReplan () { // 启用预案
+    skipOpenReplan () { // 跳到启用预案
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: this.$route.query.planId}});
     }
   }
 }

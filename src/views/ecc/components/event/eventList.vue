@@ -161,13 +161,23 @@ export default {
       this.getEventList();
     },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      if (scope.row.eventStatusName === '未处理') {
-        this.$router.push({name: 'event-untreated', query: {eventId: scope.row.eventId}});
-      } else if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'event-detail-end', query: {eventId: scope.row.eventId}});
-      } else {
-        this.$router.push({name: 'event-detail-reat', query: {eventId: scope.row.eventId}});
+      const params = {
+        eventId: scope.row.eventId,
+        acceptFlag: true
       }
+      this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
+        .then((res) => {
+          if (res) {
+            if (scope.row.eventStatusName === '未处理') {
+              this.$router.push({name: 'event-untreated', query: {eventId: scope.row.eventId}});
+            } else if (scope.row.eventStatusName === '已结束') {
+              this.$router.push({name: 'event-detail-end', query: {eventId: scope.row.eventId}});
+            } else {
+              this.$router.push({name: 'event-detail-reat', query: {eventId: scope.row.eventId}});
+            }
+          }
+        })
+        .catch(() => {})
     },
     getEventStatus () { // 获取事件状态
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)

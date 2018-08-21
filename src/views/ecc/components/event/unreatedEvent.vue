@@ -197,12 +197,13 @@ export default {
       }
       this.open = !this.open;
     },
-    mapPointSubmit (val) {
+    mapPointSubmit (val, address) {
       console.log('接收到的经纬度为：', val);
       if (val) {
         const str = val.split(',');
         this.detailForm.longitude = Number(str[0]);
         this.detailForm.latitude = Number(str[1]);
+        this.detailForm.eventAddress = address;
       }
       // this.editForm.gps = val;
     },

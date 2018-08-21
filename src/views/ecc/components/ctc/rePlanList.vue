@@ -152,7 +152,7 @@ export default {
       this.getReplanList();
     },
     selectReplanDetail (scope) { // 查看预案详情
-      this.$router.push({name: 'replan-detail', query: {planId: scope.row.planId}});
+      this.$router.push({name: 'replan-detail', query: {planId: scope.row.planId, eventId: this.$route.query.eventId}});
     },
     getEventLevel () { // 获取事件等级
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)

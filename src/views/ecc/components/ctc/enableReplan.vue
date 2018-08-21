@@ -30,7 +30,7 @@
               <span class='title'>报案人：</span>
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='enable-replan-detail-basic-list'>
             <div>
@@ -64,7 +64,7 @@
             <div class='flag'></div>
             <p class='enable-replan-idea-text'>调度指挥方案</p>
           </div>
-          <template v-if='taskList && taskList.length === 0'>
+          <template v-if='taskList && taskList.length > 0'>
             <div class='enable-replan-list' v-for="(item, index) in taskList" :key="'item'+index">
               <div class='enable-replan-list-detail'>
                 <div class='enable-replan-list-num'>任务{{index + 1}}</div>
@@ -76,22 +76,27 @@
                 <div class='enable-operation'>
                   <span @click='modifyDepartment(item.taskId)'>修改</span>
                   /
-                  <span class='deleteDepartment(item.taskId)'>删除</span>
+                  <span @click='deleteDepartment(index)'>删除</span>
                 </div>
               </div>
               <div class='modify-enable-form'>
-                <el-form class='enable-replan-idea-form'>
-                  <el-form-item label="执行部门" label-width='80px'>
-                    <el-select  placeholder="请选择执行部门" style='width: 490px'>
-                      <el-option label="全部" value="shanghai"></el-option>
-                      <el-option label="部分" value="beijing"></el-option>
+                <el-form class='enable-replan-idea-form' :model='modifyTaskForm' :rules='rules' ref='modifyTaskForm'>
+                  <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+                    <el-select  placeholder="请选择执行部门" style='width: 480px' v-model='modifyTaskForm.departmentId'>
+                      <el-option
+                        v-for="item in departmentList"
+                        :key="item.departmentId"
+                        :label="item.departmentName"
+                        :value="item.departmentId"
+                      >
+                      </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="任务名称" label-width='80px'>
-                    <el-input type="text" placeholder='请输入任务名称' style='width: 490px'></el-input>
+                  <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+                    <el-input type="text" placeholder='请输入任务名称' style='width: 480px' v-model='modifyTaskForm.taskName'></el-input>
                   </el-form-item>
-                  <el-form-item label="任务内容" label-width='80px'>
-                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 490px'></el-input>
+                  <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
+                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='modifyTaskForm.taskContent'></el-input>
                   </el-form-item>
                   <el-form-item label-width='80px'>
                     <el-button style='background: #0785FD;color:#fff'>确定</el-button>
@@ -100,66 +105,43 @@
                 </el-form>
               </div>
             </div>
-            <div class='enable-replan-list'>
-              <div class='enable-replan-list-detail'>
-                <div class='enable-replan-list-num'>任务一</div>
-                <div class='enable-replan-list-body'>
-                  <p>执行部门： 消防部</p>
-                  <p>任务名称：紧急火灾</p>
-                  <p>任务内容： 执行部门：消防部任务名称：紧急火灾任务内容：请芙蓉南路消防部组织好队伍，迅速前往XX进行灭火！</p>
-                </div>
-                <div class='enable-operation'>
-                  <span>修改</span>
-                  /
-                  <span>删除</span>
-                </div>
-              </div>
-            </div>
-            <div class='enable-replan-list'>
-              <div class='enable-replan-list-detail'>
-                <div class='enable-replan-list-num'>任务一</div>
-                <div class='enable-replan-list-body'>
-                  <p>执行部门： 消防部</p>
-                  <p>任务名称：紧急火灾</p>
-                  <p>任务内容： 执行部门：消防部任务名称：紧急火灾任务内容：请芙蓉南路消防部组织好队伍，迅速前往XX进行灭火！</p>
-                </div>
-                <div class='enable-operation'>
-                  <span>修改</span>
-                  /
-                  <span>删除</span>
-                </div>
-              </div>
-            </div>
-            <div class='divide'></div>
+            <div v-show='taskList.length > 0' class='divide'></div>
           </template>
           <div class='enable-replan-idea-body'>
-            <el-form class='enable-replan-idea-form' :model='taskForm' ref='taskForm' :rules='rules'>
-              <el-form-item label="执行部门" label-width='120px' prop='departmentId'>
-                <el-select  placeholder="请选择执行部门" style='width: 500px' v-model='taskForm.departmentId'>
-                  <el-option label="全部" value="shanghai"></el-option>
-                  <el-option label="部分" value="beijing"></el-option>
+            <el-form class='enable-replan-idea-form' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
+              <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+                <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 480px' v-model='taskForm.departmentId'>
+                  <el-option
+                    v-for="item in departmentList"
+                    :key="item.departmentId"
+                    :label="item.departmentName"
+                    :value="item.departmentId"
+                  >
+                  </el-option>
                 </el-select>
               </el-form-item>
-              <el-form-item label="任务名称" label-width='120px' prop='taskName'>
-                <el-input type="text" placeholder='请输入任务名称' style='width: 500px' v-model='taskForm.taskName'></el-input>
+              <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+                <el-input type="text" placeholder='请输入任务名称' style='width: 480px' v-model='taskForm.taskName'></el-input>
               </el-form-item>
-              <el-form-item label="任务内容" label-width='120px' prop='taskContent'>
-                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 500px' v-model='taskForm.taskContent'></el-input>
+              <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
+                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='taskForm.taskContent'></el-input>
               </el-form-item>
-              <el-form-item style='margin-left: 120px'>
-                <div class='add-task' @click="addTask('taskForm')">
-                  <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-                  <span class='add-img-text'>添加任务</span>
-                </div>
+              <el-form-item label="" label-width='80px' v-show='taskList.length > 0'>
+                <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
+                <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
               </el-form-item>
             </el-form>
+            <div class='add-task' @click="addTask('taskForm')">
+              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+              <span class='add-img-text'>添加任务</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div class='operation-btn-enable-replan-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='open'>确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
     </div>
   </div>
 </template>
@@ -202,8 +184,15 @@ export default {
         levelList: 'IV'
       }],
       taskList: [], // 预案详情中的任务列表
+      departmentList: [], // 部门数据列表
       taskForm: {
         eventId: '',
+        departmentName: '',
+        departmentId: '',
+        taskName: '',
+        taskContent: ''
+      },
+      modifyTaskForm: {
         departmentName: '',
         departmentId: '',
         taskName: '',
@@ -227,6 +216,7 @@ export default {
   mounted () {
     this.getEventDetail();
     this.getReplanDetail();
+    this.getDepartmentList();
   },
   methods: {
     selectMorePlan () { // 查看更多预案
@@ -247,6 +237,15 @@ export default {
           .catch(() => {})
       }
     },
+    getDepartmentList () { // 获取部门列表
+      this.axios.get('A2/departmentServices/departments')
+        .then((res) => {
+          if (res && res.data) {
+            this.departmentList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
     getReplanDetail () { // 获取预案详情
       const planId = this.$route.query.planId;
       if (planId) {
@@ -265,21 +264,81 @@ export default {
     modifyDepartment (id) { // 修改部门信息
 
     },
-    deleteDepartment (id) { // 删除部门信息
-      if (id) {
-        this.taskList.map((item, index) => {
-          if (item.taskId === id) {
-            this.taskList.splice(index, 1);
-          }
-        });
-      }
+    deleteDepartment (index) { // 删除部门信息
+      console.log(index)
+      this.taskList.splice(index, 1);
     },
     addTask (form) { // 添加任务
       this.$refs[form].validate((valid) => {
         if (valid) {
-
+          const task = JSON.parse(JSON.stringify(this.taskForm));
+          this.taskList.push(task);
+          this.$refs[form].resetFields();
         }
       });
+    },
+    cancelForm (form) { // 取消填写的form
+      this.$refs[form].resetFields();
+    },
+    saveForm (form) { // 保存填写的form
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          const task = JSON.parse(JSON.stringify(this.taskForm));
+          this.taskList.push(task);
+          this.$refs[form].resetFields();
+        }
+      });
+    },
+    changeDepartment (value) {
+      this.departmentList.map((item) => {
+        if (item.departmentId === value) {
+          this.taskForm.departmentName = item.departmentName;
+        }
+      });
+    },
+    submitData (form) { // 调度指挥
+      const eventId = this.$route.query.eventId;
+      let taskList = [];
+      if (this.taskList.length > 0) {
+        const data = {
+          taskList: this.taskList
+        }
+        this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '添加任务成功',
+                type: 'success'
+              });
+              this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+            } else {
+              this.$message.error('添加任务失败');
+            }
+          })
+          .catch(() => {});
+      } else {
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            taskList.push(this.taskForm);
+            const data = {
+              taskList: taskList
+            }
+            this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+              .then((res) => {
+                if (res) {
+                  this.$message({
+                    message: '添加任务成功',
+                    type: 'success'
+                  });
+                  this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+                } else {
+                  this.$message.error('添加任务失败');
+                }
+              })
+              .catch(() => {});
+          }
+        })
+      }
     }
   }
 }
@@ -413,7 +472,7 @@ export default {
               }
             }
             .modify-enable-form {
-              display: none;
+              // display: none;
               width: 580px;
               margin-left: 50px;
               padding-top: 1%;
@@ -446,34 +505,44 @@ export default {
             width: 100%;
             .enable-replan-idea-form {
               padding-top: 1%;
-              .add-task {
-                width: 100px;
-                height: 100px;
-                line-height: 100px;
-                background-color: #EAEAEA;
-                border: 1px solid #EAEAEA;
-                position: relative;
-                border-radius: 6px;
-                box-sizing: border-box;
-                display: inline-block;
-                text-align: center;
-                cursor: pointer;
-                outline: 0;
-                i {
-                  font-size: 28px;
-                  margin: 0 auto;
-                  font-weight: bold;
-                }
-                .add-img-text {
-                  color: #C4C2C2;
-                  font-size: 13px;
-                  display: block;
-                  width: 54px;
-                  height: 13px;
-                  position: absolute;
-                  top: 25%;
-                  left: 25%;
-                }
+              width: 580px;
+              margin-left: 50px;
+            }
+            .active {
+              &:hover {
+                border: 1px solid #0785FD;
+              }
+            }
+            .add-task {
+              width: 100px;
+              height: 100px;
+              line-height: 100px;
+              background-color: #EAEAEA;
+              border: 1px solid #EAEAEA;
+              margin-left: 125px;
+              margin-bottom: 3%;
+              margin-top: 1%;
+              position: relative;
+              border-radius: 6px;
+              box-sizing: border-box;
+              display: inline-block;
+              text-align: center;
+              cursor: pointer;
+              outline: 0;
+              i {
+                font-size: 28px;
+                margin: 0 auto;
+                font-weight: bold;
+              }
+              .add-img-text {
+                color: #C4C2C2;
+                font-size: 13px;
+                display: block;
+                width: 54px;
+                height: 13px;
+                position: absolute;
+                top: 25%;
+                left: 25%;
               }
             }
           }

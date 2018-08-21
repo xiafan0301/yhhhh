@@ -38,7 +38,7 @@
                 <span class='content'>{{eventDetailObj.reporterPhone}}</span>
               </template>
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>

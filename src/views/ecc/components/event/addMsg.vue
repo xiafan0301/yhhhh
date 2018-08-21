@@ -15,14 +15,14 @@
           <el-form-item label="事发地点" label-width='150px' class="address" prop='eventAddress'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='operationForm.eventAddress'></el-input>
             <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span> -->
-            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
+            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
+          <!-- <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
             <el-input style='width: 500px' placeholder='请选择经度...' v-model='operationForm.longitude'></el-input>
           </el-form-item>
           <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
             <el-input style='width: 500px' placeholder='请选择纬度...' v-model='operationForm.latitude'></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
@@ -78,14 +78,19 @@
         </template>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
       status: '', // 添加或修改消息
+      open: false,
+      oConfig: {},
       operationForm: {
         eventSource: 'b663a0c6-97b1-11e8-b784-e756beb98040',
         reportTime: '',
@@ -129,6 +134,27 @@ export default {
   methods: {
     back () {
       this.$router.back(-1);
+    },
+    showMap () {
+      console.log('2222')
+      if (this.operationForm.eventAddress === '') {
+        this.oConfig = {};
+      } else {
+        this.oConfig = {
+          _name: this.operationForm.eventAddress,
+          center: [Number(this.operationForm.longitude), Number(this.operationForm.latitude)]
+        }
+      }
+      this.open = !this.open;
+      console.log(this.open)
+    },
+    mapPointSubmit (val, address) {
+      if (val) {
+        const str = val.split(',');
+        this.operationForm.longitude = Number(str[0]);
+        this.operationForm.latitude = Number(str[1]);
+        this.operationForm.eventAddress = address;
+      }
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {

@@ -51,14 +51,30 @@
     </div>
     <el-table style="width: 100%" :data='ctcDataList'>
       <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
-      <el-table-column prop='eventTypeName' label="事件类型" align='center'></el-table-column>
-      <el-table-column prop='eventLevelName' label="事件等级" align='center'></el-table-column>
-      <el-table-column prop='assignTime' label="受理时间" align='center'></el-table-column>
-      <el-table-column prop='eventAddress' label="事件地点" align='center'></el-table-column>
+      <el-table-column prop='eventTypeName' label="事件类型" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.eventTypeName > 0">{{scope.row.eventTypeName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='eventLevelName' label="事件等级" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.eventLevelName > 0">{{scope.row.eventLevelName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='assignTime' label="受理时间" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.assignTime > 0">{{scope.row.assignTime}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center' show-overflow-tooltip></el-table-column>
       <el-table-column prop='feedbackNumber' label="新反馈数" align='center'>
         <template slot-scope="scope">
           <span style="color: #FB796C;" v-if="scope.row.number > 0">{{scope.row.number}}</span>
           <span style="color: #555555;" v-else>{{scope.row.number}}</span>
+          <!-- <span style="color: #555555;" v-else>{{scope.row.number}}</span> -->
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
