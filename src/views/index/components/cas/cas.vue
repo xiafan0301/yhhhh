@@ -388,8 +388,9 @@ export default {
       }
       this.open = !this.open;
     },
-    mapPointSubmit (val) {
-      console.log('接收到的经纬度为：', val);
+    mapPointSubmit (val, addr) {
+      // console.log('接收到的经纬度为：', val);
+      // console.log('接收到的地址为：', addr);
       this.editForm.gps = val;
     }
   }
