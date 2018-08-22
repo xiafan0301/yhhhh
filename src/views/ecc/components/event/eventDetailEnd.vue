@@ -51,7 +51,7 @@
               <span class='title'>报案人：</span>
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -80,7 +80,7 @@
         </div>
       </div>
       <template v-if="!eventDetailObj.closeReason">
-        <template v-if='eventDetailObj.taskList && eventDetailObj.taskList.length === 0'>
+        <template v-if='eventDetailObj.taskList && eventDetailObj.taskList.length > 0'>
           <div class='ctc'>
             <div class='ctc-header'>
               <div class='flag'></div>
@@ -92,7 +92,7 @@
                   <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
                 </li>
                 <li>
-                  <span class='title'>任务名称：</span><span class='content'>{{item.item.taskName}}</span>
+                  <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
                 </li>
                 <li>
                   <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
@@ -102,34 +102,10 @@
                 </template>
                 <!-- <li class='divide'></li> -->
               </ul>
-              <ul>
-                <li>
-                  <span class='title'>调度部门：</span><span class='content'>消防部</span>
-                </li>
-                <li>
-                  <span class='title'>任务名称：</span><span class='content'>灭火</span>
-                </li>
-                <li>
-                  <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-                </li>
-                <li class='divide'></li>
-              </ul>
-              <ul>
-                <li>
-                  <span class='title'>调度部门：</span><span class='content'>消防部</span>
-                </li>
-                <li>
-                  <span class='title'>任务名称：</span><span class='content'>灭火</span>
-                </li>
-                <li>
-                  <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-                </li>
-                <li class='divide'></li>
-              </ul>
             </div>
           </div>
         </template>
-        <template v-if='eventDetailObj.processingList && eventDetailObj.processingList.length === 0'>
+        <template v-if='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
           <div class='event-progress'>
             <div class='event-progress-header'>
               <div class='flag'></div>
@@ -142,16 +118,6 @@
                   <p>{{item.departmentName}}</p>
                   <p>{{item.createTime}}</p>
                   <p>{{item.taskStatusName}}</p>
-                </div>
-                <div class='depart-detail'>
-                  <p>消防部</p>
-                  <p>06-25 13：30</p>
-                  <p>处理完毕</p>
-                </div>
-                <div class='depart-detail'>
-                  <p>消防部</p>
-                  <p>06-25 13：30</p>
-                  <p>处理完毕</p>
                 </div>
               </div>
               <div class=divide></div>
@@ -170,43 +136,7 @@
                     <!-- <div class='line'></div> -->
                     <div class='content-right'>
                       <div class='time'>{{item.createTime}}</div>
-                      <div class='content'>{{item.content}}（操作人：{{item.handleUserName}}）</div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class='circle-left'>
-                      <div class='big-circle'>
-                        <div class='small-circle'></div>
-                      </div>
-                    </div>
-                    <div class='line'></div>
-                    <div class='content-right'>
-                      <div class='time'>06-25 11：30</div>
-                      <div class='content'>应急指挥中心派单给消防办（操作人：张东）</div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class='circle-left'>
-                      <div class='big-circle'>
-                        <div class='small-circle'></div>
-                      </div>
-                    </div>
-                    <div class='line'></div>
-                    <div class='content-right'>
-                      <div class='time'>06-25 11：30</div>
-                      <div class='content'>应急指挥中心派单给消防办（操作人：张东）</div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class='circle-left'>
-                      <div class='big-circle'>
-                        <div class='small-circle'></div>
-                      </div>
-                    </div>
-                    <div class='line'></div>
-                    <div class='content-right'>
-                      <div class='time'>06-25 11：30</div>
-                      <div class='content'>应急指挥中心派单给消防办（操作人：张东）</div>
+                      <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
                     </div>
                   </li>
                 </ul>
@@ -235,7 +165,7 @@
                     <i class='el-icon-circle-close close'></i>
                   </li>
                 </ul>
-                <template v-if='commentList && commentList.length > 5'>
+                <template v-if='this.pagination.total > 5'>
                   <el-pagination
                     background
                     :page-sizes="[5, 10, 20, 50, 100]"
@@ -296,7 +226,7 @@ export default {
       pagination: {
         total: 0,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       modifyForm: {
         eventLevel: '',
@@ -313,6 +243,7 @@ export default {
     this.getEventType();
     this.getEventLevel();
     this.getEventDetail();
+    this.getCommentList();
   },
   methods: {
     back () { // 返回上一页
@@ -328,11 +259,12 @@ export default {
       this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.modifyForm.eventId = eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
+            console.log(res)
             if (res && res.data) {
               this.modifyForm.eventType = res.data.eventType;
               this.modifyForm.eventLevel = res.data.eventLevel;
@@ -365,7 +297,7 @@ export default {
     },
     handleSave () { // 保存修改
       if (this.modifyForm) {
-        this.axios.put('A2/eventServices/events/' + this.$route.params.eventId, this.modifyForm)
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, this.modifyForm)
           .then((res) => {
             if (res) {
               this.$message({
@@ -381,13 +313,17 @@ export default {
       }
     },
     getCommentList () { // 分页获取评论列表
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
+      const data = {
+        'where.eventId': eventId,
+        pageNum: this.pagination.pageNum,
+        pageSize: this.pagination.pageSize
+      }
       if (eventId) {
-        this.axios.get('A2/eventServices/comments/page', eventId)
+        this.axios.get('A2/eventServices/comments/page', {params: data})
           .then((res) => {
-            // console.log(res)
             if (res && res.data.list) {
-              this.commmentList = res.data.list;
+              this.commentList = res.data.list;
               this.pagination.total = res.data.total;
             }
           })

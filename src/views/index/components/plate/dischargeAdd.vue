@@ -777,7 +777,7 @@ export default {
           this.contentItemListFour3.push(data);
           this.isActive3 = idx + 1;
         } else {
-          this.tip = '项可添加条数已达到上线';
+          this.tip = '项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写信息';
@@ -822,7 +822,7 @@ export default {
           this.contentItemListFour5.push(data);
           this.isActive5 = idx + 1;
         } else {
-          this.tip = '项可添加条数已达到上线';
+          this.tip = '项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写信息';

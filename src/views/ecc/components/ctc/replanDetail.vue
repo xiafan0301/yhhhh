@@ -13,10 +13,6 @@
           <p class='title'>预案名称</p>
           <p class='content'>{{replanDetail.planName}}</p>
         </li>
-        <!-- <li>
-          <p class='title'>关键词</p>
-          <p class='content'>火灾、消防</p>
-        </li> -->
         <li>
           <p class='title'>预案类型</p>
           <p class='content'>{{replanDetail.planType}}</p>
@@ -28,7 +24,7 @@
         <li>
           <p class='title'>预案正文</p>
           <p class='content'>
-            <el-input type='textarea' rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
+            <el-input type='textarea' disabled rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
           </p>
         </li>
         <li>
@@ -97,7 +93,7 @@
     </div>
     <div class='operation-btn-replan-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD; color:#fff' @click='openReplan'>启用</el-button>
+      <el-button style='background: #0785FD; color:#fff' @click='skipOpenReplan'>启用</el-button>
     </div>
   </div>
 </template>
@@ -128,7 +124,7 @@ export default {
   },
   methods: {
     getReplanDetail () { // 获取预案详情
-      const planId = this.$route.params.planId;
+      const planId = this.$route.query.planId;
       if (planId) {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {
@@ -140,9 +136,10 @@ export default {
       }
     },
     back () {
-      this.$route.back(-1);
+      this.$router.back(-1);
     },
-    openReplan () { // 启用预案
+    skipOpenReplan () { // 跳到启用预案
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: this.$route.query.planId}});
     }
   }
 }

@@ -37,18 +37,18 @@
       </el-form>
     </div>
     <el-table style="width: 100%" class='person-table' :data='appEventDataList'>
-      <el-table-column type='index' label="序号" align='center' width='60px'></el-table-column>
-      <el-table-column prop='reportTime' label="上报时间" align='center' width='150px'></el-table-column>
-      <el-table-column prop='eventAddress' label="事件地点" align='center' width='150px' show-overflow-tooltip></el-table-column>
-      <el-table-column prop='eventDetail' label="事件情况" align='center' width='400px' show-overflow-tooltip></el-table-column>
-      <el-table-column prop='eventStatusName' label="事件状态" align='center' width='80px'>
+      <el-table-column fixed type='index' label="序号" align='center'></el-table-column>
+      <el-table-column prop='reportTime' label="上报时间" align='center'></el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='eventDetail' label="事件情况" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='eventStatusName' label="事件状态" align='center' >
          <template slot-scope="scope">
           <span style="color: #0785FD;" v-if="scope.row.eventStatusName == '处理中'">处理中</span>
           <span style="color: #666666;" v-else-if="scope.row.eventStatusName == '已结束'">已结束</span>
         </template>
       </el-table-column>
-      <el-table-column prop='commentNumbers' label="评论数量" align='center' width='80px'></el-table-column>
-      <el-table-column label="操作" align='center'>
+      <el-table-column prop='commentNumbers' label="评论数量" align='center' ></el-table-column>
+      <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipPersonDetail(scope)'>查看</el-button>
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click="skipAddMsg('modify', scope)">修改</el-button>
@@ -92,9 +92,9 @@ export default {
     return {
       deleteVisiable: false,
       delEventId: '', // 要删除的eventid
-      dictId: '',
+      // dictId: '',
       selectForm: {
-        eventStatus: '',
+        eventStatus: '4037156e-97b5-11e8-b784-93a0bc9b77e5',
         reportTime: []
       },
       eventStatusList: [],
@@ -112,13 +112,13 @@ export default {
   methods: {
     skipAddMsg (status, scope) { // 跳转到添加消息页面
       if (status === 'add') {
-        this.$router.push({name: 'add-message', params: {status: status}});
+        this.$router.push({name: 'add-message', query: {status: status}});
       } else {
-        this.$router.push({name: 'add-message', params: {status: status, eventId: scope.row.eventId}});
+        this.$router.push({name: 'add-message', query: {status: status, eventId: scope.row.eventId}});
       }
     },
     skipPersonDetail (scope) { // 查看
-      this.$router.push({name: 'mutual-detail', params: {eventId: scope.row.eventId, eventStatus: scope.row.eventStatusName}});
+      this.$router.push({name: 'mutual-detail', query: {eventId: scope.row.eventId, eventStatus: scope.row.eventStatusName}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
@@ -134,10 +134,10 @@ export default {
         .then((res) => {
           if (res) {
             res.data.map((item) => {
-              if (item.dictContent === '处理中') {
-                this.selectForm.eventStatus = item.dictId;
-                this.dictId = item.dictId;
-              }
+              // if (item.dictContent === '处理中') {
+              //   this.selectForm.eventStatus = item.dictId;
+              //   this.dictId = item.dictId;
+              // }
               if (item.dictContent !== '未处理') {
                 this.eventStatusList.push(item);
               }
@@ -185,7 +185,7 @@ export default {
     },
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
-      this.selectForm.eventStatus = this.dictId;
+      // this.selectForm.eventStatus = this.dictId;
       this.getOneMonth();
       this.getAppEventList();
     },
@@ -254,6 +254,12 @@ export default {
       >thead th {
         color: #555555 !important;
       }
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
     }
     /deep/ .el-dialog__header {
       background: #F0F0F0 !important;
