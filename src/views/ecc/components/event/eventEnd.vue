@@ -8,7 +8,7 @@
     </div>
     <div class='event-end-body'>
       <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules'>
-        <el-form-item label="请确认事件等级" label-width='150px'>
+        <el-form-item label="请确认事件等级" label-width='150px' prop='eventLevel'>
           <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='endForm.eventLevel'>
             <el-option
               v-for="item in eventLevelList"
@@ -19,14 +19,15 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="请输入事件总结" label-width='150px'>
+        <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary'>
           <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
         </el-form-item>
         <el-form-item style='margin-left: 150px'>
           <el-upload
             action="http://10.16.4.50:8001/api/network/upload/new"
-            list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
+            :list-type='listType'
+            :file-list='fileList'
+            :before-upload='handleBeforeUpload'
             :on-remove="handleRemove"
           >
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
@@ -59,16 +60,30 @@ export default {
           { max: 10000, message: '最多可以输入10000个字' }
         ]
       },
-      eventLevelList: [] // 事件等级列表
+      eventLevelList: [], // 事件等级列表
+      fileList: [], // 要上传的文件列表
+      listType: 'picture-card'
     }
   },
   mounted () {
-    this.endForm.eventId = this.$route.params.eventId;
+    this.endForm.eventId = this.$route.query.eventId;
+    if (this.$route.query.eventLevel) {
+      this.endForm.eventLevel = this.$route.query.eventLevel;
+    }
     this.getEventLevel();
   },
   methods: {
     back () {
       this.$router.back(-1);
+    },
+    handleBeforeUpload (file) {
+      console.log(file)
+      if (file.type !== 'image/png' && file.type !== 'image/jpg' && file.type !== 'image/jpeg') {
+        this.listType = '';
+      }
+    },
+    handleRemove () {
+
     },
     getEventLevel () { // 获取事件等级
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
@@ -81,7 +96,7 @@ export default {
     },
     endEvent (form) { // 结束事件
       console.log(this.endForm)
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       this.$refs[form].validate((valid) => {
         if (valid) {
           const data = {
@@ -116,8 +131,8 @@ export default {
     }
     .event-end-body {
       width: 100%;
-      height: 85%;
-      // padding-bottom: 20%;
+      // height: 85%;
+      padding-bottom: 5%;
       background: #fff;
       .event-end-form {
         padding-top: 2%;
@@ -147,6 +162,10 @@ export default {
     }
     .operation-btn-event-end {
       margin-top: 1%;
+    }
+    .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
     }
   }
 </style>

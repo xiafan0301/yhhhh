@@ -19,12 +19,12 @@
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
             <div class='map-ecc' ><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
+          <!-- <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
             <el-input style='width: 500px' placeholder='请选择经度...' v-model='addForm.longitude'></el-input>
           </el-form-item>
           <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
             <el-input style='width: 500px' placeholder='请选择纬度...' v-model='addForm.latitude'></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
           </el-form-item>
@@ -32,6 +32,7 @@
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              :before-upload='handleBeforeUpload'
               :on-remove="handleRemove"
               :on-success='handleSuccess'
               :limit='9'
@@ -164,7 +165,7 @@ export default {
                   message: '添加事件成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'ctc-detail', params: {addForm: this.addForm}});
+                this.$router.push({name: 'ctc-detail', query: {addForm: this.addForm}});
               } else {
                 this.$message.error('添加事件失败');
               }
@@ -184,14 +185,13 @@ export default {
       }
       this.open = !this.open;
     },
-    mapPointSubmit (val) {
-      console.log('接收到的经纬度为：', val);
+    mapPointSubmit (val, address) {
       if (val) {
         const str = val.split(',');
         this.addForm.longitude = Number(str[0]);
         this.addForm.latitude = Number(str[1]);
+        this.addForm.eventAddress = address;
       }
-      // this.editForm.gps = val;
     },
     back (form) {
       this.$router.back(-1);
@@ -245,9 +245,8 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
-        console.log(res.data)
         const data = {
-          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          attachmentType: dictType.imgId,
           url: res.data.newFileName,
           attachmentName: res.data.fileName,
           attachmentSize: res.data.fileSize,
@@ -261,7 +260,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response.data) {
+      if (file && file.response) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
             if (item.url === file.response.data.newFileName) {
@@ -270,6 +269,17 @@ export default {
           });
         }
       }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     }
   }
 }

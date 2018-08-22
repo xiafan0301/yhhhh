@@ -15,28 +15,39 @@
           <el-form-item label="事发地点" label-width='150px' class="address" prop='eventAddress'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='operationForm.eventAddress'></el-input>
             <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span> -->
-            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
+            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
+          <!-- <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
             <el-input style='width: 500px' placeholder='请选择经度...' v-model='operationForm.longitude'></el-input>
           </el-form-item>
           <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
             <el-input style='width: 500px' placeholder='请选择纬度...' v-model='operationForm.latitude'></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <el-upload
-              action="http://10.16.4.50:8001/api/network/upload/new"
-              list-type="picture-card"
-              :on-remove="handleRemove"
-              :on-success='handleSuccess'
-              :limit='9'
-            >
-              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-              <span class='add-img-text'>添加图片</span>
-            </el-upload>
+            <template v-if="this.$route.query.status !== 'add'">
+              <img
+                v-for='item in operationForm.attachmentList'
+                :src='item.url'
+                :key='item.attachmentId'
+                class='img-name'
+              />
+            </template>
+            <template v-else>
+              <el-upload
+                action="http://10.16.4.50:8001/api/network/upload/new"
+                list-type="picture-card"
+                :before-upload='handleBeforeUpload'
+                :on-remove="handleRemove"
+                :on-success='handleSuccess'
+                :limit='9'
+              >
+                <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+                <span class='add-img-text'>添加图片</span>
+              </el-upload>
+            </template>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>
@@ -59,7 +70,7 @@
       </div>
       <div class='operation-btn-msg'>
         <el-button @click='back'>返回</el-button>
-        <template v-if="this.$route.params.status === 'add'">
+        <template v-if="this.$route.query.status === 'add'">
           <el-button style='background: #0785FD;color:#fff' @click="submitData('operationForm')">确认发布</el-button>
         </template>
         <template v-else>
@@ -67,14 +78,19 @@
         </template>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
       status: '', // 添加或修改消息
+      open: false,
+      oConfig: {},
       operationForm: {
         eventSource: 'b663a0c6-97b1-11e8-b784-e756beb98040',
         reportTime: '',
@@ -107,9 +123,9 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.status === 'add') {
+    if (this.$route.query.status === 'add') {
       this.status = '添加消息';
-    } else if (this.$route.params.status === 'modify') {
+    } else if (this.$route.query.status === 'modify') {
       this.status = '修改消息';
     }
     this.getDistance();
@@ -119,10 +135,31 @@ export default {
     back () {
       this.$router.back(-1);
     },
+    showMap () {
+      console.log('2222')
+      if (this.operationForm.eventAddress === '') {
+        this.oConfig = {};
+      } else {
+        this.oConfig = {
+          _name: this.operationForm.eventAddress,
+          center: [Number(this.operationForm.longitude), Number(this.operationForm.latitude)]
+        }
+      }
+      this.open = !this.open;
+      console.log(this.open)
+    },
+    mapPointSubmit (val, address) {
+      if (val) {
+        const str = val.split(',');
+        this.operationForm.longitude = Number(str[0]);
+        this.operationForm.latitude = Number(str[1]);
+        this.operationForm.eventAddress = address;
+      }
+    },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
         const data = {
-          attachmentType: '4eccd132-9b6f-11e8-8458-13ff89a8a582',
+          attachmentType: dictType.imgId,
           url: res.data.newFileName,
           attachmentName: res.data.fileName,
           attachmentSize: res.data.fileSize,
@@ -136,7 +173,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response.data) {
+      if (file && file.response) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {
             if (item.url === file.response.data.newFileName) {
@@ -145,6 +182,17 @@ export default {
           });
         }
       }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     },
     submitData (form) { // 确认发布
       this.$refs[form].validate((valid) => {
@@ -188,7 +236,7 @@ export default {
         .catch(() => {})
     },
     getAppEventDetail () {
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -198,6 +246,7 @@ export default {
               this.operationForm.longitude = res.data.longitude;
               this.operationForm.latitude = res.data.latitude;
               this.operationForm.eventDetail = res.data.eventDetail;
+              this.operationForm.attachmentList = res.data.attachmentList;
               if (res.data.radius) {
                 if (res.data.radius > 0) {
                   this.operationForm.radius = '推送';
@@ -211,7 +260,7 @@ export default {
       }
     },
     modifyData (form) { // 修改事件
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.operationForm.eventId = eventId;
       }
@@ -261,6 +310,12 @@ export default {
           }
         }
       }
+    }
+    .img-name {
+      width: 100px;
+      height: 100px;
+      margin-right: 1%;
+      margin-top: 1%;
     }
     .operation-btn-msg {
       margin-top: 2%;

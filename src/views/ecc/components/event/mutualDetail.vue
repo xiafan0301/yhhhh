@@ -31,14 +31,14 @@
           <div class='basic-list'>
             <div>
               <span class='title'>报案人：</span>
-              <template v-if="this.$route.params.eventStatus === '处理中'">
+              <template v-if="this.$route.query.eventStatus === '处理中'">
                 <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
               </template>
               <template v-else>
                 <span class='content'>{{eventDetailObj.reporterPhone}}</span>
               </template>
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -93,48 +93,26 @@
               <div class='info-detail'>{{item.content}}</div>
               <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
             </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
-            </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close'></i>
-            </li>
-            <li>
-              <div class='info-top'>
-                <p class='phone'>13812341234</p>
-                <p class='time'>06-25 11:30</p>
-              </div>
-              <div class='info-detail'>火势好大！</div>
-              <i class='el-icon-circle-close close'></i>
-            </li>
           </ul>
-          <el-pagination
-            background
-            :page-sizes="[5, 10, 20, 50, 100]"
-            @size-change="onSizeChange"
-            @current-change="onPageChange"
-            :current-page.sync="pagination.pageNum"
-            :page-size="pagination.pageSize"
-            layout="prev, pager, next, jumper"
-            :total="pagination.total"
-          >
-          </el-pagination>
+          <template v-if='this.pagination.total > 5'>
+            <el-pagination
+              background
+              :page-sizes="[5, 10, 20, 50, 100]"
+              @size-change="onSizeChange"
+              @current-change="onPageChange"
+              :current-page.sync="pagination.pageNum"
+              :page-size="pagination.pageSize"
+              layout="prev, pager, next, jumper"
+              :total="pagination.total"
+            >
+            </el-pagination>
+          </template>
         </div>
       </div>
     </div>
     <div class='operation-btn-mutual'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="this.$route.params.eventStatus === '处理中'">
+      <template v-if="this.$route.query.eventStatus === '处理中'">
         <template v-if='eventDetailObj.eventFlag === false'>
           <el-button style='background: #0785FD;color:#fff' @click='endEvent'>宣布结束</el-button>
         </template>
@@ -148,7 +126,7 @@
       center>
       <span style='text-align:center'>确定要结束互助?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click="mutualEndVisiable = false">确定结束</el-button>
+        <el-button class='sureBtn' @click="sureEndEvent">确定结束</el-button>
         <el-button class='noSureBtn' @click="mutualEndVisiable = false">暂不结束</el-button>
       </span>
     </el-dialog>
@@ -179,7 +157,7 @@ export default {
       pagination: {
         total: 0,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       options1: [{
         value: '选项1',
@@ -203,7 +181,7 @@ export default {
   mounted () {
     this.getEventDetail();
     this.getCommentList();
-    if (this.$route.params.eventStatus === '处理中') {
+    if (this.$route.query.eventStatus === '处理中') {
       this.imgUrl = require('../../../../assets/img/temp/treating.png');
     } else {
       this.imgUrl = require('../../../../assets/img/temp/end.png');
@@ -226,7 +204,7 @@ export default {
       this.getCommentList();
     },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
@@ -239,7 +217,10 @@ export default {
       }
     },
     endEvent () { // 结束事件
-      const eventId = this.$route.params.eventId;
+      this.mutualEndVisiable = true;
+    },
+    sureEndEvent () { // 结束事件
+      const eventId = this.$route.query.eventId;
       this.axios.put('A2/eventServices/events/finish/' + eventId, {eventId: eventId})
         .then((res) => {
           if (res) {
@@ -258,12 +239,13 @@ export default {
         .catch(() => {})
     },
     getCommentList () { // 分页获取评论
-      const eventId = this.$route.params.eventId;
+      const eventId = this.$route.query.eventId;
       const data = {
         'where.eventId': eventId,
-        pageNum: this.pagination.pageNum
+        pageNum: this.pagination.pageNum,
+        pageSize: this.pagination.pageSize
       }
-      this.axios.get('A2/eventServices/comments/page', data)
+      this.axios.get('A2/eventServices/comments/page', {params: data})
         .then((res) => {
           console.log(res)
           if (res && res.data.list) {
@@ -290,6 +272,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
+            this.closeCommentVisiable = false;
           })
           .catch(() => {})
       }
@@ -379,7 +362,7 @@ export default {
             padding-left: 80px;
             img {
               width: 100px;
-              height: 75px;
+              height: 100px;
               margin-right: 1%;
               margin-top: 1%;
             }
@@ -412,6 +395,7 @@ export default {
               }
               .close {
                 position: absolute;
+                cursor: pointer;
                 font-size: 21px;
                 color: #E9E8E8;
                 right: 2%;

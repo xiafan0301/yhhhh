@@ -185,6 +185,7 @@ export default {
     },
     selectPages (value) {
       const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;
+      const prePageId = this.$store.state.editPlateInfo.visPagePlate.pageId;
       if (value) {
         this.skipPageList = JSON.parse(JSON.stringify(this.skipPausePageList));
       }
@@ -194,6 +195,7 @@ export default {
       obj = this.relationPageList.find((item) => {
         return item.pageName === value;
       });
+      console.log(obj)
       this.positionObj.forEach((item) => {
         item.canChecked = false;
         item.isChecked = false;
@@ -229,12 +231,6 @@ export default {
                 item.canChecked = true;
               });
             }
-            // this.positionObj.map((item) => {
-            //   if (serialNumber === item.id) {
-            //     item.isChecked = false;
-            //     item.finishChecked = true;
-            //   }
-            // });
             const data = this.positionObj.filter((item) => {
               return item.isChecked !== true;
             });
@@ -247,6 +243,14 @@ export default {
               this.btnDisabled = true;
               this.titleTip = '该页面没有空余位置可更换，请操作下一步按钮（如需更换，请先到版块管理列表中先删除对应的位置）';
             }
+            this.positionObj.map((item) => {
+              if (serialNumber === item.id && obj.pageId === prePageId) {
+                item.isChecked = false;
+                // item.name = '当前版块';
+                item.finishChecked = true;
+                this.btnDisabled = false;
+              }
+            });
             this.positionObj = Object.assign([], this.positionObj); // 将该数组改变内存地址，为了重新渲染页面
           }
         })

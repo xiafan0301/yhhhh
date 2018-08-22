@@ -50,15 +50,31 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='ctcDataList'>
-      <el-table-column prop='eventCode' label="事件编号" align='center'></el-table-column>
-      <el-table-column prop='eventTypeName' label="事件类型" align='center'></el-table-column>
-      <el-table-column prop='eventLevelName' label="事件等级" align='center'></el-table-column>
-      <el-table-column prop='assignTime' label="受理时间" align='center'></el-table-column>
-      <el-table-column prop='eventAddress' label="事件地点" align='center'></el-table-column>
+      <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
+      <el-table-column prop='eventTypeName' label="事件类型" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.eventTypeName > 0">{{scope.row.eventTypeName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='eventLevelName' label="事件等级" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.eventLevelName > 0">{{scope.row.eventLevelName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='assignTime' label="受理时间" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.assignTime > 0">{{scope.row.assignTime}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center' show-overflow-tooltip></el-table-column>
       <el-table-column prop='feedbackNumber' label="新反馈数" align='center'>
         <template slot-scope="scope">
           <span style="color: #FB796C;" v-if="scope.row.number > 0">{{scope.row.number}}</span>
           <span style="color: #555555;" v-else>{{scope.row.number}}</span>
+          <!-- <span style="color: #555555;" v-else>{{scope.row.number}}</span> -->
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
@@ -99,56 +115,6 @@ export default {
         eventLevel: '全部等级',
         eventType: '全部类型'
       },
-      // ctcDataList: [{
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 3
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 0
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 0
-      // }],
       eventLevelList: [],
       eventTypeList: [],
       ctcDataList: [],
@@ -168,10 +134,10 @@ export default {
     skipLookEvent () { // 查看事件分布
     },
     skipCtcDetail (scope) { // 跳到调度指挥页面
-      this.$router.push({name: 'ctc-detail'});
+      this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});
     },
     skipCtcEnd (scope) { // 跳转到事件结束页面
-
+      this.$router.push({name: 'event-end', query: {eventId: scope.row.eventId, eventLevel: scope.row.eventLevel}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
@@ -298,6 +264,12 @@ export default {
     }
     .el-button+.el-button {
       margin-left: 2px !important;
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
     }
   }
 </style>
