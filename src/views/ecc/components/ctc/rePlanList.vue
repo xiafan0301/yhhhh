@@ -49,8 +49,12 @@
       class='ctc-table'
     >
       <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="预案类型" prop='planType' align='center'></el-table-column>
-      <el-table-column label="适用等级" prop='levelList' align='center'></el-table-column>
+      <el-table-column label="预案类型" prop='eventType' align='center'></el-table-column>
+      <el-table-column label="适用等级" prop='levelList' align='center'>
+        <template slot-scope='scope'>
+          <span>{{scope.row.levelList.join('、')}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='selectReplanDetail(scope)'>查看</el-button>
@@ -84,47 +88,7 @@ export default {
         planType: '全部类型', // 预案类型
         planName: '' // 预案名称
       },
-      reservePlanList: [{
-        planId: '1111111111111',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '3333333333333',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '222222222222',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '44444444444',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '555555555555',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '666666666666',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '7777777777777',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planId: '8888888888888',
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }],
+      reservePlanList: [],
       eventLevelList: [],
       eventTypeList: [],
       eventId: '',
@@ -184,17 +148,16 @@ export default {
       } else {
         planType = this.selectForm.planType;
       }
-      const data = {
+      const params = {
         'where.planType': planType,
         'where.planLevel': planLevel,
         'where.planName': this.selectForm.planName,
-        pageNum: this.pagination.pageNum
+        pageNum: -1
       }
-      this.axios.get('A2/planServices/plans', data)
+      this.axios.get('A2/planServices/plans', {params})
         .then((res) => {
-          // console.log(res)
           if (res && res.data.list) {
-            // this.reservePlanList = res.data.list;
+            this.reservePlanList = res.data.list;
             this.pagination.total = res.data.total;
           }
         })

@@ -30,6 +30,10 @@ const oDomains = {
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
   },
+  // 查看事件分布地址
+  domain3: {
+    dev: 'http://10.16.4.37:8071'
+  },
   // 文件/图片/CDN地址
   fileDomain: {
     dev: 'http://10.16.3.40:8080',
@@ -58,8 +62,11 @@ if (process.env.NODE_ENV === 'production') {
 }
 console.log('environment', sENV);
 // ajax default
+console.log(oDomains.domain3[sENV])
+console.log(oDomains.domain2[sENV])
 export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
+export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#/';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址

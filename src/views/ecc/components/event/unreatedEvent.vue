@@ -412,6 +412,7 @@ export default {
       background: #F0F0F0 !important;
       text-align: left !important;
       color: #555555;
+      font-weight: bold;
       font-size: 16px;
     }
     /deep/ .el-dialog__footer {

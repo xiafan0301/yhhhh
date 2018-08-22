@@ -22,19 +22,35 @@
         <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary'>
           <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
         </el-form-item>
-        <el-form-item style='margin-left: 150px'>
-          <el-upload
-            action="http://10.16.4.50:8001/api/network/upload/new"
-            :list-type='listType'
-            :file-list='fileList'
-            :before-upload='handleBeforeUpload'
-            :on-remove="handleRemove"
-          >
-            <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-            <span class='add-img-text'>上传附件</span>
-          </el-upload>
-        </el-form-item>
       </el-form>
+      <div class='show-img-div'>
+        <el-upload
+          action="http://10.16.4.50:8001/api/network/upload/new"
+          list-type='picture-card'
+          accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
+          :before-upload='handleBeforeUpload'
+          :on-success="handleSuccess"
+          :show-file-list='false'
+        >
+          <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+          <span class='add-img-text'>上传附件</span>
+        </el-upload>
+        <div class='img-list' v-for="(item, index) in imgList" :key="'item'+index">
+          <img
+            :src='item.newFileName'
+          />
+          <div class='delete-img'>
+            <i class='el-icon-delete' @click="deleteImg(item, index)"></i>
+          </div>
+        </div>
+      </div>
+      <div class='show-file-div'>
+        <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
+          <img src='../../../../assets/img/temp/file.png' />
+          <span>{{item.fileName}}</span>
+          <i class='el-icon-circle-close' @click="deleteFile(item, index)"></i>
+        </div>
+      </div>
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
@@ -50,7 +66,8 @@ export default {
       endForm: {
         eventId: '',
         eventLevel: '', // 事件等级
-        eventSummary: '' // 事件总结
+        eventSummary: '', // 事件总结
+        attachmentList: [] // 附件列表
       },
       rules: {
         eventLevel: [
@@ -62,7 +79,7 @@ export default {
       },
       eventLevelList: [], // 事件等级列表
       fileList: [], // 要上传的文件列表
-      listType: 'picture-card'
+      imgList: [] // 图片列表
     }
   },
   mounted () {
@@ -76,14 +93,59 @@ export default {
     back () {
       this.$router.back(-1);
     },
-    handleBeforeUpload (file) {
-      console.log(file)
-      if (file.type !== 'image/png' && file.type !== 'image/jpg' && file.type !== 'image/jpeg') {
-        this.listType = '';
+    deleteImg (obj, index) { // 删除图片
+      this.imgList.splice(index, 1);
+      this.endForm.attachmentList && this.endForm.attachmentList.map((item, idx) => {
+        if (item.url === obj.newFileName) {
+          this.endForm.attachmentList.splice(idx, 1);
+        }
+      });
+    },
+    deleteFile (obj, index) { // 删除文件
+      this.fileList.splice(index, 1);
+      this.endForm.attachmentList && this.endForm.attachmentList.map((item, idx) => {
+        if (item.url === obj.newFileName) {
+          this.endForm.attachmentList.splice(idx, 1);
+        }
+      });
+    },
+    handleSuccess (res, file) {
+      if (res && res.data) {
+        const fileName = res.data.fileName;
+        const type = fileName.substring(fileName.lastIndexOf('.'));
+        let data;
+        res.data.fileName = file.name;
+        if (type === '.png' || type === '.jpg' || type === '.bmp') {
+          data = {
+            attachmentType: dictType.imgId,
+            url: res.data.newFileName,
+            attachmentName: res.data.fileName,
+            attachmentSize: res.data.fileSize,
+            attachmentWidth: res.data.imageWidth,
+            attachmentHeight: res.data.imageHeight,
+            thumbnailUrl: res.data.thumbnailUrl,
+            thumbnailWidth: res.data.thumbImageWidth,
+            thumbnailHeight: res.data.thumbImageHeight
+          }
+          this.imgList.push(res.data);
+        } else {
+          data = {
+            attachmentType: dictType.fileId,
+            url: res.data.newFileName,
+            attachmentName: res.data.fileName,
+            attachmentSize: res.data.fileSize
+          }
+          this.fileList.push(res.data);
+        }
+        this.endForm.attachmentList.push(data);
       }
     },
-    handleRemove () {
-
+    handleBeforeUpload (file) { // 附件上传之前
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isLtTenM) {
+        this.$message.error('上传的附件大小不能超过10M');
+      }
+      return isLtTenM;
     },
     getEventLevel () { // 获取事件等级
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
@@ -131,11 +193,73 @@ export default {
     }
     .event-end-body {
       width: 100%;
-      // height: 85%;
       padding-bottom: 5%;
       background: #fff;
       .event-end-form {
         padding-top: 2%;
+      }
+      .show-img-div {
+        width: 500px;
+        margin-left: 150px;
+        display: flex;
+        flex-wrap: wrap;
+        .img-list {
+          width: 100px;
+          height: 100px;
+          margin-left: 10px;
+          margin-bottom: 10px;
+          position: relative;
+          img {
+            width: 100px;
+            height: 100px;
+          }
+          .delete-img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0,0,0,.5);
+            transition: opacity .3s;
+            opacity: 0;
+            border-radius: 3px;
+            top:0;
+            left:0;
+            i {
+              position: absolute;
+              cursor: pointer;
+              font-size: 20px;
+              top: 40px;
+              color: #fff;
+              left: 40px;
+            }
+          }
+          &:hover {
+            .delete-img {
+              opacity: 1;
+            }
+            box-shadow: 0 0 8px 0 rgba(232, 237, 250, .6),
+              0 2px 4px 0 rgba(232, 237, 250, .5);
+          }
+        }
+      }
+      .show-file-div {
+        width: 500px;
+        margin-left: 150px;
+        .show-file-div-list {
+          display: flex;
+          align-items: center;
+          margin-bottom: 10px;
+          margin-top: 10px;
+          span {
+            color: #0785FD;
+            font-size: 14px;
+            margin: 0 5px;
+          }
+          i {
+            font-size: 18px;
+            color: #5D5D5D;
+            cursor: pointer;
+          }
+        }
       }
     }
     .el-upload--picture-card {

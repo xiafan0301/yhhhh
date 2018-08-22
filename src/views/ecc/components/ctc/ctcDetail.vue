@@ -91,8 +91,9 @@
             </template>
           </div>
           <div class='ctc-idea-body'>
+
             <div class='ctc-idea-body-list' v-for='(item, index) in taskList' :key="'item'+index">
-              <div class='ctc-idea-body-list-detail' v-show='!item.isShow'>
+              <div class='ctc-idea-body-list-detail'>
                 <div class='ctc-idea-body-list-num'>任务{{index + 1}}</div>
                 <div class='ctc-idea-body-list-body'>
                   <p>执行部门： {{item.departmentName}}</p>
@@ -104,31 +105,6 @@
                   /
                   <span @click='deleteTask(index)'>删除</span>
                 </div>
-              </div>
-               <div class='ctc-idea-body-modify-form' v-show="item.isShow">
-                <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref='modifyTaskForm' :rules='rules'>
-                  <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
-                    <el-select  placeholder="请选择执行部门" style='width: 80%' v-model='modifyTaskForm.departmentId'>
-                      <el-option
-                        v-for="item in departmentList"
-                        :key="item.departmentId"
-                        :label="item.departmentName"
-                        :value="item.departmentId"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="任务名称" label-width='80px' prop='taskName'>
-                    <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='modifyTaskForm.taskName'></el-input>
-                  </el-form-item>
-                  <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
-                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='modifyTaskForm.taskContent'></el-input>
-                  </el-form-item>
-                  <el-form-item label-width='80px'>
-                    <el-button style='background: #0785FD;color:#fff' @click="modifyFormData('modifyTaskForm', index)">保存</el-button>
-                    <el-button @click="cancelModifyForm('modifyTaskForm', index)">取消</el-button>
-                  </el-form-item>
-                </el-form>
               </div>
             </div>
             <div v-show='taskList.length > 0' class='ctc-idea-body-divide'></div>
@@ -177,8 +153,12 @@
               max-height="352"
             >
               <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-              <el-table-column fixed label="预案类型" prop='planType' align='center'></el-table-column>
-              <el-table-column fixed label="适用等级" prop='levelList' align='center'></el-table-column>
+              <el-table-column fixed label="预案类型" prop='eventType' align='center'></el-table-column>
+              <el-table-column fixed label="适用等级" prop='levelList' align='center' show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <span>{{scope.row.levelList.join('、')}}</span>
+                </template>
+              </el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
                   <el-button type='text' style='color: #0785FD' @click="selectReplanDetail(scope)">查看</el-button>
@@ -195,6 +175,31 @@
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
     </div>
+    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px'>
+      <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref="modifyTaskForm" :rules='rules'>
+        <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+          <el-select @change='changeModifyDepartment' placeholder="请选择执行部门" style='width: 98%' v-model='modifyTaskForm.departmentId'>
+            <el-option
+              v-for="item in departmentList"
+              :key="item.departmentId"
+              :label="item.departmentName"
+              :value="item.departmentId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+          <el-input type="text" placeholder='请输入任务名称' style='width: 98%' v-model='modifyTaskForm.taskName'></el-input>
+        </el-form-item>
+        <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
+          <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 98%' v-model='modifyTaskForm.taskContent'></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="sureCancelModify('modifyTaskForm')">取 消</el-button>
+        <el-button type="primary" @click="sureModifyTask('modifyTaskForm')">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -202,42 +207,10 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      isShowModify: false, // 是否显示要修改的表单
-      isCurrentModify: '',
+      dialogFormVisible: false, // 是否显示要修改的表单
+      modifyIndex: '', // 要修改的任务索引
       eventDetailObj: {},
-      reservePlanList: [{
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }],
+      reservePlanList: [],
       rules: {
         departmentId: [
           { required: true, message: '请选择执行部门', trigger: 'blur' }
@@ -297,10 +270,21 @@ export default {
         }
       });
     },
-    cancelModifyForm (form, index) { // 取消修改form
+    sureCancelModify (form) { // 取消修改任务
+      this.$refs[form].resetFields();
+      this.dialogFormVisible = false;
+    },
+    sureModifyTask (form) { // 修改任务
       this.$refs[form].validate((valid) => {
         if (valid) {
-          this.taskList[index].isShow = false;
+          if (this.modifyIndex !== '') {
+            const index = this.modifyIndex;
+            this.taskList[index].departmentId = this.modifyTaskForm.departmentId;
+            this.taskList[index].departmentName = this.modifyTaskForm.departmentName;
+            this.taskList[index].taskName = this.modifyTaskForm.taskName;
+            this.taskList[index].taskContent = this.modifyTaskForm.taskContent;
+            this.dialogFormVisible = false;
+          }
         }
       });
     },
@@ -308,7 +292,8 @@ export default {
       this.taskList.splice(index, 1);
     },
     modifyTask (index) { // 修改任务
-      this.taskList[index].isShow = true;
+      this.dialogFormVisible = true;
+      this.modifyIndex = index;
       this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
       this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
       this.modifyTaskForm.taskName = this.taskList[index].taskName;
@@ -327,14 +312,13 @@ export default {
       }
     },
     getReplanList () { // 获取预案列表
-      const data = {
+      const params = {
         pageNum: -1
       }
-      this.axios.get('A2/planServices/plans', {params: data})
+      this.axios.get('A2/planServices/plans', {params})
         .then((res) => {
-          if (res) {
-            console.log(res)
-            this.reservePlanList = res.data;
+          if (res && res.data.list) {
+            this.reservePlanList = res.data.list;
           }
         })
         .catch(() => {});
@@ -394,6 +378,13 @@ export default {
       this.departmentList.map((item) => {
         if (item.departmentId === value) {
           this.taskForm.departmentName = item.departmentName;
+        }
+      });
+    },
+    changeModifyDepartment (value) {
+      this.departmentList.map((item) => {
+        if (item.departmentId === value) {
+          this.modifyTaskForm.departmentName = item.departmentName;
         }
       });
     },
@@ -708,6 +699,19 @@ export default {
     .operation-btn-ctc-detail {
       margin-top: 1%;
       margin-bottom: 1%;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      font-weight: bold;
+      color: #555555;
+      font-size: 16px;
+    }
+    /deep/ .el-dialog__footer {
+      padding: 0 20px 20px !important;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      padding: 10px 25px 0 !important;
     }
   }
 </style>
