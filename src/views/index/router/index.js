@@ -17,6 +17,8 @@ import style from '@/views/index/components/style/style.vue'
 // cas
 import cas from '@/views/index/components/cas/cas.vue'
 
+import drawEdge from '@/views/index/components/map/drawEdge.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -42,12 +44,9 @@ export default new Router({
             {path: 'edit/:plateId', name: 'plate-edit', component: plateEdit}
           ]
         },
-        {path: 'style', name: 'style', component: style},
-        {
-          path: 'cas',
-          name: 'cas',
-          component: cas
-        }
+        { path: 'style', name: 'style', component: style },
+        { path: 'cas', name: 'cas', component: cas },
+        { path: 'drawEdge', name: 'drawEdge', component: drawEdge }
       ]
     }
   ]
