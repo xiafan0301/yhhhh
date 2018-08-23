@@ -48,8 +48,9 @@
         <el-dialog
           :title="'新增区块'"
           :visible.sync="dialogVisible"
-          width="600px">
-          <el-form :model="editForm" :rules="editFormRules" ref="editForm"  style="padding-right: 60px;" size="small" label-width="150px">
+          class="draw-dialog"
+          width="560px">
+          <el-form :model="editForm" :rules="editFormRules" ref="editForm"  style="padding-right: 60px;" size="" label-width="150px">
             <el-form-item label="区块名称" prop="areaData">
               <el-select v-model="editForm.areaData" value-key="sid" placeholder="请选择">
                 <el-option
@@ -58,15 +59,16 @@
                   :key="item.sid"
                   :label="item.name"
                   :value="item"
-                  :disabled="item.disabled">
+                  :disabled="item.disabled"
+                  style="width: 200px;">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-form>
-          <span slot="footer" class="dialog-footer">
+          <div slot="footer" class="dialog-footer" style="text-align: left; padding-bottom: 20px; padding-left: 150px;">
             <el-button @click="dialogVisible = false">取 消</el-button>
             <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')">确 定</el-button>
-          </span>
+          </div>
         </el-dialog>
       </div>
     </div>
@@ -81,7 +83,7 @@ export default {
       mouseTool: null,
       defaultCursor: '',
       zoom: 10,
-      zooms: [8, 18],
+      zooms: [10, 18],
 
       drawActive: false,
       dialogVisible: false,
@@ -97,14 +99,14 @@ export default {
       sonPolygons: null,
       polygonStyles: {
         n: {
-          fillOpacity: 0.5, // 0.95
-          strokeColor: '#CC66CC',
-          fillColor: '#CCF3FF'
+          fillOpacity: 1, // 0.95
+          strokeColor: '#fff',
+          fillColor: '#088bfd'
         },
         s: {
-          fillOpacity: 0.8, // 0.95
-          strokeColor: '#c85fcc',
-          fillColor: '#cbe4ff'
+          fillOpacity: 1, // 0.95
+          strokeColor: '#fff',
+          fillColor: '#f9783f'
         }
       },
       tableData: [],
@@ -252,7 +254,14 @@ export default {
     addPolygon () {
       if (this.amap && this.mouseTool) {
         this.mouseTool.close(true);
-        this.mouseTool.polygon();
+        this.mouseTool.polygon({
+          zIndex: 13,
+          strokeColor: '#088bfd',
+          strokeOpacity: 1,
+          strokeWeight: 1,
+          fillColor: '#7dbff9',
+          fillOpacity: 1
+        });
         this.drawActive = true;
         this.amap.setDefaultCursor('crosshair');
       }
@@ -351,9 +360,9 @@ export default {
             strokeWeight: 2,
             path: bounds,
             zIndex: 11,
-            fillOpacity: 0.2, // 0.95
-            strokeColor: '#CC66CC',
-            fillColor: '#CCF3FF'
+            fillOpacity: 0.6, // 0.95
+            strokeColor: '#088bfd',
+            fillColor: '#fff'
           });
         }
         // _this.amap.setFitView();
