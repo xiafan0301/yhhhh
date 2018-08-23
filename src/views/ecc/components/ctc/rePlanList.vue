@@ -152,7 +152,7 @@ export default {
         'where.planType': planType,
         'where.planLevel': planLevel,
         'where.planName': this.selectForm.planName,
-        pageNum: -1
+        pageNum: this.pagination.pageNum
       }
       this.axios.get('A2/planServices/plans', {params})
         .then((res) => {

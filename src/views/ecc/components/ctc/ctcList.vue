@@ -134,8 +134,9 @@ export default {
       window.location.href = ajaxCtx3;
     },
     skipLookEventDetail (scope) { // 查看事件详情分布
-      // if (scope.row.eventId) {
-      // }
+      if (scope.row.eventId) {
+        window.location.href = ajaxCtx3 + '?' + scope.row.eventId;
+      }
     },
     skipCtcDetail (scope) { // 跳到调度指挥页面
       this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});

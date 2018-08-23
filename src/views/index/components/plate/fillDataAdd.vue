@@ -409,7 +409,7 @@
                           <td><input type="text" v-model="item.valueUnit" class='valueUnit' placeholder='请填写'></td>
                           <td>
                             <!-- <template v-if='isCheckBox === true'> -->
-                            <template v-if="$store.state.plateInfo.configCode === 'plate015' || $store.state.plateInfo.configCode === 'plate041'">
+                            <template v-if="$store.state.plateInfo.configCode === 'plate015' || $store.state.plateInfo.configCode === 'plate041' || $store.state.plateInfo.configCode === 'plate016'">
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 disabled
@@ -959,7 +959,7 @@ export default {
             });
           }
         });
-        if (this.$store.state.plateInfo.configCode !== 'plate015' && this.$store.state.plateInfo.configCode !== 'plate041') {
+        if (this.$store.state.plateInfo.configCode !== 'plate015' && this.$store.state.plateInfo.configCode !== 'plate041' && this.$store.state.plateInfo.configCode === 'plate016') {
           // if (result.length > 0) {
           //   this.childDataListTwo.map((list, index) => {
           //     if (list.graphicFieldFlag === true) {
@@ -1484,7 +1484,7 @@ export default {
         if (this.childDataListTwo.length < maxNumber) {
           this.tip = '';
           let data;
-          if (this.$store.state.plateInfo.configCode === 'plate015' || this.$store.state.plateInfo.configCode === 'plate041') {
+          if (this.$store.state.plateInfo.configCode === 'plate015' || this.$store.state.plateInfo.configCode === 'plate041' || this.$store.state.plateInfo.configCode === 'plate016') {
             data = {
               contentName: '',
               valueContent: '',

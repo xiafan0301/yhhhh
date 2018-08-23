@@ -66,7 +66,7 @@ console.log(oDomains.domain3[sENV])
 console.log(oDomains.domain2[sENV])
 export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
-export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#/';
+export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址

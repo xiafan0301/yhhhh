@@ -100,7 +100,6 @@
                 <template v-if='eventDetailObj.taskList && eventDetailObj.taskList.length > 1'>
                   <li class='divide'></li>
                 </template>
-                <!-- <li class='divide'></li> -->
               </ul>
             </div>
           </div>
@@ -133,7 +132,6 @@
                     <template v-if='eventDetailObj.processingList.length > 1'>
                       <div class='line'></div>
                     </template>
-                    <!-- <div class='line'></div> -->
                     <div class='content-right'>
                       <div class='time'>{{item.createTime}}</div>
                       <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>

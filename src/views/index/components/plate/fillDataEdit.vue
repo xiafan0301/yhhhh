@@ -910,7 +910,7 @@ export default {
             });
           }
         });
-        if (this.$store.state.plateInfo.configCode === 'plate015' && this.$store.state.plateInfo.configCode === 'plate041') {
+        if (this.$store.state.plateInfo.configCode === 'plate015' && this.$store.state.plateInfo.configCode === 'plate041' && this.$store.state.plateInfo.configCode === 'plate016') {
           if (result.length > 0) {
             this.childDataListTwo.map((value) => {
               if (value.graphicFieldFlag === true) {

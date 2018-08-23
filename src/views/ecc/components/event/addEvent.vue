@@ -26,6 +26,7 @@
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              accept=".png,.jpg,.bmp"
               :before-upload='handleBeforeUpload'
               :on-remove="handleRemove"
               :on-success='handleSuccess'
@@ -109,7 +110,6 @@ export default {
         eventFlag: true,
         mutualFlag: false,
         attachmentList: [] // 附件列表
-        // flagType: ['应急事件'] // 事件性质
       },
       rules: {
         reporterPhone: [
@@ -132,6 +132,14 @@ export default {
       },
       eventTypeList: [], // 事件类型列表
       eventLevelList: [] // 事件等级
+    }
+  },
+  watch: {
+    addForm: {
+      handler: function (newVal) {
+        console.log(newVal);
+      },
+      deep: true
     }
   },
   mounted () {

@@ -17,12 +17,6 @@
             <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span> -->
             <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <!-- <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
-            <el-input style='width: 500px' placeholder='请选择经度...' v-model='operationForm.longitude'></el-input>
-          </el-form-item>
-          <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
-            <el-input style='width: 500px' placeholder='请选择纬度...' v-model='operationForm.latitude'></el-input>
-          </el-form-item> -->
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
@@ -39,6 +33,7 @@
               <el-upload
                 action="http://10.16.4.50:8001/api/network/upload/new"
                 list-type="picture-card"
+                accept=".png,.jpg,.bmp"
                 :before-upload='handleBeforeUpload'
                 :on-remove="handleRemove"
                 :on-success='handleSuccess'
@@ -136,7 +131,6 @@ export default {
       this.$router.back(-1);
     },
     showMap () {
-      console.log('2222')
       if (this.operationForm.eventAddress === '') {
         this.oConfig = {};
       } else {
