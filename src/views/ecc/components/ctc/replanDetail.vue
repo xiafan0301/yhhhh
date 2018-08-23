@@ -13,29 +13,29 @@
           <p class='title'>预案名称</p>
           <p class='content'>{{replanDetail.planName}}</p>
         </li>
-        <!-- <li>
-          <p class='title'>关键词</p>
-          <p class='content'>火灾、消防</p>
-        </li> -->
         <li>
           <p class='title'>预案类型</p>
-          <p class='content'>{{replanDetail.planType}}</p>
+          <p class='content'>{{replanDetail.eventType}}</p>
         </li>
         <li>
           <p class='title'>适用事件等级</p>
-          <p class='content'>{{replanDetail.levelList}}</p>
+          <p class='content'>
+            <template v-if='replanDetail.levelList'>
+              {{replanDetail.levelList.join()}}
+            </template>
+          </p>
         </li>
         <li>
           <p class='title'>预案正文</p>
           <p class='content'>
-            <el-input type='textarea' rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
+            <el-input type='textarea' disabled rows='7' v-model='replanDetail.planDetail' style='width: 70%' />
           </p>
         </li>
         <li>
           <p class='title'>附件</p>
           <p class='content'>
-            <a style='color: #0785FD;text-decoration:underline'>{{replanDetail.attachmentName}}</a>
-            <span class='download'>下载</span>
+            <a :href='replanDetail.url' style='color: #0785FD;text-decoration:underline'>{{replanDetail.attachmentName}}</a>
+            <span class='download' @click='downloadFile(replanDetail.url)'>下载</span>
           </p>
         </li>
         <li>
@@ -44,7 +44,7 @@
             <ul class='response-ul' v-for="(item, index) in replanDetail.taskList" :key="'item'+index">
               <li>
                 <p class='response-title'><span style='color:red;'>*</span>协同部门:</p>
-                <p class='response-content'>{{item.departmentId}}</p>
+                <p class='response-content'>{{item.departmentName}}</p>
               </li>
               <li>
                 <p class='response-title'><span style='color:red;'>*</span>任务名称:</p>
@@ -55,49 +55,21 @@
                 <p class='response-content'>{{item.taskContent}}</p>
               </li>
             </ul>
-            <ul class='response-ul'>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>协同部门:</p>
-                <p class='response-content'>联动单位A</p>
-              </li>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>任务名称:</p>
-                <p class='response-content'>灭火</p>
-              </li>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>任务内容:</p>
-                <p class='response-content'>联动单位A灭火第一时间赶往火灾现场处理，完成后及时上报</p>
-              </li>
-            </ul>
-            <ul class='response-ul'>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>协同部门:</p>
-                <p class='response-content'>联动单位A</p>
-              </li>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>任务名称:</p>
-                <p class='response-content'>灭火</p>
-              </li>
-              <li>
-                <p class='response-title'><span style='color:red;'>*</span>任务内容:</p>
-                <p class='response-content'>联动单位A灭火第一时间赶往火灾现场处理，完成后及时上报</p>
-              </li>
-            </ul>
           </div>
         </li>
         <li>
           <p class='title'>创建用户</p>
-          <p class='content'>张小娴</p>
+          <p class='content'>{{replanDetail.createUserName}}</p>
         </li>
         <li class='last-li'>
           <p class='title'>创建时间</p>
-          <p class='content'>2018-09-12 12:23:00</p>
+          <p class='content'>{{replanDetail.createTime}}</p>
         </li>
       </ul>
     </div>
     <div class='operation-btn-replan-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD; color:#fff' @click='openReplan'>启用</el-button>
+      <el-button style='background: #0785FD; color:#fff' @click='skipOpenReplan'>启用</el-button>
     </div>
   </div>
 </template>
@@ -105,22 +77,7 @@
 export default {
   data () {
     return {
-      replanDetail: {
-        planName: '我的预案',
-        planType: '预案类型',
-        planDetail: 'sadasd阿萨达萨达大萨',
-        attachmentName: '附件名称',
-        url: '附件url',
-        taskList: [{
-          departmentId: '2313123213',
-          taskName: '任ask的理解阿三',
-          taskContent: '是达拉斯打开链接啊手机阿斯顿零零喀什灯垃圾啊但是可见当时'
-        }, {
-          departmentId: '34545345345',
-          taskName: '任ask的理解阿三',
-          taskContent: '是达拉斯打开链接啊手机阿斯顿零零喀什灯垃圾啊但是可见当时'
-        }]
-      }
+      replanDetail: {} // 预案详情
     }
   },
   mounted () {
@@ -128,21 +85,28 @@ export default {
   },
   methods: {
     getReplanDetail () { // 获取预案详情
-      const planId = this.$route.params.planId;
+      const planId = this.$route.query.planId;
       if (planId) {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {
             if (res && res.data) {
-              // this.replanDetail = res.data;
+              // console.log(res.data)
+              this.replanDetail = res.data;
             }
           })
           .catch(() => {})
       }
     },
     back () {
-      this.$route.back(-1);
+      this.$router.back(-1);
     },
-    openReplan () { // 启用预案
+    skipOpenReplan () { // 跳到启用预案
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: this.$route.query.planId}});
+    },
+    downloadFile (file) { // 下载文件
+      if (file) {
+        window.open(file);
+      }
     }
   }
 }
@@ -178,6 +142,7 @@ export default {
               background:#0785FD;
               width:45px;
               height:26px;
+              cursor: pointer;
               color: #fff;
               text-align: center;
               margin-left: 1%;

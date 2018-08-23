@@ -1,5 +1,5 @@
 <template>
-  <div class='event-detail-end'>
+  <div class='linkage-detail'>
     <div class='event-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
@@ -14,42 +14,24 @@
           <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
-          <img src='../../../../assets/img/temp/end.png' />
+          <img src='../../../../assets/img/temp/treating.png' />
         </div>
         <div class='basic-detail'>
           <div class='basic-list'>
             <div>
               <span class='title'>事件类型：</span>
-              <span v-show='!isSave' class='content'>{{eventDetailObj.eventTypeName}}</span>
-              <el-select v-show='isSave' v-model="modifyForm.eventType" placeholder="请选择" style='width: 200px;'>
-                <el-option
-                  v-for="item in eventTypeList"
-                  :key="item.dictId"
-                  :label="item.dictContent"
-                  :value="item.dictId"
-                >
-                </el-option>
-              </el-select>
+              <span class='content'>{{eventDetailObj.eventTypeName}}</span>
             </div>
             <div>
               <span class='title'>事件等级：</span>
-              <span v-show='!isSave' class='content'>{{eventDetailObj.eventLevelName}}</span>
-              <el-select v-show='isSave' v-model="modifyForm.eventLevel" placeholder="请选择" style='width: 200px;'>
-                <el-option
-                  v-for="item in eventLevelList"
-                  :key="item.dictId"
-                  :label="item.dictContent"
-                  :value="item.dictId"
-                >
-                </el-option>
-              </el-select>
+              <span class='content'>{{eventDetailObj.eventLevelName}}</span>
             </div>
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
               <span class='title'>报案人：</span>
-              <span class='content'>{{eventDetailObj.reporterPhone}}</span>
+              <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
@@ -79,137 +61,130 @@
           </div>
         </div>
       </div>
-      <template v-if="!eventDetailObj.closeReason">
-        <template v-if='eventDetailObj.taskList && eventDetailObj.taskList.length > 0'>
-          <div class='ctc'>
-            <div class='ctc-header'>
-              <div class='flag'></div>
-              <p class='ctc-text'>调度指挥方案</p>
-            </div>
-            <div class='ctc-content'>
-              <ul v-for="(item, index) in eventDetailObj.taskList" :key="'item'+index">
-                <li>
-                  <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
-                </li>
-                <li>
-                  <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
-                </li>
-                <li>
-                  <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
-                </li>
-                <template v-if='eventDetailObj.taskList && eventDetailObj.taskList.length > 1'>
-                  <li class='divide'></li>
-                </template>
-              </ul>
+      <div class='ctc' v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0'>
+        <div class='ctc-header'>
+          <div class='flag'></div>
+          <p class='ctc-text'>调度指挥方案</p>
+        </div>
+        <div class='ctc-content'>
+          <ul v-for="(item, index) in eventDetailObj.taskList" :key="'item'+index">
+            <li>
+              <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
+            </li>
+            <li>
+              <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
+            </li>
+            <li>
+              <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
+            </li>
+            <li v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0' class='divide'></li>
+          </ul>
+        </div>
+      </div>
+      <div class='event-progress' v-show='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
+        <div class='event-progress-header'>
+          <div class='flag'></div>
+          <p class='event-progress-text'>事件进展</p>
+        </div>
+        <div class='event-progress-body'>
+          <div class='depart'>
+            <p class='progress-title'>参与部门</p>
+            <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'item'+index">
+              <p>{{item.departmentName}}</p>
+              <p>{{item.createTime}}</p>
+              <p>{{item.taskStatusName}}</p>
             </div>
           </div>
-        </template>
-        <template v-if='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
-          <div class='event-progress'>
-            <div class='event-progress-header'>
-              <div class='flag'></div>
-              <p class='event-progress-text'>事件进展</p>
-            </div>
-            <div class='event-progress-body'>
-              <div class='depart'>
-                <p class='progress-title'>参与部门</p>
-                <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'items'+index">
-                  <p>{{item.departmentName}}</p>
-                  <p>{{item.createTime}}</p>
-                  <p>{{item.taskStatusName}}</p>
+          <div class=divide></div>
+          <div class='event-process'>
+            <p class='progress-title'>事件过程</p>
+            <ul>
+              <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
+                <div class='circle-left'>
+                  <div class='big-circle'>
+                    <div class='small-circle'></div>
+                  </div>
                 </div>
-              </div>
-              <div class=divide></div>
-              <div class='event-process'>
-                <p class='progress-title'>事件过程</p>
-                <ul>
-                  <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
-                    <div class='circle-left'>
-                      <div class='big-circle'>
-                        <div class='small-circle'></div>
-                      </div>
-                    </div>
-                    <template v-if='eventDetailObj.processingList.length > 1'>
-                      <div class='line'></div>
-                    </template>
-                    <div class='content-right'>
-                      <div class='time'>{{item.createTime}}</div>
-                      <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-              <div class=divide></div>
-              <div class='comment'>
-                <p class='progress-title'>
-                  APP端互助
-                  <span style='color: #0785FD;font-size: 12px'>({{this.pagination.total}}条评论)</span>
-                </p>
-                <ul>
-                  <li v-for='(item, index) in commentList' :key="'item'+index">
-                    <div class='info-top'>
-                      <p class='phone'>{{item.commentUserId}}</p>
-                      <p class='time'>{{item.createTime}}</p>
-                    </div>
-                    <div class='info-detail'>{{item.content}}</div>
-                    <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
-                  </li>
-                  <li>
-                    <div class='info-top'>
-                      <p class='phone'>13812341234</p>
-                      <p class='time'>06-25 11:30</p>
-                    </div>
-                    <div class='info-detail'>火势好大！</div>
-                    <i class='el-icon-circle-close close'></i>
-                  </li>
-                </ul>
-                <template v-if='this.pagination.total > 5'>
-                  <el-pagination
-                    background
-                    :page-sizes="[5, 10, 20, 50, 100]"
-                    @size-change="onSizeChange"
-                    @current-change="onPageChange"
-                    :current-page.sync="pagination.pageNum"
-                    :page-size="pagination.pageSize"
-                    layout="prev, pager, next, jumper"
-                    :total="pagination.total"
-                  >
-                  </el-pagination>
+                <template v-if='eventDetailObj.processingList.length > 1'>
+                  <div class='line'></div>
                 </template>
-              </div>
-            </div>
+                <!-- <div class='line'></div> -->
+                <div class='content-right'>
+                  <div class='time'>{{item.createTime}}</div>
+                  <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
+                </div>
+              </li>
+            </ul>
           </div>
-        </template>
-        <div class='event-summary' v-show='eventDetailObj.eventSummary'>
-          <div class='event-summary-header'>
-            <div class='flag'></div>
-            <p class='event-summary-text'>事件总结</p>
-          </div>
-          <div class='summary-content'>
-            {{eventDetailObj.eventSummary}}
+          <div class=divide></div>
+          <div class='comment' v-show='commentList && commentList.length > 0'>
+            <p class='progress-title'>
+              APP端互助
+              <span style='color: #0785FD;font-size: 12px'>({{this.pagination.total}}条评论)</span>
+            </p>
+            <ul>
+              <li v-for='(item, index) in commentList' :key="'item'+index">
+                <div class='info-top'>
+                  <p class='phone'>{{item.commentUserId}}</p>
+                  <p class='time'>{{item.createTime}}</p>
+                </div>
+                <div class='info-detail'>{{item.content}}</div>
+                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+              </li>
+              <!-- <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li>
+              <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li>
+              <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li> -->
+            </ul>
+            <template v-if='this.pagination.total > 5'>
+              <el-pagination
+                background
+                :page-sizes="[5, 10, 20, 50, 100]"
+                @size-change="onSizeChange"
+                @current-change="onPageChange"
+                :current-page.sync="pagination.pageNum"
+                :page-size="pagination.pageSize"
+                layout="prev, pager, next, jumper"
+                :total="pagination.total"
+              >
+              </el-pagination>
+            </template>
           </div>
         </div>
-      </template>
-      <template v-else>
-        <div class='close-reason'>
-          <div class='close-reason-header'>
-            <div class='flag'></div>
-            <p class='close-reason-text'>被关闭的原因</p>
-          </div>
-          <div class='close-reason-body'>
-            <div class='detail'>{{eventDetailObj.closeReasonName}}</div>
-            <div class='divide'></div>
-            <div class='remark'>备注：{{eventDetailObj.closeRemark}}</div>
-          </div>
+      </div>
+      <div class='event-summary' v-show='eventDetailObj.eventSummary'>
+        <div class='event-summary-header'>
+          <div class='flag'></div>
+          <p class='event-summary-text'>事件总结</p>
         </div>
-      </template>
+        <div class='summary-content'>
+          {{eventDetailObj.eventSummary}}
+        </div>
+      </div>
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="!eventDetailObj.closeReason">
-        <el-button v-show='isSave' type="primary" style='background: #0785FD' @click='handleSave'>保存</el-button>
-        <el-button v-show='!isSave' type="primary" style='background: #FB796C;border-color:#FB796C' @click="modifyEvent">修改</el-button>
-      </template>
+      <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>反馈情况</el-button>
     </div>
     <el-dialog
       title="操作提示"
@@ -223,69 +198,53 @@
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
-    <el-dialog
-      title="操作提示"
-      :visible.sync="closeReturnVisiable"
-      width="480px"
-      height='285px'
-      class="close-tip"
-      center>
-      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
-        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      dialogFormVisible: false,
       closeCommentVisiable: false,
-      closeReturnVisiable: false,
-      isSave: false, // 是否显示保存按钮
+      delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 5
       },
-      modifyForm: {
-        eventLevel: '',
-        eventType: '',
-        eventId: ''
-      },
-      eventDetailObj: {}, // 事件详情
-      eventTypeList: [], // 事件类型列表
-      eventLevelList: [], // 事件等级列表
+      options1: [{
+        value: '选项1',
+        label: '黄金糕'
+      }, {
+        value: '选项2',
+        label: '双皮奶'
+      }, {
+        value: '选项3',
+        label: '蚵仔煎'
+      }, {
+        value: '选项4',
+        label: '龙须面'
+      }, {
+        value: '选项5',
+        label: '北京烤鸭'
+      }],
+      value: '',
+      eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
     }
   },
-  created () {
-    this.getEventType();
-    this.getEventLevel();
+  mounted () {
     this.getEventDetail();
     this.getCommentList();
   },
-  mounted () {
-    setTimeout(() => {
-      this.dataStr = JSON.stringify(this.modifyForm); // 将初始数据转成字符串
-    }, 1000);
-  },
   methods: {
-    back (form) {
-      const data = JSON.stringify(this.modifyForm);
-      if (this.dataStr === data) {
-        this.$router.back(-1);
-      } else {
-        this.closeReturnVisiable = true;
-      }
+    skipEventEnd () { // 跳到事件结束页面
+      this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
     },
-    sureBack () {
-      this.closeReturnVisiable = false;
+    skipCtcDetail () {
+      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+    },
+    back () { // 返回上一页
       this.$router.back(-1);
     },
     onPageChange (page) {
@@ -299,53 +258,12 @@ export default {
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.query.eventId;
-      this.modifyForm.eventId = eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
-            // console.log(res)
+            console.log(res)
             if (res && res.data) {
-              this.modifyForm.eventType = res.data.eventType;
-              this.modifyForm.eventLevel = res.data.eventLevel;
               this.eventDetailObj = res.data;
-            }
-          })
-          .catch(() => {})
-      }
-    },
-    getEventType () { // 获取事件类型
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
-        .then((res) => {
-          if (res && res.data) {
-            this.eventTypeList = res.data;
-          }
-        })
-        .catch(() => {})
-    },
-    getEventLevel () { // 获取事件等级
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
-        .then((res) => {
-          if (res && res.data) {
-            this.eventLevelList = res.data;
-          }
-        })
-        .catch(() => {})
-    },
-    modifyEvent () { // 已结束的事件修改
-      this.isSave = true;
-    },
-    handleSave () { // 保存修改
-      if (this.modifyForm) {
-        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, this.modifyForm)
-          .then((res) => {
-            if (res) {
-              this.$message({
-                message: '保存成功',
-                type: 'success'
-              });
-              this.$router.push({name: 'event-list'});
-            } else {
-              this.$message.error('保存失败');
             }
           })
           .catch(() => {})
@@ -353,12 +271,12 @@ export default {
     },
     getCommentList () { // 分页获取评论列表
       const eventId = this.$route.query.eventId;
-      const data = {
-        'where.eventId': eventId,
-        pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
-      }
       if (eventId) {
+        const data = {
+          'where.eventId': eventId,
+          pageNum: this.pagination.pageNum,
+          pageSize: this.pagination.pageSize
+        }
         this.axios.get('A2/eventServices/comments/page', {params: data})
           .then((res) => {
             if (res && res.data.list) {
@@ -394,7 +312,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .event-detail-end {
+  .linkage-detail {
     padding: 20px;
     .event-detail-header {
       margin-bottom: 20px;
@@ -483,7 +401,7 @@ export default {
         }
         .ctc-content {
           width: 100%;
-          padding: 20px 20px 0 30px;
+          padding: 20px 20px 20px 30px;
           ul {
             li {
               line-height: 27px;
@@ -497,6 +415,9 @@ export default {
                 margin-left:1%;
               }
             }
+          }
+          & ul:last-child .divide {
+            display: none;
           }
         }
         .summary-content {
@@ -628,28 +549,6 @@ export default {
     }
     .operation-btn-event {
       margin-top: 2%;
-    }
-    /deep/ .el-dialog__header {
-      background: #F0F0F0 !important;
-      text-align: left !important;
-      color: #555555;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    /deep/  .el-dialog--center .el-dialog__body {
-      text-align: center !important;
-    }
-    .sureBtn {
-      background:#0785FD;
-      height:35px;
-      color: #fff;
-      line-height: 10px;
-    }
-    .noSureBtn {
-      border-color:#e5e5e5;
-      height:35px;
-      line-height: 10px;
-      color:#666666;
     }
   }
 </style>

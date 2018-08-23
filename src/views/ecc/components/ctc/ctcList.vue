@@ -50,20 +50,35 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='ctcDataList'>
-      <el-table-column prop='eventCode' label="事件编号" align='center'></el-table-column>
-      <el-table-column prop='eventTypeName' label="事件类型" align='center'></el-table-column>
-      <el-table-column prop='eventLevelName' label="事件等级" align='center'></el-table-column>
-      <el-table-column prop='assignTime' label="受理时间" align='center'></el-table-column>
-      <el-table-column prop='eventAddress' label="事件地点" align='center'></el-table-column>
-      <el-table-column prop='feedbackNumber' label="新反馈数" align='center'>
+      <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
+      <el-table-column prop='eventTypeName' label="事件类型" align='center'>
         <template slot-scope="scope">
-          <span style="color: #FB796C;" v-if="scope.row.number > 0">{{scope.row.number}}</span>
-          <span style="color: #555555;" v-else>{{scope.row.number}}</span>
+          <span v-if="scope.row.eventTypeName > 0">{{scope.row.eventTypeName}}</span>
+          <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align='center'>
+      <el-table-column prop='eventLevelName' label="事件等级" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px'>查看</el-button>
+          <span v-if="scope.row.eventLevelName > 0">{{scope.row.eventLevelName}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='assignTime' label="受理时间" align='center'>
+        <template slot-scope="scope">
+          <span v-if="scope.row.assignTime">{{scope.row.assignTime}}</span>
+          <span v-else>-</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop='eventAddress' label="事件地点" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='feedbackNumber' label="新反馈数" align='center'>
+        <template slot-scope="scope">
+          <span style="color: #FB796C;" v-if="scope.row.feedbackNumber > 0">{{scope.row.feedbackNumber}}</span>
+          <span style="color: #555555;" v-else>{{scope.row.feedbackNumber}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" align='center' width='200px'>
+        <template slot-scope="scope">
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click="skipLookEventDetail(scope)">查看</el-button>
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcDetail(scope)'>调度</el-button>
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcEnd(scope)'>结束</el-button>
         </template>
@@ -88,6 +103,7 @@
 <script>
 import {dictType} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
+import {ajaxCtx3} from '@/config/config.js';
 export default {
   data () {
     return {
@@ -99,56 +115,6 @@ export default {
         eventLevel: '全部等级',
         eventType: '全部类型'
       },
-      // ctcDataList: [{
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 3
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 0
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 4
-      // }, {
-      //   eventCode: '1111111111',
-      //   eventType: '自然灾害类',
-      //   eventLevel: 'Ⅰ级（特大）',
-      //   assignTime: '2018-2-13 19:10',
-      //   eventAddress: '长沙市芙蓉区远大二路208号12栋208',
-      //   number: 0
-      // }],
       eventLevelList: [],
       eventTypeList: [],
       ctcDataList: [],
@@ -158,7 +124,6 @@ export default {
   computed: {
   },
   mounted () {
-    // this.getEventStatus();
     this.getOneMonth();
     this.getEventLevel();
     this.getEventType();
@@ -166,12 +131,18 @@ export default {
   },
   methods: {
     skipLookEvent () { // 查看事件分布
+      window.location.href = ajaxCtx3;
+    },
+    skipLookEventDetail (scope) { // 查看事件详情分布
+      if (scope.row.eventId) {
+        window.location.href = ajaxCtx3 + '?' + scope.row.eventId;
+      }
     },
     skipCtcDetail (scope) { // 跳到调度指挥页面
-      this.$router.push({name: 'ctc-detail'});
+      this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});
     },
     skipCtcEnd (scope) { // 跳转到事件结束页面
-
+      this.$router.push({name: 'event-end', query: {eventId: scope.row.eventId, eventLevel: scope.row.eventLevel}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
@@ -200,22 +171,6 @@ export default {
         })
         .catch(() => {})
     },
-    // getEventStatus () { // 获取事件状态
-    //   this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
-    //     .then((res) => {
-    //       if (res) {
-    //         res.data.map((item) => {
-    //           if (item.dictContent === '处理中') {
-    //             console.log(item.dictId)
-    //             // this.selectForm.eventStatus = item.dictId;
-    //             // this.dictId = item.dictId;
-    //           }
-    //         })
-    //         // this.eventStatusList = res.data;
-    //       }
-    //     })
-    //     .catch(() => {})
-    // },
     getOneMonth () { // 设置默认一个月
       const end = new Date();
       const start = new Date();
@@ -298,6 +253,15 @@ export default {
     }
     .el-button+.el-button {
       margin-left: 2px !important;
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

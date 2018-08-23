@@ -16,7 +16,7 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://10.16.4.18:8080',
+    dev: 'http://10.16.3.40:8080',
     // dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
@@ -29,6 +29,10 @@ const oDomains = {
     dev: 'http://10.16.3.43:8080',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
+  },
+  // 查看事件分布地址
+  domain3: {
+    dev: 'http://10.16.4.37:8071'
   },
   // 文件/图片/CDN地址
   fileDomain: {
@@ -60,6 +64,7 @@ console.log('environment', sENV);
 // ajax default
 export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
+export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址
@@ -82,4 +87,11 @@ export const plateConfigData = {
     dataType: 1,
     limit: [5] // 0不限制  >0限制
   }
+};
+
+// 高德地图 溆浦县 adcode
+export const mapXupuxian = {
+  adcode: '431224',
+  name: '溆浦县',
+  center: [110.596015, 27.907662]
 };
