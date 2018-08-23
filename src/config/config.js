@@ -88,3 +88,10 @@ export const plateConfigData = {
     limit: [5] // 0不限制  >0限制
   }
 };
+
+// 高德地图 溆浦县 adcode
+export const mapXupuxian = {
+  adcode: '431224',
+  name: '溆浦县',
+  center: [110.596015, 27.907662]
+};
