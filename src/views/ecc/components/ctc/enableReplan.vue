@@ -118,7 +118,7 @@
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
     </div>
-    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px'>
+    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px' class="update-task">
       <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref="modifyTaskForm" :rules='rules'>
         <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
           <el-select @change='changeModifyDepartment' placeholder="请选择执行部门" style='width: 98%' v-model='modifyTaskForm.departmentId'>
@@ -143,6 +143,19 @@
         <el-button type="primary" @click="sureModifyTask('modifyTaskForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      class="close-dialog"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -151,40 +164,8 @@ export default {
     return {
       eventDetailObj: {},
       dialogFormVisible: false,
+      closeReturnVisiable: false,
       modifyIndex: '', // 要修改的任务信息索引
-      reservePlanList: [{
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }],
       taskList: [], // 预案详情中的任务列表
       departmentList: [], // 部门数据列表
       taskForm: {
@@ -214,16 +195,30 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.getEventDetail();
     this.getReplanDetail();
     this.getDepartmentList();
+  },
+  mounted () {
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.taskForm); // 将初始数据转成字符串
+    }, 1000);
   },
   methods: {
     selectMorePlan () { // 查看更多预案
       this.$router.push({name: 'replan-list'});
     },
-    back () {
+    back (form) {
+      const data = JSON.stringify(this.taskForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     getEventDetail () { // 获取事件详情
@@ -459,7 +454,7 @@ export default {
           .divide {
             width: 570px;
             height:1px;
-            margin: 2% 0 2% 55px;
+            margin: 20px 0 10px 55px;
             background: #EAEAEA;
           }
           .enable-replan-list {
@@ -500,13 +495,6 @@ export default {
                   display: block;
                 }
               }
-            }
-            .modify-enable-form {
-              // display: none;
-              width: 580px;
-              margin-left: 50px;
-              padding-top: 1%;
-              border: 1px solid #0785FD;
             }
           }
           .enable-replan-idea-header{
@@ -582,6 +570,30 @@ export default {
     .operation-btn-enable-replan-detail {
       margin-top: 1%;
       margin-bottom: 1%;
+    }
+    .close-dialog {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        color: #555555;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        text-align: center !important;
+      }
+      .sureBtn {
+        background:#0785FD;
+        height:35px;
+        color: #fff;
+        line-height: 10px;
+      }
+      .noSureBtn {
+        border-color:#e5e5e5;
+        height:35px;
+        line-height: 10px;
+        color:#666666;
+      }
     }
   }
 </style>

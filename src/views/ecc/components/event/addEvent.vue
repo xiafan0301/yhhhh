@@ -17,7 +17,7 @@
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
-            <div class='map-ecc' ><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
+            <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
@@ -82,6 +82,18 @@
       </div>
     </div>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -93,6 +105,7 @@ export default {
   data () {
     return {
       open: false,
+      closeReturnVisiable: false,
       oConfig: {},
       isDefaultChecked: true,
       dieNumber: '', // 死亡人数
@@ -134,15 +147,8 @@ export default {
       eventLevelList: [] // 事件等级
     }
   },
-  watch: {
-    addForm: {
-      handler: function (newVal) {
-        console.log(newVal);
-      },
-      deep: true
-    }
-  },
   mounted () {
+    this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串
     this.getEventType();
     this.getEventLevel();
   },
@@ -196,6 +202,15 @@ export default {
       }
     },
     back (form) {
+      const data = JSON.stringify(this.addForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     submitForm (form) { // 保存数据
@@ -338,6 +353,28 @@ export default {
           padding-left: 5px;
         }
       }
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

@@ -218,5 +218,8 @@ export default {
     .el-button+.el-button {
       margin-left: 2px !important;
     }
+    .el-pagination {
+      text-align: center;
+    }
   }
 </style>

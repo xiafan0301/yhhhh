@@ -76,7 +76,7 @@
           <span style="color: #555555;" v-else>{{scope.row.feedbackNumber}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align='center'>
+      <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click="skipLookEventDetail(scope)">查看</el-button>
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcDetail(scope)'>调度</el-button>
@@ -259,6 +259,9 @@ export default {
     }
     /deep/ .hover-row>td {
       background-color: #E6F7FF !important;
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

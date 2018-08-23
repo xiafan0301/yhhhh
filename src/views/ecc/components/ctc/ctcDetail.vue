@@ -175,7 +175,7 @@
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
     </div>
-    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px'>
+    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px' class="update-task">
       <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref="modifyTaskForm" :rules='rules'>
         <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
           <el-select @change='changeModifyDepartment' placeholder="请选择执行部门" style='width: 98%' v-model='modifyTaskForm.departmentId'>
@@ -200,6 +200,19 @@
         <el-button type="primary" @click="sureModifyTask('modifyTaskForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      class="close-dialog"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -208,6 +221,7 @@ export default {
   data () {
     return {
       dialogFormVisible: false, // 是否显示要修改的表单
+      closeReturnVisiable: false,
       modifyIndex: '', // 要修改的任务索引
       eventDetailObj: {},
       reservePlanList: [],
@@ -240,7 +254,7 @@ export default {
       departmentList: [] // 部门列表
     }
   },
-  mounted () {
+  created () {
     if (this.$route.query.eventId) {
       this.getEventDetail();
     } else if (this.$route.query.addForm) {
@@ -251,11 +265,25 @@ export default {
     this.getDepartmentList();
     this.getReplanList();
   },
+  mounted () {
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.taskForm); // 将初始数据转成字符串
+    }, 1000);
+  },
   methods: {
     selectMorePlan () { // 查看更多预案
       this.$router.push({name: 'replan-list', query: {eventId: this.$route.query.eventId}});
     },
-    back () {
+    back (form) {
+      const data = JSON.stringify(this.taskForm);
+      if (this.dataStr === data && this.taskList.length === 0) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     cancelForm (form) { // 取消填写的form
@@ -324,7 +352,7 @@ export default {
         .catch(() => {});
     },
     selectReplanDetail (scope) { // 查看预案
-      console.log(scope.row.planId)
+      // console.log(scope.row.planId)
       this.$router.push({name: 'replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
@@ -700,18 +728,44 @@ export default {
       margin-top: 1%;
       margin-bottom: 1%;
     }
-    /deep/ .el-dialog__header {
-      background: #F0F0F0 !important;
-      text-align: left !important;
-      font-weight: bold;
-      color: #555555;
-      font-size: 16px;
+    .update-task {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        font-weight: bold;
+        color: #555555;
+        font-size: 16px;
+      }
+      /deep/ .el-dialog__footer {
+        padding: 0 20px 20px !important;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        padding: 10px 25px 0 !important;
+      }
     }
-    /deep/ .el-dialog__footer {
-      padding: 0 20px 20px !important;
-    }
-    /deep/  .el-dialog--center .el-dialog__body {
-      padding: 10px 25px 0 !important;
+    .close-dialog {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        color: #555555;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        text-align: center !important;
+      }
+      .sureBtn {
+        background:#0785FD;
+        height:35px;
+        color: #fff;
+        line-height: 10px;
+      }
+      .noSureBtn {
+        border-color:#e5e5e5;
+        height:35px;
+        line-height: 10px;
+        color:#666666;
+      }
     }
   }
 </style>

@@ -296,11 +296,13 @@
                       </tr>
                       <tr>
                         <th width='100px'>子项名称</th>
-                        <th>值</th>
-                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
-                        <th width='100px'>浮层并列项名称</th>
-                        <th>值</th>
+                        <!-- <th>值</th> -->
                         <th>单位</th>
+                        <th style='border-right: 1px solid #DDDDDD'>值</th>
+                        <th width='200px'>浮层并列项名称</th>
+                        <!-- <th>值</th> -->
+                        <th>单位</th>
+                        <th>值</th>
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -310,20 +312,24 @@
                         <template v-if='list.isMerge === true'>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{items.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
                         </template>
                         <template v-else>
                           <td class='cannot-modify'>{{items.itemName}}</td>
                           <td class='cannot-modify'>{{list.contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td> -->
                           <td class='cannot-modify'>{{list.valueUnit}}</td>
+                           <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td> -->
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
                         </template>
                       </tr>
                     </tbody>
@@ -499,8 +505,9 @@
                     <tr>
                       <th>主项</th>
                       <th>子项</th>
-                      <th>值</th>
                       <th>单位</th>
+                      <th>值</th>
+                      <!-- <th>单位</th> -->
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -511,6 +518,7 @@
                         <template v-if='value.isMerge === false'>
                           <td class='cannot-modify'>{{item.itemName}}</td>
                           <td class='cannot-modify'>{{value.contentName}}</td>
+                          <td class='cannot-modify'>{{value.valueUnit}}</td>
                           <td>
                             <input
                               type="text"
@@ -519,13 +527,14 @@
                               onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')"
                             >
                           </td>
-                          <td class='cannot-modify'>{{value.valueUnit}}</td>
+                          <!-- <td class='cannot-modify'>{{value.valueUnit}}</td> -->
                         </template>
                         <template v-else>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{value.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td> -->
                         </template>
                       </tr>
                     </tbody>

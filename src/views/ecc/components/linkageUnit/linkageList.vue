@@ -1,11 +1,10 @@
 <template>
-  <div class="event-data-list">
+  <div class="linkage-data-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>事件管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>事件管理</span></el-breadcrumb-item>
+        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>调度指挥</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-event' @click='skipAddEvent'>添加事件</el-button>
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
@@ -19,11 +18,11 @@
             style="width: 100%;"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item style="width: 110px;" prop='eventStatus'>
-          <el-select placeholder="事件状态" style="width: 100%;" v-model='selectForm.eventStatus'>
-            <el-option value='全部状态'></el-option>
+        <el-form-item style="width: 130px;" prop='eventType'>
+          <el-select  placeholder="事件类型" style="width: 100%;" v-model='selectForm.eventType'>
+            <el-option value='全部类型'></el-option>
             <el-option
-              v-for="item in eventStatusList"
+              v-for="item in eventTypeList"
               :key="item.dictId"
               :label="item.dictContent"
               :value="item.dictId"
@@ -41,19 +40,16 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 130px;" prop='eventSource'>
-          <el-select  placeholder="事件来源" style="width: 100%;" v-model='selectForm.eventSource'>
-            <el-option value='全部来源'></el-option>
+        <el-form-item style="width: 110px;" prop='eventStatus'>
+          <el-select placeholder="事件状态" style="width: 100%;" v-model='selectForm.eventStatus'>
+            <el-option value='全部状态'></el-option>
             <el-option
-              v-for="item in eventSourceList"
+              v-for="item in eventStatusList"
               :key="item.dictId"
               :label="item.dictContent"
               :value="item.dictId"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item style="width: 220px;" prop='phoneOrNumber'>
-          <el-input placeholder='请输入提交者手机号或事件编号' style='width:110%' v-model='selectForm.phoneOrNumber'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn btnClass' @click='selectEventList'>查询</el-button>
@@ -63,38 +59,25 @@
     </div>
     <el-table style="width: 100%" :data='eventDataList' highlight-current-row class='event-table'>
       <el-table-column fixed label="事件编号" prop='eventCode' align='center'></el-table-column>
-      <el-table-column label="报案人" prop='reporterPhone' align='center'>
+      <el-table-column label="事件类型" prop='eventType' align='center'>
         <template slot-scope="scope">
-          <span v-if='scope.row.reporterPhone'>{{scope.row.reporterPhone}}</span>
+          <span v-if='scope.row.eventType'>{{scope.row.eventType}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="角色" prop='reporterRole' align='center'>
+      <el-table-column label="事件等级" prop='eventLevel' align='center'>
         <template slot-scope="scope">
-          <span v-if='scope.row.reporterRole'>{{scope.row.reporterRole}}</span>
+          <span v-if='scope.row.eventLevel'>{{scope.row.eventLevel}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="来源" prop='eventSourceName' align='center'></el-table-column>
-      <el-table-column label="上报时间" prop='reportTime' align='center'></el-table-column>
-      <el-table-column label="事件地点" prop='eventAddress' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="事件等级" prop='eventLevelName' align='center'>
+      <el-table-column label="派单时间" prop='assignTime' align='center'></el-table-column>
+      <el-table-column label="任务名称" prop='taskName' align='center'></el-table-column>
+      <el-table-column label="状态" prop='eventStatus' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="是否查看" prop='taskStatus' align='center'>
         <template slot-scope="scope">
-          <span v-if='scope.row.eventLevelName'>{{scope.row.eventLevelName}}</span>
-          <span v-else>-</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="事件状态" prop='eventStatusName' align='center'>
-        <template slot-scope="scope">
-          <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '未处理'">未处理</span>
-          <span style="color: #0785FD;" v-else-if="scope.row.eventStatusName == '处理中'">处理中</span>
-          <span style="color: #666666;" v-else>已结束</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="是否查看" prop='acceptFlag' align='center'>
-        <template slot-scope="scope">
-          <span style="color: #555555;" v-if="scope.row.acceptFlag == true">是</span>
-          <span style="color: #FB796C;" v-else>否</span>
+          <span style="color: #555555;" v-if="scope.row.taskStatus == true">已查看</span>
+          <span style="color: #FB796C;" v-else>未查看</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
@@ -127,23 +110,41 @@ export default {
     return {
       selectForm: {
         reportTime: [], // 时间
-        eventStatus: '38a5dfa6-97b5-11e8-b784-d75706a2b83f', // 事件状态
+        eventStatus: '4037156e-97b5-11e8-b784-93a0bc9b77e5', // 事件状态
         eventLevel: '全部等级', // 事件等级
-        eventSource: '全部来源', // 事件来源
-        phoneOrNumber: '' // 事件编号或提交人手机号
+        eventType: '全部类型' // 事件类型
       },
       eventStatusList: [],
       dictId: '', // 未处理的id
       eventLevelList: [],
-      eventSourceList: [],
-      eventDataList: [],
+      eventTypeList: [],
+      eventDataList: [
+        {
+          eventCode: '1293791283781293729183782',
+          eventType: '自然灾害类',
+          eventLevel: 'I级(特大)',
+          assignTime: '2018-4-12',
+          taskName: '救火',
+          eventStatus: '处理中',
+          taskStatus: true
+        },
+        {
+          eventCode: '1293791283781293729183782',
+          eventType: '自然灾害类',
+          eventLevel: 'I级(特大)',
+          assignTime: '2018-4-12',
+          taskName: '救火',
+          eventStatus: '已结束',
+          taskStatus: false
+        }
+      ],
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
   mounted () {
     this.getEventStatus();
     this.getEventLevel();
-    this.getEventSource();
+    this.getEventType();
     this.getOneMonth();
     this.getEventList();
   },
@@ -168,12 +169,10 @@ export default {
       this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
         .then((res) => {
           if (res) {
-            if (scope.row.eventStatusName === '未处理') {
-              this.$router.push({name: 'event-untreated', query: {eventId: scope.row.eventId}});
-            } else if (scope.row.eventStatusName === '已结束') {
-              this.$router.push({name: 'event-detail-end', query: {eventId: scope.row.eventId}});
+            if (scope.row.eventStatusName === '已结束') {
+              this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
             } else {
-              this.$router.push({name: 'event-detail-reat', query: {eventId: scope.row.eventId}});
+              this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId}});
             }
           }
         })
@@ -183,7 +182,11 @@ export default {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
         .then((res) => {
           if (res) {
-            this.eventStatusList = res.data;
+            res.data.map((item) => {
+              if (item.dictContent === '处理中') {
+                this.eventStatusList.push(item);
+              }
+            });
           }
         })
         .catch(() => {})
@@ -197,26 +200,26 @@ export default {
         })
         .catch(() => {})
     },
-    getEventSource () { // 获取事件来源
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventSourceId)
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
         .then((res) => {
           if (res) {
-            this.eventSourceList = res.data;
+            this.eventTypeList = res.data;
           }
         })
         .catch(() => {})
     },
     getEventList () { // 分页获取事件
-      let eventLevel, eventSource, eventStatus;
+      let eventLevel, eventType, eventStatus;
       if (this.selectForm.eventLevel === '全部等级') {
         eventLevel = '';
       } else {
         eventLevel = this.selectForm.eventLevel;
       }
-      if (this.selectForm.eventSource === '全部来源') {
-        eventSource = '';
+      if (this.selectForm.eventType === '全部类型') {
+        eventType = '';
       } else {
-        eventSource = this.selectForm.eventSource;
+        eventType = this.selectForm.eventType;
       }
       if (this.selectForm.eventStatus === '全部状态') {
         eventStatus = '';
@@ -224,16 +227,14 @@ export default {
         eventStatus = this.selectForm.eventStatus;
       }
       const params = {
-        'where.eventFlag': true,
-        'where.reportTimeStart': this.selectForm.reportTime[0],
-        'where.reportTimeEnd': this.selectForm.reportTime[1],
+        'where.startTime': this.selectForm.reportTime[0],
+        'where.endTime': this.selectForm.reportTime[1],
         'where.eventStatus': eventStatus,
         'where.eventLevel': eventLevel,
-        'where.eventSource': eventSource,
-        'where.otherQuery': this.selectForm.phoneOrNumber,
+        'where.eventType': eventType,
         pageNum: this.pagination.pageNum
       }
-      this.axios.get('A2/eventServices/events/page', {params})
+      this.axios.get('A2/taskServices/tasks', {params})
         .then((res) => {
           if (res && res.data.list) {
             this.eventDataList = res.data.list;
@@ -257,14 +258,13 @@ export default {
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
       this.getOneMonth();
-      // this.selectForm.eventStatus = this.dictId;
       this.getEventList();
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-  .event-data-list {
+  .linkage-data-list {
     padding: 20px;
     .header {
       margin-bottom: 10px;
@@ -304,9 +304,6 @@ export default {
     }
     .el-button+.el-button {
       margin-left: 2px !important;
-    }
-    .el-pagination {
-      text-align: center;
     }
   }
 </style>

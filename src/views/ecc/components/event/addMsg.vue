@@ -15,7 +15,7 @@
           <el-form-item label="事发地点" label-width='150px' class="address" prop='eventAddress'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='operationForm.eventAddress'></el-input>
             <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span> -->
-            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
+            <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
@@ -74,6 +74,18 @@
       </div>
     </div>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -86,6 +98,7 @@ export default {
       status: '', // 添加或修改消息
       open: false,
       oConfig: {},
+      closeReturnVisiable: false,
       operationForm: {
         eventSource: 'b663a0c6-97b1-11e8-b784-e756beb98040',
         reportTime: '',
@@ -117,7 +130,7 @@ export default {
       distanceList: [] // 距离列表
     }
   },
-  mounted () {
+  created () {
     if (this.$route.query.status === 'add') {
       this.status = '添加消息';
     } else if (this.$route.query.status === 'modify') {
@@ -126,8 +139,22 @@ export default {
     this.getDistance();
     this.getAppEventDetail();
   },
+  mounted () {
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.operationForm); // 将初始数据转成字符串
+    }, 1000);
+  },
   methods: {
     back () {
+      const data = JSON.stringify(this.operationForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     showMap () {
@@ -140,7 +167,6 @@ export default {
         }
       }
       this.open = !this.open;
-      console.log(this.open)
     },
     mapPointSubmit (val, address) {
       if (val) {
@@ -247,7 +273,6 @@ export default {
                   this.radiusNumber = res.data.radius;
                 }
               }
-              console.log(res);
             }
           })
           .catch(() => {})
@@ -348,6 +373,28 @@ export default {
           padding-left: 5px;
         }
       }
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>
