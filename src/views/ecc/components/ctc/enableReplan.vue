@@ -74,35 +74,10 @@
                   <p>任务内容： {{item.taskContent}}</p>
                 </div>
                 <div class='enable-operation'>
-                  <span @click='modifyDepartment(item.taskId)'>修改</span>
+                  <span @click='modifyDepartment(index)'>修改</span>
                   /
                   <span @click='deleteDepartment(index)'>删除</span>
                 </div>
-              </div>
-              <div class='modify-enable-form'>
-                <el-form class='enable-replan-idea-form' :model='modifyTaskForm' :rules='rules' ref='modifyTaskForm'>
-                  <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
-                    <el-select  placeholder="请选择执行部门" style='width: 480px' v-model='modifyTaskForm.departmentId'>
-                      <el-option
-                        v-for="item in departmentList"
-                        :key="item.departmentId"
-                        :label="item.departmentName"
-                        :value="item.departmentId"
-                      >
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="任务名称" label-width='80px' prop='taskName'>
-                    <el-input type="text" placeholder='请输入任务名称' style='width: 480px' v-model='modifyTaskForm.taskName'></el-input>
-                  </el-form-item>
-                  <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
-                    <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='modifyTaskForm.taskContent'></el-input>
-                  </el-form-item>
-                  <el-form-item label-width='80px'>
-                    <el-button style='background: #0785FD;color:#fff'>确定</el-button>
-                    <el-button>取消</el-button>
-                  </el-form-item>
-                </el-form>
               </div>
             </div>
             <div v-show='taskList.length > 0' class='divide'></div>
@@ -143,6 +118,44 @@
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
     </div>
+    <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px' class="update-task">
+      <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref="modifyTaskForm" :rules='rules'>
+        <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+          <el-select @change='changeModifyDepartment' placeholder="请选择执行部门" style='width: 98%' v-model='modifyTaskForm.departmentId'>
+            <el-option
+              v-for="item in departmentList"
+              :key="item.departmentId"
+              :label="item.departmentName"
+              :value="item.departmentId"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+          <el-input type="text" placeholder='请输入任务名称' style='width: 98%' v-model='modifyTaskForm.taskName'></el-input>
+        </el-form-item>
+        <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
+          <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 98%' v-model='modifyTaskForm.taskContent'></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="sureCancelModify('modifyTaskForm')">取 消</el-button>
+        <el-button type="primary" @click="sureModifyTask('modifyTaskForm')">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      class="close-dialog"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -150,43 +163,12 @@ export default {
   data () {
     return {
       eventDetailObj: {},
-      reservePlanList: [{
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }],
+      dialogFormVisible: false,
+      closeReturnVisiable: false,
+      modifyIndex: '', // 要修改的任务信息索引
       taskList: [], // 预案详情中的任务列表
       departmentList: [], // 部门数据列表
       taskForm: {
-        eventId: '',
         departmentName: '',
         departmentId: '',
         taskName: '',
@@ -213,16 +195,30 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.getEventDetail();
     this.getReplanDetail();
     this.getDepartmentList();
+  },
+  mounted () {
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.taskForm); // 将初始数据转成字符串
+    }, 1000);
   },
   methods: {
     selectMorePlan () { // 查看更多预案
       this.$router.push({name: 'replan-list'});
     },
-    back () {
+    back (form) {
+      const data = JSON.stringify(this.taskForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     getEventDetail () { // 获取事件详情
@@ -261,11 +257,33 @@ export default {
     selectReplanDetail () { // 查看预案详情
       this.$router.push({name: 'replan-detail'});
     },
-    modifyDepartment (id) { // 修改部门信息
-
+    sureCancelModify (form) { // 取消修改任务
+      this.$refs[form].resetFields();
+      this.dialogFormVisible = false;
     },
-    deleteDepartment (index) { // 删除部门信息
-      console.log(index)
+    sureModifyTask (form) { // 确定修改任务
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          if (this.modifyIndex !== '') {
+            const index = this.modifyIndex;
+            this.taskList[index].departmentId = this.modifyTaskForm.departmentId;
+            this.taskList[index].departmentName = this.modifyTaskForm.departmentName;
+            this.taskList[index].taskName = this.modifyTaskForm.taskName;
+            this.taskList[index].taskContent = this.modifyTaskForm.taskContent;
+            this.dialogFormVisible = false;
+          }
+        }
+      });
+    },
+    modifyDepartment (index) { // 修改任务
+      this.dialogFormVisible = true;
+      this.modifyIndex = index;
+      this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
+      this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
+      this.modifyTaskForm.taskName = this.taskList[index].taskName;
+      this.modifyTaskForm.taskContent = this.taskList[index].taskContent;
+    },
+    deleteDepartment (index) { // 删除任务信息
       this.taskList.splice(index, 1);
     },
     addTask (form) { // 添加任务
@@ -293,6 +311,13 @@ export default {
       this.departmentList.map((item) => {
         if (item.departmentId === value) {
           this.taskForm.departmentName = item.departmentName;
+        }
+      });
+    },
+    changeModifyDepartment (value) {
+      this.departmentList.map((item) => {
+        if (item.departmentId === value) {
+          this.modifyTaskForm.departmentName = item.departmentName;
         }
       });
     },
@@ -429,7 +454,7 @@ export default {
           .divide {
             width: 570px;
             height:1px;
-            margin: 2% 0 2% 55px;
+            margin: 20px 0 10px 55px;
             background: #EAEAEA;
           }
           .enable-replan-list {
@@ -470,13 +495,6 @@ export default {
                   display: block;
                 }
               }
-            }
-            .modify-enable-form {
-              // display: none;
-              width: 580px;
-              margin-left: 50px;
-              padding-top: 1%;
-              border: 1px solid #0785FD;
             }
           }
           .enable-replan-idea-header{
@@ -552,6 +570,30 @@ export default {
     .operation-btn-enable-replan-detail {
       margin-top: 1%;
       margin-bottom: 1%;
+    }
+    .close-dialog {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        color: #555555;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        text-align: center !important;
+      }
+      .sureBtn {
+        background:#0785FD;
+        height:35px;
+        color: #fff;
+        line-height: 10px;
+      }
+      .noSureBtn {
+        border-color:#e5e5e5;
+        height:35px;
+        line-height: 10px;
+        color:#666666;
+      }
     }
   }
 </style>

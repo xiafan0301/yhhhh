@@ -297,11 +297,13 @@
                       </tr>
                       <tr>
                         <th>子项名称</th>
-                        <th>值</th>
-                        <th style='border-right:1px solid #ddd'>单位</th>
-                        <th>浮层并列项名称</th>
-                        <th>值</th>
+                        <!-- <th>值</th> -->
                         <th>单位</th>
+                        <th style='border-right:1px solid #ddd'>值</th>
+                        <th>浮层并列项名称</th>
+                        <th>单位</th>
+                        <th>值</th>
+                        <!-- <th>单位</th> -->
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -310,20 +312,24 @@
                         <template v-if='list.sumFlag === true'>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{items.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
                         </template>
                         <template v-else>
                           <td class='cannot-modify'>{{items.itemName}}</td>
                           <td class='cannot-modify'>{{list.contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" @input='changeThreeObj' v-model="numberObjThree[index + '_' + idx]" placeholder='请填写' /></td>
                           <td class='cannot-modify'>{{list.valueUnit}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" @input='changeThreeObj' v-model="numberObjThree[index + '_' + idx]" placeholder='请填写' /></td>
+                          <!-- <td class='cannot-modify'>{{list.valueUnit}}</td> -->
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" @input='changeThreeLayerObj' v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写' /></td>
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" @input='changeThreeLayerObj' v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写' /></td>
+                          <!-- <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td> -->
                         </template>
                       </tr>
                     </tbody>
@@ -498,8 +504,9 @@
                     <tr>
                       <th>主项</th>
                       <th style="width: 150px">子项</th>
-                      <th>值</th>
                       <th>单位</th>
+                      <th>值</th>
+                      <!-- <th>单位</th> -->
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -508,6 +515,7 @@
                         <template v-if='value.sumFlag === false'>
                           <td class='cannot-modify'>{{item.itemName}}</td>
                           <td class='cannot-modify'>{{value.contentName}}</td>
+                          <td class='cannot-modify'>{{value.valueUnit}}</td>
                           <td>
                             <input
                               type="text"
@@ -517,13 +525,14 @@
                               onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')"
                             >
                           </td>
-                          <td class='cannot-modify'>{{value.valueUnit}}</td>
+                          <!-- <td class='cannot-modify'>{{value.valueUnit}}</td> -->
                         </template>
                         <template v-else>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{value.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td> -->
                         </template>
                       </tr>
                     </tbody>
@@ -910,7 +919,7 @@ export default {
             });
           }
         });
-        if (this.$store.state.plateInfo.configCode === 'plate015' && this.$store.state.plateInfo.configCode === 'plate041') {
+        if (this.$store.state.plateInfo.configCode === 'plate015' && this.$store.state.plateInfo.configCode === 'plate041' && this.$store.state.plateInfo.configCode === 'plate016') {
           if (result.length > 0) {
             this.childDataListTwo.map((value) => {
               if (value.graphicFieldFlag === true) {

@@ -105,5 +105,11 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   url('./../font/iconfont.svg#iconfont') format('svg');
   /* iOS 4.1- */
 }
+.el-form-item.is-success .el-input__inner, .el-form-item.is-success .el-input__inner:focus, .el-form-item.is-success .el-textarea__inner, .el-form-item.is-success .el-textarea__inner:focus {
+  border-color: #0785FD;
+}
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+  background-color: #0785FD;
+}
 
 

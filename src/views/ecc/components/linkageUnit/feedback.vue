@@ -3,71 +3,42 @@
     <div class='event-end-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>事件详情</span></el-breadcrumb-item>
+        <el-breadcrumb-item>事件详情</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>反馈情况</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='event-end-body'>
       <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules'>
-        <el-form-item label="请确认事件等级" label-width='150px' prop='eventLevel'>
-          <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='endForm.eventLevel'>
-            <el-option
-              v-for="item in eventLevelList"
-              :key="item.dictId"
-              :label="item.dictContent"
-              :value="item.dictId"
-            >
-            </el-option>
-          </el-select>
+        <el-form-item label="请输入事件反馈" label-width='150px' prop='eventSummary'>
+          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...'></el-input>
         </el-form-item>
-        <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary'>
-          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
+        <el-form-item style='margin-left: 150px'>
+          <el-upload
+            action="http://10.16.4.50:8001/api/network/upload/new"
+            list-type="picture-card"
+            accept=".png,.jpg,.bmp"
+            :before-upload='handleBeforeUpload'
+            :on-remove="handleRemove"
+            :on-success='handleSuccess'
+            :limit='9'
+          >
+            <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+            <span class='add-img-text'>添加图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="任务是否完成" label-width='150px' prop='casualties'>
+          <el-radio-group style='width: 330px' v-model='addForm.casualties'>
+            <el-radio label="是"></el-radio>
+            <el-radio label="否" style='margin-left:22%'></el-radio>
+          </el-radio-group>
+          <span>任务全部完成后则不能再反馈信息</span>
         </el-form-item>
       </el-form>
-      <div class='show-img-div'>
-        <el-upload
-          action="http://10.16.4.50:8001/api/network/upload/new"
-          list-type='picture-card'
-          accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
-          :before-upload='handleBeforeUpload'
-          :on-success="handleSuccess"
-          :show-file-list='false'
-        >
-          <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-          <span class='add-img-text'>上传附件</span>
-        </el-upload>
-        <div class='img-list' v-for="(item, index) in imgList" :key="'item'+index">
-          <img
-            :src='item.newFileName'
-          />
-          <div class='delete-img'>
-            <i class='el-icon-delete' @click="deleteImg(item, index)"></i>
-          </div>
-        </div>
-      </div>
-      <div class='show-file-div'>
-        <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
-          <img src='../../../../assets/img/temp/file.png' />
-          <span>{{item.fileName}}</span>
-          <i class='el-icon-circle-close' @click="deleteFile(item, index)"></i>
-        </div>
-      </div>
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' @click="endEvent('endForm')">确定</el-button>
     </div>
-     <el-dialog
-      title="操作提示"
-      :visible.sync="closeReturnVisiable"
-      width="480px"
-      height='285px'
-      center>
-      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
-        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -75,49 +46,28 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      closeReturnVisiable: false,
       endForm: {
         eventId: '',
-        eventLevel: '', // 事件等级
         eventSummary: '', // 事件总结
         attachmentList: [] // 附件列表
       },
       rules: {
-        eventLevel: [
-          { required: true, message: '请选择事件等级', trigger: 'blur' }
-        ],
         eventSummary: [
-          { max: 10000, message: '最多可以输入10000个字' }
+          { max: 10000, message: '最多可以输入10000个字' },
+          { required: true, message: '请输入事件反馈情况', trigger: 'blur' }
         ]
-      },
-      eventLevelList: [], // 事件等级列表
-      fileList: [], // 要上传的文件列表
-      imgList: [] // 图片列表
+      }
     }
   },
-  created () {
+  mounted () {
     this.endForm.eventId = this.$route.query.eventId;
     if (this.$route.query.eventLevel) {
       this.endForm.eventLevel = this.$route.query.eventLevel;
     }
     this.getEventLevel();
   },
-  mounted () {
-    setTimeout(() => {
-      this.dataStr = JSON.stringify(this.endForm); // 将初始数据转成字符串
-    }, 1000);
-  },
   methods: {
-    back (form) {
-      const data = JSON.stringify(this.endForm);
-      if (this.dataStr === data) {
-        this.$router.back(-1);
-      } else {
-        this.closeReturnVisiable = true;
-      }
-    },
-    sureBack () {
-      this.closeReturnVisiable = false;
+    back () {
       this.$router.back(-1);
     },
     deleteImg (obj, index) { // 删除图片
@@ -184,6 +134,7 @@ export default {
         .catch(() => {})
     },
     endEvent (form) { // 结束事件
+      console.log(this.endForm)
       const eventId = this.$route.query.eventId;
       this.$refs[form].validate((valid) => {
         if (valid) {
@@ -193,7 +144,7 @@ export default {
           this.axios.put('A2/eventServices/events/finish/' + eventId, data.eventFinishDto)
             .then((res) => {
               if (res) {
-                // console.log(res)
+                console.log(res)
                 this.$message({
                   message: '宣布事件结束成功',
                   type: 'success'
@@ -316,28 +267,6 @@ export default {
     .el-upload-list--picture-card .el-upload-list__item {
       width: 100px !important;
       height: 100px !important;
-    }
-    /deep/ .el-dialog__header {
-      background: #F0F0F0 !important;
-      text-align: left !important;
-      color: #555555;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    /deep/  .el-dialog--center .el-dialog__body {
-      text-align: center !important;
-    }
-    .sureBtn {
-      background:#0785FD;
-      height:35px;
-      color: #fff;
-      line-height: 10px;
-    }
-    .noSureBtn {
-      border-color:#e5e5e5;
-      height:35px;
-      line-height: 10px;
-      color:#666666;
     }
   }
 </style>

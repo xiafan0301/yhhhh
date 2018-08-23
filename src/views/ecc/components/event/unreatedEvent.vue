@@ -17,7 +17,11 @@
       <div class='untreated-form'>
         <el-form class='untreated-form-content' :model='detailForm' ref='detailForm' :rules='rules'>
           <el-form-item label="上报人手机号" label-width='150px'>
-            <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{detailForm.reporterPhone}}</span>
+            <div class="phone-number">
+              <span style='color:#333333; font-size: 13px'>{{detailForm.reporterPhone}}</span>
+              <img src="../../../../assets/img/temp/voice.png" />
+              <img src="../../../../assets/img/temp/video.png" />
+            </div>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px'>
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
@@ -87,7 +91,7 @@
       </template>
       <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
     </div>
-    <el-dialog title="操作提示" :visible.sync="dialogFormVisible" center width='30%'>
+    <el-dialog title="操作提示" :visible.sync="dialogFormVisible" center width='30%' class="close-reason-dialog">
       <p class='close-reason-p'>请选择关闭事件的原因:</p>
       <el-form :model='closeForm' :rules='closeRules' ref='closeForm'>
         <el-form-item prop='closeReason'>
@@ -117,6 +121,19 @@
       </div>
     </el-dialog>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      width="480px"
+      height='285px'
+      class="close-tip"
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -129,6 +146,7 @@ export default {
       open: false,
       oConfig: {},
       dialogFormVisible: false,
+      closeReturnVisiable: false,
       eventDetail: {}, // 事件详情
       detailForm: { // 详情表单
         eventId: '',
@@ -176,14 +194,28 @@ export default {
       }
     }
   },
-  mounted () {
+  created () {
     this.getEventDetail();
     this.getEventType();
     this.getEventLevel();
     this.getCloseReason();
   },
+  mounted () {
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.detailForm); // 将初始数据转成字符串
+    }, 1000);
+  },
   methods: {
-    back () {
+    back (form) {
+      const data = JSON.stringify(this.detailForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     showMap () {
@@ -198,7 +230,6 @@ export default {
       this.open = !this.open;
     },
     mapPointSubmit (val, address) {
-      console.log('接收到的经纬度为：', val);
       if (val) {
         const str = val.split(',');
         this.detailForm.longitude = Number(str[0]);
@@ -217,7 +248,6 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res) {
-              console.log(res.data)
               this.attachmentList = res.data.attachmentList;
               this.detailForm.eventId = eventId;
               this.detailForm.eventCode = res.data.eventCode;
@@ -394,6 +424,18 @@ export default {
           .el-form-item {
             margin-bottom: 15px;
           }
+          .phone-number {
+            display: flex;
+            span {
+              margin-right: 20px;
+            }
+            img {
+              width: 34px;
+              height: 34px;
+              margin-right: 10px;
+              cursor: pointer;
+            }
+          }
         }
       }
     }
@@ -408,32 +450,35 @@ export default {
       border-radius: 6px;
       border: 1px solid #EAEAEA;
     }
-    /deep/ .el-dialog__header {
-      background: #F0F0F0 !important;
-      text-align: left !important;
-      color: #555555;
-      font-size: 16px;
-    }
-    /deep/ .el-dialog__footer {
-      padding: 0 20px 20px !important;
-    }
-    /deep/  .el-dialog--center .el-dialog__body {
-      padding: 10px 25px 0 !important;
-    }
-    .sureBtn {
-      background:#0785FD;
-      height:35px;
-      color: #fff;
-      line-height: 10px;
-    }
-    .noSureBtn {
-      border-color:#e5e5e5;
-      height:35px;
-      line-height: 10px;
-      color:#666666;
-    }
-    .close-reason-p {
-      margin-bottom: 10px;
+    .close-reason-dialog {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        color: #555555;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      /deep/ .el-dialog__footer {
+        padding: 0 20px 20px !important;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        padding: 10px 25px 0 !important;
+      }
+      .sureBtn {
+        background:#0785FD;
+        height:35px;
+        color: #fff;
+        line-height: 10px;
+      }
+      .noSureBtn {
+        border-color:#e5e5e5;
+        height:35px;
+        line-height: 10px;
+        color:#666666;
+      }
+      .close-reason-p {
+        margin-bottom: 10px;
+      }
     }
     .address /deep/ .el-form-item__content {
       display: flex;
@@ -442,6 +487,30 @@ export default {
           padding-top: 5px;
           padding-left: 5px;
         }
+      }
+    }
+    .close-tip {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        color: #555555;
+        font-weight: bold;
+        font-size: 16px;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        text-align: center !important;
+      }
+      .sureBtn {
+        background:#0785FD;
+        height:35px;
+        color: #fff;
+        line-height: 10px;
+      }
+      .noSureBtn {
+        border-color:#e5e5e5;
+        height:35px;
+        line-height: 10px;
+        color:#666666;
       }
     }
   }

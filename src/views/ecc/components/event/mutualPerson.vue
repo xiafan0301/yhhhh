@@ -156,7 +156,6 @@ export default {
       this.selectForm.reportTime.push(endDate);
     },
     getAppEventList () {
-      console.log(this.selectForm)
       let eventStatus;
       if (this.selectForm.eventStatus === '全部状态') {
         eventStatus = '';
@@ -265,6 +264,7 @@ export default {
       background: #F0F0F0 !important;
       text-align: left !important;
       color: #555555;
+      font-weight: bold;
       font-size: 16px;
     }
     /deep/  .el-dialog--center .el-dialog__body {
@@ -284,6 +284,9 @@ export default {
     }
     .el-button+.el-button {
       margin-left: 2px !important;
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

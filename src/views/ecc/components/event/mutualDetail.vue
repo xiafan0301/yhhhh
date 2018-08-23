@@ -29,13 +29,17 @@
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
           <div class='basic-list'>
-            <div>
+            <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <template v-if="this.$route.query.eventStatus === '处理中'">
-                <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
-              </template>
-              <template v-else>
-                <span class='content'>{{eventDetailObj.reporterPhone}}</span>
+              <template v-if="eventDetailObj.reporterPhone">
+                <template v-if="this.$route.query.eventStatus === '处理中'">
+                  <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
+                  <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
+                  <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
+                </template>
+                <template v-else>
+                  <span class='content'>{{eventDetailObj.reporterPhone}}</span>
+                </template>
               </template>
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
@@ -209,7 +213,7 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res && res.data) {
-              console.log(res.data)
+              // console.log(res.data)
               this.eventDetailObj = res.data;
             }
           })
@@ -224,7 +228,7 @@ export default {
       this.axios.put('A2/eventServices/events/finish/' + eventId, {eventId: eventId})
         .then((res) => {
           if (res) {
-            console.log(res)
+            // console.log(res)
             this.$message({
               message: '宣布事件结束成功',
               type: 'success'
@@ -247,7 +251,7 @@ export default {
       }
       this.axios.get('A2/eventServices/comments/page', {params: data})
         .then((res) => {
-          console.log(res)
+          // console.log(res)
           if (res && res.data.list) {
             this.commentList = res.data.list;
             this.pagination.total = res.data.total;
@@ -413,6 +417,7 @@ export default {
       background: #F0F0F0 !important;
       text-align: left !important;
       color: #555555;
+      font-weight: bold;
       font-size: 16px;
     }
     /deep/  .el-dialog--center .el-dialog__body {
