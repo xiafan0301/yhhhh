@@ -72,12 +72,12 @@
         </template>
       </el-table-column>
       <el-table-column label="派单时间" prop='assignTime' align='center'></el-table-column>
-      <el-table-column label="任务名称" prop='taskName' align='center'></el-table-column>
-      <el-table-column label="状态" prop='eventStatus' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="任务名称" prop='taskName' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="状态" prop='eventStatus' align='center'></el-table-column>
       <el-table-column label="是否查看" prop='taskStatus' align='center'>
         <template slot-scope="scope">
-          <span style="color: #555555;" v-if="scope.row.taskStatus == true">已查看</span>
-          <span style="color: #FB796C;" v-else>未查看</span>
+          <span style="color: #555555;" v-if="scope.row.taskStatus == '已查看'">{{scope.row.taskStatus}}</span>
+          <span style="color: #FB796C;" v-else>{{scope.row.taskStatus}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
@@ -118,26 +118,8 @@ export default {
       dictId: '', // 未处理的id
       eventLevelList: [],
       eventTypeList: [],
-      eventDataList: [
-        {
-          eventCode: '1293791283781293729183782',
-          eventType: '自然灾害类',
-          eventLevel: 'I级(特大)',
-          assignTime: '2018-4-12',
-          taskName: '救火',
-          eventStatus: '处理中',
-          taskStatus: true
-        },
-        {
-          eventCode: '1293791283781293729183782',
-          eventType: '自然灾害类',
-          eventLevel: 'I级(特大)',
-          assignTime: '2018-4-12',
-          taskName: '救火',
-          eventStatus: '已结束',
-          taskStatus: false
-        }
-      ],
+      processTypeId: '',
+      eventDataList: [],
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
@@ -147,11 +129,9 @@ export default {
     this.getEventType();
     this.getOneMonth();
     this.getEventList();
+    this.getProcessTypeList();
   },
   methods: {
-    skipAddEvent () { // 跳转到添加事件页面
-      this.$router.push({name: 'add-event'});
-    },
     onPageChange (page) {
       this.pagination.pageNum = page;
       this.getEventList();
@@ -162,28 +142,28 @@ export default {
       this.getEventList();
     },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      const params = {
-        eventId: scope.row.eventId,
-        acceptFlag: true
+      if (scope.row.taskStatus === '未查看') {
+        const params = {
+          processType: this.processTypeId
+        }
+        this.axios.post('A2/taskServices/task/process/' + scope.row.eventId, params)
+          .then((res) => {
+            // console.log(res);
+          })
+          .catch(() => {})
       }
-      this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
-        .then((res) => {
-          if (res) {
-            if (scope.row.eventStatusName === '已结束') {
-              this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
-            } else {
-              this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId}});
-            }
-          }
-        })
-        .catch(() => {})
+      if (scope.row.eventStatusName === '已结束') {
+        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
+      } else {
+        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId}});
+      }
     },
     getEventStatus () { // 获取事件状态
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventStateId)
         .then((res) => {
           if (res) {
             res.data.map((item) => {
-              if (item.dictContent === '处理中') {
+              if (item.dictContent !== '未处理') {
                 this.eventStatusList.push(item);
               }
             });
@@ -205,6 +185,20 @@ export default {
         .then((res) => {
           if (res) {
             this.eventTypeList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getProcessTypeList () { // 获取事件处理过程
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.processTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            // console.log(res.data)
+            res.data.map((item, index) => {
+              if (item.dictContent === '联动单位受理') {
+                this.processTypeId = item.dictId;
+              }
+            });
           }
         })
         .catch(() => {})
@@ -304,6 +298,9 @@ export default {
     }
     .el-button+.el-button {
       margin-left: 2px !important;
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

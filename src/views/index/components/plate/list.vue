@@ -173,11 +173,11 @@ export default {
         this.axios.get('/plateServices/managers/' + plate.plateId + '')
           .then((res) => {
             if (res) {
-              // console.log(res)
+              console.log(res)
               const data = {
                 configId: res.data.configId,
                 configCode: plate.configCode,
-                markUrl: this.$store.state.plateInfo.markUrl
+                markUrl: res.data.plateStyleConfig.markUrl
               };
               this.newDataList = {
                 plateId: res.data.plateId,
