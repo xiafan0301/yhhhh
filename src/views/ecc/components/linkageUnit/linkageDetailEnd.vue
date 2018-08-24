@@ -120,8 +120,8 @@
                 </li>
               </ul>
             </div>
-            <div class=divide></div>
-            <div class='comment'>
+            <div class='divide' v-show="commentList && commentList.length > 0"></div>
+            <div class='comment' v-show="commentList && commentList.length > 0">
               <p class='progress-title'>
                 APP端互助
                 <span style='color: #0785FD;font-size: 12px'>({{this.pagination.total}}条评论)</span>
@@ -134,14 +134,6 @@
                   </div>
                   <div class='info-detail'>{{item.content}}</div>
                   <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
-                </li>
-                <li>
-                  <div class='info-top'>
-                    <p class='phone'>13812341234</p>
-                    <p class='time'>06-25 11:30</p>
-                  </div>
-                  <div class='info-detail'>火势好大！</div>
-                  <i class='el-icon-circle-close close'></i>
                 </li>
               </ul>
               <template v-if='this.pagination.total > 5'>
@@ -227,7 +219,7 @@ export default {
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.query.eventId;
-      this.modifyForm.eventId = eventId;
+      console.log(eventId)
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {

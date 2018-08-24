@@ -601,6 +601,7 @@ export default {
               margin-left: 25px;
               .ctc-idea-form-add {
                 padding-top: 2%;
+                border: 1px solid transparent;
               }
               .active {
                 &:hover {
@@ -648,6 +649,7 @@ export default {
                 display: flex;
                 width: 100%;
                 padding: 1% 1%;
+                border: 1px solid transparent;
                 position: relative;
                 .ctc-idea-body-list-num {
                   width: 70px;
@@ -683,15 +685,6 @@ export default {
               height:1px;
               margin: 2% 0 2% 25px;
               background: #EAEAEA;
-            }
-            .ctc-idea-body-modify-form {
-              width: 100%;
-              .ctc-idea-body-list-form {
-                margin-top: 2%;
-              }
-              &:hover {
-                border: 1px solid #0785FD;
-              }
             }
           }
           .ctc-replan-table {
