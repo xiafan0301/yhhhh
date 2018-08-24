@@ -15,13 +15,13 @@
         </li>
         <li>
           <p class='title'>预案类型</p>
-          <p class='content'>{{replanDetail.eventType}}</p>
+          <p class='content'>{{replanDetail.eventTypeName}}</p>
         </li>
         <li>
           <p class='title'>适用事件等级</p>
           <p class='content'>
-            <template v-if='replanDetail.levelList'>
-              {{replanDetail.levelList.join()}}
+            <template v-if='replanDetail.levelNameList'>
+              {{replanDetail.levelNameList.join()}}
             </template>
           </p>
         </li>

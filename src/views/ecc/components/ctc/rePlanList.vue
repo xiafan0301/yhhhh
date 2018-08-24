@@ -49,16 +49,16 @@
       class='ctc-table'
     >
       <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="预案类型" prop='eventType' align='center'></el-table-column>
-      <el-table-column label="适用等级" prop='levelList' align='center'>
+      <el-table-column label="预案类型" prop='eventTypeName' align='center'></el-table-column>
+      <el-table-column label="适用等级" prop='levelNameList' align='center'>
         <template slot-scope='scope'>
-          <span>{{scope.row.levelList.join('、')}}</span>
+          <span>{{scope.row.levelNameList.join('、')}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
           <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='selectReplanDetail(scope)'>查看</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='openReplan'>启用</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='openReplan(scope)'>启用</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -66,12 +66,11 @@
       <template v-if="pagination.total > 0">
         <el-pagination
           background
-          :page-sizes="[5, 10, 20, 50, 100]"
           @size-change="onSizeChange"
           @current-change="onPageChange"
           :current-page.sync="pagination.pageNum"
           :page-size="pagination.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="pagination.total">
         </el-pagination>
       </template>
@@ -170,8 +169,8 @@ export default {
       this.$refs[form].resetFields();
       this.getReplanList();
     },
-    openReplan () { // 启用预案
-
+    openReplan (scope) { // 启用预案
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     }
   }
 }

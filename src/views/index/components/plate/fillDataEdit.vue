@@ -2085,7 +2085,7 @@ export default {
         plateName: this.$store.state.editPlateInfo.plateName,
         remark: this.$store.state.editPlateInfo.remark
       }
-      this.axios.get('/plateServices/areaInfos/' + configId + '')
+      this.axios.get('/plateServices/areaInfos/' + configId)
         .then((res) => {
           if (res) {
             this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});

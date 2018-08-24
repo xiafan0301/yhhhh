@@ -1,9 +1,10 @@
 <template>
 <div class="bg-plate-ecl bg-plate-ecl2" v-show="this.$store.state.progressIndex === 3" style='width:100%'>
   <div class="plate-ecl2-c clearfix" style='border-bottom: 1px solid #ddd'>
-    <h2>图表数据</h2>
+    <h2 style='font-weight: bold;padding: 0 190px 10px'>示例注解图 - {{this.$store.state.plateInfo.configCode}}</h2>
     <div class="plate-ecl2-cl">
-      <img :src="this.$store.state.plateInfo.markUrl" alt="" style="width:75%">
+      <img :src="this.$store.state.plateInfo.markUrl">
+      <!-- <img :src="markUrl" alt=""> -->
     </div>
     <div class="plate-ecl2-cr">
       <div>

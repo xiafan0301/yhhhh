@@ -153,10 +153,10 @@
               max-height="352"
             >
               <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-              <el-table-column fixed label="预案类型" prop='eventType' align='center'></el-table-column>
-              <el-table-column fixed label="适用等级" prop='levelList' align='center' show-overflow-tooltip>
+              <el-table-column fixed label="预案类型" prop='eventTypeName' align='center'></el-table-column>
+              <el-table-column fixed label="适用等级" prop='levelNameList' align='center' show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span>{{scope.row.levelList.join('、')}}</span>
+                  <span>{{scope.row.levelNameList.join('、')}}</span>
                 </template>
               </el-table-column>
               <el-table-column fixed label="操作" align='center'>

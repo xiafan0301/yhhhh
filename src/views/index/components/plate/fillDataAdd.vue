@@ -704,7 +704,6 @@ export default {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
-      markUrl: require('../../../../assets/img/temp/1.jpg'),
       rules: {
         plateName: [{
           required: true,
@@ -1531,7 +1530,6 @@ export default {
           this.childDataListTwo.push(data);
           this.isActiveChild = index + 1;
         } else {
-          console.log('55555')
           this.tip = '子项可添加条数已达到上限';
         }
       }

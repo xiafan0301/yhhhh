@@ -43,6 +43,7 @@ import linkage from '@/views/ecc/components/linkageUnit/linkage.vue'
 import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
 import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
 import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
+import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -110,7 +111,8 @@ export default new Router({
           children: [
             {path: 'linkageList', name: 'linkage-list', component: linkageList},
             {path: 'linkageDetailEnd', name: 'linkage-detail-end', component: linkageDetailEnd},
-            {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat}
+            {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat},
+            {path: 'feedback', name: 'feedback', component: feedback}
           ]
         }
       ]

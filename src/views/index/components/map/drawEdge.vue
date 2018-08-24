@@ -13,16 +13,21 @@
         <div style="width: 100%; height: 100%;" id="drawEdge">
         </div>
         <div class="de-add-btn">
-          <el-tooltip class="item" effect="dark" placement="right">
+          <el-tooltip class="item" effect="dark" placement="right" v-show="!drawActive">
             <div slot="content">鼠标左键在地图上单击开始绘制多边形，<br/>鼠标左键双击或右键单击结束当前多边形的绘制</div>
-            <el-button @click="addPolygon" class="de-add-btn" size="small" type="primary" icon="el-icon-plus">
+            <el-button @click="addPolygon" class="" size="small" type="primary" icon="el-icon-edit">
               新增区块
             </el-button>
           </el-tooltip>
+          <el-button v-show="drawActive" @click="closePolygon" size="small" icon="el-icon-delete">
+            清除绘制
+          </el-button>
         </div>
-        <el-button v-show="drawActive" @click="closePolygon" class="de-close-btn" size="small">
-          关闭/清除当前绘制
-        </el-button>
+        <div class="de-close-btn">
+          <span class="de-btn-r" @click="setMapStatus('1')"></span>
+          <span class="de-btn-fd" @click="setMapStatus('2')" :class="{'de-btn-dis': mapScale.fd}"></span>
+          <span class="de-btn-sx" @click="setMapStatus('3')" :class="{'de-btn-dis': mapScale.sx}"></span>
+        </div>
       </div>
       <div class="bg-de-cr">
         <el-table
@@ -66,7 +71,7 @@
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer" style="text-align: left; padding-bottom: 20px; padding-left: 150px;">
-            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button @click="dialogVisible = false">删 除</el-button>
             <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')">确 定</el-button>
           </div>
         </el-dialog>
@@ -83,12 +88,17 @@ export default {
       mouseTool: null,
       defaultCursor: '',
       zoom: 10,
-      zooms: [10, 18],
+      zooms: [10, 17],
 
       drawActive: false,
       dialogVisible: false,
 
       drawPaths: null,
+
+      mapScale: {
+        fd: false,
+        sx: false
+      },
 
       editForm: {
         areaName: '',
@@ -146,6 +156,7 @@ export default {
         zoom: this.zoom,
         zooms: this.zooms
       });
+      map.setMapStyle('amap://styles/light');
       // map.setMapStyle('amap://styles/a00b8c5653a6454dd8a6ec3b604ec50c');
       // console.log('_config', _config)
       _this.amap = map;
@@ -407,6 +418,23 @@ export default {
         }
         _o.disabled = _flag;
       }
+    },
+    setMapStatus (status) {
+      if (this.amap) {
+        if (status === '1') {
+          this.amap.setZoomAndCenter(this.zoom, mapXupuxian.center);
+        } else if (status === '2') {
+          let iZoom = this.amap.getZoom() + 1;
+          if (iZoom <= this.zooms[1]) {
+            this.amap.setZoom(iZoom);
+          }
+        } else if (status === '3') {
+          let iZoom = this.amap.getZoom() - 1;
+          if (iZoom >= this.zooms[0]) {
+            this.amap.setZoom(iZoom);
+          }
+        }
+      }
     }
   }
 }
@@ -443,9 +471,43 @@ export default {
     }
   }
   .de-add-btn {
-    position: absolute; top: 10px; left: 10px; z-index:11;
+    position: absolute; top: 10px; left: 15px; z-index:11;
   }
   .de-close-btn {
     position: absolute; top: 10px; right: 10px; z-index:11;
+    > span {
+      float: left;
+      display: inline-block;
+      background-color: #f7f7f7;
+      border: 1px solid #D3D3D3;
+      background-repeat: no-repeat;
+      background-position: center center;
+      -webkit-background-size: 60% 60%;
+      background-size: 60% 60%;
+      width: 40px; height: 40px;
+      cursor: pointer;
+    }
+    > .de-btn-r {
+      background-image: url(../../../../assets/img/icons/draw/de-010.png);
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+    > .de-btn-fd {
+      background-image: url(../../../../assets/img/icons/draw/de-011.png);
+      border-radius: 8px 0 0 8px;
+      &.de-btn-dis {
+        background-image: url(../../../../assets/img/icons/draw/de-011d.png);
+        cursor: default;
+      }
+    }
+    > .de-btn-sx {
+      background-image: url(../../../../assets/img/icons/draw/de-012.png);
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
+      &.de-btn-dis {
+        background-image: url(../../../../assets/img/icons/draw/de-012d.png);
+        cursor: default;
+      }
+    }
   }
 </style>
