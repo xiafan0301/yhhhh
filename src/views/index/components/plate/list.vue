@@ -170,7 +170,7 @@ export default {
     },
     editPlate (plate) { // 修改版块
       if (plate) {
-        this.axios.get('/plateServices/managers/' + plate.plateId + '')
+        this.axios.get('/plateServices/managers/' + plate.plateId)
           .then((res) => {
             if (res) {
               console.log(res)

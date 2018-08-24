@@ -71,7 +71,7 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="派单时间" prop='assignTime' align='center'></el-table-column>
+      <el-table-column label="派单时间" prop='createTime' align='center'></el-table-column>
       <el-table-column label="任务名称" prop='taskName' align='center' show-overflow-tooltip></el-table-column>
       <el-table-column label="状态" prop='eventStatus' align='center'></el-table-column>
       <el-table-column label="是否查看" prop='taskStatus' align='center'>
@@ -95,7 +95,7 @@
           @current-change="onPageChange"
           :current-page.sync="pagination.pageNum"
           :page-size="pagination.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="pagination.total">
         </el-pagination>
       </template>
@@ -153,9 +153,9 @@ export default {
           .catch(() => {})
       }
       if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId, taskId: scope.row.taskId}});
       } else {
-        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId, taskId: scope.row.taskId}});
       }
     },
     getEventStatus () { // 获取事件状态

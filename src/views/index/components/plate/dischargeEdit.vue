@@ -1,9 +1,10 @@
 <template>
 <div class="bg-plate-ecl bg-plate-ecl2" v-show="this.$store.state.progressIndex === 3" style='width:100%'>
   <div class="plate-ecl2-c clearfix" style='border-bottom: 1px solid #ddd'>
-    <h2>图表数据</h2>
+    <h2 style='font-weight: bold;padding: 0 190px 10px'>示例注解图 - {{this.$store.state.plateInfo.configCode}}</h2>
     <div class="plate-ecl2-cl">
-      <img :src="this.$store.state.plateInfo.markUrl" alt="" style="width:75%">
+      <img :src="this.$store.state.plateInfo.markUrl">
+      <!-- <img :src="markUrl" alt=""> -->
     </div>
     <div class="plate-ecl2-cr">
       <div>
@@ -15,7 +16,7 @@
             <el-input v-model="dataForm.remark" placeholder="注释" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
-        <div v-for="(info, index) in plateInfoList" :key="'info'+index">
+        <div v-for="(info, index) in this.$store.state.plateConfigInfo" :key="'info'+index">
           <span v-show='false'>{{dataObjTwo[0].configId=info.configId}}</span>
           <span v-show='false'>{{dataObjTwo[0].plateName=dataForm.plateName}}</span>
           <span v-show='false'>{{dataObjTwo[0].remark=dataForm.remark}}</span>
@@ -317,7 +318,6 @@ export default {
         }]
       },
       configCount: 0,
-      plateInfoList: [],
       configCountFour: 1,
       plateAreaId: {},
       indexValue: 0,
@@ -816,20 +816,20 @@ export default {
       }
     },
     setInitialData () {
-      this.plateInfoList = JSON.parse(JSON.stringify(this.$store.state.plateConfigInfo))
       const areaDataList = this.$store.state.editPlateInfo.areaInfoList;
       const configId = this.$store.state.editPlateInfo.configId;
       this.dataForm = {
         plateName: this.$store.state.editPlateInfo.plateName,
         remark: this.$store.state.editPlateInfo.remark
       }
-      this.axios.get('/plateServices/areaInfos/' + configId + '')
+      this.axios.get('/plateServices/areaInfos/' + configId)
         .then((res) => {
           if (res) {
-            console.log(res)
+            // console.log(res)
             let typeArr = [];
             let oneType = [];
             res.data.map((item, index) => {
+              this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
               oneType.push(item.configCount);
               if (item.areaDataType !== 1 && item.areaDataType !== 4) {
                 typeArr.push(item);
@@ -1074,7 +1074,6 @@ export default {
                 });
               }
             });
-            this.$store.commit('setConfigInfo', {plateConfigInfo: res.data});
             this.$store.commit('setType', {typeArr: typeArr});
             this.$store.commit('setOneType', {oneType: oneType});
           }

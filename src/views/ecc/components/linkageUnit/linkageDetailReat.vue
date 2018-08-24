@@ -312,6 +312,8 @@ export default {
           })
           .catch(() => {})
       }
+    },
+    getTaskStatus () { // 获取任务状态
     }
   }
 }

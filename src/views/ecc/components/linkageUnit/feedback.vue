@@ -78,7 +78,9 @@ export default {
     this.getTaskTypeList();
   },
   mounted () {
-    this.dataStr = JSON.stringify(this.feedbackForm); // 将初始数据转成字符串
+    setTimeout(() => {
+      this.dataStr = JSON.stringify(this.feedbackForm); // 将初始数据转成字符串
+    }, 1000);
   },
   methods: {
     back () {
@@ -131,7 +133,6 @@ export default {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.processTypeId)
         .then((res) => {
           if (res && res.data) {
-            // console.log(res.data)
             res.data.map((item, index) => {
               if (item.dictContent === '联动单位反馈') {
                 this.feedbackForm.processType = item.dictId;
@@ -145,7 +146,6 @@ export default {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.taskStateId)
         .then((res) => {
           if (res && res.data) {
-            console.log(res.data)
             res.data.map((item, index) => {
               if (item.dictContent === '已完成') {
                 this.taskTypeId = item.dictId;
