@@ -94,19 +94,19 @@ export default {
               url: '/system'
             }
           ]
+        },
+        {
+          id: '5',
+          name: '调度指挥',
+          icon: 'icon-xiaoxi',
+          children: [
+            {
+              id: '5-1',
+              name: '调度指挥',
+              url: '/linkage/linkageList'
+            }
+          ]
         }
-        // {
-        //   id: '5',
-        //   name: '调度指挥',
-        //   icon: 'icon-xiaoxi',
-        //   children: [
-        //     {
-        //       id: '5-1',
-        //       name: '调度指挥',
-        //       url: '/linkage/linkageList'
-        //     }
-        //   ]
-        // }
       ],
       isActive: '1'
     }

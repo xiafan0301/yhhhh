@@ -174,6 +174,18 @@
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
     </div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeCommentVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -182,6 +194,7 @@ export default {
   data () {
     return {
       imgSrc: '', // 事件状态图片
+      closeCommentVisiable: false,
       pagination: {
         total: 0,
         pageNum: 1,
@@ -521,6 +534,28 @@ export default {
     }
     .operation-btn-event {
       margin-top: 2%;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

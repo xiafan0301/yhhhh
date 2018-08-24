@@ -26,12 +26,17 @@
               <span class='title'>事件等级：</span>
               <span class='content'>{{eventDetailObj.eventLevelName}}</span>
             </div>
-            <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
+            <div>
+              <span class='title'>报案时间：</span>
+              <span class='content'>{{eventDetailObj.reportTime}}</span>
+            </div>
           </div>
           <div class='basic-list'>
-            <div>
+            <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
+              <span class="content" style='margin-right: 20px'>{{eventDetailObj.reporterPhone}}</span>
+              <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
+              <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
@@ -116,7 +121,7 @@
               </li>
             </ul>
           </div>
-          <div class=divide></div>
+          <div v-show="commentList && commentList.length > 0" class=divide></div>
           <div class='comment' v-show='commentList && commentList.length > 0'>
             <p class='progress-title'>
               APP端互助
@@ -184,7 +189,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>反馈情况</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click='skipFeedBack'>反馈情况</el-button>
     </div>
     <el-dialog
       title="操作提示"
@@ -238,8 +243,8 @@ export default {
     this.getCommentList();
   },
   methods: {
-    skipEventEnd () { // 跳到事件结束页面
-      this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
+    skipFeedBack () { // 跳到事件结束页面
+      this.$router.push({name: 'feedback', query: {eventId: this.$route.query.eventId}});
     },
     skipCtcDetail () {
       this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
@@ -307,6 +312,8 @@ export default {
           })
           .catch(() => {})
       }
+    },
+    getTaskStatus () { // 获取任务状态
     }
   }
 }
@@ -549,6 +556,28 @@ export default {
     }
     .operation-btn-event {
       margin-top: 2%;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

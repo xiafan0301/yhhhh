@@ -111,6 +111,9 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #0785FD;
 }
+.el-upload-list__item.is-success .el-upload-list__item-status-label {
+  display: none;
+}
 
 .draw-dialog .el-dialog__body {
   padding-bottom: 0;

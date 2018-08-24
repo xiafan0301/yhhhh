@@ -2,6 +2,7 @@
 export const dictType = { // 字典类型
   eventTypeId: '65bdb71f-7a02-4fd6-9b61-0c15de7047bf', // 事件类型
   enclosureTypeId: '39728bba-9b6f-11e8-8a14-3f814d634dc0', // 附件类型
+  processTypeId: '77a639ed-fa52-4092-a948-8171cdc06427', // 事件处理过程id
   parttakeTypeId: '84ad5d8e-99ea-11e8-b7b2-d3a3f9880dd0', // 参与类型
   eventLevelId: 'b0945ddf-b1a4-41f7-b7a4-5bcec25414a8', // 事件等级
   taskStateId: '492a3855-cc38-45ab-970a-20ff5473532f', // 任务状态
