@@ -11,7 +11,7 @@
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <p class='event-number'>事件编号：{{eventDetailObj.eventCode}}</p>
+          <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
           <img src='../../../../assets/img/temp/treating.png' />
@@ -25,16 +25,17 @@
             <div>
               <span class='title'>事件等级：</span>
               <span class='content'>{{eventDetailObj.eventLevelName}}</span>
-
             </div>
             <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
           <div class='basic-list'>
-            <div>
+            <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>{{eventDetailObj.reporterPhone}}</span>
+              <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
+              <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
+              <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
             </div>
-            <div><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -51,7 +52,7 @@
             </div>
           </div>
           <div class='basic-list'>
-            <div><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
+            <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
             <img
@@ -62,52 +63,27 @@
           </div>
         </div>
       </div>
-      <div class='ctc' v-show='eventDetailObj.taskList.length > 0'>
+      <div class='ctc' v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0'>
         <div class='ctc-header'>
           <div class='flag'></div>
           <p class='ctc-text'>调度指挥方案</p>
         </div>
         <div class='ctc-content'>
-          <ul>
+          <ul v-for="(item, index) in eventDetailObj.taskList" :key="'item'+index">
             <li>
-              <span class='title'>调度部门：</span><span class='content'>消防部</span>
+              <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
             </li>
             <li>
-              <span class='title'>任务名称：</span><span class='content'>灭火</span>
+              <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
             </li>
             <li>
-              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
+              <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
             </li>
-            <li class='divide'></li>
-          </ul>
-
-          <ul>
-            <li>
-              <span class='title'>调度部门：</span><span class='content'>消防部</span>
-            </li>
-            <li>
-              <span class='title'>任务名称：</span><span class='content'>灭火</span>
-            </li>
-            <li>
-              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-            </li>
-            <li class='divide'></li>
-          </ul>
-          <ul>
-            <li>
-              <span class='title'>调度部门：</span><span class='content'>消防部</span>
-            </li>
-            <li>
-              <span class='title'>任务名称：</span><span class='content'>灭火</span>
-            </li>
-            <li>
-              <span class='title'>任务内容：</span><span class='content'>速去现场灭火</span>
-            </li>
-            <li class='divide'></li>
+            <li v-show='eventDetailObj.taskList && eventDetailObj.taskList.length > 0' class='divide'></li>
           </ul>
         </div>
       </div>
-      <div class='event-progress' v-show='eventDetailObj.processingList.length > 0'>
+      <div class='event-progress' v-show='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
         <div class='event-progress-header'>
           <div class='flag'></div>
           <p class='event-progress-text'>事件进展</p>
@@ -115,78 +91,86 @@
         <div class='event-progress-body'>
           <div class='depart'>
             <p class='progress-title'>参与部门</p>
-            <div class='depart-detail'>
-              <p>消防部</p>
-              <p>06-25 13：30</p>
-              <p>处理完毕</p>
-            </div>
-            <div class='depart-detail'>
-              <p>消防部</p>
-              <p>06-25 13：30</p>
-              <p>处理完毕</p>
-            </div>
-            <div class='depart-detail'>
-              <p>消防部</p>
-              <p>06-25 13：30</p>
-              <p>处理完毕</p>
+            <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'item'+index">
+              <p>{{item.departmentName}}</p>
+              <p>{{item.createTime}}</p>
+              <p>{{item.taskStatusName}}</p>
             </div>
           </div>
           <div class=divide></div>
           <div class='event-process'>
             <p class='progress-title'>事件过程</p>
-            <div></div>
-          </div>
-          <div class=divide></div>
-          <div class='comment'>
-            <p class='progress-title'>
-              APP端互助
-              <span style='color: #0785FD;font-size: 12px'>(5条评论)</span>
-            </p>
             <ul>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
+              <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
+                <div class='circle-left'>
+                  <div class='big-circle'>
+                    <div class='small-circle'></div>
+                  </div>
                 </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
+                <template v-if='eventDetailObj.processingList.length > 1'>
+                  <div class='line'></div>
+                </template>
+                <!-- <div class='line'></div> -->
+                <div class='content-right'>
+                  <div class='time'>{{item.createTime}}</div>
+                  <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
                 </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
-                </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
-                </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
               </li>
             </ul>
-            <el-pagination
-              background
-              :page-sizes="[5, 10, 20, 50, 100]"
-              @size-change="onSizeChange"
-              @current-change="onPageChange"
-              :current-page.sync="pagination.pageNum"
-              :page-size="pagination.pageSize"
-              layout="prev, pager, next, jumper"
-              :total="pagination.total"
-            >
-            </el-pagination>
+          </div>
+          <div class=divide></div>
+          <div class='comment' v-show='commentList && commentList.length > 0'>
+            <p class='progress-title'>
+              APP端互助
+              <span style='color: #0785FD;font-size: 12px'>({{this.pagination.total}}条评论)</span>
+            </p>
+            <ul>
+              <li v-for='(item, index) in commentList' :key="'item'+index">
+                <div class='info-top'>
+                  <p class='phone'>{{item.commentUserId}}</p>
+                  <p class='time'>{{item.createTime}}</p>
+                </div>
+                <div class='info-detail'>{{item.content}}</div>
+                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+              </li>
+              <!-- <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li>
+              <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li>
+              <li>
+                <div class='info-top'>
+                  <p class='phone'>13812341234</p>
+                  <p class='time'>06-25 11:30</p>
+                </div>
+                <div class='info-detail'>火势好大！</div>
+                <i class='el-icon-circle-close close'></i>
+              </li> -->
+            </ul>
+            <template v-if='this.pagination.total > 5'>
+              <el-pagination
+                background
+                :page-sizes="[5, 10, 20, 50, 100]"
+                @size-change="onSizeChange"
+                @current-change="onPageChange"
+                :current-page.sync="pagination.pageNum"
+                :page-size="pagination.pageSize"
+                layout="prev, pager, next, jumper"
+                :total="pagination.total"
+              >
+              </el-pagination>
+            </template>
           </div>
         </div>
       </div>
@@ -205,18 +189,31 @@
       <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
       <el-button style='background: #FB796C;color:#fff' class='skipCtcDetail' @click='skipCtcDetail'>再次调度</el-button>
     </div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeCommentVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
-      dialogFormVisible: false,
+      closeCommentVisiable: false,
+      delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
       pagination: {
-        total: 1000,
+        total: 0,
         pageNum: 1,
-        pageSize: 10
+        pageSize: 5
       },
       options1: [{
         value: '选项1',
@@ -235,54 +232,80 @@ export default {
         label: '北京烤鸭'
       }],
       value: '',
-      eventDetailObj: {} // 事件详情列表
+      eventDetailObj: {}, // 事件详情列表
+      commentList: [] // 评论列表
     }
   },
   mounted () {
     this.getEventDetail();
+    this.getCommentList();
   },
   methods: {
     skipEventEnd () { // 跳到事件结束页面
-      this.$router.push({name: 'event-end', params: {eventId: this.$route.params.eventId}});
+      this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
     },
     skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail'});
+      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
     },
     back () { // 返回上一页
       this.$router.back(-1);
     },
+    onPageChange (page) {
+      this.pagination.pageNum = page;
+      this.getCommentList();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
+      this.getCommentList();
+    },
     getEventDetail () { // 获取事件详情
-      const eventId = this.$route.params.eventId;
-      // this.closeForm.eventId = eventId;
+      const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
+            // console.log(res)
             if (res && res.data) {
-              console.log(res)
               this.eventDetailObj = res.data;
-              // this.attachmentList = res.data.attachmentList;
-              // this.detailForm.eventId = eventId;
-              // this.detailForm.eventCode = res.data.eventCode;
-              // this.detailForm.reporterPhone = res.data.reporterPhone;
-              // this.detailForm.reportTime = res.data.reportTime;
-              // this.detailForm.eventDetail = res.data.eventDetail;
-              // this.detailForm.eventAddress = res.data.eventAddress;
-              // this.detailForm.eventLevel = res.data.eventLevel;
-              // this.detailForm.eventType = res.data.eventType;
-              // if (res.data.casualties === -1) {
-              //   this.detailForm.casualties = '不确定';
-              // } else if (res.data.casualties === 0) {
-              //   this.detailForm.casualties = '无';
-              // } else if (res.data.casualties > 0) {
-              //   this.detailForm.casualties = '有';
-              //   this.dieNumber = res.data.casualties;
-              // }
-              // if (res.data.eventFlag === true) {
-              //   this.detailForm.flagType.push('应急事件');
-              // }
-              // if (res.data.mutualFlag === true) {
-              //   this.detailForm.flagType.push('民众互助');
-              // }
+            }
+          })
+          .catch(() => {})
+      }
+    },
+    getCommentList () { // 分页获取评论列表
+      const eventId = this.$route.query.eventId;
+      if (eventId) {
+        const data = {
+          'where.eventId': eventId,
+          pageNum: this.pagination.pageNum,
+          pageSize: this.pagination.pageSize
+        }
+        this.axios.get('A2/eventServices/comments/page', {params: data})
+          .then((res) => {
+            if (res && res.data.list) {
+              this.commentList = res.data.list;
+              this.pagination.total = res.data.total;
+            }
+          })
+          .catch(() => {})
+      }
+    },
+    closeComment (id) {
+      this.delCommentId = id;
+      this.closeCommentVisiable = true;
+    },
+    deleteComment () { // 删除评论
+      if (this.delCommentId) {
+        this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '评论删除成功',
+                type: 'success'
+              });
+              this.getCommentList();
+            } else {
+              this.$message.error('评论删除失败');
             }
           })
           .catch(() => {})
@@ -381,7 +404,7 @@ export default {
         }
         .ctc-content {
           width: 100%;
-          padding: 20px 20px 0 30px;
+          padding: 20px 20px 20px 30px;
           ul {
             li {
               line-height: 27px;
@@ -395,6 +418,9 @@ export default {
                 margin-left:1%;
               }
             }
+          }
+          & ul:last-child .divide {
+            display: none;
           }
         }
         .summary-content {
@@ -412,6 +438,55 @@ export default {
                 margin-right: 3%;
                 color: #222222;
                 font-size: 13px;
+              }
+            }
+          }
+          .event-process {
+            ul {
+              width: 100%;
+              padding: 20px 0;
+              li {
+                display: flex;
+                height: 82px;
+                position: relative;
+                .circle-left {
+                  margin-top: 3px;
+                  .big-circle {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    border: 1px solid #0785FD;
+                    .small-circle {
+                      width: 6px;
+                      height: 6px;
+                      border-radius: 50%;
+                      background: #0785FD;
+                      margin: 2px auto 0 auto;
+                    }
+                  }
+                }
+                .line {
+                  width: 1px;
+                  height: 70px;
+                  position: absolute;
+                  left: 6px;
+                  top: 15px;
+                  background: #C0DFFB;
+                }
+                .content-right {
+                  margin-left: 1%;
+                  font-size: 13px;
+                  .time {
+                    color:#888888;
+                    margin-bottom: 5px;
+                  }
+                  .content {
+                    color: #222222;
+                  }
+                }
+              }
+              & li:last-child .line {
+                display: none;
               }
             }
           }
@@ -477,6 +552,28 @@ export default {
     }
     .operation-btn-event {
       margin-top: 2%;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

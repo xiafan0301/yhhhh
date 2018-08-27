@@ -1,62 +1,44 @@
 <template>
-  <div class='event-end'>
+  <div class='feedback'>
     <div class='event-end-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>事件详情</span></el-breadcrumb-item>
+        <el-breadcrumb-item>事件详情</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>反馈情况</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='event-end-body'>
-      <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules'>
-        <el-form-item label="请确认事件等级" label-width='150px' prop='eventLevel'>
-          <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='endForm.eventLevel'>
-            <el-option
-              v-for="item in eventLevelList"
-              :key="item.dictId"
-              :label="item.dictContent"
-              :value="item.dictId"
-            >
-            </el-option>
-          </el-select>
+      <el-form class='event-end-form' :model='feedbackForm' ref='feedbackForm' :rules='rules'>
+        <el-form-item label="请输入事件反馈" label-width='150px' prop='eventSummary'>
+          <el-input type='textarea' v-model='feedbackForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...'></el-input>
         </el-form-item>
-        <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary'>
-          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
+        <el-form-item style='margin-left: 150px'>
+          <el-upload
+            action="http://10.16.4.50:8001/api/network/upload/new"
+            list-type="picture-card"
+            accept=".png,.jpg,.bmp"
+            :before-upload='handleBeforeUpload'
+            :on-remove="handleRemove"
+            :on-success='handleSuccess'
+          >
+            <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+            <span class='add-img-text'>添加图片</span>
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="任务是否完成" label-width='150px' prop='taskStatus'>
+          <el-radio-group style='width: 120px' v-model='feedbackForm.taskStatus'>
+            <el-radio label="是"></el-radio>
+            <el-radio label="否" style='margin-left:22%'></el-radio>
+          </el-radio-group>
+          <span style="color:#cccccc;font-size:13px">任务全部完成后则不能再反馈信息</span>
         </el-form-item>
       </el-form>
-      <div class='show-img-div'>
-        <el-upload
-          action="http://10.16.4.50:8001/api/network/upload/new"
-          list-type='picture-card'
-          accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
-          :before-upload='handleBeforeUpload'
-          :on-success="handleSuccess"
-          :show-file-list='false'
-        >
-          <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-          <span class='add-img-text'>上传附件</span>
-        </el-upload>
-        <div class='img-list' v-for="(item, index) in imgList" :key="'item'+index">
-          <img
-            :src='item.newFileName'
-          />
-          <div class='delete-img'>
-            <i class='el-icon-delete' @click="deleteImg(item, index)"></i>
-          </div>
-        </div>
-      </div>
-      <div class='show-file-div'>
-        <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
-          <img src='../../../../assets/img/temp/file.png' />
-          <span>{{item.fileName}}</span>
-          <i class='el-icon-circle-close' @click="deleteFile(item, index)"></i>
-        </div>
-      </div>
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click="endEvent('endForm')">确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' @click="feedbackEvent('feedbackForm')">确定</el-button>
     </div>
-     <el-dialog
+    <el-dialog
       title="操作提示"
       :visible.sync="closeReturnVisiable"
       width="480px"
@@ -75,41 +57,34 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      closeReturnVisiable: false,
-      endForm: {
-        eventId: '',
-        eventLevel: '', // 事件等级
+      feedbackForm: {
+        processType: '',
         eventSummary: '', // 事件总结
+        taskStatus: '否',
         attachmentList: [] // 附件列表
       },
       rules: {
-        eventLevel: [
-          { required: true, message: '请选择事件等级', trigger: 'blur' }
-        ],
         eventSummary: [
-          { max: 10000, message: '最多可以输入10000个字' }
+          { max: 10000, message: '最多可以输入10000个字' },
+          { required: true, message: '请输入事件反馈情况', trigger: 'blur' }
         ]
       },
-      eventLevelList: [], // 事件等级列表
-      fileList: [], // 要上传的文件列表
-      imgList: [] // 图片列表
+      closeReturnVisiable: false,
+      taskTypeId: '' // 任务状态id
     }
   },
   created () {
-    this.endForm.eventId = this.$route.query.eventId;
-    if (this.$route.query.eventLevel) {
-      this.endForm.eventLevel = this.$route.query.eventLevel;
-    }
-    this.getEventLevel();
+    this.getProcessTypeList();
+    this.getTaskTypeList();
   },
   mounted () {
     setTimeout(() => {
-      this.dataStr = JSON.stringify(this.endForm); // 将初始数据转成字符串
+      this.dataStr = JSON.stringify(this.feedbackForm); // 将初始数据转成字符串
     }, 1000);
   },
   methods: {
-    back (form) {
-      const data = JSON.stringify(this.endForm);
+    back () {
+      const data = JSON.stringify(this.feedbackForm);
       if (this.dataStr === data) {
         this.$router.back(-1);
       } else {
@@ -120,51 +95,31 @@ export default {
       this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
-    deleteImg (obj, index) { // 删除图片
-      this.imgList.splice(index, 1);
-      this.endForm.attachmentList && this.endForm.attachmentList.map((item, idx) => {
-        if (item.url === obj.newFileName) {
-          this.endForm.attachmentList.splice(idx, 1);
+    handleRemove (file, fileList) { // 删除图片
+      if (file && file.response) {
+        if (this.feedbackForm.attachmentList.length > 0) {
+          this.feedbackForm.attachmentList.map((item, index) => {
+            if (item.url === file.response.data.newFileName) {
+              this.feedbackForm.attachmentList.splice(index, 1);
+            }
+          });
         }
-      });
+      }
     },
-    deleteFile (obj, index) { // 删除文件
-      this.fileList.splice(index, 1);
-      this.endForm.attachmentList && this.endForm.attachmentList.map((item, idx) => {
-        if (item.url === obj.newFileName) {
-          this.endForm.attachmentList.splice(idx, 1);
-        }
-      });
-    },
-    handleSuccess (res, file) {
+    handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
-        const fileName = res.data.fileName;
-        const type = fileName.substring(fileName.lastIndexOf('.'));
-        let data;
-        res.data.fileName = file.name;
-        if (type === '.png' || type === '.jpg' || type === '.bmp') {
-          data = {
-            attachmentType: dictType.imgId,
-            url: res.data.newFileName,
-            attachmentName: res.data.fileName,
-            attachmentSize: res.data.fileSize,
-            attachmentWidth: res.data.imageWidth,
-            attachmentHeight: res.data.imageHeight,
-            thumbnailUrl: res.data.thumbnailUrl,
-            thumbnailWidth: res.data.thumbImageWidth,
-            thumbnailHeight: res.data.thumbImageHeight
-          }
-          this.imgList.push(res.data);
-        } else {
-          data = {
-            attachmentType: dictType.fileId,
-            url: res.data.newFileName,
-            attachmentName: res.data.fileName,
-            attachmentSize: res.data.fileSize
-          }
-          this.fileList.push(res.data);
+        const data = {
+          attachmentType: dictType.imgId,
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
         }
-        this.endForm.attachmentList.push(data);
+        this.feedbackForm.attachmentList.push(data);
       }
     },
     handleBeforeUpload (file) { // 附件上传之前
@@ -174,33 +129,52 @@ export default {
       }
       return isLtTenM;
     },
-    getEventLevel () { // 获取事件等级
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+    getProcessTypeList () { // 获取事件处理过程
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.processTypeId)
         .then((res) => {
           if (res && res.data) {
-            this.eventLevelList = res.data;
+            res.data.map((item, index) => {
+              if (item.dictContent === '联动单位反馈') {
+                this.feedbackForm.processType = item.dictId;
+              }
+            });
           }
         })
         .catch(() => {})
     },
-    endEvent (form) { // 结束事件
+    getTaskTypeList () { // 获取任务状态
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.taskStateId)
+        .then((res) => {
+          if (res && res.data) {
+            res.data.map((item, index) => {
+              if (item.dictContent === '已完成') {
+                this.taskTypeId = item.dictId;
+              }
+            });
+          }
+        })
+        .catch(() => {})
+    },
+    feedbackEvent (form) { // 结束事件
       const eventId = this.$route.query.eventId;
       this.$refs[form].validate((valid) => {
         if (valid) {
-          const data = {
-            eventFinishDto: this.endForm
+          if (this.feedbackForm.taskStatus === '是') {
+            this.feedbackForm.taskStatus = this.taskTypeId;
+          } else {
+            this.feedbackForm.taskStatus = '';
           }
-          this.axios.put('A2/eventServices/events/finish/' + eventId, data.eventFinishDto)
+          this.axios.post('A2/taskServices/task/process/' + eventId, this.feedbackForm)
             .then((res) => {
               if (res) {
-                // console.log(res)
+                console.log(res)
                 this.$message({
-                  message: '宣布事件结束成功',
+                  message: '反馈成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'event-list'});
+                this.$router.push({name: 'linkage-detail-reat', query: {eventId: eventId}});
               } else {
-                this.$message.error('宣布事件结束失败');
+                this.$message.error('反馈失败');
               }
             })
             .catch(() => {})
@@ -211,7 +185,7 @@ export default {
 }
 </script>
 <style lang='scss'>
-  .event-end {
+  .feedback {
     padding: 20px;
     height: 100%;
     .event-end-header {

@@ -17,13 +17,7 @@
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
-            <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" /></div>
-          </el-form-item>
-          <el-form-item label="经度" label-width='150px' prop='longitude' class="address">
-            <el-input style='width: 500px' placeholder='请选择经度...' v-model='addForm.longitude'></el-input>
-          </el-form-item>
-          <el-form-item label="纬度" label-width='150px' prop='latitude' class="address">
-            <el-input style='width: 500px' placeholder='请选择纬度...' v-model='addForm.latitude'></el-input>
+            <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
@@ -32,6 +26,8 @@
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :before-upload='handleBeforeUpload'
               :on-remove="handleRemove"
               :on-success='handleSuccess'
               :limit='9'
@@ -82,17 +78,35 @@
       <div class='operation-btn'>
         <el-button @click="back('addForm')">返回</el-button>
         <el-button style='background: #0785FD;color:#fff' @click="submitForm('addForm')">保存</el-button>
-        <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
+        <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('addForm')">去调度指挥</el-button>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="closeReturnVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>返回后您添加的数据不会保存，是否确认返回?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='sureBack'>确定返回</el-button>
+        <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 import {valiPhone} from '@/utils/validator.js';
 import {dictType} from '@/config/data.js';
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      open: false,
+      closeReturnVisiable: false,
+      oConfig: {},
       isDefaultChecked: true,
       dieNumber: '', // 死亡人数
       addForm: {
@@ -109,7 +123,6 @@ export default {
         eventFlag: true,
         mutualFlag: false,
         attachmentList: [] // 附件列表
-        // flagType: ['应急事件'] // 事件性质
       },
       rules: {
         reporterPhone: [
@@ -135,18 +148,72 @@ export default {
     }
   },
   mounted () {
+    this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串
     this.getEventType();
     this.getEventLevel();
   },
   methods: {
-    skipCtcDetail () { // 跳到调度指挥方案制定页面
-      this.$router.push({name: 'ctc-detail'});
+    skipCtcDetail (form) { // 跳到调度指挥方案制定页面
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          if (this.addForm.casualties === '无') {
+            this.addForm.casualties = 0;
+          } else if (this.addForm.casualties === '不确定') {
+            this.addForm.casualties = -1;
+          } else if (this.addForm.casualties === '有') {
+            this.addForm.casualties = this.dieNumber;
+          }
+          const param = {
+            emiEvent: this.addForm
+          }
+          this.axios.post('A2/eventServices/event', param.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$message({
+                  message: '添加事件成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'ctc-detail', query: {addForm: this.addForm}});
+              } else {
+                this.$message.error('添加事件失败');
+              }
+            })
+            .catch(() => {})
+        }
+      });
+    },
+    showMap () {
+      if (this.addForm.eventAddress === '') {
+        this.oConfig = {};
+      } else {
+        this.oConfig = {
+          _name: this.addForm.eventAddress
+          // center: [Number(this.addForm.longitude), Number(this.addForm.latitude)]
+        }
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val, address) {
+      if (val) {
+        const str = val.split(',');
+        this.addForm.longitude = Number(str[0]);
+        this.addForm.latitude = Number(str[1]);
+        this.addForm.eventAddress = address;
+      }
     },
     back (form) {
+      const data = JSON.stringify(this.addForm);
+      if (this.dataStr === data) {
+        this.$router.back(-1);
+      } else {
+        this.closeReturnVisiable = true;
+      }
+    },
+    sureBack () {
+      this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
     submitForm (form) { // 保存数据
-      // console.log(this.addForm)
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.addForm.casualties === '无') {
@@ -174,7 +241,6 @@ export default {
             .catch(() => {})
         }
       });
-      // console.log(this.addForm)
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
@@ -197,14 +263,21 @@ export default {
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
         const data = {
-          attachmentType: dictType.enclosureTypeId,
-          url: res.data.newFileName
+          attachmentType: dictType.imgId,
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
         }
         this.addForm.attachmentList.push(data);
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response.data) {
+      if (file && file.response) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
             if (item.url === file.response.data.newFileName) {
@@ -213,6 +286,17 @@ export default {
           });
         }
       }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     }
   }
 }
@@ -269,6 +353,28 @@ export default {
           padding-left: 5px;
         }
       }
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

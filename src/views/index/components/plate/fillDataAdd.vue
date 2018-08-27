@@ -296,11 +296,13 @@
                       </tr>
                       <tr>
                         <th width='100px'>子项名称</th>
-                        <th>值</th>
-                        <th style='border-right: 1px solid #DDDDDD'>单位</th>
-                        <th width='100px'>浮层并列项名称</th>
-                        <th>值</th>
+                        <!-- <th>值</th> -->
                         <th>单位</th>
+                        <th style='border-right: 1px solid #DDDDDD'>值</th>
+                        <th width='200px'>浮层并列项名称</th>
+                        <!-- <th>值</th> -->
+                        <th>单位</th>
+                        <th>值</th>
                       </tr>
                     </thead>
                     <tbody v-for="(items, index) in contentItemListThree" :key="'items'+index">
@@ -310,20 +312,24 @@
                         <template v-if='list.isMerge === true'>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{items.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{list.contnetSubItemExtendList[0].contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td> -->
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{list.contnetSubItemExtendList[0].valueContent}}</td>
                         </template>
                         <template v-else>
                           <td class='cannot-modify'>{{items.itemName}}</td>
                           <td class='cannot-modify'>{{list.contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td> -->
                           <td class='cannot-modify'>{{list.valueUnit}}</td>
+                           <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberObjThree[index + '_' + idx]" placeholder='请填写'></td>
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].contentName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
+                          <!-- <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td> -->
                           <td class='cannot-modify'>{{list.contnetSubItemExtendList[0].valueUnit}}</td>
+                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="numberLayerObjThree[index + '_' + idx]" placeholder='请填写'></td>
                         </template>
                       </tr>
                     </tbody>
@@ -409,7 +415,7 @@
                           <td><input type="text" v-model="item.valueUnit" class='valueUnit' placeholder='请填写'></td>
                           <td>
                             <!-- <template v-if='isCheckBox === true'> -->
-                            <template v-if="$store.state.plateInfo.configCode === 'plate015' || $store.state.plateInfo.configCode === 'plate041'">
+                            <template v-if="$store.state.plateInfo.configCode === 'plate015' || $store.state.plateInfo.configCode === 'plate041' || $store.state.plateInfo.configCode === 'plate016'">
                               <el-switch
                                 v-model="item.graphicFieldFlag"
                                 disabled
@@ -499,8 +505,9 @@
                     <tr>
                       <th>主项</th>
                       <th>子项</th>
-                      <th>值</th>
                       <th>单位</th>
+                      <th>值</th>
+                      <!-- <th>单位</th> -->
                     </tr>
                     </thead>
                     <tbody  v-for="(item, index) in contentItemListTwo" :key="'item'+index">
@@ -511,6 +518,7 @@
                         <template v-if='value.isMerge === false'>
                           <td class='cannot-modify'>{{item.itemName}}</td>
                           <td class='cannot-modify'>{{value.contentName}}</td>
+                          <td class='cannot-modify'>{{value.valueUnit}}</td>
                           <td>
                             <input
                               type="text"
@@ -519,13 +527,14 @@
                               onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')"
                             >
                           </td>
-                          <td class='cannot-modify'>{{value.valueUnit}}</td>
+                          <!-- <td class='cannot-modify'>{{value.valueUnit}}</td> -->
                         </template>
                         <template v-else>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{item.itemName}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">合计（{{value.contentName}}）</td>
-                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
                           <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td>
+                          <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueContent}}</td>
+                          <!-- <td style="color:#fff;border-color:#fff;background-color:#ccc">{{value.valueUnit}}</td> -->
                         </template>
                       </tr>
                     </tbody>
@@ -695,7 +704,6 @@ export default {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
-      markUrl: require('../../../../assets/img/temp/1.jpg'),
       rules: {
         plateName: [{
           required: true,
@@ -959,7 +967,7 @@ export default {
             });
           }
         });
-        if (this.$store.state.plateInfo.configCode !== 'plate015' && this.$store.state.plateInfo.configCode !== 'plate041') {
+        if (this.$store.state.plateInfo.configCode !== 'plate015' && this.$store.state.plateInfo.configCode !== 'plate041' && this.$store.state.plateInfo.configCode === 'plate016') {
           // if (result.length > 0) {
           //   this.childDataListTwo.map((list, index) => {
           //     if (list.graphicFieldFlag === true) {
@@ -1384,7 +1392,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1428,7 +1436,7 @@ export default {
           this.tip = '';
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '主项可添加条数已达到上线';
+          this.tip = '主项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写主项';
@@ -1471,7 +1479,7 @@ export default {
           this.contentItemListFour.push(data);
           this.isActiveParent = idx + 1;
         } else {
-          this.tip = '项可添加条数已达到上线';
+          this.tip = '项可添加条数已达到上限';
         }
       } else {
         this.tip = '请先填写信息';
@@ -1484,7 +1492,7 @@ export default {
         if (this.childDataListTwo.length < maxNumber) {
           this.tip = '';
           let data;
-          if (this.$store.state.plateInfo.configCode === 'plate015' || this.$store.state.plateInfo.configCode === 'plate041') {
+          if (this.$store.state.plateInfo.configCode === 'plate015' || this.$store.state.plateInfo.configCode === 'plate041' || this.$store.state.plateInfo.configCode === 'plate016') {
             data = {
               contentName: '',
               valueContent: '',
@@ -1522,8 +1530,7 @@ export default {
           this.childDataListTwo.push(data);
           this.isActiveChild = index + 1;
         } else {
-          console.log('55555')
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },
@@ -1582,7 +1589,7 @@ export default {
           this.layerDataListThree.push(value);
           this.isActiveChild = index + 1;
         } else {
-          this.tip = '子项可添加条数已达到上线';
+          this.tip = '子项可添加条数已达到上限';
         }
       }
     },

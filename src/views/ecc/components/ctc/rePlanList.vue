@@ -8,23 +8,37 @@
       </el-breadcrumb>
     </div>
     <div class="clearfix search-replan">
-      <el-form :inline="true" :model='selectForm' class="demo-form-inline" size="small">
-        <el-form-item style="width: 150px;" prop='eventStatus'>
-          <el-select placeholder="预案类型" style="width: 100%;" v-model='selectForm.eventStatus'>
-            <el-option label="全部状态" :value="0"></el-option>
+      <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
+        <el-form-item style="width: 150px;" prop='planType'>
+          <el-select placeholder="预案类型" style="width: 100%;" v-model='selectForm.planType'>
+            <el-option value="全部类型"></el-option>
+            <el-option
+              v-for="item in eventTypeList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 150px;" prop='eventLevel'>
-          <el-select placeholder="适用等级" style="width: 100%;" v-model='selectForm.eventLevel'>
-            <el-option label="全部等级" :value="0"></el-option>
+        <el-form-item style="width: 150px;" prop='planLevel'>
+          <el-select placeholder="适用等级" style="width: 100%;" v-model='selectForm.planLevel'>
+            <el-option value="全部等级"></el-option>
+            <el-option
+              v-for="item in eventLevelList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId"
+            >
+            </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 200px;" prop='phoneOrNumber'>
-          <el-input placeholder='请输入预案名称' style='width:100%' v-model='selectForm.phoneOrNumber'></el-input>
+        <el-form-item style="width: 200px;" prop='planName'>
+          <el-input placeholder='请输入预案名称' style='width:100%' v-model='selectForm.planName'></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
-          <el-button class='btnClass'>重置</el-button>
+          <el-button type="primary" class='selectBtn btnClass' @click='selectData'>查询</el-button>
+          <el-button class='btnClass' @click="resetForm('selectForm')">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -34,75 +48,129 @@
       highlight-current-row
       class='ctc-table'
     >
-      <el-table-column label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="预案类型" prop='planType' align='center'></el-table-column>
-      <el-table-column label="适用等级" prop='levelList' align='center'></el-table-column>
+      <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="预案类型" prop='eventTypeName' align='center'></el-table-column>
+      <el-table-column label="适用等级" prop='levelNameList' align='center'>
+        <template slot-scope='scope'>
+          <span>{{scope.row.levelNameList.join('、')}}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color: #0785FD' @click='selectReplanDetail'>查看</el-button>
-          <el-button type='text' style='color: #0785FD'>启用</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='selectReplanDetail(scope)'>查看</el-button>
+          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='openReplan(scope)'>启用</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div is='pagination'></div>
+    <div style="text-align: right; padding-top: 10px;">
+      <template v-if="pagination.total > 0">
+        <el-pagination
+          background
+          @size-change="onSizeChange"
+          @current-change="onPageChange"
+          :current-page.sync="pagination.pageNum"
+          :page-size="pagination.pageSize"
+          layout="total, prev, pager, next, jumper"
+          :total="pagination.total">
+        </el-pagination>
+      </template>
+    </div>
   </div>
 </template>
 <script>
-import pagination from '@/components/common/pagination.vue';
+import {dictType} from '@/config/data.js';
 export default {
-  components: {pagination},
   data () {
     return {
       selectForm: {
-        reportTimeStart: '', // 开始时间
-        reportTimeEnd: '', // 结束时间
-        eventStatus: '', // 事件状态
-        eventLevel: '', // 事件等级
-        eventSource: '', // 事件来源
-        phoneOrNumber: '' // 事件编号或提交人手机号
+        planLevel: '全部等级', // 预案等级
+        planType: '全部类型', // 预案类型
+        planName: '' // 预案名称
       },
-      reservePlanList: [{
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }, {
-        planName: '公共区域消防安全应急预案',
-        planType: '事故灾难',
-        levelList: 'IV'
-      }]
+      reservePlanList: [],
+      eventLevelList: [],
+      eventTypeList: [],
+      eventId: '',
+      pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
   computed: {
   },
   mounted () {
+    if (this.$route.query.eventId) {
+      this.eventId = this.$route.query.eventId;
+    }
+    this.getEventLevel();
+    this.getEventType();
+    this.getReplanList();
   },
   methods: {
-    selectReplanDetail () { // 查看预案详情
-      this.$router.push({name: 'replan-detail'});
+    onPageChange (page) {
+      this.pagination.pageNum = page;
+      this.getReplanList();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
+      this.getReplanList();
+    },
+    selectReplanDetail (scope) { // 查看预案详情
+      this.$router.push({name: 'replan-detail', query: {planId: scope.row.planId, eventId: this.$route.query.eventId}});
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventLevelList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventTypeList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getReplanList () { // 获取预案列表
+      let planLevel, planType;
+      if (this.selectForm.planLevel === '全部等级') {
+        planLevel = '';
+      } else {
+        planLevel = this.selectForm.planLevel;
+      }
+      if (this.selectForm.planType === '全部类型') {
+        planType = '';
+      } else {
+        planType = this.selectForm.planType;
+      }
+      const params = {
+        'where.planType': planType,
+        'where.planLevel': planLevel,
+        'where.planName': this.selectForm.planName,
+        pageNum: this.pagination.pageNum
+      }
+      this.axios.get('A2/planServices/plans', {params})
+        .then((res) => {
+          if (res && res.data.list) {
+            this.reservePlanList = res.data.list;
+            this.pagination.total = res.data.total;
+          }
+        })
+        .catch(() => {})
+    },
+    selectData () {
+      this.getReplanList(); // 查询
+    },
+    resetForm (form) { // 重置表单查询
+      this.$refs[form].resetFields();
+      this.getReplanList();
+    },
+    openReplan (scope) { // 启用预案
+      this.$router.push({name: 'enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     }
   }
 }
@@ -140,8 +208,17 @@ export default {
       color: #fff;
       float: right;
     }
-    .el-table thead th {
+    /deep/ .el-table thead th {
       background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
+    .el-button+.el-button {
+      margin-left: 2px !important;
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

@@ -39,6 +39,12 @@ import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.v
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
 import enableReplan from '@/views/ecc/components/ctc/enableReplan.vue'
+// 联动单位的调度指挥
+import linkage from '@/views/ecc/components/linkageUnit/linkage.vue'
+import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
+import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
+import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
+import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
 Vue.use(Router);
 
 export default new Router({
@@ -81,7 +87,7 @@ export default new Router({
           children: [
             {path: 'eventList', name: 'event-list', component: eventList},
             {path: 'addEvent', name: 'add-event', component: addEvent},
-            {path: 'addMsg/:status', name: 'add-message', component: addMsg},
+            {path: 'addMsg', name: 'add-message', component: addMsg},
             {path: 'eventDetailEnd', name: 'event-detail-end', component: eventDetailEnd},
             {path: 'eventDetailReat', name: 'event-detail-reat', component: eventDetailReat},
             {path: 'eventEnd', name: 'event-end', component: eventEnd},
@@ -99,6 +105,16 @@ export default new Router({
             {path: 'rePlanList', name: 'replan-list', component: rePlanList},
             {path: 'replanDetail', name: 'replan-detail', component: replanDetail},
             {path: 'enableReplan', name: 'enable-replan', component: enableReplan}
+          ]
+        },
+        {
+          path: 'linkage',
+          component: linkage,
+          children: [
+            {path: 'linkageList', name: 'linkage-list', component: linkageList},
+            {path: 'linkageDetailEnd', name: 'linkage-detail-end', component: linkageDetailEnd},
+            {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat},
+            {path: 'feedback', name: 'feedback', component: feedback}
           ]
         }
       ]
