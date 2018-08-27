@@ -59,9 +59,9 @@
               <!--</ul>-->
             <!--</div>-->
           <el-form-item label="响应处置" label-width='150px'>
-            <div style="width: 500px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" class="div" :value="item.departmentName">
+            <div style="width: 500px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" :value="item.departmentName">
             <el-form-item label="协同部门" label-position="left">
-              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" >
+              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" :value="form.taskList[index].departmentName">
                 <el-option
                   v-for="item in  departmentsList"
                   :key="item.departmentId"
@@ -78,7 +78,10 @@
               </el-form-item>
             </div>
           </el-form-item>
-          <el-button type="primary" @click="push" style="margin-left: 150px">确定</el-button>
+          <div class='add-plan' @click="addPlan('taskForm')">
+            <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+            <span class='add-img-text'>添加任务</span>
+          </div>
           <el-form-item style='margin-left: 150px'>
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
@@ -104,12 +107,6 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      tasklis: {
-        departmentName: '',
-        taskName: '',
-        taskContent: '',
-        departmentId: ''
-      },
       staskList: [],
       status: '',
       form: {
@@ -150,7 +147,7 @@ export default {
     }
   },
   methods: {
-    push () {
+    addPlan () {
       this.form.taskList.push({departmentName: '',
         taskName: '',
         taskContent: '',
@@ -163,25 +160,35 @@ export default {
         this.departmentsList && this.departmentsList.map((item, index) => {
           if (item.departmentId === this.form.taskList[0].departmentId) {
             this.form.taskList[0].departmentName = item.departmentName;
+            console.log(this.form)
           }
         });
-        let params = {
-          attachmentName: this.form.attachmentName,
-          attachmentType: this.form.attachmentType,
-          eventType: this.form.eventType,
-          levelList: this.form.levelList,
-          planDetail: this.form.planDetail,
-          planName: this.form.planName,
-          taskList: [
-            {
-              departmentName: this.form.taskList[0].departmentName,
-              departmentId: this.form.taskList[0].departmentId,
-              taskContent: this.form.taskList[0].taskContent,
-              taskName: this.form.taskList[0].taskName
+        if (this.form.taskList.length === 2) {
+          this.departmentsList && this.departmentsList.map((item, index) => {
+            if (item.departmentId === this.form.taskList[1].departmentId) {
+              this.form.taskList[1].departmentName = item.departmentName;
+              console.log(this.form)
             }
-          ],
-          url: this.form.Url
-        };
+          });
+        }
+        let params = this.form;
+        // let params = {
+        //   attachmentName: this.form.attachmentName,
+        //   attachmentType: this.form.attachmentType,
+        //   eventType: this.form.eventType,
+        //   levelList: this.form.levelList,
+        //   planDetail: this.form.planDetail,
+        //   planName: this.form.planName,
+        //   taskList: [
+        //     {
+        //       departmentName: this.form.taskList[this.index].departmentName,
+        //       departmentId: this.form.taskList[this.index].departmentId,
+        //       taskContent: this.form.taskList[this.index].taskContent,
+        //       taskName: this.form.taskList[this.index].taskName
+        //     }
+        //   ],
+        //   url: this.form.Url
+        // };
         this.axios.post('A2/planServices/plan', params)
           .then((res) => {
             this.$router.push({name: 'emergency-planList'})
@@ -219,8 +226,11 @@ export default {
           })
       }
     },
-    back () {
-      console.log($('.div').key)
+    back (item) {
+      console.log($('div')[this.label])
+    },
+    getvalue () {
+      console.log(this.options.label)
     },
     getEventLevel () {
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
@@ -285,6 +295,36 @@ export default {
           padding-top: 2%;
           .el-form-item {
             margin-bottom: 15px;
+          }
+          .add-plan {
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            background-color: #EAEAEA;
+            border: 1px solid #EAEAEA;
+            position: relative;
+            margin: 1% 0 2% 150px;
+            border-radius: 6px;
+            box-sizing: border-box;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            outline: 0;
+            i {
+              font-size: 28px;
+              margin: 0 auto;
+              font-weight: bold;
+            }
+            .add-img-text {
+              color: #C4C2C2;
+              font-size: 13px;
+              display: block;
+              width: 54px;
+              height: 13px;
+              position: absolute;
+              top: 25%;
+              left: 25%;
+            }
           }
         }
       }
