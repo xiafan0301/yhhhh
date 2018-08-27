@@ -6,7 +6,7 @@
         <el-breadcrumb-item>公告管理</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" icon="el-icon-plus">发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -39,30 +39,54 @@
     </div>
     <el-table
       :data="tableData"
-      border
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" width="50"  type="index"></el-table-column>
-      <el-table-column prop="title" label="主题" min-width="100">
+      <el-table-column  label="序号" width="80"  type="index"></el-table-column>
+      <el-table-column prop="emiMessage.title" label="主题" min-width="120">
       </el-table-column>
-      <el-table-column prop="details" label="摘要" min-width="140"></el-table-column>
-      <el-table-column prop="channelId" label="接收者" width="100"></el-table-column>
-      <el-table-column prop="publishUser" label="发布用户" width="100">
+      <el-table-column prop="emiMessage.details" label="摘要" min-width="150"></el-table-column>
+      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100">
+        <template slot-scope="scope">
+          <span style="color: #13ce66;" v-if="scope.row.emiMessage.terminal == 1">移动端</span>
+          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.terminal == 2">PC端</span>
+          <span style="color: #13ce66;" v-else-if ="scope.row.emiMessage.terminal == 3">APP端，Web端</span>
+          <span style="color: #999;" v-else >不发送</span>
+        </template>
       </el-table-column>
-      <el-table-column prop="publishUser" label="发布单位" width="100">
+      <el-table-column prop="emiMessage.publishUser" label="发布用户" min-width="100">
       </el-table-column>
-      <el-table-column prop="publishTime" label="发布时间" width="120"></el-table-column>
-      <el-table-column prop="publishState" label="发布状态" width="120"></el-table-column>
+      <el-table-column prop="emiMessage.publishUser" label="发布单位" min-width="100">
+      </el-table-column>
+      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100"></el-table-column>
+      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100">
+        <template slot-scope="scope">
+          <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
+          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
+          <span style="color: #999;" v-else >已撤销</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text" slot="reference" @click="modify()">修改</el-button>
-          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+          <el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>
+          <el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div class="bg-plan-tbp">
+      <el-pagination
+        background
+        @size-change="pagerSizeChange"
+        @current-change="pagerCurrChange"
+        :current-page="pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, sizes, jumper"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -110,7 +134,7 @@ export default {
         .then((res) => {
           console.log(res);
           this.tableData = res.data.list;
-          this.pagination.total = res.data.total;
+          this.total = res.data.total;
         })
         .catch(() => {
         });
@@ -119,13 +143,53 @@ export default {
     },
     doSearch () {
     },
-    showEditDialog (flag) {
-      // this.editDialogVisible = flag;
-      this.$router.push({name: 'notice-release', query: {release: true}});
+    del (scope) {
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (scope) {
+          console.log(scope.messageId);
+          const params = {
+            messageId: scope.messageId
+          };
+          this.axios.delete('A2/messageService/' + scope.messageId, {params})
+            .then((res) => {
+              if (res) {
+                this.getTableData();
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              } else {
+                this.$message.error('删除失败');
+              }
+            })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
-    modify () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
+    // 分页
+    pagerSizeChange (val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.getTableData();
+    },
+    pagerCurrChange (val) {
+      this.pageNum = val;
+      this.getTableData();
+    },
+    showEditDialog (status) {
+      // this.editDialogVisible = flag;
+      this.$router.push({name: 'notice-release', query: {status: status}});
+    },
+    modify (status, scope) {
+      this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
     modifyxt () {
       this.visible2 = false;
@@ -143,5 +207,9 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .bg-plan-tbp{
+      padding: 20px 0;
+      text-align: center;
+    }
   }
 </style>

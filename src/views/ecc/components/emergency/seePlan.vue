@@ -6,25 +6,22 @@
         <el-breadcrumb-item :to="{name: 'emergency-planList'}">预案管理</el-breadcrumb-item>
         <el-breadcrumb-item>查看预案</el-breadcrumb-item>
       </el-breadcrumb>
-      <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
-      </div>
     </div>
     <div class="bg-release-cot">
       <ul class="listxf" >
-        <li><span class="title">预案名称</span><span class="content">APP端、联动单位A、联动</span></li>
-        <li><span class="title">预案类型</span><span class="content"> admin（谭某）</span></li>
-        <li><span class="title">适用事件等级</span><span class="content"> 应急指挥中心</span></li>
+        <li><span class="title">预案名称</span><span class="content">{{seeplanList.planName}}</span></li>
+        <li><span class="title">预案类型</span><span class="content">{{seeplanList.eventTypeName}}</span></li>
+        <li><span class="title">适用事件等级</span><span class="content"> {{seeplanList.levelNameList}}</span></li>
         <li><span class="title" style="vertical-align: top">预案正文</span>
-          <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
+          <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
-        <li><span class="title">附件</span><span class="content"> 应急指挥中心</span></li>
+        <li><span class="title">附件</span><a class="content" href="seeplanList.url" style="color:#0785FD"> {{seeplanList.attachmentName}}</a></li>
         <li><span class="title">响应处置</span>
         <div style="margin-left: 118px">
           <ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">
-            <li><span > 协同部门</span ><span class="content">联动单位B</span></li>
-            <li><span > 协同部门</span ><span class="content">联动单位B</span></li>
-            <li><span > 协同部门</span ><span class="content">联动单位B</span></li>
+            <li><span > 协同部门</span ><span class="content">{{seeplanList.taskList&&seeplanList.taskList[0].departmentName}}</span></li>
+            <li><span > 任务名称</span ><span class="content">{{seeplanList.taskList&&seeplanList.taskList[0].taskName}}</span></li>
+            <li><span > 任务内容</span ><span class="content">{{seeplanList.taskList&&seeplanList.taskList[0].taskContent}}</span></li>
           </ul >
         </div>
           <div style="margin-left: 118px; padding-top: 20px">
@@ -35,12 +32,14 @@
             </ul >
           </div>
       </li>
-        <li><span class="title">发送时间</span> <span class="content">2018-07-13 10:55:55</span></li>
+        <li><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px" >
       <el-button >取消</el-button>
       <el-button type="primary" @click="onSubmit" >确定</el-button>
+      <!--<el-button type="primary" @click="preview" >预览</el-button>-->
+      <a target="_blank" href="http://10.16.3.43:8080/api/emi/planServices/plans/preview/21450cec-6256-43ce-9bb0-852b3bd515eb">预览</a>
     </div>
   </div>
 </template>
@@ -48,42 +47,34 @@
 export default {
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: '公告',
-        desc: '',
-        checked: false,
-        xtxx: '系统消息'
-      },
-      gg: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      seeplanList: {},
+      tasklist: [{taskName: ''}],
+      taskName: ''
     }
   },
   computed: {
   },
+  created () {
+    this.getplans()
+  },
   mounted () {
-    this.gg = this.$route.query.modify
   },
   methods: {
+    getplans () {
+      const planId = this.$route.query.planId;
+      this.axios.get('A2/planServices/plans/' + planId)
+        .then((res) => {
+          console.log(res);
+          this.seeplanList = res.data;
+          console.log(this.seeplanList)
+        })
+    },
+    preview () {
+      const planId = this.$route.query.planId;
+      this.axios.get('A2/planServices/plans/preview/' + planId)
+        .then((res) => {
+        })
+    },
     onSubmit () {
     },
     handleRemove (file, fileList) {
