@@ -16,17 +16,13 @@
       <el-form ref="form" :model="form" label-width="80px"  v-if="this.$route.query.status === 'atgment'">
         <el-form-item label="接收者">
             <div style="display: inline-block">
-            <el-checkbox label="移动端" name="type"></el-checkbox>
-            <el-checkbox label="PC端" name="type" v-model="form.checked"></el-checkbox>
+              <el-checkbox-group v-model="form.checkList">
+                <el-checkbox label= 1>移动端</el-checkbox>
+                <el-checkbox label= 2 name="type" >PC端</el-checkbox>
+              </el-checkbox-group>
              </div>
             <div style="display: inline-block; margin-left: 20px;" >
-              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!form.checked" style="width: 170px">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
+              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2') " style="width: 170px">
               </el-select>
             </div>
         </el-form-item>
@@ -51,11 +47,17 @@
         <el-form-item label="发送时间">
           <el-radio-group v-model="form.time" style="width: 100%">
             <div style="display: inline-block" >;
-              <el-radio label="实时" ></el-radio>
-              <el-radio label="定时"></el-radio>
+              <el-radio :label="1" >实时</el-radio>
+              <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
-              <el-input style=""  size = "mini"> <i slot="suffix" class="el-input__icon el-icon-date" style="color: #0785FD"></i></el-input>
+              <el-date-picker
+                value-format="yyyy-MM-dd HH:mm:ss"
+                v-model="form.publishTime"
+                :disabled = "!(form.time === 2)"
+                type="datetime"
+                placeholder="选择日期时间">
+              </el-date-picker>
             </div>
           </el-radio-group>
         </el-form-item>
@@ -89,7 +91,7 @@
       </div>
     </div>
     <div style="margin-top: 21px" >
-      <el-button >取消</el-button>
+      <el-button @click="back">取消</el-button>
       <el-button type="primary" @click="onSubmit" >确定</el-button>
     </div>
   </div>
@@ -100,12 +102,10 @@ export default {
     return {
       status: '',
       form: {
-        region: '',
-        date1: '',
-        date2: '',
-        resource: '',
+        publishTime: '',
+        terminal: 0,
+        checkList: [],
         desc: '',
-        checked: false,
         time: '',
         title: ''
       },
@@ -115,7 +115,8 @@ export default {
         desc: '',
         checked: false,
         time: ''
-      }
+      },
+      value: ''
     }
   },
   computed: {
@@ -129,7 +130,7 @@ export default {
   },
   methods: {
     showEditDialog (val) {
-      if (!val) {
+      if (this.$route.query.status === 'system') {
         let params = {
           emiMessage: {
             details: this.form1.desc,
@@ -143,19 +144,29 @@ export default {
             console.log(res);
           })
       } else {
+        if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
+          this.form.terminal = 1
+        } else if (this.form.checkList[0] === '2' && this.form.checkList.length === 1) {
+          this.form.terminal = 2
+        } else if (this.form.checkList.length === 2) {
+          this.form.terminal = 3
+        } else if (this.form.checkList.length === 0) {
+          this.form.terminal = 4
+        }
         let params = {
           emiMessage: {
             details: this.form.desc,
             messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
-            terminal: 1,
-            title: this.form.title
-          },
-          receiveRelations: [
-            {
-              messageId: 'string',
-              receiveUser: '移动端'
-            }
-          ]
+            terminal: this.form.terminal,
+            title: this.form.title,
+            publishTime: this.form.publishTime
+          }
+          // receiveRelations: [
+          //   {
+          //     messageId: 'string',
+          //     receiveUser: ''
+          //   }
+          // ]
         };
         this.axios.post('A2/messageService', params)
           .then((res) => {
@@ -163,7 +174,10 @@ export default {
           })
       }
     },
+    back () {
+    },
     onSubmit () {
+      console.log(this.form.publishTime)
     },
     handleRemove (file, fileList) {
       console.log(file, fileList);

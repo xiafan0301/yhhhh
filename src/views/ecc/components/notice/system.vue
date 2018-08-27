@@ -53,6 +53,11 @@
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column  label="序号" width="100"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.messageType" label="消息类型" min-width="140">
+        <template slot-scope="scope">
+          <span style="color: #13ce66;" v-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc3'">APP应用升级</span>
+          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc4'">应急小秘书</span>
+          <span style="color: #999;" v-else >民众互助</span>
+        </template>
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="内容" min-width="100"></el-table-column>
       <el-table-column prop="emiMessage.publishUser" label="发布用户" min-width="100">
@@ -60,7 +65,13 @@
       <el-table-column prop="emiMessage.publishUnit" label="发布单位" min-width="100">
       </el-table-column>
       <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="120"></el-table-column>
-      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="120"></el-table-column>
+      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="120">
+        <template slot-scope="scope">
+          <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
+          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
+          <span style="color: #999;" v-else >已撤销</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
         width="150">
@@ -71,6 +82,18 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="bg-plan-tbp">
+      <el-pagination
+        background
+        @size-change="pagerSizeChange"
+        @current-change="pagerCurrChange"
+        :current-page="pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, sizes, jumper"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
@@ -82,7 +105,7 @@ export default {
         beginTime: null,
         endTime: null,
         publishState: 0,
-        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4',
         publishUnitId: '',
         receiverId: '',
         isReceive: '',
@@ -127,7 +150,7 @@ export default {
         .then((res) => {
           console.log(res);
           this.tableData = res.data.list;
-          this.pagination.total = res.data.total;
+          this.total = res.data.total;
         })
         .catch(() => {
         });
@@ -135,6 +158,16 @@ export default {
     edit () {
     },
     doSearch () {
+    },
+    // 分页
+    pagerSizeChange (val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.getTableData();
+    },
+    pagerCurrChange (val) {
+      this.pageNum = val;
+      this.getTableData();
     },
     showEditDialog (status) {
       // this.editDialogVisible = flag;
@@ -159,5 +192,9 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .bg-plan-tbp{
+      padding: 20px 0;
+      text-align: center;
+    }
   }
 </style>
