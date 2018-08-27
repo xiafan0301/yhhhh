@@ -951,8 +951,6 @@ export default {
     childDataListTwo: { // 监听类型二的子项
       handler: function (newVal) {
         let result = [];
-        console.log('33333')
-        console.log(this.contentItemListTwo)
         this.contentItemListTwo.map((items, index) => {
           if (items.contentSubItemList) {
             items.contentSubItemList.map((item, idx) => {

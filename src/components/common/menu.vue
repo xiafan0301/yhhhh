@@ -16,6 +16,11 @@
           <i class="bg-mu-icon bg-mu-icon3"></i>地图数据
         </router-link>
       </li>
+      <li>
+        <router-link :to="{ name: 'drawEdge'}" class="as-ellipsis">
+          <i class="bg-mu-icon bg-mu-icon3"></i>地图绘边
+        </router-link>
+      </li>
       <!--<li>
         <router-link :to="{ name: 'style'}" class="as-ellipsis">
           <i class="bg-mu-icon bg-mu-icon4"></i>样式维护
@@ -23,7 +28,7 @@
       </li>-->
       <li>
         <router-link :to="{ name: 'cas'}" class="as-ellipsis">
-          <i class="bg-mu-icon bg-mu-icon4"></i>视频监控
+          <i class="bg-mu-icon bg-mu-icon4"></i>设备管理
         </router-link>
       </li>
     </ul>

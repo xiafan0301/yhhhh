@@ -16,8 +16,8 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://10.16.3.40:8080',
-    // dev: 'http://10.16.4.18:8080',
+    // dev: 'http://10.16.3.40:8080',
+    dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
   },
@@ -88,4 +88,11 @@ export const plateConfigData = {
     dataType: 1,
     limit: [5] // 0不限制  >0限制
   }
+};
+
+// 高德地图 溆浦县 adcode
+export const mapXupuxian = {
+  adcode: '431224',
+  name: '溆浦县',
+  center: [110.596015, 27.907662]
 };
