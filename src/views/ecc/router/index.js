@@ -45,6 +45,19 @@ import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
 import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
 import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
 import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
+// 系统管理--组织架构
+import systemManage from '@/views/ecc/components/systemManage/systemManage.vue';
+import organList from '@/views/ecc/components/systemManage/organList.vue';
+// import organizationDetail from '@/views/user/organization/detail.vue';
+// 系统管理--项目用户
+import projectUser from '@/views/ecc/components/user/project-user/list.vue';
+import userList from '@/views/ecc/components/user/project-user/user-list.vue';
+import groupList from '@/views/ecc/components/user/project-user/group-list.vue';
+import userCreate from '@/views/ecc/components/user/project-user/user-create.vue';
+// 系统管理--角色管理
+import role from '@/views/ecc/components/user/role/list.vue';
+// 系统管理--权限管理
+import authority from '@/views/ecc/components/user/authority/list.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -115,6 +128,16 @@ export default new Router({
             {path: 'linkageDetailEnd', name: 'linkage-detail-end', component: linkageDetailEnd},
             {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat},
             {path: 'feedback', name: 'feedback', component: feedback}
+          ]
+        },
+        {
+          path: 'systemManage',
+          component: systemManage,
+          children: [
+            {path: 'organList', name: 'organ-list', component: organList},
+            {path: 'user-create', name: 'user-create', component: userCreate},
+            {path: 'role', name: 'role', component: role},
+            {path: 'authority', name: 'authority', component: authority}
           ]
         }
       ]
