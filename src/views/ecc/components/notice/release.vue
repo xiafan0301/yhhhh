@@ -1,15 +1,12 @@
 <template>
   <div class="bg-release">
-    <div style=" margin-bottom: 20px; position: relative">
+    <div style=" margin-bottom: 20px;">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="this.$route.query.status === 'atgment'">公告管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'system'}"  v-if="this.$route.query.status === 'system'">系统消息</el-breadcrumb-item>
         <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
       </el-breadcrumb>
-      <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog()" icon="el-icon-plus">发布</el-button>
-      </div>
     </div>
     <div class="bg-release-cot">
       <div style="width: 500px">
@@ -129,7 +126,7 @@ export default {
     }
   },
   methods: {
-    showEditDialog (val) {
+    onSubmit (val) {
       if (this.$route.query.status === 'system') {
         let params = {
           emiMessage: {
@@ -175,9 +172,6 @@ export default {
       }
     },
     back () {
-    },
-    onSubmit () {
-      console.log(this.form.publishTime)
     },
     handleRemove (file, fileList) {
       console.log(file, fileList);

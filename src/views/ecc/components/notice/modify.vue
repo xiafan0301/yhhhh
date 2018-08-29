@@ -63,7 +63,7 @@
       </el-form>
       <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'modifysystem'">
         <el-form-item label="接收者">
-          <el-checkbox label="移动端" name="type" v-model="form1.resource"></el-checkbox>
+          <el-checkbox label="移动端" name="type" v-model="form1.resource" disabled></el-checkbox>
         </el-form-item>
         <el-form-item label="类型">
           <el-select v-model="form1.region" placeholder="系统消息" disabled style="width: 500px">
@@ -138,25 +138,27 @@ export default {
       let messageId = this.$route.query.messageId;
       this.axios.get('A2/messageService/' + messageId)
         .then((res) => {
-          console.log(res);
-          if (res.data.emiMessage.terminal === 1) {
-            this.form.checkList.push('1')
-          } else if (res.data.emiMessage.terminal === 2) {
-            this.form.checkList.push('2')
-          } else if (res.data.emiMessage.terminal === 3) {
-            this.form.checkList.push('2', '1')
-          } else if (res.data.emiMessage.terminal === 4) {
-            this.form.checkList.push()
+          if (this.$route.query.status === 'modifyatgment') {
+            console.log(res);
+            if (res.data.emiMessage.terminal === 1) {
+              this.form.checkList.push('1')
+            } else if (res.data.emiMessage.terminal === 2) {
+              this.form.checkList.push('2')
+            } else if (res.data.emiMessage.terminal === 3) {
+              this.form.checkList.push('2', '1')
+            } else if (res.data.emiMessage.terminal === 4) {
+              this.form.checkList.push()
+            }
+            this.form.title = res.data.emiMessage.title;
+            this.form.desc = res.data.emiMessage.details;
+            if (res.data.emiMessage.publishTime === null) {
+              this.form.time = 1
+            } else {
+              this.form.time = 2;
+              this.form.publishTime = res.data.emiMessage.publishTime;
+            }
+            this.form.messageType = res.data.emiMessage.messageType
           }
-          this.form.title = res.data.emiMessage.title;
-          this.form.desc = res.data.emiMessage.details;
-          if (res.data.emiMessage.publishTime === null) {
-            this.form.time = 1
-          } else {
-            this.form.time = 2;
-            this.form.publishTime = res.data.emiMessage.publishTime;
-          }
-          this.form.messageType = res.data.emiMessage.messageType
         })
     },
     onSubmit () {

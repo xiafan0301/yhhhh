@@ -77,7 +77,7 @@
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text"  @click="modify('modifysystem')">修改</el-button>
+          <el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -173,8 +173,8 @@ export default {
       // this.editDialogVisible = flag;
       this.$router.push({name: 'notice-release', query: {status: status}});
     },
-    modify (status) {
-      this.$router.push({name: 'notice-modify', query: {status: status}});
+    modify (status, scope) {
+      this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
     modifyxt () {
       this.visible2 = false;
