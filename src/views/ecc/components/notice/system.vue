@@ -78,7 +78,7 @@
         <template slot-scope="scope">
           <el-button size="mini" type="text" @click="see()">查看</el-button>
           <el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>
-          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+          <el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -132,6 +132,37 @@ export default {
         .then((res) => {
           this.messageTypeList = res.data;
         })
+    },
+    del (scope) {
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (scope) {
+          console.log(scope.messageId);
+          const params = {
+            messageId: scope.messageId
+          };
+          this.axios.delete('A2/messageService/' + scope.messageId, {params})
+            .then((res) => {
+              if (res) {
+                this.getTableData();
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              } else {
+                this.$message.error('删除失败');
+              }
+            })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
     getTableData () {
       let params = {

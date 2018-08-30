@@ -1,15 +1,12 @@
 <template>
   <div class="bg-release">
-    <div style=" margin-bottom: 20px;position: relative">
+    <div style=" margin-bottom: 20px">
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}"  v-if="this.$route.query.status === 'modifyatgment'">公告管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'system' }"  v-if="this.$route.query.status === 'modifysystem'">系统消息</el-breadcrumb-item>
         <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
       </el-breadcrumb>
-      <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">发布</el-button>
-      </div>
     </div>
     <div class="bg-release-cot">
       <el-form ref="form" :model="form" label-width="80px"  v-if="this.$route.query.status === 'modifyatgment'">
@@ -63,10 +60,13 @@
       </el-form>
       <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'modifysystem'">
         <el-form-item label="接收者">
-          <el-checkbox label="移动端" name="type" v-model="form1.resource" disabled></el-checkbox>
+          <el-checkbox label="移动端" name="type" v-model="form1.resource" disabled ></el-checkbox>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="form1.region" placeholder="系统消息" disabled style="width: 500px">
+          <el-select v-model="form1.type" placeholder="系统消息" style="width: 500px">
+            <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
+            <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
+            <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
@@ -78,11 +78,17 @@
         <el-form-item label="发送时间">
           <el-radio-group v-model="form1.time" style="width: 100%">
             <div style="display: inline-block" >;
-              <el-radio label="实时" ></el-radio>
-              <el-radio label="定时"></el-radio>
+              <el-radio :label="1" >实时</el-radio>
+              <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
-              <el-input style=""  size = "mini"><i slot="suffix" class="el-input__icon el-icon-date" style="color: #0785FD"></i></el-input>
+              <el-date-picker
+                value-format="yyyy-MM-dd HH:mm:ss"
+                v-model="form1.publishTime"
+                :disabled = "!(form1.time === 2)"
+                type="datetime"
+                placeholder="选择日期时间">
+              </el-date-picker>
             </div>
           </el-radio-group>
         </el-form-item>
@@ -109,14 +115,11 @@ export default {
         messageType: ''
       },
       form1: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
+        time: '',
+        publishTime: '',
+        type: '',
         resource: true,
-        desc: '',
-        checked: false,
-        xtxx: '系统消息'
+        desc: ''
       },
       value: ''
     }
@@ -158,41 +161,64 @@ export default {
               this.form.publishTime = res.data.emiMessage.publishTime;
             }
             this.form.messageType = res.data.emiMessage.messageType
+          } else {
+            if (res.data.emiMessage.publishTime === null) {
+              this.form1.time = 1
+            } else {
+              this.form1.time = 2;
+            }
+            this.form1.desc = res.data.emiMessage.details;
+            this.form1.publishTime = res.data.emiMessage.publishTime;
+            this.form1.type = res.data.emiMessage.messageType
           }
         })
     },
     onSubmit () {
-      if (this.form.time === 1) {
-        this.form.publishTime = null
+      if (this.$route.query.status === 'modifyatgment') {
+        if (this.form.time === 1) {
+          this.form.publishTime = null
+        }
+        if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
+          this.form.terminal = 1
+        } else if (this.form.checkList[0] === '2' && this.form.checkList.length === 1) {
+          this.form.terminal = 2
+        } else if (this.form.checkList.length === 2) {
+          this.form.terminal = 3
+        } else if (this.form.checkList.length === 0) {
+          this.form.terminal = 4
+        }
+        console.log(this.form.publishTime);
+        let messageId = this.$route.query.messageId;
+        let params = {
+          messageId: messageId,
+          title: this.form.title,
+          details: this.form.desc,
+          messageType: this.form.messageType,
+          publishTime: this.form.publishTime,
+          terminal: this.form.terminal
+        };
+        this.axios.put('A2/messageService/updateOne', params)
+          .then((res) => {
+            this.$router.push({name: 'notice-atmanagementList'})
+          })
+          .catch(() => {
+          });
+      } else {
+        let messageId = this.$route.query.messageId;
+        let params = {
+          messageId: messageId,
+          details: this.form1.desc,
+          messageType: this.form1.type,
+          publishTime: this.form1.publishTime,
+          terminal: 1
+        };
+        this.axios.put('A2/messageService/updateOne', params)
+          .then((res) => {
+            this.$router.push({name: 'system'})
+          })
+          .catch(() => {
+          });
       }
-      if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
-        this.form.terminal = 1
-      } else if (this.form.checkList[0] === '2' && this.form.checkList.length === 1) {
-        this.form.terminal = 2
-      } else if (this.form.checkList.length === 2) {
-        this.form.terminal = 3
-      } else if (this.form.checkList.length === 0) {
-        this.form.terminal = 4
-      }
-      console.log(this.form.publishTime);
-      let messageId = this.$route.query.messageId;
-      let params = {
-        messageId: messageId,
-        title: this.form.title,
-        details: this.form.desc,
-        messageType: this.form.messageType,
-        publishTime: this.form.publishTime,
-        terminal: this.form.terminal
-        // 'where.receiverId': this.searchForm.receiverId,
-        // 'where.isReceive': this.searchForm.isReceive,
-        // 'where.publishTime': this.searchForm.publishTime,
-      };
-      this.axios.put('A2/messageService/updateOne', params)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch(() => {
-        });
     },
     handleRemove (file, fileList) {
       console.log(file, fileList);
