@@ -4,16 +4,15 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-materialList'}">物资管理</el-breadcrumb-item>
-        <el-breadcrumb-item >查看仓库</el-breadcrumb-item>
+        <el-breadcrumb-item >查看物资</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">
       <ul class="listxf" >
-        <li><span class="title">仓库名称</span><span class="content">{{this.obj.warehouseName}}</span></li>
-        <li><span class="title">仓库地点</span><span class="content"> {{this.obj.coordinate}}</span></li>
-        <li><span class="title">上报单位</span><span class="content"> {{this.obj.reportingUnit}}</span></li>
-        <li><span class="title">负责人</span><span class="content"> {{this.obj.administrators}}</span></li>
-        <li><span class="title">联系电话</span><span class="content"> {{this.obj.adminTel}}</span></li>
+        <li><span class="title">资源名称</span><span class="content">{{this.obj.materialsName}}</span></li>
+        <li><span class="title">数量</span><span class="content"> {{this.obj.amount}}</span></li>
+        <li><span class="title">单位</span><span class="content"> {{this.obj.measurementUnit}}</span></li>
+        <li><span class="title">所属仓库</span><span class="content"> {{this.obj.warehouseId}}</span></li>
         <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId}}</span></li>
         <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime}}</span></li>
       </ul>
@@ -29,39 +28,36 @@ export default {
   data () {
     return {
       obj: {
-        warehouseName: '',
-        warehouseAddress: '',
-        reportingUnit: '',
-        administrators: '',
-        adminTel: '',
+        materialsName: '',
+        amount: '',
+        measurementUnit: '',
+        warehouseId: '',
         authUserId: '',
-        createTime: '',
-        coordinate: 0
+        createTime: ''
       }
     }
   },
   created () {
-    this.getmaterialck()
+    this.getmaterial()
   },
   computed: {
   },
   mounted () {
   },
   methods: {
-    getmaterialck () {
-      const warehouseId = this.$route.query.warehouseId;
-      this.axios.get('A2/warehouseService/' + warehouseId)
+    getmaterial () {
+      const materialsId = this.$route.query.materialsId;
+      this.axios.get('A2/materialService/' + materialsId)
         .then((res) => {
           this.obj = res.data;
-          this.obj.coordinate = res.data.longitude + ',' + res.data.latitude
         })
     },
     back () {
       this.$router.push({name: 'emergency-materialList'});
     },
     onSubmit (status) {
-      const warehouseId = this.$route.query.warehouseId;
-      this.$router.push({name: 'emergency-addWarehouse', query: {status: status, warehouseId: warehouseId}});
+      const materialsId = this.$route.query.materialsId;
+      this.$router.push({name: 'emergency-addMaterial', query: {status: status, materialsId: materialsId}});
     }
   }
 }

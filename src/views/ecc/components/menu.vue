@@ -106,6 +106,33 @@ export default {
               url: '/linkage/linkageList'
             }
           ]
+        },
+        {
+          id: '6',
+          name: '系统管理',
+          icon: 'icon-xitong',
+          children: [
+            {
+              id: '6-1',
+              name: '组织架构',
+              url: '/systemManage/organList'
+            },
+            {
+              id: '6-2',
+              name: '项目用户',
+              url: '/project-user/user-list'
+            },
+            {
+              id: '6-3',
+              name: '角色管理',
+              url: '/user/role'
+            },
+            {
+              id: '6-4',
+              name: '权限管理',
+              url: '/user/authority'
+            }
+          ]
         }
       ],
       isActive: '1'

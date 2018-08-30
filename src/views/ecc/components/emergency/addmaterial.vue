@@ -29,8 +29,8 @@
         </el-form>
       </div>
       <div class='operation-btn-msg' >
-        <el-button >取消</el-button>
-        <el-button type="primary" @click="onSubmit(gg)" >确定</el-button>
+        <el-button @click="back">取消</el-button>
+        <el-button type="primary" @click="onSubmit()" >确定</el-button>
       </div>
     </div>
   </div>
@@ -53,12 +53,14 @@ export default {
   computed: {
   },
   created () {
-    this.getmaterial()
+    if (this.$route.query.status === 'modify') {
+      this.getmaterial()
+    }
   },
   mounted () {
-    if (this.$route.params.status === 'add') {
+    if (this.$route.query.status === 'add') {
       this.status = '添加物资'
-    } else if (this.$route.params.status === 'modify') {
+    } else if (this.$route.query.status === 'modify') {
       this.status = '修改物资'
     }
   },
@@ -67,23 +69,26 @@ export default {
       const materialsId = this.$route.query.materialsId;
       this.axios.get('A2/materialService/' + materialsId)
         .then((res) => {
-          console.log(res);
+          this.form = Object.assign({}, res.data);
         })
     },
     onSubmit (val) {
-      if (val) {
+      if (this.$route.query.status === 'add') {
         let params = this.form;
         this.axios.post('A2/materialService', params)
           .then((res) => {
-            console.log(res);
+            this.$router.push({name: 'emergency-materialList'});
           })
       } else {
-        let params = this.form1;
+        let params = this.form;
         this.axios.put('A2/materialService/updateOne', params)
           .then((res) => {
-            console.log(res);
+            this.$router.push({name: 'emergency-materialList'});
           })
       }
+    },
+    back () {
+      this.$router.push({name: 'emergency-materialList'});
     }
   }
 }

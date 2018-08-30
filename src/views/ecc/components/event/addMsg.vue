@@ -21,28 +21,19 @@
             <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <template v-if="this.$route.query.status !== 'add'">
-              <img
-                v-for='item in operationForm.attachmentList'
-                :src='item.url'
-                :key='item.attachmentId'
-                class='img-name'
-              />
-            </template>
-            <template v-else>
-              <el-upload
-                action="http://10.16.4.50:8001/api/network/upload/new"
-                list-type="picture-card"
-                accept=".png,.jpg,.bmp"
-                :before-upload='handleBeforeUpload'
-                :on-remove="handleRemove"
-                :on-success='handleSuccess'
-                :limit='9'
-              >
-                <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-                <span class='add-img-text'>添加图片</span>
-              </el-upload>
-            </template>
+            <el-upload
+              action="http://10.16.4.50:8001/api/network/upload/new"
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :file-list="operationForm.attachmentList"
+              :before-upload='handleBeforeUpload'
+              :on-remove="handleRemove"
+              :on-success='handleSuccess'
+              :limit='9'
+            >
+              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+              <span class='add-img-text'>添加图片</span>
+            </el-upload>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>

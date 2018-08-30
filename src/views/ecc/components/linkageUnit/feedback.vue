@@ -155,8 +155,9 @@ export default {
         })
         .catch(() => {})
     },
-    feedbackEvent (form) { // 结束事件
+    feedbackEvent (form) { // 反馈事件
       const eventId = this.$route.query.eventId;
+      const taskId = this.$route.query.taskId;
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.feedbackForm.taskStatus === '是') {
@@ -164,7 +165,7 @@ export default {
           } else {
             this.feedbackForm.taskStatus = '';
           }
-          this.axios.post('A2/taskServices/task/process/' + eventId, this.feedbackForm)
+          this.axios.post('A2/taskServices/task/process/' + eventId + '/' + taskId, this.feedbackForm)
             .then((res) => {
               if (res) {
                 console.log(res)
