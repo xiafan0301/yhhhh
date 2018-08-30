@@ -43,7 +43,11 @@ axios.interceptors.response.use(function (response) {
     } else if (_data.code === '10060002') {
       // 未登录
       msg = '登录已过期，请重新登录！';
-      window.location.href = './index.html#/login';
+      if (response.config.url.indexOf('emi') === 0) {
+        window.location.href = './ecc.html#/login';
+      } else {
+        window.location.href = './index.html#/login';
+      }
       window.location.reload();
     } else {
       msg = '访问出错';

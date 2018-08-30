@@ -120,7 +120,7 @@ export default {
             {
               id: '6-2',
               name: '项目用户',
-              url: '/project-user/user-list'
+              url: '/systemManage/user/user-list'
             },
             {
               id: '6-3',

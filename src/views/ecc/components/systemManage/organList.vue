@@ -8,8 +8,8 @@
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
-        <el-form-item style="width: 220px;">
-          <el-input placeholder='请输入部门名称搜索' style='width:110%' v-model='selectForm.organName'></el-input>
+        <el-form-item>
+          <el-input placeholder='请输入部门名称搜索' style="width: 250px;" v-model='selectForm.organName'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
@@ -293,6 +293,12 @@ export default {
     }
     .selectBtn {
       background-color: #0785FD;
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
     }
     .add-depart-box {
       margin-right: 20px;

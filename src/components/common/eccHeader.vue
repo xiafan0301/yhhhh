@@ -134,13 +134,13 @@ export default {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = '正在退出...';
             // ajax
-            _this.axios.delete('/authServices/logOut', []).then(function (res) {
+            _this.axios.get('A2/authServices/users/logout').then(function (res) {
               if (res) {
               }
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              // window.location.href = './index.html#/login';
+              // window.location.href = './ecc.html#/login';
               // window.location.reload();
               _this.$router.push({name: 'login'});
             }).catch(function () {
@@ -163,6 +163,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
   .vis-bg-header {
+    z-index: 1000;
     position: absolute; top: 0; left: 0;
     width: 100%; height: 62px;
     background-color: #0785FD;

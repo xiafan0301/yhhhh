@@ -2,10 +2,10 @@
   <div class="vis-bg-login">
     <div class="bg-login">
       <h1>XUPU SMART CITY</h1>
-      <h2>溆浦县智慧城市运营管理系统</h2>
+      <h2>溆浦县应急指挥管理系统</h2>
       <el-form style="padding: 0 60px;" :inline="false" ref="loginForm" :model="loginForm" :rules="loginFormRules" class="xs-lg-form">
-        <el-form-item prop="userName">
-          <el-input v-model="loginForm.userName" placeholder="请输入用户名" @keyup.enter.native="loginSubmit('loginForm')">
+        <el-form-item prop="userMobile">
+          <el-input v-model="loginForm.userMobile" placeholder="请输入用户名" @keyup.enter.native="loginSubmit('loginForm')">
             <i class="oa-login-ibg oa-login-ibg1" slot="prefix"></i>
           </el-input>
         </el-form-item>
@@ -15,7 +15,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%;" type="primary" :disabled="!loginForm.userName || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
+          <el-button style="width: 100%;" type="primary" :disabled="!loginForm.userMobile || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
         </el-form-item>
       </el-form>
       <p>后台管理系统@copyrightXXX</p>
@@ -23,17 +23,19 @@
   </div>
 </template>
 <script>
+import { cookieUserId, cookieUserName, cookieTime } from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
       loginForm: {
-        userName: 'aorise',
-        userPassword: '1234'
+        userMobile: '13576543210',
+        userPassword: '12345678'
       },
       loginBtnLoading: false,
       loginFormRules: {
-        userName: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+        userMobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
@@ -59,9 +61,17 @@ export default {
           // 登陆中 登录按钮不可用
           _this.loginBtnLoading = true;
           let params = this.loginForm;
-          _this.axios.post('/authServices/login?' + $.param(params)).then(function (response) {
+          _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
-              _this.$router.push({name: 'page'});
+              let oUser = response.data;
+              setCookie(cookieUserId, oUser.authUserId, cookieTime, '/');
+              // 保存用户姓名到cookie
+              setCookie(cookieUserName, oUser.userName, cookieTime, '/');
+              _this.$store.commit('setLoginUser', {loginUser: {
+                userId: oUser.authUserId,
+                userName: oUser.userName
+              }});
+              _this.$router.push({name: 'event-list'});
             }
             _this.loginBtnLoading = false;
           }).catch(function () {
