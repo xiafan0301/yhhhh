@@ -34,6 +34,7 @@ import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vu
 import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
 import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue'
 import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue'
+import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue'
 // 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
@@ -44,6 +45,10 @@ import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
 import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
 import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
 import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
+// 系统管理--组织架构
+import systemManage from '@/views/ecc/components/systemManage/systemManage.vue';
+import organList from '@/views/ecc/components/systemManage/organList.vue';
+// import organizationDetail from '@/views/user/organization/detail.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -70,7 +75,8 @@ export default new Router({
             {path: 'addPlan', name: 'emergency-addPlan', component: emergencyAddPlan},
             {path: 'seePlan', name: 'emergency-seePlan', component: emergencySeePlan},
             {path: 'materialList', name: 'emergency-materialList', component: emergencyMaterialList},
-            {path: 'addMaterial/:status', name: 'emergency-addMaterial', component: emergencyAddMaterial},
+            {path: 'addMaterial', name: 'emergency-addMaterial', component: emergencyAddMaterial},
+            {path: 'seeMaterial', name: 'emergency-seeMaterial', component: emergencySeeMaterial},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
             {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
           ]
@@ -113,6 +119,13 @@ export default new Router({
             {path: 'linkageDetailEnd', name: 'linkage-detail-end', component: linkageDetailEnd},
             {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat},
             {path: 'feedback', name: 'feedback', component: feedback}
+          ]
+        },
+        {
+          path: 'systemManage',
+          component: systemManage,
+          children: [
+            {path: 'organList', name: 'organ-list', component: organList}
           ]
         }
       ]

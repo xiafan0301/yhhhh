@@ -10,26 +10,40 @@
     <div style=" width: 20%; height:500px; background-color: #FAFAFA" class="warehouse">
       <div style="padding:20px 10px; box-sizing: border-box" class="clearfix">
         <span class="doubt" style="display: inline-block; margin-top: 8px;color:#fff; margin-right: 5px">?</span>
-        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #555555; font-weight:bold" >仓库名称</span><el-button style="float: right;" size="small" @click.native="showEditDialog(true)">添加仓库</el-button>
+        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #555555; font-weight:bold" >仓库名称</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
-      <ul>
-        <li @click="registrationChoice(0)" :class="{active: visitType === 0}"> 所有仓库</li>
-        <li @click="registrationChoice(2)" :class="{active: visitType === 2}">应急A仓 <el-popover placement="bottom"  width="100px" trigger="click">
-          <div style="text-align: center; margin: 0;">
-            <el-button type="text" @click="seeck" style="display: block; margin: 0 auto;">查看</el-button>
-            <el-button type="text"  @click="modifyck" style="display: block; margin: 0 auto">修改</el-button>
-            <el-button type="text"  @click="visible2 = false" style="display: block; margin: 0 auto">删除</el-button>
-          </div>
-          <div slot="reference"><i></i><i></i><i></i></div></el-popover></li>
-        <li @click="registrationChoice(1)" :class="{active: visitType === 1}">应急A仓 <div><i></i><i></i><i></i></div></li>
-        <li @click="registrationChoice(3)" :class="{active: visitType === 3}">应急A仓 <div><i></i><i></i><i></i></div></li>
-      </ul>
+        <div @click="registrationChoice(0)" :class="{active: visitType === 0}" style="padding-bottom: 50px"> 所有仓库</div>
+        <div>
+          <el-table
+            :data="tableDatack"
+            style="width: 100%;" width="60%">
+            <el-table-column
+              prop="warehouseName" >
+            </el-table-column>
+            <el-table-column width="40%">
+              <template slot-scope="scope">
+                <el-popover trigger="click" width="50" style="padding: 0" class="tanchu">
+                  <div style="text-align: center; margin: 0">
+                    <div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">
+                    <el-button type="text" @click.native="showEditDialog('modify', scope.row)">修改</el-button>
+                    </div>
+                    <div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">
+                      <el-button type="text" @click="seeck(scope.row)">查看</el-button>
+                    </div>
+                    <el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>
+                  </div>
+                <i class="icon iconfont" style="color: #0785FD;" slot="reference">&#xe6f4;</i>
+                </el-popover>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
     </div>
     <div style="width: 80%">
       <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
         <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
           <el-form-item >
-          <el-input v-model="searchForm.warehouseId" placeholder="搜索物资名称..." style="width: 220px" ></el-input>
+          <el-input v-model="searchForm.materialsName" placeholder="搜索物资名称..." style="width: 220px" ></el-input>
         </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="doSearch">查询</el-button>
@@ -54,9 +68,9 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text" slot="reference" @click="addmodify('modify',scope.row)">修改</el-button>
-          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+          <el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>
+          <el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>
+          <el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -71,18 +85,21 @@ export default {
       visible2: false,
       visitType: 0,
       searchForm: {
+        materialsName: '',
         warehouseId: '4b5833c6-97ae-11e8-b784-4fabfc31a6f4'
       },
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      tableData: [{streamType: '11'}]
+      tableData: [{streamType: '11'}],
+      tableDatack: []
     }
   },
   computed: {
   },
   created () {
     this.getTableData();
+    this.getTableDatack();
   },
   mounted () {
   },
@@ -93,6 +110,7 @@ export default {
         // 'where.endTime': this.searchForm.endTime,
         // 'where.publishState': this.searchForm.publishState,
         'where.warehouseId': this.searchForm.warehouseId,
+        'where.materialsName': this.searchForm.materialsName,
         // 'where.publishUnitId': this.searchForm.publishUnitId,
         // 'where.receiverId': this.searchForm.receiverId,
         // 'where.isReceive': this.searchForm.isReceive,
@@ -102,9 +120,20 @@ export default {
       };
       this.axios.get('A2/materialService/page?' + $.param(params))
         .then((res) => {
-          console.log(res);
           this.tableData = res.data.list;
           this.pagination.total = res.data.total;
+        })
+        .catch(() => {
+        });
+    },
+    getTableDatack () {
+      let params = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.axios.get('A2/warehouseService/page', params)
+        .then((res) => {
+          this.tableDatack = res.data.list;
         })
         .catch(() => {
         });
@@ -124,29 +153,73 @@ export default {
     edit () {
     },
     doSearch () {
+      this.getTableData();
     },
-    showEditDialog (flag) {
-      this.$router.push({name: 'emergency-addWarehouse', query: {modify: true}});
+    del (status, scope) {
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (scope) {
+          const params = {
+            materialsId: scope.materialsId,
+            warehouseId: scope.warehouseId
+          };
+          if (status === 'material') {
+            this.axios.delete('A2/materialService/' + scope.materialsId, {params})
+              .then((res) => {
+                if (res) {
+                  this.getTableData();
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                } else {
+                  this.$message.error('删除失败');
+                }
+              })
+          } else {
+            this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
+              .then((res) => {
+                if (res) {
+                  this.getTableDatack();
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                } else {
+                  this.$message.error('删除失败');
+                }
+              })
+          }
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     },
-    seeck () {
-      this.$router.push({name: 'emergency-seeWarehouse'});
+    showEditDialog (status, scope) {
+      if (status === 'add') {
+        this.$router.push({name: 'emergency-addWarehouse', query: {status: status}});
+      } else {
+        this.$router.push({name: 'emergency-addWarehouse', query: {status: status, warehouseId: scope.warehouseId}});
+      }
     },
-    modifyck () {
-      this.$router.push({name: 'emergency-addWarehouse', query: {modify: false}});
+    seeck (scope) {
+      this.$router.push({name: 'emergency-seeWarehouse', query: {status: status, warehouseId: scope.warehouseId}});
     },
     addmodify (status, scope) {
       if (status === 'add') {
-        this.$router.push({name: 'emergency-addMaterial', params: {status: status}});
+        this.$router.push({name: 'emergency-addMaterial', query: {status: status}});
       } else {
-        this.$router.push({name: 'emergency-addMaterial', params: {status: status, materialsId: scope.materialsId}});
+        this.$router.push({name: 'emergency-addMaterial', query: {status: status, materialsId: scope.materialsId}});
       }
     },
-    modifyxt () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
-    },
-    see () {
-      this.$router.push({name: 'emergency-addMaterial', query: {modify: true}, params: {plateId: '0'}});
+    see (scope) {
+      this.$router.push({name: 'emergency-seeMaterial', query: {status: status, materialsId: scope.materialsId}});
     }
   }
 }
@@ -163,29 +236,12 @@ export default {
         text-align: center;
         float: left;
       }
-      ul{
-        li{
-          height: 60px;
-          background-color: #fff;
-          border-bottom: 1px solid #EAEAEA;
-          padding: 20px 0 20px 20px;
-          position: relative;
-          .el-popover{
-            min-width: 100px!important;
-          }
-          div{
-            position: absolute;
-            top: 40%;
-            right: 5%;
-            i{
-              display: block;
-              width: 15px;
-              height: 2px;
-              background-color:#0785FD ;
-              margin-bottom: 4px;
-            }
-          }
+      .el-table /deep/ .el-table__header .has-gutter{
+          display: none !important;
         }
+      /deep/.el-popover {
+        padding: 0!important;
+        min-width: 100px!important;
       }
       .active{
         color: #ffffff;

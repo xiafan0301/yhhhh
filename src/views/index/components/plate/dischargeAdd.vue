@@ -40,11 +40,11 @@
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
                         <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" @blur="regValueSixNumber(valueContent[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
                           <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" @blur="regPercentSixNumber(percentValueOne[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -149,8 +149,8 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td class='cannot-modify'>{{items.itemName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regNumberThree(valueContentFour3[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regPercentNumberThree(percentValue3[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="percentValue3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -159,8 +159,8 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td class='cannot-modify'>{{items.itemName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regNumberFive(valueContentFour5[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regPercentNumberFive(percentValue5[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="percentValue5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -263,7 +263,7 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td class='cannot-modify'>{{items.itemName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regNumberThree(valueContentFour3[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContentFour3[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -272,7 +272,7 @@
                         <tr>
                           <span v-show='false'>{{items.plateAreaId = info.plateAreaId}}</span>
                           <td class='cannot-modify'>{{items.itemName}}</td>
-                          <td><input type="text" onkeyup="this.value=this.value.replace(/[^\-?\d.]/g, '')" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                          <td><input type="text" @blur="regNumberFive(valueContentFour5[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContentFour5[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         </tr>
                       </tbody>
                     </template>
@@ -523,6 +523,54 @@ export default {
     // this.setInitialData();
   },
   methods: {
+    regNumberThree (value, index, number) { // 类型四-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.valueContentFour3));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.valueContentFour3 = valueObj;
+    },
+    regNumberFive (value, index, number) { // 类型四-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.valueContentFour5));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.valueContentFour5 = valueObj;
+    },
+    regPercentNumberThree (value, index, number) { // 类型四-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.percentFour3));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.percentFour3 = valueObj;
+    },
+    regPercentNumberFive (value, index, number) { // 类型四-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.percentFour5));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.percentFour5 = valueObj;
+    },
+    regValueSixNumber (value, index, number) { // 类型六-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.valueContent));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.valueContent = valueObj;
+    },
+    regPercentSixNumber (value, index, number) { // 类型六-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.percentValueOne));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.percentValueOne = valueObj;
+    },
     preStep () {
       this.$store.commit('setProgressIndex', {progressIndex: 2});
       this.tip = '';

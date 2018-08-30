@@ -6,23 +6,33 @@
         <el-breadcrumb-item>预案管理</el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog(true)" icon="el-icon-plus">添加预案</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog('add')" icon="el-icon-plus">添加预案</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
-            <el-option label="预案类型" :value="0"></el-option>
+          <el-select v-model="searchForm.planType" style="width: 160px;" placeholder="预案类型">
+            <el-option
+              v-for="item in eventTypeList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 160px;" placeholder="设备状态">
-            <el-option label="适用事件等级" :value="0"></el-option>
+          <el-select v-model="searchForm.planLevel" style="width: 160px;" placeholder="适用事件等级">
+            <el-option
+              v-for="item in eventLevelList"
+              :key="item.dictId"
+              :label="item.dictContent"
+              :value="item.dictId">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-input v-model="searchForm.deviceStatus" placeholder="搜索预案名称..." style="width: 220px" ></el-input>
+          <el-input v-model="searchForm.planName" placeholder="搜索预案名称..." style="width: 220px" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
@@ -34,95 +44,170 @@
       :data="tableData"
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column prop="deviceName" label="序号" width="50" :show-overflow-tooltip="true" type="index"></el-table-column>
-      <el-table-column prop="protocolType" label="预案名称" min-width="100">
+      <el-table-column  label="序号" width="80"  type="index"></el-table-column>
+      <el-table-column prop="planName" label="预案名称" min-width="100">
+      </el-table-column>
+      <el-table-column prop="eventTypeName" label="预案类型" min-width="100"></el-table-column>
+      <el-table-column prop="levelNameList" label="适用事件等级" min-width="100">
         <template slot-scope="scope">
-          <span v-if="scope.row.protocolType == 1">http</span>
-          <span v-else-if="scope.row.deviceStatus == 2">https</span>
+          <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="deviceIp" label="预案类型" min-width="140"></el-table-column>
-      <el-table-column prop="channelId" label="适用事件等级" min-width="100"></el-table-column>
-      <el-table-column prop="streamType" label="创建用户" width="100">
+      <el-table-column prop="streamType" label="创建用户" min-width="100">
         <template slot-scope="scope">
-          <!--// stream 1：main stream  2：sub-stream  3：third stream  4：transcode stream-->
-          <span v-if="scope.row.streamType == 1">main stream</span>
-          <span v-else-if="scope.row.streamType == 2">sub-stream</span>
-          <span v-else-if="scope.row.streamType == 3">third stream</span>
-          <span v-else-if="scope.row.streamType == 4">transcode stream</span>
         </template>
       </el-table-column>
-      <el-table-column prop="zeroChannelFlag" label="发布单位" width="100">
-        <template slot-scope="scope">
-          <span v-if="scope.row.zeroChannelFlag">是</span>
-          <span v-else>否</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="deviceUserName" label="创建时间" width="120"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" min-width="100"></el-table-column>
       <el-table-column
         label="操作"
-        width="150">
+        min-width="100">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text" slot="reference" @click="modify()">修改</el-button>
+          <el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>
+          <el-button type="text"  @click="modify('modify', scope.row)">修改</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <div class="bg-plan-tbp">
+      <el-pagination
+        background
+        @size-change="pagerSizeChange"
+        @current-change="pagerCurrChange"
+        :current-page="pageNum"
+        :page-sizes="[10, 20, 50, 100]"
+        :page-size="pageSize"
+        layout="total, prev, pager, next, sizes, jumper"
+        :total="total">
+      </el-pagination>
+    </div>
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
       searchForm: {
-        deviceName: '',
-        deviceAddress: '',
-        deviceIp: '',
-        deviceStatus: 0
+        planType: '',
+        planLevel: '',
+        planName: ''
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
+      tableData: [],
+      eventLevelList: [{dictId: '', dictContent: ''}],
+      eventTypeList: []
     }
   },
   computed: {
   },
   mounted () {
   },
+  created () {
+    this.getTableData();
+    this.getEventType();
+    this.getEventLevel();
+  },
   methods: {
+    getTableData () {
+      let params = {
+        // 'where.beginTime': this.searchForm.beginTime,
+        // 'where.endTime': this.searchForm.endTime,
+        // 'where.publishState': this.searchForm.publishState,
+        'where.planType': this.searchForm.planType,
+        'where.planLevel': this.searchForm.planLevel,
+        'where.planName': this.searchForm.planName,
+        // 'where.isReceive': this.searchForm.isReceive,
+        // 'where.publishTime': this.searchForm.publishTime,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.axios.get('A2/planServices/plans?' + $.param(params))
+        .then((res) => {
+          console.log(res);
+          this.tableData = res.data.list;
+          this.total = res.data.total;
+        })
+        .catch(() => {
+        });
+    },
+    getEventType () {
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          this.eventTypeList = res.data;
+        })
+    },
+    getEventLevel () {
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          this.eventLevelList = res.data
+        })
+    },
+    del (scope) {
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (scope) {
+          const params = {
+            planId: scope.planId
+          };
+          this.axios.delete('A2/planServices/plans/' + scope.planId)
+            .then((res) => {
+              if (res) {
+                this.getTableData();
+                this.$message({
+                  type: 'success',
+                  message: '删除成功!'
+                });
+              } else {
+                this.$message.error('删除失败');
+              }
+            })
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
     edit () {
     },
     doSearch () {
+      this.getTableData();
     },
-    showEditDialog (flag) {
-      // this.editDialogVisible = flag;
-      this.$router.push({name: 'emergency-addPlan'});
+    searchFormReset () {
+      this.pageNum = 1;
+      this.searchForm.planType = '';
+      this.searchForm.planLevel = '';
+      this.searchForm.planName = '';
+      this.getTableData();
     },
-    modify () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: true}, params: {plateId: '0'}});
+    // 分页
+    pagerSizeChange (val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.getTableData();
+    },
+    pagerCurrChange (val) {
+      this.pageNum = val;
+      this.getTableData();
+    },
+    showEditDialog (status) {
+      this.$router.push({name: 'emergency-addPlan', query: {status: status}});
+    },
+    modify (status, scope) {
+      this.$router.push({name: 'emergency-addPlan', query: {status: status, planId: scope.planId}});
     },
     modifyxt () {
       this.visible2 = false;
       this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
     },
-    see () {
-      this.$router.push({name: 'emergency-seePlan', query: {modify: true}, params: {plateId: '0'}});
+    see (scope) {
+      this.$router.push({name: 'emergency-seePlan', query: {planId: scope.planId}});
     }
   }
 }
@@ -132,5 +217,9 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .bg-plan-tbp{
+      padding: 20px 0;
+      text-align: center;
+    }
   }
 </style>

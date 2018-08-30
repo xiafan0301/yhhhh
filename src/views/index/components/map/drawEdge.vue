@@ -88,7 +88,7 @@ export default {
       mouseTool: null,
       defaultCursor: '',
       zoom: 10,
-      zooms: [10, 17],
+      zooms: [9, 17],
 
       drawActive: false,
       dialogVisible: false,

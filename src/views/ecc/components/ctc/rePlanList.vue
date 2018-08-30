@@ -45,7 +45,6 @@
     <el-table
       style="width: 100%"
       :data='reservePlanList'
-      highlight-current-row
       class='ctc-table'
     >
       <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>

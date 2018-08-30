@@ -4,38 +4,37 @@
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-materialList'}" >物资管理</el-breadcrumb-item>
-        <el-breadcrumb-item  v-if="gg === true ">添加仓库</el-breadcrumb-item>
-        <el-breadcrumb-item  v-if="gg === false ">修改仓库</el-breadcrumb-item>
+        <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='add-msg-body'>
       <div class='add-form-person'>
         <el-form class='form-content-person' :model="form">
           <el-form-item label="仓库名称" label-width='150px'>
-            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
+            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.warehouseName">
             </el-input>
           </el-form-item>
           <el-form-item label="仓库地点" label-width='150px'>
-            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
+            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.coordinate">
             </el-input>
           </el-form-item>
           <el-form-item label="上报单位" label-width='150px'>
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
+            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.reportingUnit">
               <el-option label="联动单位" value="shanghai"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="负责人" label-width='150px'>
-            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
+            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.administrators">
             </el-input>
           </el-form-item>
           <el-form-item label="联系电话" label-width='150px'>
-            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.name">
+            <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.adminTel">
             </el-input>
           </el-form-item>
         </el-form>
       </div>
       <div class='operation-btn-msg' >
-        <el-button >取消</el-button>
+        <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="onSubmit" >确定</el-button>
       </div>
     </div>
@@ -45,53 +44,66 @@
 export default {
   data () {
     return {
+      status: '',
       form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: '',
-        desc: '',
-        checked: false,
-        time: ''
+        adminTel: '',
+        administrators: '',
+        coordinate: '',
+        reportingUnit: '1f1a9b3e-ddc3-4def-9825-aaa4c1f53458',
+        warehouseAddress: '',
+        warehouseId: '',
+        warehouseName: ''
       },
-      form1: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        resource: true,
-        desc: '',
-        checked: false,
-        time: ''
-      },
-      gg: '',
-      options: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      gg: ''
+    }
+  },
+  created () {
+    if (this.$route.query.status === 'modify') {
+      this.getmaterialck()
     }
   },
   computed: {
   },
   mounted () {
-    this.gg = this.$route.query.modify
+    if (this.$route.query.status === 'add') {
+      this.status = '添加仓库'
+    } else if (this.$route.query.status === 'modify') {
+      this.status = '修改仓库'
+    }
   },
   methods: {
+    getmaterialck () {
+      const warehouseId = this.$route.query.warehouseId;
+      this.axios.get('A2/warehouseService/' + warehouseId)
+        .then((res) => {
+          this.form = Object.assign({}, res.data);
+          this.form.coordinate = res.data.longitude + ',' + res.data.latitude
+        })
+    },
     onSubmit () {
+      if (this.$route.query.status === 'add') {
+        let params = this.form;
+        params.longitude = this.form.coordinate.split(',')[0];
+        params.latitude = this.form.coordinate.split(',')[1];
+        console.log(params);
+        this.axios.post('A2/warehouseService', params)
+          .then((res) => {
+            console.log(res);
+            this.$router.push({name: 'emergency-materialList'});
+          })
+      } else {
+        let params = this.form;
+        params.longitude = this.form.coordinate.split(',')[0];
+        params.latitude = this.form.coordinate.split(',')[1];
+        this.axios.put('A2/warehouseService/updateOne', params)
+          .then((res) => {
+            console.log(res);
+            this.$router.push({name: 'emergency-materialList'});
+          })
+      }
+    },
+    cancel () {
+      this.$router.push({name: 'emergency-materialList'});
     },
     handleRemove (file, fileList) {
       console.log(file, fileList);
