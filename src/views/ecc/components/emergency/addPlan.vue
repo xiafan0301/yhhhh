@@ -38,7 +38,7 @@
             <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
           <el-form-item label="附件" label-width='150px'>
-            <el-input  style='width: 389px; position: relative;'  v-model="form.attachmentName" class="xfinput" disabled>
+            <el-input  style='width: 389px; position: relative;'  v-model="form.attachmentName" class="xfinput" disabled  placeholder='未选择文件'>
             </el-input>
             <el-upload style="display: inline-block"
                        action="http://10.16.4.50:8001/api/network/upload/new"
@@ -61,8 +61,9 @@
           <el-form-item label="响应处置" label-width='150px'>
             <div style="width: 500px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" :value="item.departmentName">
             <el-form-item label="协同部门" label-position="left">
-              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" :value="form.taskList[index].departmentName">
+              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change">
                 <el-option
+                  :disabled="item.disabled"
                   v-for="item in  departmentsList"
                   :key="item.departmentId"
                   :label="item.departmentName"
@@ -76,11 +77,12 @@
               <el-form-item label="任务内容" label-position="left">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskList[index].taskContent"></el-input>
               </el-form-item>
+              <el-button type='text' @click="del(index)" v-if="index>0">删除</el-button>
             </div>
           </el-form-item>
           <div class='add-plan' @click="addPlan('taskForm')">
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-            <span class='add-img-text'>添加任务</span>
+            <span class='add-img-text'>添加协同部门</span>
           </div>
           <el-form-item style='margin-left: 150px'>
             <el-upload
@@ -118,9 +120,10 @@ export default {
           departmentName: '',
           taskName: '',
           taskContent: '',
-          departmentId: ''
+          departmentId: '',
+          taskId: ''
         }],
-        Url: '',
+        url: '',
         attachmentType: '',
         attachmentName: ''
       },
@@ -147,30 +150,37 @@ export default {
     }
   },
   methods: {
+    del (index) {
+      this.form.taskList.splice(index, 1)
+    },
+    change (val) {
+      this.departmentsList && this.departmentsList.map((item, index) => {
+        if (item.departmentId === val) {
+          this.departmentsList[index].disabled = true;
+        } else {
+          this.departmentsList[index].disabled = false;
+        }
+      });
+      console.log(this.departmentsList)
+    },
     addPlan () {
       this.form.taskList.push({departmentName: '',
         taskName: '',
         taskContent: '',
-        departmentId: ''});
-      this.staskList.push(this.tasklis);
+        departmentId: '',
+        taskId: ''});
+      console.log(this.departmentsList)
       // this.staskList = JSON.parse(JSON.stringify(this.form.taskList));
     },
     onSubmit () {
       if (this.$route.query.status === 'add') {
         this.departmentsList && this.departmentsList.map((item, index) => {
-          if (item.departmentId === this.form.taskList[0].departmentId) {
-            this.form.taskList[0].departmentName = item.departmentName;
-            console.log(this.form)
-          }
-        });
-        if (this.form.taskList.length === 2) {
-          this.departmentsList && this.departmentsList.map((item, index) => {
-            if (item.departmentId === this.form.taskList[1].departmentId) {
-              this.form.taskList[1].departmentName = item.departmentName;
-              console.log(this.form)
+          this.form.taskList && this.form.taskList.map((ite, ind) => {
+            if (item.departmentId === ite.departmentId) {
+              this.form.taskList[ind].departmentName = item.departmentName;
             }
           });
-        }
+        });
         let params = this.form;
         // let params = {
         //   attachmentName: this.form.attachmentName,
@@ -188,38 +198,47 @@ export default {
         //     }
         //   ],
         //   url: this.form.Url
-        // };
+        // // };
         this.axios.post('A2/planServices/plan', params)
           .then((res) => {
             this.$router.push({name: 'emergency-planList'})
           })
       } else {
         this.departmentsList && this.departmentsList.map((item, index) => {
-          if (item.departmentId === this.form.taskList[0].departmentId) {
-            this.form.taskList[0].departmentName = item.departmentName
-          }
+          this.form.taskList && this.form.taskList.map((ite, ind) => {
+            if (item.departmentId === ite.departmentId) {
+              this.form.taskList[ind].departmentName = item.departmentName;
+            }
+          });
         });
         this.form.attachmentType = dictType.fileId;
-        let params = {
-          attachmentName: this.form.attachmentName,
-          attachmentType: this.form.attachmentType,
-          eventType: this.form.eventType,
-          levelList: this.form.levelList,
-          planDetail: this.form.planDetail,
-          planId: this.$route.query.planId,
-          planName: this.form.planName,
-          taskList: [
-            {
-              departmentId: this.form.taskList[0].departmentId,
-              taskContent: this.form.taskList[0].taskContent,
-              taskId: this.form.taskList[0].taskId,
-              taskName: this.form.taskList[0].taskName,
-              departmentName: this.form.taskList[0].departmentName
-            }
-          ],
-          url: this.form.Url
-        };
-        console.log(this.form.Url);
+        let params = this.form;
+        params.planId = this.$route.query.planId;
+        if (this.form.url === null) {
+          this.form.url = '';
+          this.form.attachmentName = '';
+          this.form.attachmentType = '';
+        }
+        console.log(this.form);
+        // let params = {
+        //   attachmentName: this.form.attachmentName,
+        //   attachmentType: this.form.attachmentType,
+        //   eventType: this.form.eventType,
+        //   levelList: this.form.levelList,
+        //   planDetail: this.form.planDetail,
+        //   planId: this.$route.query.planId,
+        //   planName: this.form.planName,
+        //   taskList: [
+        //     {
+        //       departmentId: this.form.taskList[0].departmentId,
+        //       taskContent: this.form.taskList[0].taskContent,
+        //       taskId: this.form.taskList[0].taskId,
+        //       taskName: this.form.taskList[0].taskName,
+        //       departmentName: this.form.taskList[0].departmentName
+        //     }
+        //   ],
+        //   url: this.form.url
+        // };
         this.axios.put('A2/planServices/plans', params)
           .then((res) => {
             this.$router.push({name: 'emergency-planList'})
@@ -227,7 +246,7 @@ export default {
       }
     },
     back (item) {
-      console.log($('div')[this.label])
+      console.log(this.form.taskList)
     },
     getvalue () {
       console.log(this.options.label)
@@ -254,16 +273,17 @@ export default {
       const planId = this.$route.query.planId;
       this.axios.get('A2/planServices/plans/' + planId)
         .then((res) => {
-          console.log(res);
           this.form = Object.assign({}, res.data);
-          this.form.Url = res.data.url
+          this.form.url = res.data.url;
+          console.log(this.form.url);
+          console.log(this.form)
         })
     },
     submitUpload () {
       this.$refs.upload.submit();
     },
     handSuccess (response, file, fileList) {
-      this.form.Url = response.data.newFileName;
+      this.form.url = response.data.newFileName;
       this.form.attachmentType = dictType.fileId;
     },
     handpreview (file) {
@@ -319,11 +339,11 @@ export default {
               color: #C4C2C2;
               font-size: 13px;
               display: block;
-              width: 54px;
+              width: 100px;
               height: 13px;
               position: absolute;
               top: 25%;
-              left: 25%;
+              left: 0;
             }
           }
         }
@@ -356,16 +376,6 @@ export default {
       i {
         margin: 0 auto;
         font-weight: bold;
-      }
-      .add-img-text {
-        color: #C4C2C2;
-        font-size: 13px;
-        display: block;
-        width: 54px;
-        height: 13px;
-        position: absolute;
-        top: 25%;
-        left: 25%;
       }
     }
   }
