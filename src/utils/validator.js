@@ -56,3 +56,45 @@ export const valicoordinate = (rule, value, callback) => {
   }
   callback();
 };
+// 电话手机号码验证
+export const checkTel = (rule, value, callback) => {
+  if (value) {
+    let reg = /^((13|14|15|17|18)[0-9]{1}\d{8})$/;
+    if (!reg.test(value)) {
+      callback(new Error('手机格式不正确'));
+    } else {
+      callback();
+    }
+  }
+  callback()
+}
+
+/**
+ * 判断邮箱格式
+ */
+export const checkEmail = (rule, value, callback) => {
+  if (value) {
+    let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    if (!reg.test(value)) {
+      callback(new Error('邮箱格式填写错误'));
+    } else {
+      callback();
+    }
+  }
+  callback()
+}
+
+/**
+ * 判断身份证验证
+ */
+export const checkIdCard = (rule, value, callback) => {
+  if (value) {
+    let reg = /^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+    if (!reg.test(value)) {
+      callback(new Error('身份证格式不正确'));
+    } else {
+      callback();
+    }
+  }
+  callback()
+}

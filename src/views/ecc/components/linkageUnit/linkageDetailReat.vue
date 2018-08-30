@@ -189,7 +189,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='skipFeedBack'>反馈情况</el-button>
+      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' @click='skipFeedBack'>反馈情况</el-button>
     </div>
     <el-dialog
       title="操作提示"
@@ -210,44 +210,33 @@ export default {
   data () {
     return {
       closeCommentVisiable: false,
+      isDisabled: false, // 反馈按钮是否可点
       delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
+      styleObj: {
+        backgroundColor: '#dddddd'
+      },
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 5
       },
-      options1: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: '',
       eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
     }
   },
   mounted () {
+    if (this.$route.query.name === '已完成') {
+      this.isDisabled = true;
+    } else {
+      this.isDisabled = false;
+    }
     this.getEventDetail();
     this.getCommentList();
   },
   methods: {
-    skipFeedBack () { // 跳到事件结束页面
-      this.$router.push({name: 'feedback', query: {eventId: this.$route.query.eventId}});
-    },
-    skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+    skipFeedBack () { // 跳到反馈页面
+      this.$router.push({name: 'feedback', query: {eventId: this.$route.query.eventId, taskId: this.$route.query.taskId}});
     },
     back () { // 返回上一页
       this.$router.back(-1);
@@ -312,8 +301,6 @@ export default {
           })
           .catch(() => {})
       }
-    },
-    getTaskStatus () { // 获取任务状态
     }
   }
 }

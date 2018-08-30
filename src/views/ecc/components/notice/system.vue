@@ -76,8 +76,8 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see()">查看</el-button>
-          <el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>
+          <el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>
+          <el-button type="text"  @click="modify('modifysystem')">修改</el-button>
           <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
@@ -180,9 +180,9 @@ export default {
       this.visible2 = false;
       this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
     },
-    see () {
+    see (scope) {
       this.visible2 = false;
-      this.$router.push({name: 'notice-see', query: {modify: false}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-see', query: {modify: false, messageId: scope.messageId}, params: {plateId: '0'}});
     }
   }
 }

@@ -164,24 +164,29 @@ export default {
       this.$emit('setDataList', this.newDataList);
     },
     skipPages (value) { // 要跳转的页面
-      let obj = {};
-      obj = this.relationPageList.find((item) => {
-        return item.pageName === value;
-      });
-      this.relationPageList.map((item, index) => { // 当点击跳转页面时，对应的关联页面的值不能点
-        if (item.pageName === value) {
-          item.isDisabled = true;
-        } else {
-          item.isDisabled = false;
-        }
-        const list = item.plateList.filter((value, idx) => {
-          return value.plateType === 1;
+      if (value) {
+        let obj = {};
+        obj = this.relationPageList.find((item) => {
+          return item.pageName === value;
         });
-        if (list.length === 6) {
-          item.isDisabled = true;
-        }
-      });
-      this.newDataList.jumpPageId = obj.pageId;
+        console.log(obj)
+        this.relationPageList.map((item, index) => { // 当点击跳转页面时，对应的关联页面的值不能点
+          if (item.pageName === value) {
+            item.isDisabled = true;
+          } else {
+            item.isDisabled = false;
+          }
+          const list = item.plateList.filter((value, idx) => {
+            return value.plateType === 1;
+          });
+          if (list.length === 6) {
+            item.isDisabled = true;
+          }
+        });
+        this.newDataList.jumpPageId = obj.pageId;
+      } else {
+        this.newDataList.jumpPageId = '';
+      }
     },
     selectPages (value) {
       const serialNumber = this.$store.state.editPlateInfo.visPagePlate.visPlatePosition.serialNumber;

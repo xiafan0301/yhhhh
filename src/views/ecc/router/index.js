@@ -45,6 +45,10 @@ import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
 import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
 import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
 import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
+// 系统管理--组织架构
+import systemManage from '@/views/ecc/components/systemManage/systemManage.vue';
+import organList from '@/views/ecc/components/systemManage/organList.vue';
+// import organizationDetail from '@/views/user/organization/detail.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -115,6 +119,13 @@ export default new Router({
             {path: 'linkageDetailEnd', name: 'linkage-detail-end', component: linkageDetailEnd},
             {path: 'linkageDetailReat', name: 'linkage-detail-reat', component: linkageDetailReat},
             {path: 'feedback', name: 'feedback', component: feedback}
+          ]
+        },
+        {
+          path: 'systemManage',
+          component: systemManage,
+          children: [
+            {path: 'organList', name: 'organ-list', component: organList}
           ]
         }
       ]

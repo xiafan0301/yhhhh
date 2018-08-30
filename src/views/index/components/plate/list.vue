@@ -173,7 +173,7 @@ export default {
         this.axios.get('/plateServices/managers/' + plate.plateId)
           .then((res) => {
             if (res) {
-              console.log(res)
+              // console.log(res)
               const data = {
                 configId: res.data.configId,
                 configCode: plate.configCode,

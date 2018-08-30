@@ -61,7 +61,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table style="width: 100%" :data='eventDataList' highlight-current-row class='event-table'>
+    <el-table style="width: 100%" :data='eventDataList' class='event-table'>
       <el-table-column fixed label="事件编号" prop='eventCode' align='center'></el-table-column>
       <el-table-column label="报案人" prop='reporterPhone' align='center'>
         <template slot-scope="scope">

@@ -468,6 +468,7 @@ export default {
               margin-left: 50px;
               padding: 1% 1%;
               position: relative;
+              border: 1px solid transparent;
               .enable-replan-list-num {
                 width: 70px;
                 color: #999999;
@@ -525,6 +526,7 @@ export default {
               padding-top: 1%;
               width: 580px;
               margin-left: 50px;
+              border: 1px solid transparent;
             }
             .active {
               &:hover {
