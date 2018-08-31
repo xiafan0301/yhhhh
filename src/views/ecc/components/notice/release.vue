@@ -181,9 +181,6 @@ export default {
     },
     back () {
     },
-    onSubmit () {
-      console.log(this.form)
-    },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
         const data = {
