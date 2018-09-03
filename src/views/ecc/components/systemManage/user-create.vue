@@ -1,10 +1,12 @@
 <template>
   <div class="um-main">
-    <el-breadcrumb class="breadcrumb" separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>{{plateName}}</el-breadcrumb-item>
-      <el-breadcrumb-item :to="{ path: '/main/user/user-list' }">用户管理</el-breadcrumb-item>
-      <el-breadcrumb-item>创建用户</el-breadcrumb-item>
-    </el-breadcrumb>
+    <div class='header'>
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+        <el-breadcrumb-item>项目用户</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>创建用户</span></el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <div class="um-box">
       <div class="box-header-tip">创建用户会为新用户直接创建账号，系统将密码以短信形式发送至新用户。</div>
       <div class="box-singer-create">
@@ -17,6 +19,9 @@
         :rules="rules">
           <el-form-item label="手机号码" prop="userMobile">
             <el-input v-model="createUserData.userMobile" placeholder="请输入用户手机号码"/>
+          </el-form-item>
+          <el-form-item label="岗位角色" prop="userMobile">
+            <el-input v-model="createUserData.userMobile" placeholder="请输入岗位角色"/>
           </el-form-item>
           <el-form-item label="姓名" prop="userName">
             <el-input v-model="createUserData.userName" placeholder="请输入用户姓名"/>
@@ -113,66 +118,72 @@ export default {
         userIdcard: [{ validator: checkIdCard, trigger: 'blur' }]
       }
     }
-  },
-  created () {
-    this.getSelectList();
-    this.getProvince();
-  },
-  methods: {
-    getSelectList () {
-      this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
-        .then(res => {
-          if (res) {
-            this.selectList = res.data.list;
-          }
-        })
-    },
-    // 获取省份列表
-    getProvince () {
-      let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.provinceData = res.data;
-          }
-        })
-    },
-    // 省份改变时
-    onProvinceChange (obj) {
-      this.cityData = {};
-      this.createUserData.city = null;
-      let params = { parentUid: obj.uid }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.cityData = res.data;
-          }
-        })
-    },
-    onSelectPhoto () {},
-    onCreateSinger () {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          this.createUserData.province = this.createUserData.province.cname;
-          this.axios.post('S2/auth/authServices/user', this.createUserData)
-            .then(res => {
-              if (res) {
-                this.$message.success('创建成功');
-                this.$router.push({name: 'user-list'});
-              }
-            })
-        }
-      })
-    },
-    goBack () {
-      this.$router.go(-1);
-    }
   }
+  // created () {
+  //   this.getSelectList();
+  //   this.getProvince();
+  // },
+  // methods: {
+  //   getSelectList () {
+  //     this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
+  //       .then(res => {
+  //         if (res) {
+  //           this.selectList = res.data.list;
+  //         }
+  //       })
+  //   },
+  //   // 获取省份列表
+  //   getProvince () {
+  //     let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
+  //     this.axios.get('/usersServices/areas', {params})
+  //       .then((res) => {
+  //         if (res) {
+  //           this.provinceData = res.data;
+  //         }
+  //       })
+  //   },
+  //   // 省份改变时
+  //   onProvinceChange (obj) {
+  //     this.cityData = {};
+  //     this.createUserData.city = null;
+  //     let params = { parentUid: obj.uid }
+  //     this.axios.get('/usersServices/areas', {params})
+  //       .then((res) => {
+  //         if (res) {
+  //           this.cityData = res.data;
+  //         }
+  //       })
+  //   },
+  //   onSelectPhoto () {},
+  //   onCreateSinger () {
+  //     this.$refs['form'].validate(valid => {
+  //       if (valid) {
+  //         this.createUserData.province = this.createUserData.province.cname;
+  //         this.axios.post('S2/auth/authServices/user', this.createUserData)
+  //           .then(res => {
+  //             if (res) {
+  //               this.$message.success('创建成功');
+  //               this.$router.push({name: 'user-list'});
+  //             }
+  //           })
+  //       }
+  //     })
+  //   },
+  //   goBack () {
+  //     this.$router.go(-1);
+  //   }
+  // }
 }
 </script>
 
 <style lang="scss" scoped>
 .um-main {
+  padding: 20px;
+  .header {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
   .um-box {
     .box-header-tip {
       background: #FFF;
@@ -190,7 +201,7 @@ export default {
       width: 49.5%;
       .title {
         height: 60px; line-height: 60px;
-        border-left: 5px solid #009688;
+        border-left: 5px solid #0785FD;
         border-bottom: 2px solid #F4F4F4;
         > span {
           font-size: 16px;
@@ -204,14 +215,14 @@ export default {
         .retire-page-radio {
           margin-left: 15px;
           /deep/ .el-radio__input.is-checked .el-radio__inner {
-            border-color: #009688;
-            background: #009688;
+            border-color: #0785FD;
+            background: #0785FD;
           }
           /deep/ .el-radio__input.is-checked+.el-radio__label {
             color: #606266;
           }
           /deep/ .el-radio__inner:hover {
-            border-color: #009688;
+            border-color: #0785FD;
           }
         }
         .el-form-item {
@@ -256,7 +267,7 @@ export default {
         }
         span:nth-child(2) {
           color: #fff;
-          background: #1AB394;
+          background: #0785FD;
         }
       }
     }
@@ -267,7 +278,7 @@ export default {
       float: right;
       .title {
         height:60px; line-height: 60px;
-        border-left: 5px solid #009688;
+        border-left: 5px solid #0785FD;
         border-bottom: 2px solid #F4F4F4;
         > span {
           font-size: 16px;
@@ -287,10 +298,10 @@ export default {
           width:130px;height:48px;
           line-height: 48px;
           text-align: center;
-          background:#F0FEFD;
+          background:#E1F2FF;
           border-radius:24px;
-          color: #009688;
-          border: 1px solid #009688;
+          color: #0785FD;
+          border: 1px solid #E1F2FF;
           font-size: 16px;
           margin: 0 auto;
           margin-top: 35px;
@@ -318,7 +329,7 @@ export default {
           }
           span:nth-child(2) {
             color: #fff;
-            background: #1AB394;
+            background: #0785FD;
           }
         }
       }

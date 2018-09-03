@@ -70,21 +70,11 @@
         width="200px"
         class-name="operate">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="查看组成员" placement="bottom">
-            <i class="iconfont" @click="onWatchNumber(scope.row)">&#xe6a2;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="编辑信息" placement="bottom">
-            <i class="iconfont" @click="onEditInfo(scope.row)">&#xe68f;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="管理成员" placement="bottom">
-            <i class="iconfont" @click="onAdminNumer(scope.row)">&#xe68e;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="配置角色" placement="bottom">
-            <i class="iconfont" @click="onEditRoles(scope.row)">&#xe6a6;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-            <i class="iconfont" @click="deleteList(scope.row)">&#xe6af;</i>
-          </el-tooltip>
+          <img title="查看组成员" src="../../../../assets/img/temp/select.png" @click="onEdit(scope.row)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEdit(scope.row)" />
+          <img title="管理成员" src="../../../../assets/img/temp/password.png" @click="onEdit(scope.row)" />
+          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEdit(scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onEdit(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -98,7 +88,7 @@
     </div>
     <!-- 查看弹框 -->
     <el-dialog
-      class="project-dialog watch-dialog"
+      class="watch-dialog"
       title="查看组成员"
       :visible.sync="watchDialogVisible"
       width="370px"
@@ -112,11 +102,10 @@
     </el-dialog>
     <!-- 新增用户组 -->
     <el-dialog
-      class="project-dialog"
       title="创建用户组"
       :visible.sync="newGroupDialogVisible"
       width="340px"
-      :append-to-body="true">
+      center>
       <div class="content">
         <div class="line-input">
           <span class="line-input-title">用户组名称</span>
@@ -128,17 +117,16 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer double-btn-80">
-        <el-button @click="newGroupDialogVisible = false">取 消</el-button>
-        <el-button @click="onConfirmNewGroup">保 存</el-button>
+        <el-button class="sureBtn" @click="newGroupDialogVisible = false">取 消</el-button>
+        <el-button class="noSureBtn" @click="onConfirmNewGroup">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 编辑用户组 -->
     <el-dialog
-      class="project-dialog"
       title="编辑用户组"
       :visible.sync="editGroupDialogVisible"
       width="340px"
-      :append-to-body="true">
+      center>
       <div class="content">
         <div class="line-input">
           <span class="line-input-title">用户组名称</span>
@@ -149,14 +137,14 @@
           <span>{{editGroupErrorMsg}}</span>
         </div>
       </div>
-      <span slot="footer" class="dialog-footer double-btn-80">
-        <el-button @click="editGroupDialogVisible = false">取 消</el-button>
-        <el-button @click="onConfirmEditGroup">保 存</el-button>
+      <span slot="footer" class="dialog-footer">
+        <el-button class="sureBtn" @click="editGroupDialogVisible = false">取消</el-button>
+        <el-button class="noSureBtn" @click="onConfirmEditGroup">保存</el-button>
       </span>
     </el-dialog>
     <!-- 管理成员弹框 -->
     <el-dialog
-      class="project-dialog edit-group-dialog"
+      class="edit-group-dialog"
       title="管理成员"
       :visible.sync="adminNumberdialogVisible"
       width="520px"
@@ -206,18 +194,16 @@
     </el-dialog>
     <!-- 删除弹框 -->
     <el-dialog
-      class="project-dialog"
       title="删除"
       :visible.sync="deletedialogVisible"
       width="340px"
-      :append-to-body="true">
-      <div class="content">
-        <p class="text two-line-tip">是否确认删除该用户及相关信息？</p>
-        <p class="text two-line-warning"><i class="el-icon-warning"></i>删除后数据不可恢复</p>
-      </div>
-      <span slot="footer" class="dialog-footer double-btn-80">
-        <el-button @click="onConfirmDelete">确 认</el-button>
-        <el-button @click="deletedialogVisible = false">取 消</el-button>
+      height='205px'
+      center>
+      <span style='text-align:center;color:#333333;font-size:14px'>是否确认删除该用户及相关信息?</span>
+      <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='deletDepart'>确认</el-button>
+        <el-button class='noSureBtn' @click="deletedialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -232,7 +218,7 @@ export default {
       },
       listData: {},
       loading: true,
-      watchDialogVisible: true, // 查看组成员弹框
+      watchDialogVisible: false, // 查看组成员弹框
       watchItem: {},
       editGroupDialogVisible: false, // 编辑组名弹框
       editGroupItem: {},
@@ -667,14 +653,6 @@ export default {
         }
       }
     }
-    /deep/ .el-table__empty-block {
-      min-height: 200px;
-      background: url(../../../../assets/img/no_data.png) no-repeat;
-      background-position: calc(50% - 3px) 34%;
-      .el-table__empty-text {
-        margin-top: 40px;
-      }
-    }
     /deep/ .table-header th {
       background: #F5F5F5;
       font-size: 14px;
@@ -727,8 +705,15 @@ export default {
   }
 }
 .watch-dialog {
+  /deep/ .el-dialog__header {
+    background: #F0F0F0 !important;
+    text-align: left !important;
+    color: #555555;
+    font-weight: bold;
+    font-size: 16px;
+  }
   /deep/ .el-dialog__body {
-    padding: 0 20px 40px 20px;
+    padding: 0 20px 10px 15px;
   }
   .content {
     .watch-title {
@@ -766,6 +751,13 @@ export default {
   margin-top: 10px;
 }
 .edit-group-dialog {
+  /deep/ .el-dialog__header {
+    background: #F0F0F0 !important;
+    text-align: left !important;
+    color: #555555;
+    font-weight: bold;
+    font-size: 16px;
+  }
   /deep/ .el-dialog__body {
     padding: 10px 20px 40px 20px;
   }
@@ -807,8 +799,8 @@ export default {
         line-height: 32px;
         text-align: center;
         border-radius: 16px;
-        background: #DDFDFA;
-        color: #009688;
+        background: #E1F2FF;
+        color: #0785FD;
         margin: 20px 0 0 20px;
         cursor: pointer;
       }
@@ -854,7 +846,7 @@ export default {
         line-height: 32px;
         text-align: center;
         border-radius: 4px;
-        background: #1AB394;
+        background: #0785FD;
         color: #FFF;
         margin: 20px 0 0 70px;
         cursor: pointer;

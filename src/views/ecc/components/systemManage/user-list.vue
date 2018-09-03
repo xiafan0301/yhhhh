@@ -22,7 +22,7 @@
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="showAddDialog">新建用户</el-button>
+        <el-button class='selectBtn add-depart' @click="onCreateProject">新建用户</el-button>
       </div>
     </div>
     <el-table
@@ -104,27 +104,12 @@
         width="200px"
         class-name="operate">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" content="编辑" placement="bottom">
-            <i class="iconfont" @click="onEdit(scope.row)">&#xe6a0;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="重置密码" placement="bottom">
-            <i class="iconfont" @click="resetPwdList(scope.row)">&#xe6c3;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="修改所属组" placement="bottom">
-            <i class="iconfont" @click="onEditGroups(scope.row)">&#xe6be;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="配置角色" placement="bottom">
-            <i class="iconfont" @click="onEditRoles(scope.row)">&#xe6a6;</i>
-          </el-tooltip>
-          <el-tooltip v-if="!scope.row.force" class="item" effect="dark" content="启用" placement="bottom">
-            <i class="iconfont" @click="onUpUser(scope.row)">&#xe6a8;</i>
-          </el-tooltip>
-          <el-tooltip v-else class="item" effect="dark" content="禁用" placement="bottom">
-            <i class="iconfont" @click="onForBidUser(scope.row)">&#xe6a9;</i>
-          </el-tooltip>
-          <el-tooltip class="item" effect="dark" content="删除" placement="bottom">
-            <i class="iconfont" @click="deleteList(scope.row)">&#xe6af;</i>
-          </el-tooltip>
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEdit(scope.row)" />
+          <img title="重置密码" src="../../../../assets/img/temp/password.png" @click="onEdit(scope.row)" />
+          <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEdit(scope.row)" />
+          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEdit(scope.row)" />
+          <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onEdit(scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onEdit(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -315,370 +300,373 @@ export default {
       currentPage: 1,
       closeShow: false
     }
-  }
+  },
   // created () {
   //   this.getList();
   //   this.getAllGroups();
   //   this.getProvince(); // 省份
   // },
-  // methods: {
-  //   onChange (val) {
-  //     console.log(val);
-  //   },
-  //   // 获取列表数据
-  //   getList () {
-  //     if (!this.filter['where.groupId']) { this.filter['where.groupId'] = null }
-  //     let params = Object.assign({}, this.filter, this.pagination, { 'where.proKey': this.$store.state.proKey });
-  //     this.axios.get('A3/authServices/users', {params})
-  //       .then(res => {
-  //         if (res) {
-  //           res.data.list.forEach(obj => {
-  //             if (obj.sysUserGroupInfos) {
-  //               obj.sysUserGroupInfos[obj.sysUserGroupInfos.length] = {
-  //                 allgroup: 3,
-  //                 isShowAllGroup: true
-  //               }
-  //             }
-  //             if (obj.sysUserRoleInfos) {
-  //               obj.sysUserRoleInfos[obj.sysUserRoleInfos.length] = {
-  //                 allgroup: 3,
-  //                 isShowAllGroup: true
-  //               }
-  //             }
-  //           });
-  //           this.listData = res.data;
-  //           this.loading = false;
-  //         }
-  //       })
-  //   },
-  //   onOpenAll (obj) {
-  //     obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].allgroup = 99999;
-  //     obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].isShowAllGroup = false;
-  //   },
-  //   onCloseAll (obj) {
-  //     obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].allgroup = 3;
-  //     obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].isShowAllGroup = true;
-  //   },
-  //   onOpenAllT (obj) {
-  //     obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].allgroup = 99999;
-  //     obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].isShowAllGroup = false;
-  //   },
-  //   onCloseAllT (obj) {
-  //     obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].allgroup = 3;
-  //     obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].isShowAllGroup = true;
-  //   },
-  //   // 获取筛选列表
-  //   getAllGroups () {
-  //     this.axios.get('A3/authServices/userGroups', {params: {'where.proKey': this.$store.state.proKey}})
-  //       .then(res => {
-  //         if (res) {
-  //           this.dropDownGroupList = res.data.list;
-  //         }
-  //       })
-  //   },
-  //   onEditGroups (obj) {
-  //     this.groupUserId = obj.uid;
-  //     this.selectGroups = [];
-  //     this.checkOutGroups = [];
-  //     this.allGroups = [];
-  //     this.checkInGroups = [];
-  //     obj.sysUserGroupInfos.forEach(item => {
-  //       if (item.uid && item.groupName) {
-  //         this.selectGroups.push({
-  //           uid: item.uid,
-  //           groupName: item.groupName
-  //         })
-  //       }
-  //     })
-  //     this.axios.get('A3/authServices/userGroups', {params: {'where.proKey': this.$store.state.proKey}})
-  //       .then(res => {
-  //         if (res) {
-  //           this.selectGroups.forEach(aa => {
-  //             res.data.list.forEach((bb, index) => {
-  //               if (aa.groupName === bb.groupName) {
-  //                 res.data.list.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           res.data.list.forEach(zz => {
-  //             this.allGroups.push({
-  //               uid: zz.uid,
-  //               groupName: zz.groupName
-  //             })
-  //           })
-  //         }
-  //       })
-  //     this.editGroupdialogVisible = true;
-  //   },
-  //   onEditRoles (obj) {
-  //     this.roleUserId = obj.uid;
-  //     this.selectRoles = [];
-  //     this.checkOutRoles = [];
-  //     this.allRoles = [];
-  //     this.checkInRoles = [];
-  //     obj.sysUserRoleInfos.forEach(item => {
-  //       if (item.uid && item.roleName) {
-  //         this.selectRoles.push({
-  //           uid: item.uid,
-  //           roleName: item.roleName
-  //         })
-  //       }
-  //     })
-  //     this.axios.get('A3/authServices/userRoles', {params: {'where.proKey': this.$store.state.proKey}})
-  //       .then(res => {
-  //         if (res) {
-  //           this.selectRoles.forEach(aa => {
-  //             res.data.list.forEach((bb, index) => {
-  //               if (aa.roleName === bb.roleName) {
-  //                 res.data.list.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           console.log(res.data.list);
-  //           res.data.list.forEach(zz => {
-  //             this.allRoles.push({
-  //               uid: zz.uid,
-  //               roleName: zz.roleName
-  //             })
-  //           })
-  //         }
-  //       })
-  //     this.newRoledialogVisible = true;
-  //   },
-  //   // 加入所选组
-  //   onAddSelectGroup () {
-  //     console.log(this.checkInGroups);
-  //     let params = {
-  //       proKey: this.$store.state.proKey,
-  //       uid: this.groupUserId,
-  //       uids: []
-  //     }
-  //     this.checkInGroups.forEach(cc => {
-  //       params.uids.push(cc.uid);
-  //     })
-  //     this.axios.post('A3/authServices/userBatchGroup', params)
-  //       .then(res => {
-  //         if (res) {
-  //           this.checkInGroups.forEach((aa, i) => {
-  //             this.allGroups.forEach((bb, index) => {
-  //               if (aa.groupName === bb.groupName) {
-  //                 this.allGroups.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           this.selectGroups.splice(this.selectGroups.length, 0, ...this.checkInGroups);
-  //           this.checkInGroups = [];
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 移出所选组
-  //   onOutSelectGroup () {
-  //     let params = {
-  //       proKey: this.$store.state.proKey,
-  //       uid: this.groupUserId,
-  //       uids: []
-  //     }
-  //     this.checkOutGroups.forEach(cc => {
-  //       params.uids.push(cc.uid);
-  //     })
-  //     this.axios.delete('A3/authServices/userBatchGroup', {data: params})
-  //       .then(res => {
-  //         if (res) {
-  //           this.checkOutGroups.forEach((aa, i) => {
-  //             this.selectGroups.forEach((bb, index) => {
-  //               if (aa.groupName === bb.groupName) {
-  //                 this.selectGroups.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           this.allGroups.splice(this.allGroups.length, 0, ...this.checkOutGroups);
-  //           this.checkOutGroups = [];
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 加入配置角色
-  //   onAddSelectRole () {
-  //     let params = {
-  //       proKey: this.$store.state.proKey,
-  //       userId: this.roleUserId,
-  //       roleIdList: []
-  //     }
-  //     this.checkInRoles.forEach(cc => {
-  //       params.roleIdList.push(cc.uid);
-  //     })
-  //     this.axios.post('A3/authServices/userBatchRole', params)
-  //       .then(res => {
-  //         if (res) {
-  //           this.checkInRoles.forEach((aa, i) => {
-  //             this.allRoles.forEach((bb, index) => {
-  //               if (aa.roleName === bb.roleName) {
-  //                 this.allRoles.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           this.selectRoles.splice(this.selectRoles.length, 0, ...this.checkInRoles);
-  //           this.checkInRoles = [];
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 移出配置角色
-  //   onOutSelectRole () {
-  //     let params = {
-  //       proKey: this.$store.state.proKey,
-  //       userId: this.roleUserId,
-  //       roleIdList: []
-  //     }
-  //     this.checkOutRoles.forEach(cc => {
-  //       params.roleIdList.push(cc.uid);
-  //     })
-  //     this.axios.delete('A3/authServices/userBatchRole', {data: params})
-  //       .then(res => {
-  //         if (res) {
-  //           this.checkOutRoles.forEach((aa, i) => {
-  //             this.selectRoles.forEach((bb, index) => {
-  //               if (aa.roleName === bb.roleName) {
-  //                 this.selectRoles.splice(index, 1);
-  //               }
-  //             })
-  //           })
-  //           this.allRoles.splice(this.allRoles.length, 0, ...this.checkOutRoles);
-  //           this.checkOutRoles = [];
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 创建用户
-  //   onCreateProject () {
-  //     this.$router.push({name: 'user-create'});
-  //   },
-  //   // 获取省份列表
-  //   getProvince () {
-  //     let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
-  //     this.axios.get('/usersServices/areas', {params})
-  //       .then((res) => {
-  //         if (res) {
-  //           this.provinceData = res.data;
-  //         }
-  //       })
-  //   },
-  //   // 省份改变时
-  //   onProvinceChange (obj) {
-  //     this.cityData = {};
-  //     this.editItem.city = null;
-  //     let params = { parentUid: obj.uid }
-  //     this.axios.get('/usersServices/areas', {params})
-  //       .then((res) => {
-  //         if (res) {
-  //           this.cityData = res.data;
-  //         }
-  //       })
-  //   },
-  //   // 编辑信息
-  //   onEdit (obj) {
-  //     this.editItem = obj;
-  //     this.editdialogVisible = true;
-  //   },
-  //   // 编辑信息确认
-  //   onConfirmEdit () {
-  //     let obj = {
-  //       uid: this.editItem.uid,
-  //       proKey: this.$store.state.proKey,
-  //       userName: this.editItem.userName,
-  //       userIdcard: this.editItem.userIdcard,
-  //       userSex: this.editItem.userSex,
-  //       userEmail: this.editItem.userEmail,
-  //       province: this.editItem.province.cname,
-  //       city: this.editItem.city
-  //     }
-  //     console.log(obj);
-  //     this.axios.put('A3/authServices/user', obj)
-  //       .then(res => {
-  //         if (res) {
-  //           this.$message.success('修改成功');
-  //           this.editdialogVisible = false;
-  //         }
-  //       })
-  //   },
-  //   // 启用
-  //   onUpUser (obj) {
-  //     let params = {
-  //       uid: obj.uid,
-  //       proKey: this.$store.state.proKey,
-  //       force: true
-  //     }
-  //     this.axios.put('A3/authServices/user', params)
-  //       .then(res => {
-  //         if (res) {
-  //           this.$message.success('启用成功');
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 禁用
-  //   onForBidUser (obj) {
-  //     let params = {
-  //       uid: obj.uid,
-  //       proKey: this.$store.state.proKey,
-  //       force: false
-  //     }
-  //     this.axios.put('A3/authServices/user', params)
-  //       .then(res => {
-  //         if (res) {
-  //           this.$message.success('禁用成功');
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 删除
-  //   deleteList (obj) {
-  //     this.deleteItem = obj;
-  //     this.deletedialogVisible = true;
-  //   },
-  //   onConfirmDelete () {
-  //     this.axios.delete('A3/authServices/user/' + this.deleteItem.uid + '?proKey=' + this.$store.state.proKey)
-  //       .then(res => {
-  //         if (res) {
-  //           this.$message.success('删除成功');
-  //           this.deletedialogVisible = false;
-  //           this.getList();
-  //         }
-  //       })
-  //   },
-  //   // 重置密码提示
-  //   resetPwdList (obj) {
-  //     this.resetPwddialogVisible = true;
-  //   },
-  //   // 重置密码确认提示
-  //   onConfirmResetPwd () {
-  //     this.resetPwddialogVisible = false;
-  //   },
-  //   // 过滤实时查询
-  //   onSelectChange () {
-  //     this.getList();
-  //   },
-  //   // 输入框查询
-  //   onSearch () {
-  //     this.closeShow = true;
-  //     this.getList();
-  //   },
-  //   // 清除输入框
-  //   onClear () {
-  //     this.filter['where.keyWord'] = '';
-  //     this.getList();
-  //     this.closeShow = false;
-  //   },
-  //   // 分页翻页
-  //   onPageChange (page) {
-  //     this.pagination.pageNum = page;
-  //     this.getList();
-  //   },
-  //   indexMethod (index) {
-  //     return index + 1 + 10 * (this.pagination.pageNum - 1);
-  //   }
-  // }
+  methods: {
+    onCreateProject () {
+      this.$router.push({name: 'user-create'});
+    }
+    // onChange (val) {
+    //   console.log(val);
+    // },
+    // // 获取列表数据
+    // getList () {
+    //   if (!this.filter['where.groupId']) { this.filter['where.groupId'] = null }
+    //   let params = Object.assign({}, this.filter, this.pagination, { 'where.proKey': this.$store.state.proKey });
+    //   this.axios.get('A3/authServices/users', {params})
+    //     .then(res => {
+    //       if (res) {
+    //         res.data.list.forEach(obj => {
+    //           if (obj.sysUserGroupInfos) {
+    //             obj.sysUserGroupInfos[obj.sysUserGroupInfos.length] = {
+    //               allgroup: 3,
+    //               isShowAllGroup: true
+    //             }
+    //           }
+    //           if (obj.sysUserRoleInfos) {
+    //             obj.sysUserRoleInfos[obj.sysUserRoleInfos.length] = {
+    //               allgroup: 3,
+    //               isShowAllGroup: true
+    //             }
+    //           }
+    //         });
+    //         this.listData = res.data;
+    //         this.loading = false;
+    //       }
+    //     })
+    // },
+    // onOpenAll (obj) {
+    //   obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].allgroup = 99999;
+    //   obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].isShowAllGroup = false;
+    // },
+    // onCloseAll (obj) {
+    //   obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].allgroup = 3;
+    //   obj.sysUserGroupInfos[obj.sysUserGroupInfos.length - 1].isShowAllGroup = true;
+    // },
+    // onOpenAllT (obj) {
+    //   obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].allgroup = 99999;
+    //   obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].isShowAllGroup = false;
+    // },
+    // onCloseAllT (obj) {
+    //   obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].allgroup = 3;
+    //   obj.sysUserRoleInfos[obj.sysUserRoleInfos.length - 1].isShowAllGroup = true;
+    // },
+    // // 获取筛选列表
+    // getAllGroups () {
+    //   this.axios.get('A3/authServices/userGroups', {params: {'where.proKey': this.$store.state.proKey}})
+    //     .then(res => {
+    //       if (res) {
+    //         this.dropDownGroupList = res.data.list;
+    //       }
+    //     })
+    // },
+    // onEditGroups (obj) {
+    //   this.groupUserId = obj.uid;
+    //   this.selectGroups = [];
+    //   this.checkOutGroups = [];
+    //   this.allGroups = [];
+    //   this.checkInGroups = [];
+    //   obj.sysUserGroupInfos.forEach(item => {
+    //     if (item.uid && item.groupName) {
+    //       this.selectGroups.push({
+    //         uid: item.uid,
+    //         groupName: item.groupName
+    //       })
+    //     }
+    //   })
+    //   this.axios.get('A3/authServices/userGroups', {params: {'where.proKey': this.$store.state.proKey}})
+    //     .then(res => {
+    //       if (res) {
+    //         this.selectGroups.forEach(aa => {
+    //           res.data.list.forEach((bb, index) => {
+    //             if (aa.groupName === bb.groupName) {
+    //               res.data.list.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         res.data.list.forEach(zz => {
+    //           this.allGroups.push({
+    //             uid: zz.uid,
+    //             groupName: zz.groupName
+    //           })
+    //         })
+    //       }
+    //     })
+    //   this.editGroupdialogVisible = true;
+    // },
+    // onEditRoles (obj) {
+    //   this.roleUserId = obj.uid;
+    //   this.selectRoles = [];
+    //   this.checkOutRoles = [];
+    //   this.allRoles = [];
+    //   this.checkInRoles = [];
+    //   obj.sysUserRoleInfos.forEach(item => {
+    //     if (item.uid && item.roleName) {
+    //       this.selectRoles.push({
+    //         uid: item.uid,
+    //         roleName: item.roleName
+    //       })
+    //     }
+    //   })
+    //   this.axios.get('A3/authServices/userRoles', {params: {'where.proKey': this.$store.state.proKey}})
+    //     .then(res => {
+    //       if (res) {
+    //         this.selectRoles.forEach(aa => {
+    //           res.data.list.forEach((bb, index) => {
+    //             if (aa.roleName === bb.roleName) {
+    //               res.data.list.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         console.log(res.data.list);
+    //         res.data.list.forEach(zz => {
+    //           this.allRoles.push({
+    //             uid: zz.uid,
+    //             roleName: zz.roleName
+    //           })
+    //         })
+    //       }
+    //     })
+    //   this.newRoledialogVisible = true;
+    // },
+    // // 加入所选组
+    // onAddSelectGroup () {
+    //   console.log(this.checkInGroups);
+    //   let params = {
+    //     proKey: this.$store.state.proKey,
+    //     uid: this.groupUserId,
+    //     uids: []
+    //   }
+    //   this.checkInGroups.forEach(cc => {
+    //     params.uids.push(cc.uid);
+    //   })
+    //   this.axios.post('A3/authServices/userBatchGroup', params)
+    //     .then(res => {
+    //       if (res) {
+    //         this.checkInGroups.forEach((aa, i) => {
+    //           this.allGroups.forEach((bb, index) => {
+    //             if (aa.groupName === bb.groupName) {
+    //               this.allGroups.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         this.selectGroups.splice(this.selectGroups.length, 0, ...this.checkInGroups);
+    //         this.checkInGroups = [];
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 移出所选组
+    // onOutSelectGroup () {
+    //   let params = {
+    //     proKey: this.$store.state.proKey,
+    //     uid: this.groupUserId,
+    //     uids: []
+    //   }
+    //   this.checkOutGroups.forEach(cc => {
+    //     params.uids.push(cc.uid);
+    //   })
+    //   this.axios.delete('A3/authServices/userBatchGroup', {data: params})
+    //     .then(res => {
+    //       if (res) {
+    //         this.checkOutGroups.forEach((aa, i) => {
+    //           this.selectGroups.forEach((bb, index) => {
+    //             if (aa.groupName === bb.groupName) {
+    //               this.selectGroups.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         this.allGroups.splice(this.allGroups.length, 0, ...this.checkOutGroups);
+    //         this.checkOutGroups = [];
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 加入配置角色
+    // onAddSelectRole () {
+    //   let params = {
+    //     proKey: this.$store.state.proKey,
+    //     userId: this.roleUserId,
+    //     roleIdList: []
+    //   }
+    //   this.checkInRoles.forEach(cc => {
+    //     params.roleIdList.push(cc.uid);
+    //   })
+    //   this.axios.post('A3/authServices/userBatchRole', params)
+    //     .then(res => {
+    //       if (res) {
+    //         this.checkInRoles.forEach((aa, i) => {
+    //           this.allRoles.forEach((bb, index) => {
+    //             if (aa.roleName === bb.roleName) {
+    //               this.allRoles.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         this.selectRoles.splice(this.selectRoles.length, 0, ...this.checkInRoles);
+    //         this.checkInRoles = [];
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 移出配置角色
+    // onOutSelectRole () {
+    //   let params = {
+    //     proKey: this.$store.state.proKey,
+    //     userId: this.roleUserId,
+    //     roleIdList: []
+    //   }
+    //   this.checkOutRoles.forEach(cc => {
+    //     params.roleIdList.push(cc.uid);
+    //   })
+    //   this.axios.delete('A3/authServices/userBatchRole', {data: params})
+    //     .then(res => {
+    //       if (res) {
+    //         this.checkOutRoles.forEach((aa, i) => {
+    //           this.selectRoles.forEach((bb, index) => {
+    //             if (aa.roleName === bb.roleName) {
+    //               this.selectRoles.splice(index, 1);
+    //             }
+    //           })
+    //         })
+    //         this.allRoles.splice(this.allRoles.length, 0, ...this.checkOutRoles);
+    //         this.checkOutRoles = [];
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 创建用户
+    // onCreateProject () {
+    //   this.$router.push({name: 'user-create'});
+    // },
+    // // 获取省份列表
+    // getProvince () {
+    //   let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
+    //   this.axios.get('/usersServices/areas', {params})
+    //     .then((res) => {
+    //       if (res) {
+    //         this.provinceData = res.data;
+    //       }
+    //     })
+    // },
+    // // 省份改变时
+    // onProvinceChange (obj) {
+    //   this.cityData = {};
+    //   this.editItem.city = null;
+    //   let params = { parentUid: obj.uid }
+    //   this.axios.get('/usersServices/areas', {params})
+    //     .then((res) => {
+    //       if (res) {
+    //         this.cityData = res.data;
+    //       }
+    //     })
+    // },
+    // // 编辑信息
+    // onEdit (obj) {
+    //   this.editItem = obj;
+    //   this.editdialogVisible = true;
+    // },
+    // // 编辑信息确认
+    // onConfirmEdit () {
+    //   let obj = {
+    //     uid: this.editItem.uid,
+    //     proKey: this.$store.state.proKey,
+    //     userName: this.editItem.userName,
+    //     userIdcard: this.editItem.userIdcard,
+    //     userSex: this.editItem.userSex,
+    //     userEmail: this.editItem.userEmail,
+    //     province: this.editItem.province.cname,
+    //     city: this.editItem.city
+    //   }
+    //   console.log(obj);
+    //   this.axios.put('A3/authServices/user', obj)
+    //     .then(res => {
+    //       if (res) {
+    //         this.$message.success('修改成功');
+    //         this.editdialogVisible = false;
+    //       }
+    //     })
+    // },
+    // // 启用
+    // onUpUser (obj) {
+    //   let params = {
+    //     uid: obj.uid,
+    //     proKey: this.$store.state.proKey,
+    //     force: true
+    //   }
+    //   this.axios.put('A3/authServices/user', params)
+    //     .then(res => {
+    //       if (res) {
+    //         this.$message.success('启用成功');
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 禁用
+    // onForBidUser (obj) {
+    //   let params = {
+    //     uid: obj.uid,
+    //     proKey: this.$store.state.proKey,
+    //     force: false
+    //   }
+    //   this.axios.put('A3/authServices/user', params)
+    //     .then(res => {
+    //       if (res) {
+    //         this.$message.success('禁用成功');
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 删除
+    // deleteList (obj) {
+    //   this.deleteItem = obj;
+    //   this.deletedialogVisible = true;
+    // },
+    // onConfirmDelete () {
+    //   this.axios.delete('A3/authServices/user/' + this.deleteItem.uid + '?proKey=' + this.$store.state.proKey)
+    //     .then(res => {
+    //       if (res) {
+    //         this.$message.success('删除成功');
+    //         this.deletedialogVisible = false;
+    //         this.getList();
+    //       }
+    //     })
+    // },
+    // // 重置密码提示
+    // resetPwdList (obj) {
+    //   this.resetPwddialogVisible = true;
+    // },
+    // // 重置密码确认提示
+    // onConfirmResetPwd () {
+    //   this.resetPwddialogVisible = false;
+    // },
+    // // 过滤实时查询
+    // onSelectChange () {
+    //   this.getList();
+    // },
+    // // 输入框查询
+    // onSearch () {
+    //   this.closeShow = true;
+    //   this.getList();
+    // },
+    // // 清除输入框
+    // onClear () {
+    //   this.filter['where.keyWord'] = '';
+    //   this.getList();
+    //   this.closeShow = false;
+    // },
+    // // 分页翻页
+    // onPageChange (page) {
+    //   this.pagination.pageNum = page;
+    //   this.getList();
+    // },
+    // indexMethod (index) {
+    //   return index + 1 + 10 * (this.pagination.pageNum - 1);
+    // }
+  }
 }
 </script>
 
@@ -760,14 +748,6 @@ export default {
         .row-insert-i {
           color: #1AB394;
         }
-      }
-    }
-    /deep/ .el-table__empty-block {
-      min-height: 200px;
-      background: url(../../../../assets/img/no_data.png) no-repeat;
-      background-position: calc(50% - 3px) 34%;
-      .el-table__empty-text {
-        margin-top: 40px;
       }
     }
     /deep/ .table-header th {

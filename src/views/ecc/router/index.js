@@ -3,6 +3,7 @@ import Router from 'vue-router'
 
 // 登陆
 import login from '@/views/ecc/components/login.vue'
+import forget from '@/views/ecc/components/forget.vue'
 // 主要
 import main from '@/views/ecc/components/main.vue'
 // 消息管理
@@ -56,6 +57,10 @@ import user from '@/views/ecc/components/systemManage/list.vue';
 import userList from '@/views/ecc/components/systemManage/user-list.vue';
 import groupList from '@/views/ecc/components/systemManage/group-list.vue';
 import userCreate from '@/views/ecc/components/systemManage/user-create.vue';
+// 系统管理--角色管理
+import roleList from '@/views/ecc/components/systemManage/roleList.vue';
+// 系统管理--权限管理
+import authority from '@/views/ecc/components/systemManage/authority.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -64,6 +69,11 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: login
+    },
+    {
+      path: '/forget',
+      name: 'forget',
+      component: forget
     },
     {
       path: '/',
@@ -147,7 +157,10 @@ export default new Router({
                 {path: 'user-list', name: 'user-list', component: userList},
                 {path: 'group-list', name: 'group-list', component: groupList}
               ]
-            }
+            },
+            {path: 'user-create', name: 'user-create', component: userCreate},
+            {path: 'roleList', name: 'role-list', component: roleList},
+            {path: 'authority', name: 'authority', component: authority}
           ]
         }
       ]

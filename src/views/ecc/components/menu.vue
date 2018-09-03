@@ -125,12 +125,12 @@ export default {
             {
               id: '6-3',
               name: '角色管理',
-              url: '/user/role'
+              url: '/systemManage/roleList'
             },
             {
               id: '6-4',
               name: '权限管理',
-              url: '/user/authority'
+              url: '/systemManage/authority'
             }
           ]
         }

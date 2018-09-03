@@ -1,33 +1,35 @@
 <template>
-  <div class="organ-list">
+  <div class="role-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>组织架构</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>角色管理</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
         <el-form-item>
-          <el-input placeholder='请输入部门名称搜索' style="width: 250px;" v-model='selectForm.organName'></el-input>
+          <el-input placeholder='请输入角色名称搜索' style="width: 250px;" v-model='selectForm.organName'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="showAddDialog">新建部门</el-button>
+        <el-button class='selectBtn add-depart' @click="showAddDialog">创建角色</el-button>
       </div>
     </div>
     <el-table style="width: 100%" :data='departmentList' class='event-table'>
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
-      <el-table-column label="名称" prop='organName' align='center'></el-table-column>
-      <el-table-column label="上报部门" prop='organPid' align='center'></el-table-column>
-      <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
+      <el-table-column label="角色名称" prop='organName' align='center'></el-table-column>
+      <el-table-column label="描述" prop='organPid' align='center'></el-table-column>
+      <el-table-column label="创建时间" prop='chargeUserName' align='center'></el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="editDepart(scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteDepart(scope)" />
+          <img title="查看权限" src="../../../../assets/img/temp/select.png" @click="onSeeLimit(scope.row)" />
+          <img title="编辑角色" src="../../../../assets/img/temp/edit.png" @click="onEditRole(scope.row)" />
+          <img title="配置权限" src="../../../../assets/img/temp/config.png" @click="onEditLimit(scope.row)" />
+          <img title="删除角色" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
@@ -44,36 +46,28 @@
         </el-pagination>
       </template>
     </div>
+    <!-- 删除角色弹框 -->
     <el-dialog
       title="删除"
       :visible.sync="deleteDepartmentDialog"
       width="340px"
       height='205px'
       center>
-      <span style='text-align:center;color:#333333;font-size:14px'>是否确认删除此部门?</span>
+      <span style='text-align:center;color:#333333;font-size:14px'>是否确定删除该角色及关联信息?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
         <el-button class='sureBtn' @click='deletDepart'>确认</el-button>
         <el-button class='noSureBtn' @click="deleteDepartmentDialog = false">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="新建部门" :visible.sync="dialogFormVisible" center width='400px' class="new-department">
+    <!-- 创建角色弹框 -->
+    <el-dialog title="创建角色" :visible.sync="dialogFormVisible" center width='400px' class="new-department">
       <el-form class='add-depart-form' :model='addForm' ref="addForm">
-        <el-form-item label="部门名称" label-width='85px' prop='organName'>
-          <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='addForm.organName'></el-input>
+        <el-form-item label="角色名称" label-width='85px' prop='organName'>
+          <el-input type="text" placeholder='请输入角色名称' @change="onNewDepartChange" style='width: 98%' v-model='addForm.organName'></el-input>
         </el-form-item>
-        <el-form-item label="上级部门" label-width='85px'>
-          <el-select placeholder="请选择执行部门" style='width: 98%' v-model='addForm.organPid'>
-            <el-option
-              v-for="item in departmentList"
-              :key="item.uid"
-              :label="item.organName"
-              :value="item.uid"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="部门负责人" label-width='85px'>
-          <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='addForm.chargeUserName'></el-input>
+        <el-form-item label="角色描述" label-width='85px'>
+          <el-input type="textarea" rows="5" placeholder='请简要描述角色' style='width: 98%' v-model='addForm.chargeUserName'></el-input>
         </el-form-item>
         <el-form-item label-width='85px' v-show="isShowError">
           <div class="error-msg">
@@ -87,13 +81,14 @@
         <el-button class='noSureBtn' type="primary" @click="submitAddData">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="编辑部门" :visible.sync="editFormVisible" center width='400px' class="new-department">
+    <!-- 编辑角色弹框 -->
+    <el-dialog title="编辑角色" :visible.sync="editFormVisible" center width='400px' class="new-department">
       <el-form class='add-depart-form' :model='editForm'>
-        <el-form-item label="部门名称" label-width='85px'>
-          <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='editForm.organName'></el-input>
+        <el-form-item label="角色名称" label-width='85px'>
+          <el-input type="text" placeholder='请输入角色名称' @change="onNewDepartChange" style='width: 98%' v-model='editForm.organName'></el-input>
         </el-form-item>
-        <el-form-item label="部门负责人" label-width='85px'>
-          <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='editForm.chargeUserName'></el-input>
+        <el-form-item label="角色描述" label-width='85px'>
+          <el-input type="textarea" rows="5" placeholder='请简要描述角色' style='width: 98%' v-model='editForm.chargeUserName'></el-input>
         </el-form-item>
         <el-form-item label-width='85px' v-show="isShowError">
           <div class="error-msg">
@@ -107,15 +102,120 @@
         <el-button class='noSureBtn' type="primary" @click="submitEditData">确认</el-button>
       </div>
     </el-dialog>
+    <!-- 查看权限弹框 -->
+    <el-dialog
+      class="limit-dialog"
+      title="查看权限"
+      :visible.sync="seeLimitDialogVisible"
+      width="410px"
+      center>
+      <div class="content">
+        <div class="title">角色名称</div>
+        <div class="tree-list">
+          <el-tree
+            class="filter-tree"
+            :data="data2"
+            default-expand-all
+            node-key="id"
+            ref="tree"
+            :filter-node-method="filterNode"
+            highlight-current
+            :props="defaultProps">
+          </el-tree>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="onGoEditLimitDialog">配置权限</el-button>
+      </span>
+    </el-dialog>
+    <!-- 查看权限弹框 -->
+    <el-dialog
+      class="limit-dialog"
+      title="配置权限"
+      :visible.sync="editLimitDialogVisible"
+      width="410px"
+      center>
+      <div class="content">
+        <div class="title">角色名称</div>
+        <div class="tree-list">
+          <el-tree
+            class="filter-tree"
+            :data="data2"
+            show-checkbox
+            default-expand-all
+            node-key="id"
+            ref="tree"
+            :filter-node-method="filterNode"
+            highlight-current
+            :props="defaultProps">
+          </el-tree>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button style="background: #fff;color:#666666">返回</el-button>
+        <el-button style="background: #0785FD" @click="onGoEditLimitDialog">确定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
-      deleteDepartmentDialog: false, // 删除部门
-      dialogFormVisible: false, // 新建部门
-      editFormVisible: false, // 编辑部门
+      data2: [{
+        id: 1,
+        label: '一级 1',
+        children: [{
+          id: 4,
+          label: '二级 1-1',
+          children: [{
+            id: 9,
+            label: '三级 1-1-1'
+          }, {
+            id: 10,
+            label: '三级 1-1-2'
+          }]
+        }]
+      }, {
+        id: 2,
+        label: '一级 2',
+        children: [{
+          id: 5,
+          label: '二级 2-1'
+        }, {
+          id: 6,
+          label: '二级 2-2'
+        }]
+      }, {
+        id: 3,
+        label: '一级 3',
+        children: [{
+          id: 7,
+          label: '二级 3-1'
+        }, {
+          id: 8,
+          label: '二级 3-2'
+        }]
+      }, {
+        id: 4,
+        label: '一级 4',
+        children: [{
+          id: 9,
+          label: '二级 4-1'
+        }, {
+          id: 10,
+          label: '二级 4-2'
+        }]
+      }],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      deleteDepartmentDialog: false, // 删除角色
+      dialogFormVisible: false, // 创建角色
+      editFormVisible: false, // 编辑角色
+      seeLimitDialogVisible: false, // 查看权限
+      editLimitDialogVisible: true, // 配置权限
       selectForm: {
         organName: ''
       },
@@ -157,6 +257,10 @@ export default {
     this.getDepartmentList();
   },
   methods: {
+    filterNode (value, data) {
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    },
     onPageChange (page) {
       this.pagination.pageNum = page;
       this.getDepartmentList();
@@ -263,7 +367,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .organ-list {
+  .role-list {
     padding: 20px;
     .header {
       margin-bottom: 10px;
@@ -314,7 +418,7 @@ export default {
     }
     /deep/  .el-dialog--center .el-dialog__body {
       text-align: center !important;
-      padding: 25px 25px 10px;
+      padding: 10px 25px 10px;
     }
     .noSureBtn {
       background:#0785FD;
@@ -364,6 +468,44 @@ export default {
             font-size: 12px;
           }
         }
+      }
+    }
+    .limit-dialog {
+      .content {
+        .tree-list {
+          border: 1px solid #E7EAEC;
+          width: 100%;
+          height: 300px;
+          padding: 0 20px;
+          overflow: auto;
+        }
+      }
+      .title {
+        text-align: left;
+        padding: 10px 0;
+      }
+      /deep/ .el-button {
+        background: #0785FD;
+        color: #fff;
+      }
+      /deep/ .el-icon-caret-right:before {
+        content: '';
+      }
+      /deep/ .el-tree-node__expand-icon.is-leaf {
+        background: none;
+      }
+      /deep/ .el-tree-node__expand-icon {
+        background: url('../../../../assets/img/temp/expand.png') no-repeat;
+      }
+      /deep/ .el-tree-node__expand-icon.expanded {
+        background: url('../../../../assets/img/temp/takeup.png') no-repeat;
+        transform: none;
+      }
+      /deep/ .el-tree-node__label {
+        margin-left: 5px;
+      }
+      /deep/ .el-checkbox__inner {
+        margin-left: 5px;
       }
     }
   }
