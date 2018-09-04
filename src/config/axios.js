@@ -48,7 +48,7 @@ axios.interceptors.response.use(function (response) {
       } else {
         window.location.href = './index.html#/login';
       }
-      // window.location.reload();
+      window.location.reload();
     } else {
       msg = '访问出错';
       if (_data.viewMsg) {
