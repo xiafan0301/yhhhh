@@ -12,33 +12,43 @@
             <el-option  v-for="(item, index) in pageList" :label="item.typeName" :value="item.dataTypeId" :key="'spl_' + index"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="坐标状态" v-if="o[searchForm.dataTypeId]">
+          <el-select v-model="searchForm.coordinateStatus" placeholder="选择坐标状态" style="width: 160px;" >
+            <el-option label="无坐标" :value="-1"></el-option>
+            <el-option label="精确坐标" :value="0"></el-option>
+            <el-option label="推荐坐标" :value="1"></el-option>
+          </el-select>
+          <el-button icon="el-icon-search" @click.native="searchFormSubmit" type="primary" >查询</el-button>
+          <el-button  @click.native="searchreFormSubmit" class="selectBtn">重置</el-button>
+        </el-form-item>
       </el-form>
       <!--贫困村添加-->
+      <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btnh" icon="el-icon-location-outline" @click="calcCoordinate" :loading="calcCoordinateLoading" >{{status}}</el-button>
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
       <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
-        <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="u[searchForm.dataTypeId]">一键导入</el-button>
+        <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="o[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '9487e07e-6b2f-49c6-b464-2216a680cc3e'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/9487e07e-6b2f-49c6-b464-2216a680cc3e'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '61894e2c-7738-41af-b797-b8d735a44428'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/61894e2c-7738-41af-b797-b8d735a44428'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'e5654a00-c642-44f3-a340-2827f51367d6'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/e5654a00-c642-44f3-a340-2827f51367d6'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/8a8071f2-2909-4fc7-8125-c2d58aac8263'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '3c7944d7-d874-4478-a25a-e75fc2020d96'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/3c7944d7-d874-4478-a25a-e75fc2020d96'">模块下载</a>
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '8a8071f2-2909-4fc7-8125-c2d58aac8263'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/8a8071f2-2909-4fc7-8125-c2d58aac8263'">模块下载</a>-->
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '3c7944d7-d874-4478-a25a-e75fc2020d96'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/3c7944d7-d874-4478-a25a-e75fc2020d96'">模块下载</a>-->
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'dc42b85c-ee98-4895-bfc2-4c472a092170'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/dc42b85c-ee98-4895-bfc2-4c472a092170'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/d525abeb-fcc7-4b8b-96c1-90ff50b14121'">模块下载</a>
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'd525abeb-fcc7-4b8b-96c1-90ff50b14121'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/d525abeb-fcc7-4b8b-96c1-90ff50b14121'">模块下载</a>-->
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'f90edff9-7f21-48e0-9ce4-472377825dae'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/f90edff9-7f21-48e0-9ce4-472377825dae'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'd42795ca-dad6-4531-aed7-eb75f3d3646d'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/d42795ca-dad6-4531-aed7-eb75f3d3646d'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'a649c4a2-314e-4490-bfee-ca3b7695057b'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/a649c4a2-314e-4490-bfee-ca3b7695057b'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'd633bafc-74d0-4f0d-bea5-927ef2df4192'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/d633bafc-74d0-4f0d-bea5-927ef2df4192'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/fc98c648-edf4-4b87-866c-ef38f39c07a3'">模块下载</a>
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'fc98c648-edf4-4b87-866c-ef38f39c07a3'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/fc98c648-edf4-4b87-866c-ef38f39c07a3'">模块下载</a>-->
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '88ee0a59-19a0-4e42-b4d2-bae59634e110'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/88ee0a59-19a0-4e42-b4d2-bae59634e110'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/ab84a57c-a97b-42c9-a51a-212db7a7e22b'">模块下载</a>
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'ab84a57c-a97b-42c9-a51a-212db7a7e22b'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/ab84a57c-a97b-42c9-a51a-212db7a7e22b'">模块下载</a>-->
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '25c2ec86-a62e-45c2-a3e7-49a121a1f56d'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/25c2ec86-a62e-45c2-a3e7-49a121a1f56d'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/ac94e4c6-7e49-45c5-9610-1556245c45cf'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/739fe4f5-49c6-42ca-ba87-76f5300ab5af'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/d60e1ff2-e6c0-4393-94c7-28bb9f118cce'">模块下载</a>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '4fce5edb-7092-4455-971b-6f8526d6a827'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/4fce5edb-7092-4455-971b-6f8526d6a827'">模块下载</a>
-      <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/e46c60f2-b1ea-46b7-9f83-51c51a5738b2'">模块下载</a>
+      <!--<a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == 'e46c60f2-b1ea-46b7-9f83-51c51a5738b2'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/e46c60f2-b1ea-46b7-9f83-51c51a5738b2'">模块下载</a>-->
     </div>
     <div class="bg-plate-tb">
       <!--选择数据-->
@@ -47,9 +57,15 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'" key="2" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="村名" min-width="150"></el-table-column>
-        <el-table-column label="坐标" min-width="200">
+        <el-table-column label="坐标" min-width="200" style="position: relative">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1">
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数(户)" min-width="100"></el-table-column>
@@ -84,9 +100,15 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="医疗机构名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="160">
+        <el-table-column  label="坐标" min-width="170">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="类型" min-width="120"></el-table-column>
@@ -107,6 +129,12 @@
         <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="级别" min-width="120"></el-table-column>
@@ -126,6 +154,12 @@
         <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="停车位数量(个)" min-width="140"></el-table-column>
@@ -144,6 +178,12 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
@@ -178,6 +218,12 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
@@ -212,6 +258,12 @@
         <el-table-column  label="坐标" min-width="110">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="140"></el-table-column>
@@ -229,6 +281,12 @@
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(床)" min-width="120"></el-table-column>
@@ -247,6 +305,12 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
@@ -264,6 +328,12 @@
         <el-table-column  label="坐标" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
@@ -298,6 +368,12 @@
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="投入金额（万元）" min-width="120"></el-table-column>
@@ -350,6 +426,12 @@
         <el-table-column label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="130"></el-table-column>
@@ -367,6 +449,12 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
@@ -386,6 +474,12 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
@@ -405,6 +499,12 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
@@ -599,11 +699,13 @@
 </template>
 <script>
 import mapPoint from '@/components/common/mapPoint.vue';
-import {valicoordinate} from '@/utils/validator.js';
+import {checkGps} from '@/utils/validator.js';
 export default {
   components: {mapPoint},
   data () {
     return {
+      status: '获取坐标',
+      calcCoordinateLoading: false,
       aa: '',
       open: false,
       oConfig: {},
@@ -652,7 +754,7 @@ export default {
         ],
         coordinate: [
           {required: true, message: '请输入坐标', trigger: 'blur'},
-          { validator: valicoordinate, trigger: 'blur' }
+          { validator: checkGps, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '请输入地址', trigger: 'blur'}
@@ -687,7 +789,7 @@ export default {
         ],
         coordinate: [
           {required: true, message: '请输入坐标', trigger: 'blur'},
-          { validator: valicoordinate, trigger: 'blur' }
+          { validator: checkGps, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '请输入地址', trigger: 'blur'}
@@ -722,7 +824,7 @@ export default {
         ],
         coordinate: [
           {required: true, message: '请输入坐标', trigger: 'blur'},
-          { validator: valicoordinate, trigger: 'blur' }
+          { validator: checkGps, trigger: 'blur' }
         ],
         addrs: [
           {required: true, message: '不能为空', trigger: 'blur'},
@@ -779,15 +881,21 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '贫困户数',
+            valueUnit: '户'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '贫困人数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 2,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '4fce5edb-7092-4455-971b-6f8526d6a827',
@@ -802,15 +910,21 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 1,
+            contentName: '员工人数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 2,
+            contentName: '注册资金',
+            valueUnit: '万元'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 3,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '61894e2c-7738-41af-b797-b8d735a44428',
@@ -825,15 +939,21 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 1,
+            contentName: '员工人数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 2,
+            contentName: '注册资金',
+            valueUnit: '万元'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 3,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '9487e07e-6b2f-49c6-b464-2216a680cc3e',
@@ -848,15 +968,21 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 1,
+            contentName: '员工人数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 2,
+            contentName: '注册资金',
+            valueUnit: '万元'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 3,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '1bfa2f78-2174-4e9d-8f2f-58264a00ce83',
@@ -871,19 +997,27 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '类型',
+            valueUnit: ''
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '工作人员数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 2,
+            contentName: '床位数',
+            valueUnit: '床'
           },
           {
             valueContent: '',
-            serialNumber: 4
+            serialNumber: 3,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce',
@@ -898,15 +1032,21 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '级别',
+            valueUnit: ''
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '师生人数',
+            valueUnit: '人'
           },
           {
             valueContent: '',
-            serialNumber: 3
+            serialNumber: 2,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '739fe4f5-49c6-42ca-ba87-76f5300ab5af',
@@ -921,11 +1061,15 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '停车位数量',
+            valueUnit: '个'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'ac94e4c6-7e49-45c5-9610-1556245c45cf',
@@ -940,11 +1084,15 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '床位数量',
+            valueUnit: '床'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'a649c4a2-314e-4490-bfee-ca3b7695057b',
@@ -959,11 +1107,15 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '投入金额',
+            valueUnit: '万元'
           },
           {
             valueContent: '',
-            serialNumber: 2
+            serialNumber: 1,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'dc42b85c-ee98-4895-bfc2-4c472a092170',
@@ -978,7 +1130,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '25c2ec86-a62e-45c2-a3e7-49a121a1f56d',
@@ -993,7 +1147,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: '88ee0a59-19a0-4e42-b4d2-bae59634e110',
@@ -1008,7 +1164,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'd633bafc-74d0-4f0d-bea5-927ef2df4192',
@@ -1023,7 +1181,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'd42795ca-dad6-4531-aed7-eb75f3d3646d',
@@ -1038,7 +1198,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'f90edff9-7f21-48e0-9ce4-472377825dae',
@@ -1053,7 +1215,9 @@ export default {
         dataExtendList: [
           {
             valueContent: '',
-            serialNumber: 1
+            serialNumber: 0,
+            contentName: '详细地址',
+            valueUnit: ''
           }
         ],
         dataTypeId: 'e5654a00-c642-44f3-a340-2827f51367d6',
@@ -1068,7 +1232,8 @@ export default {
         {dataTypeId: '', typeName: ''}
       ],
       searchForm: {
-        dataTypeId: '' // 4fce5edb-7092-4455-971b-6f8526d6a827
+        dataTypeId: '', // 4fce5edb-7092-4455-971b-6f8526d6a827
+        coordinateStatus: ''
       },
       names: {
         '4fce5edb-7092-4455-971b-6f8526d6a827': '村名',
@@ -1120,6 +1285,31 @@ export default {
   mounted () {
   },
   methods: {
+    // 获取坐标
+    calcCoordinate () {
+      this.status = '加载中...';
+      this.calcCoordinateLoading = true;
+      setTimeout(() => {
+        this.axios.get('/mapServices/data/calcCoordinate')
+          .then(res => {
+            this.calcCoordinateLoading = false;
+            this.getPlateList();
+            this.status = '获取坐标';
+          })
+          .catch(() => {});
+      }, 2000);
+      // if (this.calcCoordinateLoading === false) {
+      //   this.status = '获取坐标'
+      // }
+    },
+    searchFormSubmit () {
+      this.getPlateList();
+    },
+    searchreFormSubmit () {
+      this.pageNum = 1;
+      this.searchForm.coordinateStatus = ''
+      this.getPlateList();
+    },
     selPosition () {
       // 编辑状态
       if (!this.editObj) {
@@ -1175,6 +1365,7 @@ export default {
     // 获取数据
     getPlateList () {
       let params = {
+        'where.coordinateStatus': this.searchForm.coordinateStatus,
         'where.dataTypeId': this.searchForm.dataTypeId,
         pageNum: this.pageNum,
         pageSize: this.pageSize
@@ -1184,7 +1375,7 @@ export default {
           .then(res => {
             if (res && res.data) {
               this.plateList = res.data.list;
-              this.total = res.data.total
+              this.total = res.data.total;
               console.log(res)
             }
           })
@@ -1221,6 +1412,7 @@ export default {
             serialNumber: scope.row.dataExtendList[2].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1250,6 +1442,7 @@ export default {
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1286,6 +1479,7 @@ export default {
             serialNumber: scope.row.dataExtendList[2].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1315,6 +1509,7 @@ export default {
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1352,6 +1547,7 @@ export default {
             serialNumber: scope.row.dataExtendList[2].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1367,7 +1563,7 @@ export default {
       this.form.pople = this.obj.dataExtendList[1].valueContent;
       this.form.addrs = this.obj.dataExtendList[2].valueContent;
     },
-    surepk5 (form) {
+    surepk5 (form, scope) {
       this.$refs[form].validate((valid) => {
         if (valid) {
           let params = this.obj;
@@ -1381,6 +1577,7 @@ export default {
             .then(res => {
               this.getPlateList();
               this.dialogFormVisible = false;
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1431,6 +1628,7 @@ export default {
             serialNumber: scope.row.dataExtendList[3].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1462,6 +1660,7 @@ export default {
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1491,6 +1690,7 @@ export default {
             serialNumber: scope.row.dataExtendList[1].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1517,6 +1717,7 @@ export default {
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1538,6 +1739,7 @@ export default {
             serialNumber: scope.row.dataExtendList[0].serialNumber
           }
         ],
+        coordinateStatus: scope.row.coordinateStatus,
         dataId: scope.row.dataId,
         dataTypeId: scope.row.dataTypeId,
         iconType: scope.row.iconType,
@@ -1563,6 +1765,7 @@ export default {
           this.axios.put('/mapServices/datas', params)
             .then(res => {
               this.getPlateList();
+              params.coordinateStatus = 0;
             });
         } else {
           return false;
@@ -1979,6 +2182,10 @@ export default {
       position: absolute; top: 28px; right: 25px;
       border: none;
       display: inline-block;
+    }
+    .add-plate-btnh{
+      position: absolute; top: 22px; right: 280px;
+      background: linear-gradient(to top, #0785FD, #07BAFD);
     }
   }
   .bg-plate-tb {
