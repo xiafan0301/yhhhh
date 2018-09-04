@@ -78,9 +78,9 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click="skipLookEventDetail(scope)">查看</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcDetail(scope)'>调度</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipCtcEnd(scope)'>结束</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipLookEventDetail(scope)" />
+          <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
+          <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" />
         </template>
       </el-table-column>
     </el-table>
@@ -134,7 +134,7 @@ export default {
     },
     skipLookEventDetail (scope) { // 查看事件详情分布
       if (scope.row.eventId) {
-        window.location.href = ajaxCtx3 + '?' + scope.row.eventId;
+        window.location.href = ajaxCtx3 + '?eventId=' + scope.row.eventId;
       }
     },
     skipCtcDetail (scope) { // 跳到调度指挥页面
