@@ -33,11 +33,17 @@
         </el-form-item>
         <el-form-item  >
           <el-upload
-            action=""
+            action="http://10.16.4.50:8001/api/network/upload/new"
             list-type="picture-card"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove" >
-            <i class="el-icon-plus"></i>
+            accept=".png,.jpg,.bmp"
+            :file-list="form.attachmentList"
+            :before-upload='handleBeforeUpload'
+            :on-remove="handleRemove"
+            :on-success='handleSuccess'
+            :limit='9'
+          >
+            <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+            <span class='add-img-text'>添加图片</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="发送时间">
@@ -101,6 +107,7 @@
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
@@ -112,7 +119,8 @@ export default {
         desc: '',
         time: '',
         title: '',
-        messageType: ''
+        messageType: '',
+        attachmentList: []
       },
       form1: {
         time: '',
@@ -142,7 +150,6 @@ export default {
       this.axios.get('A2/messageService/' + messageId)
         .then((res) => {
           if (this.$route.query.status === 'modifyatgment') {
-            console.log(res);
             if (res.data.emiMessage.terminal === 1) {
               this.form.checkList.push('1')
             } else if (res.data.emiMessage.terminal === 2) {
@@ -160,7 +167,11 @@ export default {
               this.form.time = 2;
               this.form.publishTime = res.data.emiMessage.publishTime;
             }
-            this.form.messageType = res.data.emiMessage.messageType
+            this.form.messageType = res.data.emiMessage.messageType;
+            this.form.attachmentList = res.data.emiAttachments;
+            console.log(this.form.attachmentList);
+            console.log(res.data.emiMessage.attachmentList);
+            console.log(res)
           } else {
             if (res.data.emiMessage.publishTime === null) {
               this.form1.time = 1
@@ -220,12 +231,43 @@ export default {
           });
       }
     },
-    handleRemove (file, fileList) {
-      console.log(file, fileList);
+    handleSuccess (res, file) { // 图片上传成功
+      if (res && res.data) {
+        const data = {
+          attachmentType: dictType.imgId,
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
+        };
+        this.form.attachmentList.push(data);
+      }
     },
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+    handleRemove (file, fileList) { // 删除图片
+      if (file && file.response) {
+        if (this.form.attachmentList.length > 0) {
+          this.form.attachmentList.map((item, index) => {
+            if (item.url === file.response.data.newFileName) {
+              this.form.attachmentList.splice(index, 1);
+            }
+          });
+        }
+      }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
     }
   }
 }
@@ -245,5 +287,31 @@ export default {
   }
   .el-form-item {
     margin-bottom: 15px;
+  }
+  /deep/ .el-upload--picture-card {
+    width: 100px;
+    height: 100px;
+    line-height: 100px;
+    background-color: #EAEAEA;
+    border: 1px solid #EAEAEA;
+    position: relative;
+    i {
+      margin: 0 auto;
+      font-weight: bold;
+    }
+    .add-img-text {
+      color: #C4C2C2;
+      font-size: 13px;
+      display: block;
+      width: 54px;
+      height: 13px;
+      position: absolute;
+      top: 25%;
+      left: 25%;
+    }
+  }
+  /deep/ .el-upload-list--picture-card .el-upload-list__item {
+    width: 100px !important;
+    height: 100px !important;
   }
 </style>

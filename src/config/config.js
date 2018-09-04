@@ -27,6 +27,7 @@ const oDomains = {
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
     // dev: 'http://10.16.3.40:8080',
     dev: 'http://10.16.3.43:8080',
+    // dev: 'http://10.116.64.62:8088',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
   },
@@ -64,6 +65,8 @@ console.log('environment', sENV);
 // ajax default
 export const ajaxCtx = oDomains.domain[sENV] + '/api/vis';
 export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
+// 用户权限
+export const ajaxCtx4 = oDomains.domain2[sENV] + '/api/auth';
 export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';

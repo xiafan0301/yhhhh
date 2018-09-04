@@ -67,19 +67,10 @@
               :src='item.url'
               :key='item.attachmentId'
             />
-            <!-- <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' />
-            <img src='../../../../assets/img/temp/temp-t032.png' /> -->
           </div>
         </div>
       </div>
-      <div class='mutual-progress'>
+      <div class='mutual-progress' v-show="commentList && commentList.length > 0">
         <div class='mutual-progress-header'>
           <div class='flag'></div>
           <p class='mutual-progress-text'>
@@ -162,24 +153,7 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 5
-      },
-      options1: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
-      value: ''
+      }
     }
   },
   mounted () {

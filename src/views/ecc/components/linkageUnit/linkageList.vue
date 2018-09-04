@@ -57,7 +57,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table style="width: 100%" :data='eventDataList' highlight-current-row class='event-table'>
+    <el-table style="width: 100%" :data='eventDataList' class='event-table'>
       <el-table-column fixed label="事件编号" prop='eventCode' align='center'></el-table-column>
       <el-table-column label="事件类型" prop='eventType' align='center'>
         <template slot-scope="scope">
@@ -73,11 +73,11 @@
       </el-table-column>
       <el-table-column label="派单时间" prop='createTime' align='center'></el-table-column>
       <el-table-column label="任务名称" prop='taskName' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="状态" prop='eventStatus' align='center'></el-table-column>
-      <el-table-column label="是否查看" prop='taskStatus' align='center'>
+      <el-table-column label="状态" prop='eventStatusName' align='center'></el-table-column>
+      <el-table-column label="是否查看" prop='taskStatusName' align='center'>
         <template slot-scope="scope">
-          <span style="color: #555555;" v-if="scope.row.taskStatus == '已查看'">{{scope.row.taskStatus}}</span>
-          <span style="color: #FB796C;" v-else>{{scope.row.taskStatus}}</span>
+          <span style="color: #555555;" v-if="scope.row.taskStatusName == '已查看'">{{scope.row.taskStatusName}}</span>
+          <span style="color: #FB796C;" v-else>{{scope.row.taskStatusName}}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align='center'>
@@ -142,20 +142,20 @@ export default {
       this.getEventList();
     },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      if (scope.row.taskStatus === '未查看') {
+      if (scope.row.taskStatusName === '未查看') {
         const params = {
           processType: this.processTypeId
         }
-        this.axios.post('A2/taskServices/task/process/' + scope.row.eventId, params)
+        this.axios.post('A2/taskServices/task/process/' + scope.row.eventId + '/' + scope.row.taskId, params)
           .then((res) => {
-            // console.log(res);
+            console.log(res);
           })
           .catch(() => {})
       }
       if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId, taskId: scope.row.taskId}});
+        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
       } else {
-        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId, taskId: scope.row.taskId}});
+        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId, taskId: scope.row.taskId, name: scope.row.taskStatusName}});
       }
     },
     getEventStatus () { // 获取事件状态

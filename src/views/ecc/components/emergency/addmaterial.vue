@@ -24,6 +24,12 @@
           </el-form-item>
           <el-form-item label="所属仓库" label-width='150px'>
             <el-select  placeholder="仓库名称A" style='width: 500px' v-model="form.warehouseId">
+              <el-option
+                v-for="item in  tableDatack"
+                :key="item.warehouseId"
+                :label="item.warehouseName"
+                :value="item.warehouseId">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -45,9 +51,10 @@ export default {
         materialsName: '',
         amount: '',
         measurementUnit: '',
-        warehouseId: '4b5833c6-97ae-11e8-b784-4fabfc31a6f4',
+        warehouseId: '',
         materialsId: ''
-      }
+      },
+      tableDatack: []
     }
   },
   computed: {
@@ -56,6 +63,7 @@ export default {
     if (this.$route.query.status === 'modify') {
       this.getmaterial()
     }
+    this.getTableDatack();
   },
   mounted () {
     if (this.$route.query.status === 'add') {
@@ -65,6 +73,19 @@ export default {
     }
   },
   methods: {
+    getTableDatack () {
+      let params = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      };
+      this.axios.get('A2/warehouseService/page', params)
+        .then((res) => {
+          this.tableDatack = res.data.list;
+          console.log(res)
+        })
+        .catch(() => {
+        });
+    },
     getmaterial () {
       const materialsId = this.$route.query.materialsId;
       this.axios.get('A2/materialService/' + materialsId)

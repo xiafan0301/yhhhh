@@ -9,12 +9,12 @@
     </div>
     <div class='add-msg-body'>
       <div class='add-form-person'>
-        <el-form class='form-content-person' :model="form" :rules="rules" ref="form" inline-message="true">
-          <el-form-item label="预案名称" label-width='150px' prop="planName">
+        <el-form class='form-content-person' :model="form"  ref="form" :inline-message= true>
+          <el-form-item label="预案名称" label-width='150px' prop="planName" :rules="[{ required: true, message: '请输入预案名称', trigger: 'blur' }]">
             <el-input  placeholder="请输入预案名称" style='width: 500px' v-model="form.planName">
             </el-input>
           </el-form-item>
-          <el-form-item label="预案类型" label-width='150px' prop="eventType">
+          <el-form-item label="预案类型" label-width='150px' prop="eventType"  :rules="[{ required: true, message: '请选择预案类型', trigger: 'change' }]">
             <el-select  placeholder="选择预案类型" style='width: 500px' v-model="form.eventType">
               <el-option
                 v-for="item in eventTypeList"
@@ -24,7 +24,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="适用事件等级" label-width='150px' prop="levelList">
+          <el-form-item label="适用事件等级" label-width='150px' prop="levelList" :rules="[{ required: true, message: '请选择事件等级（可多选）', trigger: 'change' }]">
             <el-select  placeholder="选择事件等级(可多选)" style='width: 500px' v-model="form.levelList" multiple>
               <el-option
                 v-for="item in eventLevelList"
@@ -34,7 +34,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="预案正文" label-width='150px' prop="planDetail">
+          <el-form-item label="预案正文" label-width='150px' prop="planDetail" :rules="[ { required: true, message: '请输入预案正文', trigger: 'blur' }]">
             <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
           <el-form-item label="附件" label-width='150px'>
@@ -60,8 +60,8 @@
             <!--</div>-->
           <el-form-item label="响应处置" label-width='150px'>
             <div style="width: 570px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" :value="item.departmentName">
-            <el-form-item label="协同部门" label-position="left" prop="departmentId">
-              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change">
+            <el-form-item label="协同部门" label-position="left" :prop="'taskList.'+ index + '.departmentId'" :rules ="[{ required: true, message: '请选择协同部门', trigger: 'change' }]">
+              <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change" >
                 <el-option
                   :disabled="item.disabled"
                   v-for="item in  departmentsList"
@@ -71,10 +71,10 @@
                 </el-option>
               </el-select>
             </el-form-item>
-              <el-form-item label="任务名称" label-position="left" prop="taskName">
+              <el-form-item label="任务名称" label-position="left" :prop="'taskList.'+ index + '.taskName'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
                 <el-input style="width: 358px" placeholder='请输入任务名称' v-model="form.taskList[index].taskName" ></el-input>
               </el-form-item>
-              <el-form-item label="任务内容" label-position="left" prop="taskContent">
+              <el-form-item label="任务内容" label-position="left" :prop="'taskList.'+ index + '.taskContent'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskList[index].taskContent"></el-input>
               </el-form-item>
               <el-button type='text' @click="del(index)" v-if="index>0">删除</el-button>
@@ -139,16 +139,16 @@ export default {
         ],
         planDetail: [
           { required: true, message: '请输入预案正文', trigger: 'blur' }
-        ],
-        departmentId: [
-          { required: true, message: '请选择协同部门', trigger: 'change' }
-        ],
-        taskName: [
-          { required: true, message: '请输入任务名称', trigger: 'blur' }
-        ],
-        taskContent: [
-          { required: true, message: '请输入任务内容', trigger: 'blur' }
         ]
+        // departmentId: [
+        //   { required: true, message: '请选择协同部门', trigger: 'change' }
+        // ],
+        // taskName: [
+        //   { required: true, message: '请输入任务名称', trigger: 'blur' }
+        // ],
+        // taskContent: [
+        //   { required: true, message: '请输入任务内容', trigger: 'blur' }
+        // ]
       },
       eventTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
