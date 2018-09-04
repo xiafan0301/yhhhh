@@ -50,9 +50,9 @@
       <el-table-column prop='commentNumbers' label="评论数量" align='center' ></el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipPersonDetail(scope)'>查看</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click="skipAddMsg('modify', scope)">修改</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='showDelete(scope)'>删除</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipPersonDetail(scope)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="skipAddMsg('modify', scope)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="showDelete(scope)" />
         </template>
       </el-table-column>
     </el-table>
