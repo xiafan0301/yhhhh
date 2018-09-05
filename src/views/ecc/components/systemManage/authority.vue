@@ -16,18 +16,18 @@
         <p class="title">权限管理</p>
         <div class="body-detail">
           <el-tree
-            :data="data5"
-            node-key="id"
-            draggable
+            :data="allLimitObj.A"
+            node-key="uid"
             default-expand-all
+            :props="defaultProps"
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
-              <span>{{ node.label }}</span>
+              <span>{{ data.resourceName }}</span>
               <span class="operation">
-                <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(scope.row)" />
-                <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onEditRole(scope.row)" />
-                <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditRole(scope.row)" />
-                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onEditRole(scope.row)" />
+                <!-- <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(data)" /> -->
+                <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onAddLimit(data)" />
+                <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditRole(data)" />
+                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onDeleteLimit(data)" />
               </span>
             </span>
           </el-tree>
@@ -42,11 +42,11 @@
       width="400px"
       center>
       <el-form class='add-depart-form'>
-        <el-form-item label="权限名称" label-width='85px'>
-          <el-input type="text" placeholder='请输入权限名称' style='width: 98%'></el-input>
+        <el-form-item label="权限名称" label-width='85px' :model="addForm">
+          <el-input type="text" v-model="addForm.resourceName" placeholder='请输入权限名称' style='width: 98%'></el-input>
         </el-form-item>
         <el-form-item label="权限类型" label-width='85px'>
-          <el-select placeholder="请选择权限类型" style='width: 98%'>
+          <el-select placeholder="请选择权限类型" style='width: 98%' v-model="addForm.resourceType">
             <el-option label="菜单" :value="1"></el-option>
             <el-option label="按钮" :value="2"></el-option>
           </el-select>
@@ -72,10 +72,10 @@
       center>
       <el-form class='add-depart-form'>
         <el-form-item label="权限名称" label-width='85px'>
-          <el-input type="text" placeholder='请输入权限名称' style='width: 98%'></el-input>
+          <el-input type="text" v-model="editLimitItem.resourceName" placeholder='请输入权限名称' style='width: 98%'></el-input>
         </el-form-item>
         <el-form-item label="权限类型" label-width='85px'>
-          <el-select placeholder="请选择权限类型" style='width: 98%'>
+          <el-select placeholder="请选择权限类型" style='width: 98%' v-model="editLimitItem.resourceType">
             <el-option label="菜单" :value="1"></el-option>
             <el-option label="按钮" :value="2"></el-option>
           </el-select>
@@ -98,7 +98,7 @@
       :visible.sync="deleteLimitdialogVisible"
       width="340px"
       center>
-      <span style='text-align:center;color:#333333;font-size:14px'>是否确认删除此部门?</span>
+      <span style='text-align:center;color:#333333;font-size:14px'>是否确定删除该权限?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
         <el-button class="noSureBtn" @click="onConfirmDelete">确 认</el-button>
@@ -111,90 +111,221 @@
 export default {
   data () {
     return {
-      data5: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }, {
-        id: 4,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }, {
-        id: 5,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }, {
-        id: 6,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      allLimitObj: { A: [], B: [], C: [], D: [], E: [] },
       deleteLimitdialogVisible: false, // 删除权限
       editLimitDialogVisible: false, // 编辑权限
       addLimitDialogVisible: false, // 创建权限
-      addObj: {
+      addForm: {
         resourceName: null,
         resourceType: null,
-        parentUid: null,
-        proKey: this.$store.state.proKey
+        parentUid: null
       },
       isShowError: false,
       errorMsg: '',
-      editLimitItem: {}
+      editLimitItem: {},
+      deleteItem: {},
+      defaultProps: {
+        children: 'children',
+        label: 'resourceName'
+      }
     }
   },
+  mounted () {
+    this.getAuthorityList();
+  },
   methods: {
-    onConfirmDelete () {},
-    onConfirmEditLimit () {},
-    onConfirmAddLimit () {},
-    onNewLimitChange () {}
+    onConfirmDelete () { // 确认删除权限
+      this.axios.delete('A2/authServices/authResource?uid=' + this.deleteItem.uid)
+        .then(res => {
+          if (res) {
+            this.$message.success('删除成功');
+            this.getAuthorityList();
+            this.deleteLimitdialogVisible = false;
+          }
+        })
+        .catch(() => {});
+    },
+    onConfirmEditLimit () { // 确认编辑权限
+      if (!this.editLimitItem.resourceName) {
+        this.isShowError = true;
+        this.errorMsg = '此项内容不可为空';
+        return false;
+      }
+      let params = {
+        parentUid: this.editLimitItem.parentUid,
+        resourceName: this.editLimitItem.resourceName,
+        resourceType: this.editLimitItem.resourceType,
+        uid: this.editLimitItem.uid
+      }
+      this.axios.put('A2/authServices/authResource', params)
+        .then(res => {
+          if (res) {
+            this.$message.success('修改成功');
+            this.getAuthorityList();
+            this.editLimitDialogVisible = false;
+          }
+        })
+        .catch(() => {})
+    },
+    onConfirmAddLimit () { // 确认添加权限
+      if (!this.addForm.resourceName) {
+        this.isShowError = true;
+        this.errorMsg = '此项内容不可为空';
+        return false;
+      }
+      this.axios.post('A2/authServices/authResource', this.addForm)
+        .then(res => {
+          if (res) {
+            this.$message.success('新增成功');
+            this.getAuthorityList();
+            this.addLimitDialogVisible = false;
+          }
+        })
+        .catch(() => {})
+      this.addLimitDialogVisible = false;
+    },
+    onNewLimitChange () {},
+    getAuthorityList () { // 获取权限列表
+      this.allLimitObj.A = [];
+      this.allLimitObj.B = [];
+      this.allLimitObj.C = [];
+      this.allLimitObj.D = [];
+      this.allLimitObj.E = [];
+      this.axios.get('A2/authServices/authResources')
+        .then(res => {
+          if (res) {
+            res.data.forEach(item => {
+              if (item.resourceLayer === 1) {
+                this.allLimitObj.A.push({
+                  uid: item.uid,
+                  parentUid: item.parentUid,
+                  resourceName: item.resourceName,
+                  resourceType: item.resourceType,
+                  isShow: true,
+                  children: []
+                });
+              }
+              if (item.resourceLayer === 2) {
+                this.allLimitObj.B.push({
+                  uid: item.uid,
+                  parentUid: item.parentUid,
+                  resourceName: item.resourceName,
+                  resourceType: item.resourceType,
+                  isShow: true,
+                  children: []
+                });
+              }
+              if (item.resourceLayer === 3) {
+                this.allLimitObj.C.push({
+                  uid: item.uid,
+                  parentUid: item.parentUid,
+                  resourceName: item.resourceName,
+                  resourceType: item.resourceType,
+                  isShow: true,
+                  children: []
+                });
+              }
+              if (item.resourceLayer === 4) {
+                this.allLimitObj.D.push({
+                  uid: item.uid,
+                  parentUid: item.parentUid,
+                  resourceName: item.resourceName,
+                  resourceType: item.resourceType,
+                  isShow: true,
+                  children: []
+                });
+              }
+              if (item.resourceLayer === 5) {
+                this.allLimitObj.E.push({
+                  uid: item.uid,
+                  parentUid: item.parentUid,
+                  resourceName: item.resourceName,
+                  resourceType: item.resourceType
+                });
+              }
+            });
+            // console.log(this.allLimitObj);
+            // 2
+            this.allLimitObj.A.forEach(a => {
+              this.allLimitObj.B.forEach(b => {
+                if (a.uid === b.parentUid) {
+                  a.children.push(b);
+                }
+              })
+            })
+            // 3
+            this.allLimitObj.A.forEach(a => {
+              if (a.children && a.children.length > 0) {
+                a.children.forEach(b => {
+                  this.allLimitObj.C.forEach(c => {
+                    if (b.uid === c.parentUid) {
+                      b.children.push(c);
+                    }
+                  })
+                })
+              }
+            })
+            // 4
+            this.allLimitObj.A.forEach(a => {
+              if (a.children && a.children.length > 0) {
+                a.children.forEach(b => {
+                  if (b.children && b.children.length > 0) {
+                    b.children.forEach(c => {
+                      this.allLimitObj.D.forEach(d => {
+                        if (c.uid === d.parentUid) {
+                          c.children.push(d);
+                        }
+                      })
+                    })
+                  }
+                })
+              }
+            })
+            // 5
+            this.allLimitObj.A.forEach(a => {
+              if (a.children && a.children.length > 0) {
+                a.children.forEach(b => {
+                  if (b.children && b.children.length > 0) {
+                    b.children.forEach(c => {
+                      if (c.children && c.children.length > 0) {
+                        c.children.forEach(d => {
+                          this.allLimitObj.E.forEach(e => {
+                            if (d.uid === e.parentUid) {
+                              d.children.push(e);
+                            }
+                          })
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+            console.log('111', this.allLimitObj.A);
+          }
+        })
+        .catch(() => {})
+    },
+    onAddLimit (obj) { // 添加权限
+      this.addForm.resourceName = null;
+      this.addForm.resourceType = null;
+      this.addLimitDialogVisible = true;
+      this.isShowError = false;
+      this.errorMsg = '';
+      if (obj.uid) {
+        this.addForm.parentUid = obj.uid;
+      }
+    },
+    onEditRole (obj) { // 编辑权限
+      this.editLimitDialogVisible = true;
+      this.isShowError = false;
+      this.errorMsg = '';
+      this.editLimitItem = Object.assign({}, obj);
+    },
+    onDeleteLimit (obj) { // 删除权限
+      this.deleteItem = Object.assign({}, obj);
+      this.deleteLimitdialogVisible = true;
+    }
   }
 }
 </script>

@@ -14,16 +14,18 @@
           </el-input>
           <img src="../../../assets/img/login/lock.png" />
         </el-form-item>
-        <el-form-item prop="codeImg" class="login-form-item code-item" style="margin-bottom: 10px">
+        <el-form-item prop="codeImg" class="code-item" style="margin-bottom: 10px">
           <el-input v-model="loginForm.codeImg" :type="'text'" placeholder="请输入验证码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
-          <div class="img-code">asdasl</div>
+          <div class="img-code" @click="changeImg">
+            <img class="img-code-box" :src="imgSrc" />
+          </div>
         </el-form-item>
         <el-form-item class="login-form-item clearfix">
-          <el-checkbox style="color: #999999">下次自动登录</el-checkbox>
+          <el-checkbox style="color: #999999" v-model="isAutoLogin">下次自动登录</el-checkbox>
           <span style="float:right;color:#999999;cursor:pointer" @click="forgetPwd">忘记密码?</span>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%;background:#0785FD;box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38);" type="primary" :disabled="!loginForm.userMobile || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
+          <el-button style="width: 100%;background:#0785FD;box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38);" type="primary" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
         </el-form-item>
       </el-form>
       <p style="margin-bottom:80px;color:#999999;font-size:12px;">后台管理系统@copyrightXXX</p>
@@ -31,23 +33,28 @@
   </div>
 </template>
 <script>
-import { cookieUserId, cookieUserName, cookieTime } from '@/config/config.js';
+import { cookieUserId, cookieUserName, cookieTime, ajaxCtx2 } from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
+import {valiPhone, checkPwd} from '@/utils/validator.js';
 export default {
   data () {
     return {
+      imgSrc: ajaxCtx2 + '/authServices/users/validCodeImg',
       loginForm: {
-        userMobile: '13576543210',
-        userPassword: '12345678',
-        codeImg: ''
+        userMobile: null,
+        userPassword: null,
+        codeImg: null
       },
       loginBtnLoading: false,
+      isAutoLogin: false, // 是否自动登陆
       loginFormRules: {
         userMobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: valiPhone, trigger: 'blur' }
         ],
         userPassword: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { validator: checkPwd, trigger: 'blur' }
         ]
         // codeImg: [
         //   { required: true, message: '请输入验证码', trigger: 'blur' }
@@ -64,7 +71,6 @@ export default {
         _this.loginSubmit('loginForm');
       }
     });
-    this.getCode();
   },
   methods: {
     loginSubmit (formName) {
@@ -77,9 +83,10 @@ export default {
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
               let oUser = response.data;
-              setCookie(cookieUserId, oUser.authUserId, cookieTime, '/');
-              // 保存用户姓名到cookie
-              setCookie(cookieUserName, oUser.userName, cookieTime, '/');
+              console.log(oUser)
+              setCookie(cookieUserId, oUser.userId, cookieTime, '/');
+              // 保存用户手机号到cookie
+              setCookie(cookieUserName, oUser.userMobile, cookieTime, '/');
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
                 userName: oUser.userName
@@ -95,17 +102,12 @@ export default {
         }
       });
     },
-    getCode () { // 获取图片验证码
-      this.axios.get('A2/authServices/users/validCodeImg')
-        .then((res) => {
-          if (res) {
-            console.log(res)
-          }
-        })
-        .catch(() => {})
-    },
     forgetPwd () {
       this.$router.push({name: 'forget'});
+    },
+    changeImg () { // 点击更换图片验证码
+      const img = ajaxCtx2 + '/authServices/users/validCodeImg?' + Math.random();
+      this.imgSrc = img;
     }
   },
   destroyed () {
@@ -167,12 +169,18 @@ export default {
       display: flex;
       .img-code {
         width: 140px;
-        background: red;
+        height: 48px;
+        cursor:pointer;
+        border: 1px dashed #000;
+        img {
+          height: 100%;
+          width: 100%;
+        }
       }
     }
     .code-item /deep/ .el-input__inner {
       padding: 0 10px;
-      width: 220px;
+      width: 250px;
     }
     /deep/ .el-input__inner {
       padding: 0 38px;
