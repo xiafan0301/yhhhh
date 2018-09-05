@@ -51,7 +51,7 @@ import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
 // 系统管理--组织架构
 import systemManage from '@/views/ecc/components/systemManage/systemManage.vue';
 import organList from '@/views/ecc/components/systemManage/organList.vue';
-// import organizationDetail from '@/views/user/organization/detail.vue';
+import organDetail from '@/views/ecc/components/systemManage/organDetail.vue';
 // 系统管理--项目用户
 import user from '@/views/ecc/components/systemManage/list.vue';
 import userList from '@/views/ecc/components/systemManage/user-list.vue';
@@ -79,6 +79,7 @@ export default new Router({
       path: '/',
       component: main,
       children: [
+        {path: '', redirect: {name: 'event-list'}},
         {
           path: 'notice',
           component: notice,
@@ -160,7 +161,8 @@ export default new Router({
             },
             {path: 'user-create', name: 'user-create', component: userCreate},
             {path: 'roleList', name: 'role-list', component: roleList},
-            {path: 'authority', name: 'authority', component: authority}
+            {path: 'authority', name: 'authority', component: authority},
+            {path: 'organDetail/:id', name: 'organ-detail', component: organDetail}
           ]
         }
       ]

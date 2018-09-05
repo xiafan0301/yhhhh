@@ -15,6 +15,7 @@ axios.interceptors.request.use((config) => {
     if (config.url.indexOf('A2') === 0) {
       config.url = ajaxCtx2 + config.url.substring(2);
     } else if (config.url.indexOf('A3') === 0) {
+      console.log(config.url)
       config.url = ajaxCtx4 + config.url.substring(2);
     } else {
       config.url = ajaxCtx + config.url;
@@ -43,7 +44,8 @@ axios.interceptors.response.use(function (response) {
     } else if (_data.code === '10060002') {
       // 未登录
       msg = '登录已过期，请重新登录！';
-      if (response.config.url.indexOf('emi') === 0) {
+      console.log(response.config.url)
+      if (response.config.url.indexOf('emi') !== -1 || response.config.url.indexOf('auth') !== -1) {
         window.location.href = './ecc.html#/login';
       } else {
         window.location.href = './index.html#/login';

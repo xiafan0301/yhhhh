@@ -23,9 +23,10 @@
         </el-form-item>
       </el-form>
       <!--贫困村添加-->
-      <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btnh" icon="el-icon-location-outline" @click="calcCoordinate" :loading="calcCoordinateLoading" >{{status}}</el-button>
+      <span class="add-plate-btnsh" :loading="calcCoordinateLoading" style="color: #1ABC9C; font-size: 14px;" ><i :class="staclass"></i>{{status}}</span>
+      <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btnh" icon="el-icon-location-outline" @click="calcCoordinate" >获取坐标</el-button>
       <el-button v-if="o[searchForm.dataTypeId]" type="primary" size="small" class="add-plate-btn" icon="el-icon-plus" @click="fillIn">添加</el-button>
-      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport'" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
+      <el-upload :action ="$store.state.fileUploadUrl +'/mapServices/data/excelImport/' + searchForm.dataTypeId" :auto-upload="true" :on-success="handlePreview" :show-file-list="false">
         <el-button style="color:#0785FD;font-size:14px; border-color:#0785FD" size="mini" class="add-plate-btnf"  v-if="o[searchForm.dataTypeId]">一键导入</el-button>
       </el-upload>
       <a style="color:#0785FD;font-size:14px;" size="mini" class="add-plate-btns" v-if="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" :href="$store.state.fileUploadUrl + '/mapServices/template/download/1bfa2f78-2174-4e9d-8f2f-58264a00ce83'">模块下载</a>
@@ -60,11 +61,11 @@
         <el-table-column label="坐标" min-width="200" style="position: relative">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -100,20 +101,20 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="医疗机构名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="170">
+        <el-table-column  label="坐标" min-width="170" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="类型" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="床位数(床)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="床位数(张)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[3].valueContent" label="详细地址" min-width="150"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -129,11 +130,11 @@
         <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -154,11 +155,11 @@
         <el-table-column  label="坐标" min-width="150">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -178,11 +179,11 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -218,11 +219,11 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -258,11 +259,11 @@
         <el-table-column  label="坐标" min-width="110">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 40%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -281,15 +282,15 @@
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(床)" min-width="120"></el-table-column>
+        <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(张)" min-width="120"></el-table-column>
         <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="120"></el-table-column>
         <el-table-column label="操作" min-width="120">
           <template slot-scope="scope">
@@ -305,11 +306,11 @@
         <el-table-column  label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -328,11 +329,11 @@
         <el-table-column  label="坐标" min-width="140">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -368,11 +369,11 @@
         <el-table-column  label="坐标" min-width="100">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -426,11 +427,11 @@
         <el-table-column label="坐标" min-width="120">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -449,11 +450,11 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -474,11 +475,11 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -499,11 +500,11 @@
         <el-table-column  label="坐标" min-width="130">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
-            <el-tooltip class="item" effect="dark" content="多个" placement="bottom">
+            <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
               <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
             </el-tooltip>
-            <el-tooltip class="item" effect="dark" content="异常" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1">
+            <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
             </el-tooltip>
           </template>
         </el-table-column>
@@ -530,7 +531,7 @@
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数量(床)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
+          <el-form-item label="床位数量(张)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
             <el-input v-model="form.number" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="停车位数量(个)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
@@ -545,7 +546,7 @@
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
             <el-input v-model="form.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数(床)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="床位数(张)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.student" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
@@ -622,7 +623,7 @@
           <el-form-item label="投入金额（万元）" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'dc42b85c-ee98-4895-bfc2-4c472a092170'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数量(床)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
+          <el-form-item label="床位数量(张)" :label-width="formLabelWidth" prop="number" v-if="this.searchForm.dataTypeId == 'a649c4a2-314e-4490-bfee-ca3b7695057b'">
             <el-input v-model="form1.number" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="停车位数量(个)" :label-width="formLabelWidth"  prop="number" v-if="this.searchForm.dataTypeId == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'">
@@ -637,7 +638,7 @@
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
             <el-input v-model="form1.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="床位数(床)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="床位数(张)" :label-width="formLabelWidth" prop="student" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.student" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item :label="getHouseholds" :label-width="formLabelWidth" prop="households"
@@ -704,7 +705,8 @@ export default {
   components: {mapPoint},
   data () {
     return {
-      status: '获取坐标',
+      staclass: '',
+      status: '',
       calcCoordinateLoading: false,
       aa: '',
       open: false,
@@ -1011,7 +1013,7 @@ export default {
             valueContent: '',
             serialNumber: 2,
             contentName: '床位数',
-            valueUnit: '床'
+            valueUnit: '张'
           },
           {
             valueContent: '',
@@ -1086,7 +1088,7 @@ export default {
             valueContent: '',
             serialNumber: 0,
             contentName: '床位数量',
-            valueUnit: '床'
+            valueUnit: '张'
           },
           {
             valueContent: '',
@@ -1287,14 +1289,16 @@ export default {
   methods: {
     // 获取坐标
     calcCoordinate () {
-      this.status = '加载中...';
+      this.staclass = 'el-icon-loading';
+      this.status = '加载坐标中';
       this.calcCoordinateLoading = true;
       setTimeout(() => {
         this.axios.get('/mapServices/data/calcCoordinate')
           .then(res => {
             this.calcCoordinateLoading = false;
+            this.status = '加载完成！';
+            this.staclass = '';
             this.getPlateList();
-            this.status = '获取坐标';
           })
           .catch(() => {});
       }, 2000);
@@ -1307,24 +1311,51 @@ export default {
     },
     searchreFormSubmit () {
       this.pageNum = 1;
-      this.searchForm.coordinateStatus = ''
+      this.searchForm.coordinateStatus = '';
       this.getPlateList();
     },
     selPosition () {
       // 编辑状态
-      if (!this.editObj) {
-        this.oConfig = {};
+      if (this.dialogFormVisible1) {
+        if (this.form1.addrs === '') {
+          this.oConfig = {};
+        } else {
+          this.oConfig = {
+            _name: this.form1.addrs,
+            center: [this.form1.coordinate.split(',')[0], this.form1.coordinate.split(',')[1]]
+          }
+        }
+      } else if (this.dialogFormVisible) {
+        if (this.form.coordinate.split(',')[0] === 'null') {
+          this.oConfig = {};
+        } else {
+          this.oConfig = {
+            _name: this.form.addrs,
+            center: [this.form.coordinate.split(',')[0], this.form.coordinate.split(',')[1]]
+          }
+        }
+      } else if (this.dialogFormVisible2) {
+        if (this.form2.addrs === '') {
+          this.oConfig = {};
+        } else {
+          this.oConfig = {
+            _name: this.form2.name,
+            center: [this.form2.coordinate.split(',')[0], this.form2.coordinate.split(',')[1]]
+          }
+        }
       }
       this.open = !this.open;
     },
-    mapPointSubmit (val) {
+    mapPointSubmit (val, address) {
       console.log('接收到的经纬度为：', val);
       if (this.dialogFormVisible1) {
-        this.form1.coordinate = val
+        this.form1.coordinate = val;
+        this.form1.addrs = address;
       } else if (this.dialogFormVisible) {
-        this.form.coordinate = val
+        this.form.coordinate = val;
+        this.form.addrs = address;
       } else if (this.dialogFormVisible2) {
-        this.form2.coordinate = val
+        this.form2.coordinate = val;
       }
     },
     // 添加事件清空form表单
@@ -1341,6 +1372,7 @@ export default {
     getValue: function (scope) {
       this.searchForm.dataTypeId = scope;
       this.getPlateList();
+      this.status = ''
     },
     // 点击事件
     query: function (val) {
@@ -2137,6 +2169,15 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消'
         });
+      } else if (response.viewMsg === '地图数据类型不匹配') {
+        let _this = this;
+        _this.$msgbox({
+          title: '提示',
+          message: response.viewMsg,
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        });
       } else {
         let _this = this;
         _this.$msgbox({
@@ -2147,7 +2188,6 @@ export default {
           cancelButtonText: '取消'
         });
       }
-      console.log();
       this.getPlateList();
     },
     handleExceed (files, fileList) {
@@ -2186,6 +2226,9 @@ export default {
     .add-plate-btnh{
       position: absolute; top: 22px; right: 280px;
       background: linear-gradient(to top, #0785FD, #07BAFD);
+    }
+    .add-plate-btnsh{
+      position: absolute; top: 30px; right: 390px;
     }
   }
   .bg-plate-tb {

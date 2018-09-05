@@ -11,13 +11,20 @@
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
-        <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 220px;" placeholder="时间段">
-            <el-option label="全部" :value="0"></el-option>
-          </el-select>
+        <el-form-item style="width: 220px;">
+          <el-date-picker
+            v-model='searchForm.publishTime'
+            range-separator="至"
+            type="daterange"
+            format="yyyy/MM/dd"
+            value-format="yyyy-MM-dd"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 100%;"
+          ></el-date-picker>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布状态">
+          <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
             <el-option label="待发送" :value="1"></el-option>
             <el-option label="发送成功" :value="2"></el-option>
             <el-option label="已撤销" :value="3"></el-option>
@@ -94,9 +101,7 @@ export default {
   data () {
     return {
       searchForm: {
-        beginTime: null,
-        endTime: null,
-        publishState: 0,
+        publishState: '',
         messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
         publishUnitId: '',
         receiverId: '',
@@ -106,7 +111,9 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      tableData: []
+      tableData: [
+        {emiMessage: []}
+      ]
     }
   },
   computed: {
@@ -119,9 +126,9 @@ export default {
   methods: {
     getTableData () {
       let params = {
-        // 'where.beginTime': this.searchForm.beginTime,
-        // 'where.endTime': this.searchForm.endTime,
-        // 'where.publishState': this.searchForm.publishState,
+        'where.beginTime': this.searchForm.publishTime[0],
+        'where.endTime': this.searchForm.publishTime[1],
+        'where.publishState': this.searchForm.publishState,
         'where.messageType': this.searchForm.messageType,
         // 'where.publishUnitId': this.searchForm.publishUnitId,
         // 'where.receiverId': this.searchForm.receiverId,
@@ -142,6 +149,7 @@ export default {
     edit () {
     },
     doSearch () {
+      this.getTableData();
     },
     del (scope) {
       this.$confirm('确定删除吗?', '提示', {
@@ -196,8 +204,8 @@ export default {
       this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
     },
     see (scope) {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-see', query: {modify: true, messageId: scope.messageId}, params: {plateId: '0'}});
+      const status = '查看公告';
+      this.$router.push({name: 'notice-see', query: {status: status, messageId: scope.messageId}});
     }
   }
 }
@@ -210,6 +218,9 @@ export default {
     .bg-plan-tbp{
       padding: 20px 0;
       text-align: center;
+    }
+    .el-date-editor /deep/.el-range-separator{
+      width: 10%!important;
     }
   }
 </style>

@@ -68,7 +68,18 @@ export const checkTel = (rule, value, callback) => {
   }
   callback()
 }
-
+// 密码验证
+export const checkPwd = (rule, value, callback) => {
+  if (value) {
+    let reg = /^[a-zA-Z0-9]{6,32}$/;
+    if (!reg.test(value)) {
+      callback(new Error('密码格式不正确'));
+    } else {
+      callback();
+    }
+  }
+  callback()
+}
 /**
  * 判断邮箱格式
  */

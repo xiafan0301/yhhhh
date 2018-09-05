@@ -69,7 +69,10 @@
             <el-checkbox label="移动端" name="type" v-model="form1.receive" disabled></el-checkbox>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="form1.type" placeholder="系统消息" disabled style="width: 500px">
+          <el-select v-model="form1.type" placeholder="系统消息"  style="width: 500px">
+            <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
+            <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
+            <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容">
@@ -81,11 +84,17 @@
         <el-form-item label="发送时间">
           <el-radio-group v-model="form1.time" style="width: 100%">
             <div style="display: inline-block" >;
-              <el-radio label="实时" ></el-radio>
-              <el-radio label="定时"></el-radio>
+              <el-radio :label="1" >实时</el-radio>
+              <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
-              <el-input style=""  size = "mini"><i slot="suffix" class="el-input__icon el-icon-date" style="color: #0785FD"></i></el-input>
+              <el-date-picker
+                value-format="yyyy-MM-dd HH:mm:ss"
+                v-model="form1.publishTime"
+                :disabled = "!(form1.time === 2)"
+                type="datetime"
+                placeholder="选择日期时间">
+              </el-date-picker>
             </div>
           </el-radio-group>
         </el-form-item>
@@ -114,10 +123,10 @@ export default {
         attachmentList: []
       },
       form1: {
+        publishTime: '',
         type: '',
         receive: true,
         desc: '',
-        checked: false,
         time: ''
       },
       value: ''
@@ -138,14 +147,14 @@ export default {
         let params = {
           emiMessage: {
             details: this.form1.desc,
-            messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1',
+            messageType: this.form1.type,
             terminal: 1,
-            title: 'string'
+            publishTime: this.form1.publishTime
           }
         };
         this.axios.post('A2/messageService', params)
           .then((res) => {
-            console.log(res);
+            this.$router.push({name: 'system'})
           })
       } else {
         if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
@@ -163,9 +172,10 @@ export default {
             messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
             terminal: this.form.terminal,
             title: this.form.title,
-            publishTime: this.form.publishTime,
-            attachmentList: this.form.attachmentList
-          }
+            publishTime: this.form.publishTime
+            // attachmentList: this.form.attachmentList
+          },
+          emiAttachments: this.form.attachmentList
           // receiveRelations: [
           //   {
           //     messageId: 'string',
@@ -175,7 +185,7 @@ export default {
         };
         this.axios.post('A2/messageService', params)
           .then((res) => {
-            console.log(res);
+            this.$router.push({name: 'notice-atmanagementList'})
           })
       }
     },
@@ -193,7 +203,7 @@ export default {
           thumbnailUrl: res.data.thumbnailUrl,
           thumbnailWidth: res.data.thumbImageWidth,
           thumbnailHeight: res.data.thumbImageHeight
-        }
+        };
         this.form.attachmentList.push(data);
       }
     },

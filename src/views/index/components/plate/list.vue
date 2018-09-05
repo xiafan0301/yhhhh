@@ -130,6 +130,7 @@ export default {
         .then((res) => {
           this.pager.total = res.data.total;
           this.plateList = res.data.list;
+          console.log(res)
         })
         .catch(() => {});
     },

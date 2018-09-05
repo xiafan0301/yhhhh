@@ -29,7 +29,10 @@ const state = {
   // 上传文件路径
   fileUploadUrl: '',
   // 下载文件路径
-  fileDownloadUrl: ''
+  fileDownloadUrl: '',
+  // 客户端密钥
+  authProkey: '241ba47e5a28a33d03795bfc0c8e6a1e',
+  proKey: '69e1a034c587a490f34a8b28724beb0d'
 };
 
 export default new Vuex.Store({

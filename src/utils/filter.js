@@ -1,5 +1,6 @@
 // 全局过滤器
 import Vue from 'vue';
+import {formatDate} from './util.js';
 Vue.filter('filterStringify', function (obj) {
   return JSON.stringify(obj);
 });
@@ -25,4 +26,10 @@ Vue.filter('filterPagePosition', function (type) {
     '34': '中四'
   };
   return objs[type + ''] ? objs[type + ''] : '--';
+});
+/*
+ * 时间戳处理
+ * */
+Vue.filter('moment', function (timestamp, fm) {
+  return formatDate(timestamp, fm);
 });

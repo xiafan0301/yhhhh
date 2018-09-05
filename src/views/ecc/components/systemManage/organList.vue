@@ -12,17 +12,17 @@
           <el-input placeholder='请输入部门名称搜索' style="width: 250px;" v-model='selectForm.organName'></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
+          <el-button type="primary" class='selectBtn btnClass' @click="selectDepart">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
         <el-button class='selectBtn add-depart' @click="showAddDialog">新建部门</el-button>
       </div>
     </div>
-    <el-table style="width: 100%" :data='departmentList' class='event-table'>
+    <el-table style="width: 100%" :data='departmentList' class='event-table' @row-click="goDetail">
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
       <el-table-column label="名称" prop='organName' align='center'></el-table-column>
-      <el-table-column label="上报部门" prop='organPid' align='center'></el-table-column>
+      <el-table-column label="上报部门" prop='parentOrganName' align='center'></el-table-column>
       <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
@@ -63,13 +63,8 @@
           <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='addForm.organName'></el-input>
         </el-form-item>
         <el-form-item label="上级部门" label-width='85px'>
-          <el-select placeholder="请选择执行部门" style='width: 98%' v-model='addForm.organPid'>
-            <el-option
-              v-for="item in departmentList"
-              :key="item.uid"
-              :label="item.organName"
-              :value="item.uid"
-            ></el-option>
+          <el-select placeholder="请选择上级部门" style='width: 98%' v-model='addForm.organPid'>
+            <el-option v-for="item in departmentList" :key="item.uid" :label="item.organName" :value="item.uid"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门负责人" label-width='85px'>
@@ -120,32 +115,16 @@ export default {
         organName: ''
       },
       pagination: { total: 0, pageSize: 10, pageNum: 1 },
-      departmentList: [
-        {
-          organName: '使用机构名称',
-          chargeUserName: '张晓英',
-          organPid: '无'
-        },
-        {
-          organName: '使用机构名称',
-          chargeUserName: '张晓英',
-          organPid: '无'
-        },
-        {
-          organName: '使用机构名称',
-          chargeUserName: '张晓英',
-          organPid: '无'
-        }
-      ],
+      departmentList: [],
       addForm: {
-        organName: '',
-        organPid: '',
-        chargeUserName: ''
+        organName: null,
+        organPid: null,
+        chargeUserName: null
       },
       editForm: {
-        organName: '',
-        uid: '',
-        chargeUserName: ''
+        organName: null,
+        uid: null,
+        chargeUserName: null
       },
       errorMsg: '',
       isShowError: false,
@@ -157,6 +136,12 @@ export default {
     this.getDepartmentList();
   },
   methods: {
+    goDetail (row) {
+      this.$router.push({path: 'organDetail/' + row.uid});
+    },
+    selectDepart () { // 查询
+      this.getDepartmentList();
+    },
     onPageChange (page) {
       this.pagination.pageNum = page;
       this.getDepartmentList();
@@ -167,14 +152,18 @@ export default {
       this.getDepartmentList();
     },
     getDepartmentList () {
+      if (!this.selectForm.organName) {
+        this.selectForm.organName = null;
+      }
       const params = {
         'where.organName': this.selectForm.organName,
-        pageNum: this.pagination.pageNum
+        pageNum: this.pagination.pageNum,
+        pageSize: this.pagination.pageSize
       }
       this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data.list) {
-            // this.departmentList = res.data.list;
+            this.departmentList = res.data.list;
             this.pagination.total = res.data.total;
           }
         })
@@ -182,14 +171,16 @@ export default {
     },
     onNewDepartChange (val) { // 判断组织机构名称是否重复
       let params = {
-        // proKey: this.$store.state.proKey,
         organName: val
       }
       this.axios.get('A3/authServices/organName', {params})
         .then(res => {
-          if (res) {
+          if (res && res.data === true) {
             this.isShowError = true;
             this.errorMsg = '该用户组已存在';
+          } else {
+            this.isShowError = false;
+            this.errorMsg = '';
           }
         })
         .catch(() => {})
@@ -200,6 +191,15 @@ export default {
     },
     deletDepart () { // 删除部门
       if (this.deleteId) {
+        this.axios.delete('A3/authServices/organInfo?uids=' + this.deleteId)
+          .then(res => {
+            if (res) {
+              this.$message.success('删除成功');
+              this.getDepartmentList();
+              this.deleteDepartmentDialog = false;
+            }
+          })
+          .catch(() => {});
       }
     },
     editDepart (scope) { // 显示编辑部门弹出框
@@ -210,16 +210,19 @@ export default {
     },
     showAddDialog () { // 显示添加部门弹出框
       this.dialogFormVisible = true;
-      this.addForm.organName = '';
-      this.addForm.organPid = '';
-      this.addForm.chargeUserName = '';
+      this.addForm.organName = null;
+      this.addForm.organPid = null;
+      this.addForm.chargeUserName = null;
+      this.isShowError = false;
+      this.errorMsg = '';
     },
     submitAddData () { // 添加部门
       if (!this.addForm.organName) {
         this.isShowError = true;
-        this.errorMsg = '此项内容不可为空';
+        this.errorMsg = '部门名称不可为空';
         return;
       }
+      console.log(this.addForm)
       this.axios.post('A3/authServices/organInfo', this.addForm)
         .then((res) => {
           if (res) {
@@ -231,9 +234,9 @@ export default {
         .catch(() => {});
     },
     cancelAdd () { // 取消添加部门
-      this.addForm.organName = '';
-      this.addForm.organPid = '';
-      this.addForm.chargeUserName = '';
+      this.addForm.organName = null;
+      this.addForm.organPid = null;
+      this.addForm.chargeUserName = null;
       this.isShowError = false;
       this.errorMsg = '';
       this.dialogFormVisible = false;
@@ -245,7 +248,7 @@ export default {
     },
     submitEditData () { // 编辑部门
       if (!this.editForm.organName) {
-        this.errorMsg = '此项内容不可为空';
+        this.errorMsg = '部门名称不可为空';
         this.isShowError = true;
         return;
       }
