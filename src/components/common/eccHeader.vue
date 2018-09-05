@@ -16,7 +16,7 @@
         </ul>
       </li>
     </ul>
-    <el-dialog :visible.sync="pwdModal" :append-to-body="true" class="oa-pwd-modal" title="修改密码" width="500px" :loading="pwdModalLoading">
+    <el-dialog center :visible.sync="pwdModal" :append-to-body="true" class="oa-pwd-modal" title="修改密码" width="400px" :loading="pwdModalLoading">
       <el-form ref="pwdForm" :model="pwdForm" :rules="rulePwdForm" label-width="120px" style="padding-right: 40px;">
         <el-form-item label="原密码" prop="oldPwd">
           <el-input size="small" type="password" v-model="pwdForm.oldPwd" :maxlength="64"></el-input>
@@ -24,13 +24,13 @@
         <el-form-item label="新密码" prop="newPwd">
           <el-input size="small" type="password" v-model="pwdForm.newPwd" :maxlength="64"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="newPwdCheck">
-          <el-input size="small" type="password" v-model="pwdForm.newPwdCheck" :maxlength="64"></el-input>
+        <el-form-item label="确认密码" prop="confirmPwd">
+          <el-input size="small" type="password" v-model="pwdForm.confirmPwd" :maxlength="64"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="small" @click="pwdModal = false">取 消</el-button>
-        <el-button size="small" type="primary" @click="pwdSubmit('pwdForm')">确 定</el-button>
+        <el-button class="sureBtn" size="small" @click="pwdModal = false">取 消</el-button>
+        <el-button class="noSureBtn" size="small" type="primary" @click="pwdSubmit('pwdForm')">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -43,13 +43,13 @@ export default {
       if (value === '') {
         callback(new Error('请输入新密码'));
       } else {
-        let reg = /^[A-Za-z0-9]+$/
+        let reg = /^[a-zA-Z0-9]{6,32}$/
         if (!reg.test(value)) {
-          return callback(new Error('请输入英文和数字'));
+          return callback(new Error('密码长度必须是6位到32位'));
         }
-        if (this.pwdForm.newPwdCheck !== '') {
+        if (this.pwdForm.confirmPwd !== '') {
           // 对第二个密码框单独验证
-          this.$refs.pwdForm.validateField('newPwdCheck');
+          this.$refs.pwdForm.validateField('confirmPwd');
         }
         callback();
       }
@@ -69,7 +69,7 @@ export default {
       pwdForm: {
         oldPwd: '',
         newPwd: '',
-        newPwdCheck: ''
+        confirmPwd: ''
       },
       rulePwdForm: {
         oldPwd: [
@@ -77,12 +77,12 @@ export default {
         ],
         newPwd: [
           {required: true, message: '新密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 12, message: '密码长度6-20位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 32, message: '密码长度6-32位', trigger: 'blur'},
           {validator: validatePass, trigger: 'blur'}
         ],
-        newPwdCheck: [
+        confirmPwd: [
           {required: true, message: '确认密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 12, message: '密码长度6-20位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 32, message: '密码长度6-32位', trigger: 'blur'},
           {validator: validatePassCheck, trigger: 'blur'}
         ]
       }
@@ -94,19 +94,20 @@ export default {
       _this.$refs[name].validate((valid) => {
         if (valid) {
           // this.$message.success('提交成功!');
-          _this.axios.put('/authServices/update?' +
-            $.param({
-              userName: _this.$store.state.loginUser.userName,
-              oldPassword: _this.pwdForm.oldPwd,
-              userPassword: _this.pwdForm.newPwd
-            })
-          ).then(function (response) {
+          const params = {
+            userName: _this.$store.state.loginUser.userName,
+            oldPwd: _this.pwdForm.oldPwd,
+            newPwd: _this.pwdForm.newPwd,
+            confirmPwd: _this.pwdForm.confirmPwd
+          }
+          _this.axios.put('A2/authServices/users/user', params).then(function (response) {
             if (response) {
+              console.log(response)
               _this.pwdModal = false;
               _this.$message.success('密码修改成功，请重新登录');
               // setCookie(cookieUserId, _this.loginUser.id, -1, '/');
               _this.$store.commit('setToken', {tokenVal: false});
-              window.location.href = './index.html#/login';
+              window.location.href = './ecc.html#/login';
             }
             _this.pwdModalLoading = false;
             setTimeout(function () {
@@ -200,7 +201,7 @@ export default {
             display: block;
           }
           > img {
-            animation: circle 4s linear 0s infinite;
+            // animation: circle 4s linear 0s infinite;
           }
         }
         > span {
@@ -256,5 +257,31 @@ export default {
     border-bottom: 6px solid #fff;
     border-left: 6px solid transparent;
     border-right: 6px solid transparent;
+  }
+  /deep/ .el-dialog__header {
+    background: #F0F0F0 !important;
+    text-align: left !important;
+    color: #555555;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  /deep/  .el-dialog--center .el-dialog__body {
+    text-align: center !important;
+    padding: 10px 25px 10px;
+  }
+  .noSureBtn {
+    background:#0785FD;
+    height:35px;
+    color: #fff;
+    line-height: 10px;
+  }
+  .sureBtn {
+    border-color:#e5e5e5;
+    height:35px;
+    line-height: 10px;
+    color:#666666;
+  }
+  /deep/ .el-form-item {
+    margin-bottom: 15px;
   }
 </style>

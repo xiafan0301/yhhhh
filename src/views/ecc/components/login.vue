@@ -41,8 +41,8 @@ export default {
     return {
       imgSrc: ajaxCtx2 + '/authServices/users/validCodeImg',
       loginForm: {
-        userMobile: null,
-        userPassword: null,
+        userMobile: '13576543210',
+        userPassword: '12345678',
         codeImg: null
       },
       loginBtnLoading: false,

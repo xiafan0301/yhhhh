@@ -19,15 +19,15 @@
         <el-button class='selectBtn add-depart' @click="showAddDialog">新建部门</el-button>
       </div>
     </div>
-    <el-table style="width: 100%" :data='departmentList' class='event-table' @row-click="goDetail">
+    <el-table style="width: 100%;" :data='departmentList' class='event-table' @row-click="goDetail">
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
       <el-table-column label="名称" prop='organName' align='center'></el-table-column>
       <el-table-column label="上报部门" prop='parentOrganName' align='center'></el-table-column>
       <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
-      <el-table-column label="操作" align='center'>
+      <el-table-column label="操作" align='center' class="operation">
         <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="editDepart(scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteDepart(scope)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="editDepart(scope, $event)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteDepart(scope, $event)" />
         </template>
       </el-table-column>
     </el-table>
@@ -137,6 +137,7 @@ export default {
   },
   methods: {
     goDetail (row) {
+      // e.preventDefault();
       this.$router.push({path: 'organDetail/' + row.uid});
     },
     selectDepart () { // 查询
@@ -185,7 +186,8 @@ export default {
         })
         .catch(() => {})
     },
-    deleteDepart (scope) { // 删除部门显示弹出框
+    deleteDepart (scope, e) { // 删除部门显示弹出框
+      e.stopPropagation();
       this.deleteId = scope.row.uid;
       this.deleteDepartmentDialog = true;
     },
@@ -202,7 +204,8 @@ export default {
           .catch(() => {});
       }
     },
-    editDepart (scope) { // 显示编辑部门弹出框
+    editDepart (scope, e) { // 显示编辑部门弹出框
+      e.stopPropagation();
       this.editForm.uid = scope.row.uid;
       this.editForm.organName = scope.row.organName;
       this.editForm.chargeUserName = scope.row.chargeUserName;
@@ -221,8 +224,11 @@ export default {
         this.isShowError = true;
         this.errorMsg = '部门名称不可为空';
         return;
+      } else if (!this.addForm.chargeUserName) {
+        this.isShowError = true;
+        this.errorMsg = '部门负责人不可为空';
+        return;
       }
-      console.log(this.addForm)
       this.axios.post('A3/authServices/organInfo', this.addForm)
         .then((res) => {
           if (res) {
@@ -368,6 +374,9 @@ export default {
           }
         }
       }
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>
