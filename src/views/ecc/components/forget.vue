@@ -6,28 +6,45 @@
       <el-form style="padding: 0 80px 80px 80px;" :inline="false" ref="loginForm" :model="loginForm" :rules="loginFormRules" class="xs-lg-form">
         <el-form-item prop="userMobile" class="login-form-item">
           <el-input v-model="loginForm.userMobile" placeholder="请输入手机号" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
-          <i class="el-icon-circle-close" style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px"></i>
+          <i v-show="loginForm.userMobile"
+            class="el-icon-circle-close"
+            style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px;cursor:pointer;"
+            @click="clearMobile"
+          ></i>
           <img src="../../../assets/img/login/phone.png" />
         </el-form-item>
-        <el-form-item prop="userPassword" class="login-form-item">
-          <el-input v-model="loginForm.userPassword" :type="'text'" placeholder="请输入短信验证码" @keyup.enter.native="loginSubmit('loginForm')">
+        <el-form-item prop="smsCode" class="login-form-item">
+          <el-input v-model="loginForm.smsCode" :type="'text'" placeholder="请输入短信验证码" @keyup.enter.native="loginSubmit('loginForm')">
           </el-input>
-          <span style="position:absolute;top: 5px;right: 10px;color:#ACAAA7;">|&nbsp;&nbsp;<span style="color: #666666;font-size:14px;cursor:pointer;">发送验证码</span></span>
+          <span style="position:absolute;top: 5px;right: 10px;color:#ACAAA7;">
+            |&nbsp;&nbsp;
+            <span v-show="!isShowTimer" style="color: #666666;font-size:14px;cursor:pointer;" @click="sendMsg">发送验证码</span>
+            <span v-show="isShowTimer"><span style="color:#0785FD;">{{this.time}}s</span>后重发</span>
+          </span>
           <!-- <i class="el-icon-circle-close" style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px"></i> -->
           <img src="../../../assets/img/login/msg.png" />
         </el-form-item>
-        <el-form-item prop="userPassword" class="login-form-item">
-          <el-input v-model="loginForm.userPassword" :type="'password'" placeholder="设置新密码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
-          <i class="el-icon-circle-close" style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px"></i>
+        <el-form-item prop="newPwd" class="login-form-item">
+          <el-input v-model="loginForm.newPwd" :type="'password'" placeholder="设置新密码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
+          <i v-show="loginForm.newPwd"
+            class="el-icon-circle-close"
+            style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px;cursor:pointer;"
+            @click="clearPwd"
+          ></i>
           <img src="../../../assets/img/login/lock.png" />
         </el-form-item>
-        <el-form-item prop="userPassword" class="login-form-item">
-          <el-input v-model="loginForm.userPassword" :type="'password'" placeholder="确认新密码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
-          <i class="el-icon-circle-close" style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px"></i>
+        <el-form-item prop="confirmPwd" class="login-form-item">
+          <el-input v-model="loginForm.confirmPwd" :type="'password'" placeholder="确认新密码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
+          <i
+            v-show="loginForm.confirmPwd"
+            class="el-icon-circle-close"
+            style="color: #0785FD;font-size: 24px;position:absolute;top: 12px;right: 10px;cursor:pointer;"
+            @click="clearConfimPwd"
+          ></i>
           <img src="../../../assets/img/login/lock.png" />
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%;background:#0785FD;box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38)" type="primary" :disabled="!loginForm.userMobile || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">修改密码</el-button>
+          <el-button style="width: 100%;background:#0785FD;box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38)" type="primary" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">修改密码</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -36,27 +53,97 @@
 <script>
 import { cookieUserId, cookieUserName, cookieTime } from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
+import {valiPhone, checkPwd} from '@/utils/validator.js';
 export default {
   data () {
     return {
       loginForm: {
         userMobile: '',
-        oldPwd: '',
-        newPwd: ''
+        confirmPwd: '',
+        newPwd: '',
+        smsCode: ''
       },
+      isShowTimer: false,
+      time: 90, // 倒计时
+      timer: null, // 定时器名称
       loginBtnLoading: false,
       loginFormRules: {
         userMobile: [
-          { required: true, message: '请输入手机号', trigger: 'blur' }
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: valiPhone, trigger: 'blur' }
         ],
-        oldPwd: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+        confirmPwd: [
+          { required: true, message: '请确认密码', trigger: 'blur' },
+          { validator: checkPwd, trigger: 'blur' }
         ],
         newPwd: [
-          { required: true, message: '请输入密码', trigger: 'blur' }
+          { required: true, message: '请输入新密码', trigger: 'blur' },
+          { validator: checkPwd, trigger: 'blur' }
+        ],
+        smsCode: [
+          { required: true, message: '请输入短信验证码', trigger: 'blur' }
         ]
       }
     }
+  },
+  methods: {
+    sendMsg () { // 发送验证码
+      if (!this.loginForm.userMobile) {
+        this.$message.error('请先填写手机号');
+        return;
+      }
+      this.isShowTimer = true;
+      const smsType = '7fce6448-269d-4560-a229-ced2213b3c36';
+      this.getTimeout();
+      this.axios.get('A2/authServices/user/sendSMS/' + this.loginForm.userMobile + '/' + smsType)
+        .then(res => {
+          if (res) {
+            console.log(res)
+          }
+        })
+        .catch(() => {});
+    },
+    loginSubmit (form) { // 修改密码
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          const params = {
+            confirmPwd: this.loginForm.confirmPwd,
+            newPwd: this.loginForm.newPwd,
+            smsCode: this.loginForm.smsCode
+          }
+          this.axios.post('A2/authServices/user/resetPwd/' + this.loginForm.userMobile, params)
+            .then(res => {
+              if (res) {
+                this.$message.success('修改密码成功');
+                this.$router.push({name: 'login'});
+              }
+            })
+            .catch(() => {});
+        }
+      });
+    },
+    getTimeout () { // 设置一个定时器
+      this.timer = setInterval(() => {
+        if (this.time === 0) {
+          this.isShowTimer = false;
+          clearInterval(this.timer);
+        } else {
+          --this.time;
+        }
+      }, 1000);
+    },
+    clearConfimPwd () { // 清除确认密码
+      this.loginForm.confirmPwd = '';
+    },
+    clearPwd () { // 清除密码
+      this.loginForm.newPwd = '';
+    },
+    clearMobile () { // 清除确认密码
+      this.loginForm.userMobile = '';
+    }
+  },
+  destroyed () {
+    clearInterval(this.timer);
   }
 }
 </script>
