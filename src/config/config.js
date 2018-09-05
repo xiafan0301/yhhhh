@@ -16,7 +16,7 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://10.16.3.40:8080',
+    dev: 'http://10.16.4.18:8080',
     // dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
@@ -33,7 +33,9 @@ const oDomains = {
   },
   // 查看事件分布地址
   domain3: {
-    dev: 'http://10.16.4.37:8071'
+    dev: 'http://localhost:8902',
+    test: 'http://10.16.4.37:8072',
+    prod: 'http://10.16.4.37:8072'
   },
   // 文件/图片/CDN地址
   fileDomain: {

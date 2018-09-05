@@ -173,8 +173,8 @@ export default {
       // this.editDialogVisible = flag;
       this.$router.push({name: 'notice-release', query: {status: status}});
     },
-    modify (status) {
-      this.$router.push({name: 'notice-modify', query: {status: status}});
+    modify (status, scope) {
+      this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
     modifyxt () {
       this.visible2 = false;

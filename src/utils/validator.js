@@ -49,6 +49,11 @@ export const valicoordinate = (rule, value, callback) => {
       callback(new Error('纬度必须少于90'));
     }
   }
+  if (!Number.isInteger(value.split(',')[0])) {
+    callback(new Error('经度必须为数字'));
+  } else if (!Number.isInteger(value.split(',')[1])) {
+    callback(new Error('纬度必须为数字'));
+  }
   callback();
 };
 // 电话手机号码验证

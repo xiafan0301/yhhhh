@@ -88,7 +88,7 @@ export default {
       mouseTool: null,
       defaultCursor: '',
       zoom: 10,
-      zooms: [10, 17],
+      zooms: [9, 17],
 
       drawActive: false,
       dialogVisible: false,
@@ -209,8 +209,10 @@ export default {
           for (let j = 0; j < borderList.length; j++) {
             bounds.push({
               Q: borderList[j].longitude,
+              O: borderList[j].longitude,
               lng: borderList[j].longitude,
-              P: borderList[j].latitude,
+              N: borderList[j].latitude,
+              p: borderList[j].latitude,
               lat: borderList[j].latitude
             });
           }
@@ -242,7 +244,14 @@ export default {
       if (val) {
         for (let i = 0; i < this.sonPolygons.length; i++) {
           let _o = this.sonPolygons[i];
-          if (_o.D.extData && _o.D.extData.areaName === val.areaName) {
+          // console.log(_o)
+          let _ed = null;
+          if (_o.D && _o.D.extData) {
+            _ed = _o.D.extData
+          } else if (_o.B && _o.B.extData) {
+            _ed = _o.B.extData
+          }
+          if (_ed && _ed.areaName === val.areaName) {
             _o.setOptions(this.polygonStyles.s);
           } else {
             // this.polygonStyles.n
