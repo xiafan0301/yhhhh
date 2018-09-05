@@ -14,9 +14,10 @@
             <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.warehouseName">
             </el-input>
           </el-form-item>
-          <el-form-item label="仓库地点" label-width='150px'>
+          <el-form-item label="仓库地点" label-width='150px' class="address">
             <el-input  placeholder="请选择APP用户" style='width: 500px' v-model="form.coordinate">
             </el-input>
+            <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="上报单位" label-width='150px'>
             <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.reportingUnit">
@@ -38,12 +39,17 @@
         <el-button type="primary" @click="onSubmit" >确定</el-button>
       </div>
     </div>
+    <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
   </div>
 </template>
 <script>
+import mapPoint from '@/components/common/mapPoint.vue';
 export default {
+  components: {mapPoint},
   data () {
     return {
+      open: false,
+      oConfig: {},
       status: '',
       form: {
         adminTel: '',
@@ -72,6 +78,18 @@ export default {
     }
   },
   methods: {
+    showMap () {
+      // 编辑状态
+      if (!this.editObj) {
+        this.oConfig = {};
+      }
+      this.open = !this.open;
+    },
+    mapPointSubmit (val, address) {
+      if (val) {
+        this.form.coordinate = val
+      }
+    },
     getmaterialck () {
       const warehouseId = this.$route.query.warehouseId;
       this.axios.get('A2/warehouseService/' + warehouseId)
@@ -135,6 +153,15 @@ export default {
     }
     .operation-btn-msg {
       margin-top: 2%;
+    }
+    .address /deep/ .el-form-item__content {
+      display: flex;
+      .map-ecc {
+        img {
+          padding-top: 5px;
+          padding-left: 5px;
+        }
+      }
     }
   }
 </style>

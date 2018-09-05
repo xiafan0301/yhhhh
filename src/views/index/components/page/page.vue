@@ -32,6 +32,10 @@
       prop="pageName"
       label="页面名称"
       min-width="100">
+      <template slot-scope="scope">
+        <span  v-if="scope.row.homeFlag === false">{{scope.row.pageName}}</span>
+        <span  v-else-if="scope.row.homeFlag === true">首页({{scope.row.pageName}})</span>
+      </template>
     </el-table-column>
     <el-table-column
       prop="plateList.length"
@@ -63,7 +67,7 @@
           <el-button @click="modify(scope.row)" type="text"  >修改</el-button>
           <el-dialog title="修改" :visible.sync="dialogFormVisible1" width="500px">
             <el-form :model="form1" ref ="form1" :rules="rules1"  style="padding-right: 60px;" size="small">
-              <el-form-item label="页面名称" :label-width="formLabelWidth" prop="name">
+              <el-form-item :label="status" :label-width="formLabelWidth" prop="name">
                 <el-input v-model="form1.name" auto-complete="off"></el-input>
               </el-form-item>
             </el-form>
@@ -107,6 +111,7 @@
 export default {
   data () {
     return {
+      status: '',
       shchupar: {},
       par: {},
       tableData: [
@@ -140,6 +145,9 @@ export default {
     }
   },
   computed: {
+    getName () {
+      return this.names[this.searchForm.dataTypeId];
+    }
   },
   mounted () {
     this.getAdviceList();
@@ -214,6 +222,11 @@ export default {
     },
     // 修改页面
     modify (scope) {
+      if (scope.homeFlag === true) {
+        this.status = '首页名称'
+      } else {
+        this.status = '页面名称'
+      }
       this.resetEditForm('form1');
       this.dialogFormVisible1 = true;
       this.par = {
