@@ -99,7 +99,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipEventDetail(scope)'>查看</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipEventDetail(scope)" />
         </template>
       </el-table-column>
     </el-table>

@@ -1,43 +1,57 @@
 <template>
   <div class="vis-bg-login">
     <div class="bg-login">
-      <h1>XUPU SMART CITY</h1>
-      <h2>溆浦县智慧城市运营管理系统</h2>
-      <el-form style="padding: 0 60px;" :inline="false" ref="loginForm" :model="loginForm" :rules="loginFormRules" class="xs-lg-form">
-        <el-form-item prop="userName">
-          <el-input v-model="loginForm.userName" placeholder="请输入用户名" @keyup.enter.native="loginSubmit('loginForm')">
-            <i class="oa-login-ibg oa-login-ibg1" slot="prefix"></i>
-          </el-input>
+      <div class="img-div">
+        <img src="../../../assets/img/login/title.png" class="img-title"/>
+      </div>
+      <el-form style="padding: 0 80px;" :inline="false" ref="loginForm" :model="loginForm" :rules="loginFormRules" class="xs-lg-form">
+        <el-form-item prop="userMobile" class="login-form-item">
+          <el-input v-model="loginForm.userMobile" placeholder="请输入手机号" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
+          <img src="../../../assets/img/login/phone.png" />
         </el-form-item>
-        <el-form-item prop="userPassword">
+        <el-form-item prop="userPassword" class="login-form-item">
           <el-input v-model="loginForm.userPassword" :type="'password'" placeholder="请输入密码" @keyup.enter.native="loginSubmit('loginForm')">
-            <i class="oa-login-ibg oa-login-ibg2" slot="prefix"></i>
           </el-input>
+          <img src="../../../assets/img/login/lock.png" />
+        </el-form-item>
+        <el-form-item prop="codeImg" class="login-form-item code-item" style="margin-bottom: 10px">
+          <el-input v-model="loginForm.codeImg" :type="'text'" placeholder="请输入验证码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
+          <div class="img-code">asdasl</div>
+        </el-form-item>
+        <el-form-item class="login-form-item clearfix">
+          <el-checkbox style="color: #999999">下次自动登录</el-checkbox>
+          <span style="float:right;color:#999999;cursor:pointer" @click="forgetPwd">忘记密码?</span>
         </el-form-item>
         <el-form-item>
-          <el-button style="width: 100%;" type="primary" :disabled="!loginForm.userName || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
+          <el-button style="width: 100%;background:#0785FD;box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38);" type="primary" :disabled="!loginForm.userMobile || !loginForm.userPassword" class="xs-lg-btn" size="" @click="loginSubmit('loginForm')" :loading="loginBtnLoading">登&nbsp;录</el-button>
         </el-form-item>
       </el-form>
-      <p>后台管理系统@copyrightXXX</p>
+      <p style="margin-bottom:80px;color:#999999;font-size:12px;">后台管理系统@copyrightXXX</p>
     </div>
   </div>
 </template>
 <script>
+import { cookieUserId, cookieUserName, cookieTime } from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
       loginForm: {
-        userName: 'aorise',
-        userPassword: '1234'
+        userMobile: '13576543210',
+        userPassword: '12345678',
+        codeImg: ''
       },
       loginBtnLoading: false,
       loginFormRules: {
-        userName: [
-          { required: true, message: '请输入用户名', trigger: 'blur' }
+        userMobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' }
         ],
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' }
         ]
+        // codeImg: [
+        //   { required: true, message: '请输入验证码', trigger: 'blur' }
+        // ]
       }
     }
   },
@@ -50,6 +64,7 @@ export default {
         _this.loginSubmit('loginForm');
       }
     });
+    this.getCode();
   },
   methods: {
     loginSubmit (formName) {
@@ -59,9 +74,17 @@ export default {
           // 登陆中 登录按钮不可用
           _this.loginBtnLoading = true;
           let params = this.loginForm;
-          _this.axios.post('/authServices/login?' + $.param(params)).then(function (response) {
+          _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
-              _this.$router.push({name: 'page'});
+              let oUser = response.data;
+              setCookie(cookieUserId, oUser.authUserId, cookieTime, '/');
+              // 保存用户姓名到cookie
+              setCookie(cookieUserName, oUser.userName, cookieTime, '/');
+              _this.$store.commit('setLoginUser', {loginUser: {
+                userId: oUser.authUserId,
+                userName: oUser.userName
+              }});
+              _this.$router.push({name: 'event-list'});
             }
             _this.loginBtnLoading = false;
           }).catch(function () {
@@ -71,6 +94,18 @@ export default {
           return false;
         }
       });
+    },
+    getCode () { // 获取图片验证码
+      this.axios.get('A2/authServices/users/validCodeImg')
+        .then((res) => {
+          if (res) {
+            console.log(res)
+          }
+        })
+        .catch(() => {})
+    },
+    forgetPwd () {
+      this.$router.push({name: 'forget'});
     }
   },
   destroyed () {
@@ -82,17 +117,18 @@ export default {
   .vis-bg-login {
     width: 100%; height: 100%;
     position: relative;
-    background: url(../../../assets/img/login/lg-bg.png) center center no-repeat #000;
+    background: url(../../../assets/img/login/ecc-bg.png) center center no-repeat #000;
     -webkit-animation: bgScale 60s ease-out both infinite;
     animation: bgScale 60s ease-out both infinite;
   }
   .bg-login {
     position: absolute; top: 50%; left: 50%;
-    margin-top: -250px; margin-left: -220px;
-    width: 440px; height: 500px;
+    margin-top: -291px; margin-left: -270px;
+    width: 540px;
+    height: 582px;
     border-radius:8px;
     background-color: #fff;
-    box-shadow:1px 2px 14px rgba(2,35,68,0.53);
+    box-shadow:1px 4px 5px 0px rgba(7,133,253,0.38);
     > h1 {
       text-align: center;
       font-size: 36px; color: #1F2B5D; font-weight: 600;
@@ -110,6 +146,39 @@ export default {
     > p {
       color: #999;
       text-align: center;
+    }
+    .img-div {
+      width: 100%;
+      text-align: center;
+      padding: 40px 0;
+      .img-title {
+        display: inline-block;
+      }
+    }
+    .login-form-item {
+      position: relative;
+      img {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+      }
+    }
+    .code-item /deep/ .el-form-item__content{
+      display: flex;
+      .img-code {
+        width: 140px;
+        background: red;
+      }
+    }
+    .code-item /deep/ .el-input__inner {
+      padding: 0 10px;
+      width: 220px;
+    }
+    /deep/ .el-input__inner {
+      padding: 0 38px;
+    }
+    /deep/ .xs-lg-form .el-form-item {
+      margin-bottom: 26px;
     }
   }
   @-webkit-keyframes bgScale {

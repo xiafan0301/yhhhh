@@ -161,8 +161,8 @@
               </el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
-                  <el-button type='text' style='color: #0785FD' @click="selectReplanDetail(scope)">查看</el-button>
-                  <el-button type='text' style='color: #0785FD' @click="skipEnableReplan(scope)">启用</el-button>
+                  <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
+                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" />
                 </template>
               </el-table-column>
             </el-table>
