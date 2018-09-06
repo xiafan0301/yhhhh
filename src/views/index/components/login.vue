@@ -29,8 +29,8 @@ export default {
   data () {
     return {
       loginForm: {
-        userName: 'aorise',
-        userPassword: '123456'
+        userName: '',
+        userPassword: ''
       },
       loginBtnLoading: false,
       loginFormRules: {
