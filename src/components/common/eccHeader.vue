@@ -141,14 +141,15 @@ export default {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              // window.location.href = './ecc.html#/login';
+              window.location.href = './ecc.html#/login';
               // window.location.reload();
-              _this.$router.push({name: 'login'});
+              // _this.$router.push({name: 'login'});
             }).catch(function () {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              _this.$router.push({name: 'login'});
+              window.location.href = './ecc.html#/login';
+              // _this.$router.push({name: 'login'});
             });
           } else {
             done();

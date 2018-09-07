@@ -79,6 +79,7 @@ export const setCookie = (name, value, expires, path, domain, secure) => {
   if (path) { str += ';path=' + path; }
   if (domain) { str += ';domain=' + domain; }
   if (secure) { str += ';secure=' + secure; }
+  console.log(str)
   document.cookie = str;
 };
 /**
