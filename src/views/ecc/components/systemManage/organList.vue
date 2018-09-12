@@ -53,7 +53,7 @@
       <span style='text-align:center;color:#333333;font-size:14px'>是否确认删除此部门?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deletDepart'>确认</el-button>
+        <el-button class='sureBtn' @click='submitdeletDepart'>确认</el-button>
         <el-button class='noSureBtn' @click="deleteDepartmentDialog = false">取消</el-button>
       </span>
     </el-dialog>
@@ -191,7 +191,7 @@ export default {
       this.deleteId = scope.row.uid;
       this.deleteDepartmentDialog = true;
     },
-    deletDepart () { // 删除部门
+    submitdeletDepart () { // 删除部门
       if (this.deleteId) {
         this.axios.delete('A3/authServices/organInfo?uids=' + this.deleteId)
           .then(res => {

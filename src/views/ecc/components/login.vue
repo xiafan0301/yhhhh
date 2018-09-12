@@ -34,7 +34,7 @@
 </template>
 <script>
 import { cookieTime, ajaxCtx2 } from '@/config/config.js';
-import { setCookie, getCookie } from '@/utils/util.js';
+import { setCookie, getCookie, delCookie } from '@/utils/util.js';
 import {valiPhone, checkPwd} from '@/utils/validator.js';
 export default {
   data () {
@@ -46,7 +46,7 @@ export default {
         code: null
       },
       loginBtnLoading: false,
-      isRemember: Boolean(getCookie('cookieUserName')), // 是否记住用户名
+      isRemember: false, // 是否记住用户名
       loginFormRules: {
         userMobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -71,8 +71,15 @@ export default {
         _this.loginSubmit('loginForm');
       }
     });
-    if (_this.isRemember === true) {
+    _this.isRemember = Boolean(getCookie('cookieStatus'));
+    console.log('1', _this.isRemember)
+    console.log('2', Boolean(getCookie('cookieStatus')))
+    if (Boolean(getCookie('cookieStatus')) === true) {
+      console.log('222222')
       this.loginForm.userMobile = getCookie('cookieUserName');
+    } else {
+      console.log('111111')
+      this.loginForm.userMobile = null;
     }
   },
   methods: {
@@ -90,7 +97,9 @@ export default {
               setCookie('cookieUserId', oUser.userId, 24, '/');
               // 保存用户手机号到cookie
               setCookie('cookieUserName', oUser.userMobile, 24, '/');
+              console.log(_this.isRemember);
               setCookie('cookieStatus', _this.isRemember, 24, '/');
+              console.log(getCookie('cookieStatus'))
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
                 userName: oUser.userName
@@ -107,7 +116,9 @@ export default {
       });
     },
     changeRemember (val) {
+      console.log(val);
       this.isRemember = val;
+      delCookie('cookieStatus', 24);
     },
     forgetPwd () {
       this.$router.push({name: 'forget'});
