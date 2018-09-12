@@ -29,7 +29,8 @@ Vue.filter('filterPagePosition', function (type) {
 });
 /*
  * 时间戳处理
- * */
+ *
+ */
 Vue.filter('moment', function (timestamp, fm) {
   return formatDate(timestamp, fm);
 });

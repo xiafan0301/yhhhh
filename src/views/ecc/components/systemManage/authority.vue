@@ -7,12 +7,12 @@
       </el-breadcrumb>
     </div>
     <div class="body">
-      <div class="nothing">
+      <div class="nothing"  v-show="allLimitObj.A.length === 0">
         <img src="../../../../assets/img/temp/nothing.png" />
         <p>亲爱的主人，您暂无权限哦!</p>
-        <div class="create-authority">创建权限</div>
+        <div class="create-authority" @click="createFirstLimit">创建权限</div>
       </div>
-      <div class="body-content">
+      <div class="body-content" v-show="allLimitObj.A.length > 0">
         <p class="title">权限管理</p>
         <div class="body-detail">
           <el-tree
@@ -134,6 +134,11 @@ export default {
     this.getAuthorityList();
   },
   methods: {
+    createFirstLimit () {
+      this.addForm.resourceName = null;
+      this.addForm.resourceType = null;
+      this.addLimitDialogVisible = true;
+    },
     onConfirmDelete () { // 确认删除权限
       this.axios.delete('A2/authServices/authResource?uid=' + this.deleteItem.uid)
         .then(res => {
