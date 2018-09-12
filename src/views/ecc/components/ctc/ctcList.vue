@@ -5,7 +5,9 @@
         <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>调度指挥</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn look-event' @click='skipLookEvent'>查看事件分布</el-button>
+      <a :href="url" target="_blank">
+        <el-button class='selectBtn look-event'>查看事件分布</el-button>
+      </a>
     </div>
     <div class="clearfix search-event" style="position: relative;width: 100%">
       <el-form style="float: left;width:100%" :inline="true" ref='selectForm' :model='selectForm' class="demo-form-inline" size="small">
@@ -78,7 +80,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipLookEventDetail(scope)" />
+          <a :href="url + '?eventId=' + scope.row.eventId" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" @click="skipLookEventDetail(scope)" /></a>
           <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
           <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" />
         </template>
@@ -117,6 +119,8 @@ export default {
       eventLevelList: [],
       eventTypeList: [],
       ctcDataList: [],
+      url: '',
+      urlDetail: '',
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
@@ -127,16 +131,9 @@ export default {
     this.getEventLevel();
     this.getEventType();
     this.getCtcDataList();
+    this.url = ajaxCtx3;
   },
   methods: {
-    skipLookEvent () { // 查看事件分布
-      window.location.href = ajaxCtx3;
-    },
-    skipLookEventDetail (scope) { // 查看事件详情分布
-      if (scope.row.eventId) {
-        window.location.href = ajaxCtx3 + '?eventId=' + scope.row.eventId;
-      }
-    },
     skipCtcDetail (scope) { // 跳到调度指挥页面
       this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});
     },
