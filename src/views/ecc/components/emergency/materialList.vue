@@ -7,12 +7,12 @@
       </el-breadcrumb>
     </div>
     <div style="display: flex;">
-    <div style=" width: 21%; height:500px; background-color: #FAFAFA" class="warehouse">
+    <div style=" width: 21%;background-color: #FAFAFA" class="warehouse">
       <div style="padding:20px 10px; box-sizing: border-box" class="clearfix">
         <span class="doubt" style="display: inline-block; margin-top: 8px;color:#fff; margin-right: 5px">?</span>
         <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #555555; font-weight:bold" >仓库名称</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
-        <div @click="registrationChoice(0)" :class="{active: visitType === 0}" style="padding-bottom: 50px"> 所有仓库</div>
+        <div @click="registrationChoice(0)" :class="{active: visitType === 0}" style="padding-bottom: 40px"> 所有仓库</div>
         <div>
           <!--<ul style="width: 100%">-->
             <!--<li v-for="(item, index) in tableDatack" :key="index"  @click="registrationChoice(index + 1)" :class="{active: visitType === index + 1}"><span>{{item.warehouseName}}</span>-->
@@ -33,7 +33,7 @@
           <el-table
             :highlight-current-row ="true"
             :row-class-name="bb"
-            @row-click="aa"
+            @row-click="rowclick"
             :data="tableDatack"
             style="width: 100%;" width="60%">
             <el-table-column
@@ -51,7 +51,7 @@
                     </div>
                     <el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>
                   </div>
-                <i class="icon iconfont" style="color: #0785FD; cursor: pointer;" slot="reference">&#xe6f4;</i>
+                <i class="icon iconfont" style="color: #0785FD; cursor: pointer;" slot="reference">&#xe601;</i>
                 </el-popover>
               </template>
             </el-table-column>
@@ -77,7 +77,7 @@
       :data="tableData"
       style="width: 100%;">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" type="index"></el-table-column>
+      <el-table-column  label="序号" type="index" width="80"></el-table-column>
       <el-table-column prop="materialsName" label="物资名称" >
       </el-table-column>
       <el-table-column prop="amount" label="数量" ></el-table-column>
@@ -96,6 +96,18 @@
         </template>
       </el-table-column>
     </el-table>
+      <div class="bg-plan-tbp">
+        <el-pagination
+          background
+          @size-change="pagerSizeChange"
+          @current-change="pagerCurrChange"
+          :current-page="pageNum"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="pageSize"
+          layout="total, prev, pager, next, sizes, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
   </div>
     </div>
   </div>
@@ -109,7 +121,7 @@ export default {
       visitType: 0,
       searchForm: {
         materialsName: '',
-        warehouseId: '4b5833c6-97ae-11e8-b784-4fabfc31a6f4'
+        warehouseId: ''
       },
       pageNum: 1,
       pageSize: 10,
@@ -130,7 +142,7 @@ export default {
     bb (row, rowindex) {
       return 'active'
     },
-    aa (row, event, column) {
+    rowclick (row, event, column) {
       console.log(row);
       this.searchForm.warehouseId = row.warehouseId;
       this.getTableData();
@@ -152,7 +164,7 @@ export default {
       this.axios.get('A2/materialService/page?' + $.param(params))
         .then((res) => {
           this.tableData = res.data.list;
-          this.pagination.total = res.data.total;
+          this.total = res.data.total;
         })
         .catch(() => {
         });
@@ -182,6 +194,8 @@ export default {
     registrationChoice (type) {
       this.visitType = type;
       if (type === 0) {
+        this.searchForm.warehouseId = ''
+        this.getTableData()
       }
       if (type === 1) {
       }
@@ -241,6 +255,10 @@ export default {
         });
       });
     },
+    searchFormReset () {
+      this.searchForm.materialsName = '';
+      this.getTableData()
+    },
     showEditDialog (status, scope) {
       if (status === 'add') {
         this.$router.push({name: 'emergency-addWarehouse', query: {status: status}});
@@ -260,6 +278,16 @@ export default {
     },
     see (scope) {
       this.$router.push({name: 'emergency-seeMaterial', query: {status: status, materialsId: scope.materialsId}});
+    },
+    // 分页
+    pagerSizeChange (val) {
+      this.pageSize = val;
+      this.pageNum = 1;
+      this.getTableData();
+    },
+    pagerCurrChange (val) {
+      this.pageNum = val;
+      this.getTableData();
     }
   },
   filters: {
@@ -328,6 +356,10 @@ export default {
         }
       }
     }
+  }
+  .bg-plan-tbp{
+    padding: 20px 0;
+    text-align: center;
   }
   /deep/ .el-popover {
     min-width: 130px!important;

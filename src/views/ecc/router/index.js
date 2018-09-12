@@ -56,7 +56,9 @@ import organDetail from '@/views/ecc/components/systemManage/organDetail.vue';
 import user from '@/views/ecc/components/systemManage/list.vue';
 import userList from '@/views/ecc/components/systemManage/user-list.vue';
 import groupList from '@/views/ecc/components/systemManage/group-list.vue';
+import userCreateList from '@/views/ecc/components/systemManage/user-create-list.vue';
 import userCreate from '@/views/ecc/components/systemManage/user-create.vue';
+import userMultiCreate from '@/views/ecc/components/systemManage/user-multi-create.vue';
 // 系统管理--角色管理
 import roleList from '@/views/ecc/components/systemManage/roleList.vue';
 // 系统管理--权限管理
@@ -159,7 +161,16 @@ export default new Router({
                 {path: 'group-list', name: 'group-list', component: groupList}
               ]
             },
-            {path: 'user-create', name: 'user-create', component: userCreate},
+            {
+              path: 'user-create-list',
+              name: 'user-create-list',
+              component: userCreateList,
+              redirect: {name: 'user-create'},
+              children: [
+                {path: 'user-create', name: 'user-create', component: userCreate},
+                {path: 'user-multi-create', name: 'user-multi-create', component: userMultiCreate}
+              ]
+            },
             {path: 'roleList', name: 'role-list', component: roleList},
             {path: 'authority', name: 'authority', component: authority},
             {path: 'organDetail/:id', name: 'organ-detail', component: organDetail}

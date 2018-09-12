@@ -53,9 +53,7 @@
           <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="streamType" label="创建用户" min-width="100">
-        <template slot-scope="scope">
-        </template>
+      <el-table-column prop="createRealName" label="创建用户" min-width="100">
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" min-width="100"></el-table-column>
       <el-table-column
