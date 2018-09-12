@@ -118,10 +118,10 @@
         <div class="tree-list">
           <el-tree
             class="filter-tree"
-            :data="data2"
+            :data="seeLimitObj.A"
             default-expand-all
-            node-key="id"
-            ref="tree"
+            node-key="resourceName"
+            ref="trees"
             :props="defaultProps">
           </el-tree>
         </div>
@@ -153,7 +153,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button style="background: #fff;color:#666666">返回</el-button>
+        <el-button style="background: #fff;color:#666666" @click="editLimitDialogVisible === false">返回</el-button>
         <el-button style="background: #0785FD" @click="onConfirmEditLimit">确定</el-button>
       </span>
     </el-dialog>
@@ -163,51 +163,6 @@
 export default {
   data () {
     return {
-      data2: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }, {
-        id: 4,
-        label: '一级 4',
-        children: [{
-          id: 9,
-          label: '二级 4-1'
-        }, {
-          id: 10,
-          label: '二级 4-2'
-        }]
-      }],
       defaultProps: {
         children: 'children',
         label: 'resourceName'
@@ -362,7 +317,7 @@ export default {
                 })
               }
             })
-            console.log('111', this.allLimitObj.A);
+            // console.log('111', this.allLimitObj.A);
           }
         })
         .catch(() => {})
@@ -398,13 +353,114 @@ export default {
       this.getRoleList();
     },
     onSeeLimit (obj) { // 查看权限
-      console.log(obj)
+      // console.log(obj)
       this.seeLimitObj.A = [];
       this.seeLimitObj.B = [];
       this.seeLimitObj.C = [];
       this.seeLimitObj.D = [];
       this.seeLimitObj.E = [];
       this.seeLimitItem = Object.assign({}, obj);
+      obj.roleAuthList.forEach(item => {
+        if (item.resourceLayer === 1) {
+          this.seeLimitObj.A.push({
+            uid: item.uid,
+            resourceName: item.resourceName,
+            isShow: false,
+            children: []
+          });
+        }
+        if (item.resourceLayer === 2) {
+          this.seeLimitObj.B.push({
+            uid: item.uid,
+            parentUid: item.parentUid,
+            resourceName: item.resourceName,
+            isShow: false,
+            children: []
+          });
+        }
+        if (item.resourceLayer === 3) {
+          this.seeLimitObj.C.push({
+            uid: item.uid,
+            parentUid: item.parentUid,
+            resourceName: item.resourceName,
+            isShow: false,
+            children: []
+          });
+        }
+        if (item.resourceLayer === 4) {
+          this.seeLimitObj.D.push({
+            uid: item.uid,
+            parentUid: item.parentUid,
+            resourceName: item.resourceName,
+            isShow: false,
+            children: []
+          });
+        }
+        if (item.resourceLayer === 5) {
+          this.seeLimitObj.E.push({
+            uid: item.uid,
+            parentUid: item.parentUid,
+            resourceName: item.resourceName
+          });
+        }
+      });
+      // 2
+      this.seeLimitObj.A.forEach(a => {
+        this.seeLimitObj.B.forEach(b => {
+          if (a.uid === b.parentUid) {
+            a.children.push(b);
+          }
+        })
+      })
+      // 3
+      this.seeLimitObj.A.forEach(a => {
+        if (a.children && a.children.length > 0) {
+          a.children.forEach(b => {
+            this.seeLimitObj.C.forEach(c => {
+              if (b.uid === c.parentUid) {
+                b.children.push(c);
+              }
+            })
+          })
+        }
+      })
+      // 4
+      this.seeLimitObj.A.forEach(a => {
+        if (a.children && a.children.length > 0) {
+          a.children.forEach(b => {
+            if (b.children && b.children.length > 0) {
+              b.children.forEach(c => {
+                this.seeLimitObj.D.forEach(d => {
+                  if (c.uid === d.parentUid) {
+                    c.children.push(d);
+                  }
+                })
+              })
+            }
+          })
+        }
+      })
+      // 5
+      this.seeLimitObj.A.forEach(a => {
+        if (a.children && a.children.length > 0) {
+          a.children.forEach(b => {
+            if (b.children && b.children.length > 0) {
+              b.children.forEach(c => {
+                if (c.children && c.children.length > 0) {
+                  c.children.forEach(d => {
+                    this.seeLimitObj.E.forEach(e => {
+                      if (d.uid === e.parentUid) {
+                        d.children.push(e);
+                      }
+                    })
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+      // console.log(this.seeLimitObj.A);
       this.seeLimitDialogVisible = true;
     },
     onEditRole (obj) { // 编辑角色
@@ -484,7 +540,8 @@ export default {
       this.onEditLimit(this.seeLimitItem);
     },
     onEditLimit (obj) { // 配置权限
-      console.log(obj)
+      // console.log(this.selectLimitItem)
+      // console.log(obj)
       const keysArr = [];
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
       // if (!obj.roleAuthList) {
@@ -493,9 +550,9 @@ export default {
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
           this.allLimitObj.A.forEach(a => {
-            if (item.resourceName === a.resourceName) {
-              this.defaultKeys.push(a.resourceName);
-            }
+            // if (item.resourceName === a.resourceName) {
+            //   this.defaultKeys.push(a.resourceName);
+            // }
             if (a.children && a.children.length > 0) {
               a.children.forEach(b => {
                 if (item.resourceName === b.resourceName) {
@@ -527,7 +584,7 @@ export default {
           })
         })
       }
-      console.log(this.defaultKeys)
+      // console.log(this.defaultKeys)
       this.selectLimitItem = Object.assign({}, obj);
       this.editLimitDialogVisible = true;
     },
@@ -536,9 +593,15 @@ export default {
       let addArr = [];
       let deleteArr = [];
       const treeList = this.$refs.tree.getCheckedNodes();
+      const parentList = this.$refs.tree.getHalfCheckedNodes();
       if (treeList.length > 0) {
         treeList.map((item) => {
-          arr.push(item)
+          arr.push(item);
+        });
+      }
+      if (parentList.length > 0) {
+        parentList.map((item) => {
+          arr.push(item);
         });
       }
       if (this.selectLimitItem.roleAuthList && this.selectLimitItem.roleAuthList.length > 0) {
@@ -573,8 +636,8 @@ export default {
           }
         }
       }
-      console.log('d', deleteArr)
-      console.log('a', addArr)
+      // console.log('d', deleteArr)
+      // console.log('a', addArr)
       let params = {
         uid: this.selectLimitItem.uid,
         authResourceList: []
@@ -751,6 +814,9 @@ export default {
       /deep/ .el-checkbox__inner {
         margin-left: 5px;
       }
+    }
+    .el-pagination {
+      text-align: center;
     }
   }
 </style>

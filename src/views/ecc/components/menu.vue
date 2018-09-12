@@ -95,40 +95,40 @@ export default {
             }
           ]
         },
+        // {
+        //   id: '5',
+        //   name: '调度指挥',
+        //   icon: 'icon-xiaoxi',
+        //   children: [
+        //     {
+        //       id: '5-1',
+        //       name: '调度指挥',
+        //       url: '/linkage/linkageList'
+        //     }
+        //   ]
+        // },
         {
           id: '5',
-          name: '调度指挥',
-          icon: 'icon-xiaoxi',
-          children: [
-            {
-              id: '5-1',
-              name: '调度指挥',
-              url: '/linkage/linkageList'
-            }
-          ]
-        },
-        {
-          id: '6',
           name: '系统管理',
           icon: 'icon-xitong',
           children: [
             {
-              id: '6-1',
+              id: '5-1',
               name: '组织架构',
               url: '/systemManage/organList'
             },
             {
-              id: '6-2',
+              id: '5-2',
               name: '项目用户',
               url: '/systemManage/user/user-list'
             },
             {
-              id: '6-3',
+              id: '5-3',
               name: '角色管理',
               url: '/systemManage/roleList'
             },
             {
-              id: '6-4',
+              id: '5-4',
               name: '权限管理',
               url: '/systemManage/authority'
             }
