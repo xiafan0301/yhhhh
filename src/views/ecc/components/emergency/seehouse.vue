@@ -10,12 +10,12 @@
     <div class="bg-release-cot">
       <ul class="listxf" >
         <li><span class="title">仓库名称</span><span class="content">{{this.obj.warehouseName}}</span></li>
-        <li><span class="title">仓库地点</span><span class="content"> {{this.obj.coordinate}}</span></li>
+        <li><span class="title">仓库地点</span><span class="content"> {{this.obj.warehouseAddress}}</span></li>
         <li><span class="title">上报单位</span><span class="content"> {{this.obj.reportingUnit}}</span></li>
         <li><span class="title">负责人</span><span class="content"> {{this.obj.administrators}}</span></li>
         <li><span class="title">联系电话</span><span class="content"> {{this.obj.adminTel}}</span></li>
         <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId}}</span></li>
-        <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime}}</span></li>
+        <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime | moment}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px" >

@@ -40,10 +40,12 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
-            <el-option label="联动单位A" :value="0"></el-option>
-            <el-option label="联动单位B" :value="1"></el-option>
-            <el-option label="联动单位C" :value="2"></el-option>
-            <el-option label="应急指挥中心" :value="2"></el-option>
+              <el-option
+                v-for="item in DepartmentList"
+                :key="item.uid"
+                :label="item.organName"
+                :value="item.uid">
+              </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -74,7 +76,7 @@
         <template slot-scope="scope">
           <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState === 1">待发送</span>
           <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState === 2">发送成功</span>
-          <span style="color: #999;" v-else >已撤销</span>
+          <span style="color: #999;" v-else-if="scope.row.emiMessage.publishState === 3" >已撤销</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -121,7 +123,8 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [],
-      messageTypeList: []
+      messageTypeList: [],
+      DepartmentList: []
     }
   },
   computed: {
@@ -131,6 +134,7 @@ export default {
   created () {
     this.getMessageType();
     this.getTableData();
+    this.getDepartmentList();
   },
   methods: {
     getMessageType () {
@@ -191,6 +195,15 @@ export default {
         .catch(() => {
         });
     },
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            this.DepartmentList = res.data.list
+          }
+        })
+        .catch(() => {})
+    },
     edit () {
     },
     doSearch () {
@@ -198,6 +211,12 @@ export default {
       if (this.searchForm.publishTime) {
       }
       console.log(this.searchForm.publishTime)
+    },
+    searchFormReset () {
+      this.searchForm.publishTime = '';
+      this.searchForm.publishState = '';
+      this.searchForm.messageType = '39728bba-9b6f-11e8-8a14-3f814d634dc1' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4';
+      this.getTableData();
     },
     // 分页
     pagerSizeChange (val) {

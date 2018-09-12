@@ -39,7 +39,9 @@
       <el-button @click="back">取消</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
       <!--<el-button type="primary" @click="preview" >预览</el-button>-->
-      <a target="_blank" href="http://10.16.3.43:8080/api/emi/planServices/plans/preview/21450cec-6256-43ce-9bb0-852b3bd515eb">预览</a>
+      <a target="_blank" :href="'http://10.16.3.43:8080/api/emi/planServices/plans/preview/' + this.$route.query.planId">
+        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff">预览</el-button>
+      </a>
     </div>
   </div>
 </template>

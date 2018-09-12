@@ -12,9 +12,14 @@
         <li><span class="title">资源名称</span><span class="content">{{this.obj.materialsName}}</span></li>
         <li><span class="title">数量</span><span class="content"> {{this.obj.amount}}</span></li>
         <li><span class="title">单位</span><span class="content"> {{this.obj.measurementUnit}}</span></li>
-        <li><span class="title">所属仓库</span><span class="content"> {{this.obj.warehouseId}}</span></li>
-        <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId}}</span></li>
-        <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime}}</span></li>
+        <li>
+          <span class="titleck">所属仓库</span>
+          <span class="contentck" v-for="(item, index) in tableDatack" :key="index"  @click="aa">
+          {{obj.warehouseId === item.warehouseId ?  item.warehouseName: ''}}
+          </span>
+        </li>
+        <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId }}</span></li>
+        <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime | moment}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px" >
@@ -28,29 +33,48 @@ export default {
   data () {
     return {
       obj: {
+        warehouseName: '',
         materialsName: '',
         amount: '',
         measurementUnit: '',
         warehouseId: '',
         authUserId: '',
         createTime: ''
-      }
+      },
+      tableDatack: [],
+      bb: ''
     }
   },
   created () {
     this.getmaterial()
+    this.getTableDatack();
   },
   computed: {
   },
   mounted () {
+    if ($('.contentck').text()) {
+      this.bb = $('.contentck').text();
+      console.log(this.bb)
+    }
   },
   methods: {
+    aa () {
+      console.log($('.contentck').text())
+    },
     getmaterial () {
       const materialsId = this.$route.query.materialsId;
       this.axios.get('A2/materialService/' + materialsId)
         .then((res) => {
           this.obj = res.data;
         })
+    },
+    getTableDatack () {
+      this.axios.get('A2/warehouseService/page')
+        .then((res) => {
+          this.tableDatack = res.data.list;
+        })
+        .catch(() => {
+        });
     },
     back () {
       this.$router.push({name: 'emergency-materialList'});
@@ -87,6 +111,20 @@ export default {
         color: #777777;
         font-size: 14px;
         margin-left:2%;
+        text-align: left;
+        display: inline-block;
+      }
+      .titleck {
+        color: #222222;
+        font-size: 13px;
+        display: inline-block;
+        margin-right:1.5%;
+        width: 100px;
+        text-align: right;
+      }
+      .contentck {
+        color: #777777;
+        font-size: 14px;
         text-align: left;
         display: inline-block;
       }
