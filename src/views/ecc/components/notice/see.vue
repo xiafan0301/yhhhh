@@ -49,7 +49,7 @@
       </ul>
     </div>
     <div style="margin-top: 21px" >
-      <el-button>取消</el-button>
+      <el-button @click="onSubmit">取消</el-button>
       <el-button type="primary" @click="onSubmit">确定</el-button>
     </div>
   </div>
@@ -86,6 +86,11 @@ export default {
   },
   methods: {
     onSubmit () {
+      if (this.$route.query.status === '查看消息') {
+        this.$router.push({name: 'system'})
+      } else if (this.$route.query.status === '查看公告') {
+        this.$router.push({name: 'notice-atmanagementList'})
+      }
     },
     getMessageDetail () { // 获取消息详情
       const messageId = this.$route.query.messageId;

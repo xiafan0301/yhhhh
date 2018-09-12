@@ -120,7 +120,7 @@ export const getLocalStore = name => {
 */
 export const delCookie = (name, expires) => {
   let exp = new Date();
-  exp.setTime(exp.getTime() + expires * 3600 * 1000);
+  exp.setTime(exp.getTime() - expires * 3600 * 1000);
   const cval = getCookie(name);
   if (cval != null) {
     const str = name + '=' + encodeURIComponent(cval) + ';expires=' + exp.toGMTString() + ';path=/';

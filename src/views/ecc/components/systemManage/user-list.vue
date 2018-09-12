@@ -15,10 +15,10 @@
         </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input placeholder='请输入部门名称搜索' style="width: 250px;" v-model='selectForm.organName'></el-input>
+          <el-input placeholder='请输入用户名/姓名搜索' style="width: 250px;" v-model="filter['where.keyWord']"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn btnClass'>查询</el-button>
+          <el-button type="primary" class='selectBtn btnClass' @click="onSearch()">查询</el-button>
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
@@ -45,7 +45,8 @@
         prop="userName"
         label="姓名"
         align="center"
-        :show-overflow-tooltip="true"/>
+        :show-overflow-tooltip="true">
+      </el-table-column>
       <el-table-column
         prop="createTime"
         label="创建时间"
@@ -71,8 +72,8 @@
         :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <p v-for="(item, index) in scope.row.sysUserGroupInfos" :key="index + 't'" v-if="index < scope.row.sysUserGroupInfos[scope.row.sysUserGroupInfos.length - 1].allgroup">{{item.groupName}}</p>
-          <p v-if="scope.row.sysUserGroupInfos[scope.row.sysUserGroupInfos.length - 1].isShowAllGroup && scope.row.sysUserGroupInfos.length > 4" class="expand" @click="onOpenAll(scope.row)">展开全部<i class="iconfont row-insert-i">&#xe6c2;</i></p>
-          <p v-if="!scope.row.sysUserGroupInfos[scope.row.sysUserGroupInfos.length - 1].isShowAllGroup && scope.row.sysUserGroupInfos.length > 4" class="expand" @click="onCloseAll(scope.row)">收起<i class="iconfont row-insert-i">&#xe6b0;</i></p>
+          <p v-if="scope.row.sysUserGroupInfos[scope.row.sysUserGroupInfos.length - 1].isShowAllGroup && scope.row.sysUserGroupInfos.length > 4" class="expand" @click="onOpenAll(scope.row)">展开全部<i class="el-icon-arrow-down"></i></p>
+          <p v-if="!scope.row.sysUserGroupInfos[scope.row.sysUserGroupInfos.length - 1].isShowAllGroup && scope.row.sysUserGroupInfos.length > 4" class="expand" @click="onCloseAll(scope.row)">收起<i class="el-icon-arrow-up"></i></p>
         </template>
       </el-table-column>
       <el-table-column
@@ -83,8 +84,8 @@
         :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <p v-for="(item, index) in scope.row.sysUserRoleInfos" :key="index + 't'" v-if="index < scope.row.sysUserRoleInfos[scope.row.sysUserRoleInfos.length - 1].allgroup">{{item.roleName}}</p>
-          <p v-if="scope.row.sysUserRoleInfos[scope.row.sysUserRoleInfos.length - 1].isShowAllGroup && scope.row.sysUserRoleInfos.length > 4" class="expand" @click="onOpenAllT(scope.row)">展开全部<i class="iconfont row-insert-i">&#xe6c2;</i></p>
-          <p v-if="!scope.row.sysUserRoleInfos[scope.row.sysUserRoleInfos.length - 1].isShowAllGroup && scope.row.sysUserRoleInfos.length > 4" class="expand" @click="onCloseAllT(scope.row)">收起<i class="iconfont row-insert-i">&#xe6b0;</i></p>
+          <p v-if="scope.row.sysUserRoleInfos[scope.row.sysUserRoleInfos.length - 1].isShowAllGroup && scope.row.sysUserRoleInfos.length > 4" class="expand" @click="onOpenAllT(scope.row)">展开全部<i class="el-icon-arrow-down">&#xe6c2;</i></p>
+          <p v-if="!scope.row.sysUserRoleInfos[scope.row.sysUserRoleInfos.length - 1].isShowAllGroup && scope.row.sysUserRoleInfos.length > 4" class="expand" @click="onCloseAllT(scope.row)">收起<i class="el-icon-arrow-up">&#xe6b0;</i></p>
         </template>
       </el-table-column>
       <el-table-column
@@ -105,16 +106,18 @@
         class-name="operate">
         <template slot-scope="scope">
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEdit(scope.row)" />
-          <img title="重置密码" src="../../../../assets/img/temp/password.png" @click="onEdit(scope.row)" />
-          <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEdit(scope.row)" />
-          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEdit(scope.row)" />
-          <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onEdit(scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onEdit(scope.row)" />
+          <img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />
+          <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
+          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
+          <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onForBidUser(scope.row)" >
+          <img title="启用" src="../../../../assets/img/temp/open.png"  @click="onUpUser(scope.row)"/>
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="listData.list && listData.list.length > 0" class="pagination-box">
+    <div v-if="listData.list && listData.list.length > 0" class="pagination-box" style="text-align: right; padding-top: 10px;">
       <el-pagination
+        background
         @current-change="onPageChange"
         :current-page.sync="currentPage"
         :page-size="pagination.pageSize"
@@ -224,7 +227,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button class='noSureBtn' @click='deletDepart'>确认</el-button>
+        <el-button class='noSureBtn' @click='onConfirmEdit'>确认</el-button>
         <el-button class='sureBtn' @click="editdialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
@@ -238,7 +241,7 @@
       <span style='text-align:center;color:#333333;font-size:14px'>是否确认删除该用户及相关信息?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deletDepart'>确认</el-button>
+        <el-button class='sureBtn' @click='onConfirmDelete'>确认</el-button>
         <el-button class='noSureBtn' @click="deletedialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
@@ -251,7 +254,7 @@
       <span style='text-align:center;color:#333333;font-size:14px'>是否重置密码?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>重置后，新密码将以短信形式发送给用户</p>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deletDepart'>确认</el-button>
+        <el-button class='sureBtn' @click='onConfirmResetPwd'>确认</el-button>
         <el-button class='noSureBtn' @click="deletedialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
@@ -262,6 +265,7 @@
 export default {
   data () {
     return {
+      aa: '',
       selectForm: {
         organName: ''
       },
@@ -361,185 +365,184 @@ export default {
         .then(res => {
           if (res) {
             this.dropDownGroupList = res.data.list;
-            console.log(res)
           }
         })
     },
     deletDepart () {
     },
     onEditGroups (obj) {
-      // this.groupUserId = obj.uid;
-      // this.selectGroups = [];
-      // this.checkOutGroups = [];
-      // this.allGroups = [];
-      // this.checkInGroups = [];
-      // obj.sysUserGroupInfos.forEach(item => {
-      //   if (item.uid && item.groupName) {
-      //     this.selectGroups.push({
-      //       uid: item.uid,
-      //       groupName: item.groupName
-      //     })
-      //   }
-      // })
-      // this.axios.get('A3/authServices/userGroups', {params: {'where.proKey': this.$store.state.proKey}})
-      //   .then(res => {
-      //     if (res) {
-      //       this.selectGroups.forEach(aa => {
-      //         res.data.list.forEach((bb, index) => {
-      //           if (aa.groupName === bb.groupName) {
-      //             res.data.list.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       res.data.list.forEach(zz => {
-      //         this.allGroups.push({
-      //           uid: zz.uid,
-      //           groupName: zz.groupName
-      //         })
-      //       })
-      //     }
-      //   })
-      // this.editGroupdialogVisible = true;
+      this.groupUserId = obj.uid;
+      this.selectGroups = [];
+      this.checkOutGroups = [];
+      this.allGroups = [];
+      this.checkInGroups = [];
+      obj.sysUserGroupInfos.forEach(item => {
+        if (item.uid && item.groupName) {
+          this.selectGroups.push({
+            uid: item.uid,
+            groupName: item.groupName
+          })
+        }
+      })
+      this.axios.get('A2/authServices/userGroups')
+        .then(res => {
+          if (res) {
+            this.selectGroups.forEach(aa => {
+              res.data.list.forEach((bb, index) => {
+                if (aa.groupName === bb.groupName) {
+                  res.data.list.splice(index, 1);
+                }
+              })
+            })
+            res.data.list.forEach(zz => {
+              this.allGroups.push({
+                uid: zz.uid,
+                groupName: zz.groupName
+              })
+            })
+          }
+        })
+      this.editGroupdialogVisible = true;
     },
     onEditRoles (obj) {
-      // this.roleUserId = obj.uid;
-      // this.selectRoles = [];
-      // this.checkOutRoles = [];
-      // this.allRoles = [];
-      // this.checkInRoles = [];
-      // obj.sysUserRoleInfos.forEach(item => {
-      //   if (item.uid && item.roleName) {
-      //     this.selectRoles.push({
-      //       uid: item.uid,
-      //       roleName: item.roleName
-      //     })
-      //   }
-      // })
-      // this.axios.get('A3/authServices/userRoles', {params: {'where.proKey': this.$store.state.proKey}})
-      //   .then(res => {
-      //     if (res) {
-      //       this.selectRoles.forEach(aa => {
-      //         res.data.list.forEach((bb, index) => {
-      //           if (aa.roleName === bb.roleName) {
-      //             res.data.list.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       console.log(res.data.list);
-      //       res.data.list.forEach(zz => {
-      //         this.allRoles.push({
-      //           uid: zz.uid,
-      //           roleName: zz.roleName
-      //         })
-      //       })
-      //     }
-      //   })
-      // this.newRoledialogVisible = true;
+      this.roleUserId = obj.uid;
+      this.selectRoles = [];
+      this.checkOutRoles = [];
+      this.allRoles = [];
+      this.checkInRoles = [];
+      obj.sysUserRoleInfos.forEach(item => {
+        if (item.uid && item.roleName) {
+          this.selectRoles.push({
+            uid: item.uid,
+            roleName: item.roleName
+          })
+        }
+      })
+      this.axios.get('A2/authServices/userRoles')
+        .then(res => {
+          if (res) {
+            this.selectRoles.forEach(aa => {
+              res.data.list.forEach((bb, index) => {
+                if (aa.roleName === bb.roleName) {
+                  res.data.list.splice(index, 1);
+                }
+              })
+            })
+            console.log(res.data.list);
+            res.data.list.forEach(zz => {
+              this.allRoles.push({
+                uid: zz.uid,
+                roleName: zz.roleName
+              })
+            })
+          }
+        })
+      this.newRoledialogVisible = true;
     },
     // 加入所选组
     onAddSelectGroup () {
-      // console.log(this.checkInGroups);
-      // let params = {
-      //   proKey: this.$store.state.proKey,
-      //   uid: this.groupUserId,
-      //   uids: []
-      // }
-      // this.checkInGroups.forEach(cc => {
-      //   params.uids.push(cc.uid);
-      // })
-      // this.axios.post('A3/authServices/userBatchGroup', params)
-      //   .then(res => {
-      //     if (res) {
-      //       this.checkInGroups.forEach((aa, i) => {
-      //         this.allGroups.forEach((bb, index) => {
-      //           if (aa.groupName === bb.groupName) {
-      //             this.allGroups.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       this.selectGroups.splice(this.selectGroups.length, 0, ...this.checkInGroups);
-      //       this.checkInGroups = [];
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        proKey: this.$store.state.proKey,
+        uid: this.groupUserId,
+        uids: []
+      }
+      this.checkInGroups.forEach(cc => {
+        params.uids.push(cc.uid);
+      })
+      this.axios.post('A2/authServices/userBatchGroup', params)
+        .then(res => {
+          if (res) {
+            this.checkInGroups.forEach((aa, i) => {
+              this.allGroups.forEach((bb, index) => {
+                if (aa.groupName === bb.groupName) {
+                  console.log(this.allGroups)
+                  this.allGroups.splice(index, 1);
+                }
+              })
+            })
+            this.selectGroups.splice(this.selectGroups.length, 0, ...this.checkInGroups);
+            this.checkInGroups = [];
+            this.getList();
+          }
+        })
     },
     // 移出所选组
     onOutSelectGroup () {
-      // let params = {
-      //   proKey: this.$store.state.proKey,
-      //   uid: this.groupUserId,
-      //   uids: []
-      // }
-      // this.checkOutGroups.forEach(cc => {
-      //   params.uids.push(cc.uid);
-      // })
-      // this.axios.delete('A3/authServices/userBatchGroup', {data: params})
-      //   .then(res => {
-      //     if (res) {
-      //       this.checkOutGroups.forEach((aa, i) => {
-      //         this.selectGroups.forEach((bb, index) => {
-      //           if (aa.groupName === bb.groupName) {
-      //             this.selectGroups.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       this.allGroups.splice(this.allGroups.length, 0, ...this.checkOutGroups);
-      //       this.checkOutGroups = [];
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        proKey: this.$store.state.proKey,
+        uid: this.groupUserId,
+        uids: []
+      }
+      this.checkOutGroups.forEach(cc => {
+        params.uids.push(cc.uid);
+      })
+      this.axios.delete('A2/authServices/userBatchGroup', {data: params})
+        .then(res => {
+          if (res) {
+            this.checkOutGroups.forEach((aa, i) => {
+              this.selectGroups.forEach((bb, index) => {
+                if (aa.groupName === bb.groupName) {
+                  this.selectGroups.splice(index, 1);
+                }
+              })
+            })
+            this.allGroups.splice(this.allGroups.length, 0, ...this.checkOutGroups);
+            this.checkOutGroups = [];
+            this.getList();
+          }
+        })
     },
     // 加入配置角色
     onAddSelectRole () {
-      // let params = {
-      //   proKey: this.$store.state.proKey,
-      //   userId: this.roleUserId,
-      //   roleIdList: []
-      // }
-      // this.checkInRoles.forEach(cc => {
-      //   params.roleIdList.push(cc.uid);
-      // })
-      // this.axios.post('A3/authServices/userBatchRole', params)
-      //   .then(res => {
-      //     if (res) {
-      //       this.checkInRoles.forEach((aa, i) => {
-      //         this.allRoles.forEach((bb, index) => {
-      //           if (aa.roleName === bb.roleName) {
-      //             this.allRoles.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       this.selectRoles.splice(this.selectRoles.length, 0, ...this.checkInRoles);
-      //       this.checkInRoles = [];
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        proKey: this.$store.state.proKey,
+        userId: this.roleUserId,
+        roleIdList: []
+      }
+      this.checkInRoles.forEach(cc => {
+        params.roleIdList.push(cc.uid);
+      })
+      this.axios.post('A2/authServices/userBatchRole', params)
+        .then(res => {
+          if (res) {
+            this.checkInRoles.forEach((aa, i) => {
+              this.allRoles.forEach((bb, index) => {
+                if (aa.roleName === bb.roleName) {
+                  this.allRoles.splice(index, 1);
+                }
+              })
+            })
+            this.selectRoles.splice(this.selectRoles.length, 0, ...this.checkInRoles);
+            this.checkInRoles = [];
+            this.getList();
+          }
+        })
     },
     // 移出配置角色
     onOutSelectRole () {
-      // let params = {
-      //   proKey: this.$store.state.proKey,
-      //   userId: this.roleUserId,
-      //   roleIdList: []
-      // }
-      // this.checkOutRoles.forEach(cc => {
-      //   params.roleIdList.push(cc.uid);
-      // })
-      // this.axios.delete('A3/authServices/userBatchRole', {data: params})
-      //   .then(res => {
-      //     if (res) {
-      //       this.checkOutRoles.forEach((aa, i) => {
-      //         this.selectRoles.forEach((bb, index) => {
-      //           if (aa.roleName === bb.roleName) {
-      //             this.selectRoles.splice(index, 1);
-      //           }
-      //         })
-      //       })
-      //       this.allRoles.splice(this.allRoles.length, 0, ...this.checkOutRoles);
-      //       this.checkOutRoles = [];
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        proKey: this.$store.state.proKey,
+        userId: this.roleUserId,
+        roleIdList: []
+      }
+      this.checkOutRoles.forEach(cc => {
+        params.roleIdList.push(cc.uid);
+      })
+      this.axios.delete('A2/authServices/userBatchRole', {data: params})
+        .then(res => {
+          if (res) {
+            this.checkOutRoles.forEach((aa, i) => {
+              this.selectRoles.forEach((bb, index) => {
+                if (aa.roleName === bb.roleName) {
+                  this.selectRoles.splice(index, 1);
+                }
+              })
+            })
+            this.allRoles.splice(this.allRoles.length, 0, ...this.checkOutRoles);
+            this.checkOutRoles = [];
+            this.getList();
+          }
+        })
     },
     // 获取省份列表
     getProvince () {
@@ -570,54 +573,54 @@ export default {
     },
     // 编辑信息确认
     onConfirmEdit () {
-      // let obj = {
-      //   uid: this.editItem.uid,
-      //   proKey: this.$store.state.proKey,
-      //   userName: this.editItem.userName,
-      //   userIdcard: this.editItem.userIdcard,
-      //   userSex: this.editItem.userSex,
-      //   userEmail: this.editItem.userEmail,
-      //   province: this.editItem.province.cname,
-      //   city: this.editItem.city
-      // }
-      // console.log(obj);
-      // this.axios.put('A3/authServices/user', obj)
-      //   .then(res => {
-      //     if (res) {
-      //       this.$message.success('修改成功');
-      //       this.editdialogVisible = false;
-      //     }
-      //   })
+      let obj = {
+        uid: this.editItem.uid,
+        userName: this.editItem.userName,
+        userIdcard: this.editItem.userIdcard,
+        userSex: this.editItem.userSex,
+        userEmail: this.editItem.userEmail,
+        province: this.editItem.province.cname,
+        city: this.editItem.city
+      };
+      console.log(obj);
+      this.axios.put('A2/authServices/user', obj)
+        .then(res => {
+          if (res) {
+            this.$message.success('修改成功');
+            this.editdialogVisible = false;
+          }
+        })
     },
     // 启用
     onUpUser (obj) {
-      // let params = {
-      //   uid: obj.uid,
-      //   proKey: this.$store.state.proKey,
-      //   force: true
-      // }
-      // this.axios.put('A3/authServices/user', params)
-      //   .then(res => {
-      //     if (res) {
-      //       this.$message.success('启用成功');
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        uid: obj.uid,
+        // proKey: this.$store.state.proKey,
+        force: true
+      }
+      this.axios.put('A2/authServices/user', params)
+        .then(res => {
+          if (res) {
+            this.$message.success('启用成功');
+            this.getList();
+          }
+        })
     },
     // 禁用
     onForBidUser (obj) {
-      // let params = {
-      //   uid: obj.uid,
-      //   proKey: this.$store.state.proKey,
-      //   force: false
-      // }
-      // this.axios.put('A3/authServices/user', params)
-      //   .then(res => {
-      //     if (res) {
-      //       this.$message.success('禁用成功');
-      //       this.getList();
-      //     }
-      //   })
+      let params = {
+        uid: obj.uid,
+        // proKey: this.$store.state.proKey,
+        force: false
+      }
+      console.log(params.uid)
+      this.axios.put('A2/authServices/user', params)
+        .then(res => {
+          if (res) {
+            this.$message.success('禁用成功');
+            this.getList();
+          }
+        })
     },
     // 删除
     deleteList (obj) {
@@ -625,14 +628,14 @@ export default {
       this.deletedialogVisible = true;
     },
     onConfirmDelete () {
-      // this.axios.delete('A3/authServices/user/' + this.deleteItem.uid + '?proKey=' + this.$store.state.proKey)
-      //   .then(res => {
-      //     if (res) {
-      //       this.$message.success('删除成功');
-      //       this.deletedialogVisible = false;
-      //       this.getList();
-      //     }
-      //   })
+      this.axios.delete('A2/authServices/user/' + this.deleteItem.uid) // + '?proKey=' + this.$store.state.proKey
+        .then(res => {
+          if (res) {
+            this.$message.success('删除成功');
+            this.deletedialogVisible = false;
+            this.getList();
+          }
+        })
     },
     // 重置密码提示
     resetPwdList (obj) {
@@ -643,8 +646,9 @@ export default {
       this.resetPwddialogVisible = false;
     },
     // 过滤实时查询
-    onSelectChange () {
+    onSelectChange (val) {
       this.getList();
+      console.log(val)
     },
     // 输入框查询
     onSearch () {

@@ -57,23 +57,30 @@
       <!--  5 贫困村表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-if="searchForm.dataTypeId == '4fce5edb-7092-4455-971b-6f8526d6a827'" key="2" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="村名" min-width="150"></el-table-column>
-        <el-table-column label="坐标" min-width="200" style="position: relative">
+        <el-table-column prop="locationName" label="村名" ></el-table-column>
+        <el-table-column label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1">
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1"/>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数(户)" min-width="100"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="100">
+        <el-table-column prop="dataExtendList[0].valueContent" label="贫困户数(户)"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="贫困人数(人)"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" >
         </el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="modifypk5(scope)" >修改</el-button>
             <el-button type="text" class="vis-bg-del-btn"  @click="shchu(scope)">删除</el-button>
@@ -100,23 +107,30 @@
       <!--  6 医疗机构表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="医疗机构名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="170" >
+        <el-table-column prop="locationName" label="医疗机构名称"></el-table-column>
+        <el-table-column  label="坐标"  >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1"/>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="类型" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="床位数(张)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[3].valueContent" label="详细地址" min-width="150"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="类型" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数(人)" ></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="床位数(张)" ></el-table-column>
+        <el-table-column prop="dataExtendList[3].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="modify6(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -126,22 +140,29 @@
        <!-- 5 教育资源表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="学校名" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="150">
+        <el-table-column prop="locationName" label="学校名" ></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1"/>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="级别" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="师生人数(人)" min-width="100"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="级别" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="师生人数(人)" ></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址"></el-table-column>
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="modifyjy5(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -151,21 +172,28 @@
       <!-- 4 停车场表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'ac94e4c6-7e49-45c5-9610-1556245c45cf'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="停车场名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="150">
+        <el-table-column prop="locationName" label="停车场名称"></el-table-column>
+        <el-table-column  label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1"/>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="停车位数量(个)" min-width="140"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="180"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="停车位数量(个)"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -176,19 +204,26 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '25c2ec86-a62e-45c2-a3e7-49a121a1f56d'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="空气监测站点名称" min-width="130"></el-table-column>
-        <el-table-column  label="坐标" min-width="120">
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1"/>
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -215,20 +250,27 @@
       <!-- 3 水位监测表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '88ee0a59-19a0-4e42-b4d2-bae59634e110'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="水位监测站点名称" min-width="140"></el-table-column>
-        <el-table-column  label="坐标" min-width="120">
+        <el-table-column prop="locationName" label="水位监测站点名称" ></el-table-column>
+        <el-table-column  label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址"></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -255,20 +297,27 @@
       <!-- 3 文化旅游表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd633bafc-74d0-4f0d-bea5-927ef2df4192'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="文化旅游建筑名称" min-width="140"></el-table-column>
-        <el-table-column  label="坐标" min-width="110">
+        <el-table-column prop="locationName" label="文化旅游建筑名称"></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 40%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="140"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -278,21 +327,28 @@
       <!-- 4 养老机构表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'a649c4a2-314e-4490-bfee-ca3b7695057b'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="养老机构名称" min-width="120"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="养老机构名称"></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(张)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="床位数量(张)"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址"></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -302,20 +358,27 @@
       <!-- 3 政务部门表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'd42795ca-dad6-4531-aed7-eb75f3d3646d'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="政务部门名称" min-width="140"></el-table-column>
-        <el-table-column  label="坐标" min-width="120">
+        <el-table-column prop="locationName" label="政务部门名称"></el-table-column>
+        <el-table-column  label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="150"></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -325,20 +388,27 @@
       <!-- 3 重点监控污染企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'f90edff9-7f21-48e0-9ce4-472377825dae'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="重点监控污染企业名称" min-width="120"></el-table-column>
-        <el-table-column  label="坐标" min-width="140">
+        <el-table-column prop="locationName" label="重点监控污染企业名称"></el-table-column>
+        <el-table-column  label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址"></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -365,21 +435,28 @@
       <!--  4 扶贫项目表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'dc42b85c-ee98-4895-bfc2-4c472a092170'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="项目名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="100">
+        <el-table-column prop="locationName" label="项目名称" ></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="投入金额（万元）" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="投入金额（万元" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify4(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -424,19 +501,26 @@
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == 'e5654a00-c642-44f3-a340-2827f51367d6'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
         <el-table-column prop="locationName" label="公共车站名称" min-width="120"></el-table-column>
-        <el-table-column label="坐标" min-width="120">
+        <el-table-column label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" min-width="130"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify3(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -446,22 +530,29 @@
       <!-- 5 规上工业企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '61894e2c-7738-41af-b797-b8d735a44428'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上工业企业名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="130">
+        <el-table-column prop="locationName" label="规上工业企业名称"></el-table-column>
+        <el-table-column  label="坐标">
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)"></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" ></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -471,22 +562,29 @@
       <!-- 5 规上建筑企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '9487e07e-6b2f-49c6-b464-2216a680cc3e'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上建筑企业名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="130">
+        <el-table-column prop="locationName" label="规上建筑企业名称" ></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)"></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -496,22 +594,29 @@
       <!-- 5 规上商贸企业表格-->
       <el-table :data="plateList"  highlight-current-row style="width: 100%;" v-show="this.searchForm.dataTypeId  == '1bfa2f78-2174-4e9d-8f2f-58264a00ce83'" >
         <el-table-column type="index" width="100" label="序号"></el-table-column>
-        <el-table-column prop="locationName" label="规上商贸企业名称" min-width="150"></el-table-column>
-        <el-table-column  label="坐标" min-width="130">
+        <el-table-column prop="locationName" label="规上商贸企业名称" ></el-table-column>
+        <el-table-column  label="坐标" >
           <template slot-scope="scope">
             <span>{{scope.row.longitude}}</span>,<span>{{scope.row.latitude}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column  prop="coordinateStatus">
+          <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" content="推荐坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-duoge.png" v-show="scope.row.coordinateStatus === 1" >
+              <img src="../../../../assets/img/icons/icon2.png"  v-show="scope.row.coordinateStatus === 1">
             </el-tooltip>
             <el-tooltip class="item" effect="dark" content="无坐标" placement="bottom">
-              <img src="../../../../assets/img/icons/bg-yichang.png" height="14" width="13" v-show="scope.row.coordinateStatus === -1" style="position: absolute; right: 20%; top: 45%">
+              <img src="../../../../assets/img/icons/icon3.png" v-show="scope.row.coordinateStatus === -1"/>
+            </el-tooltip>
+            <el-tooltip class="item" effect="dark" content="精确坐标" placement="bottom">
+              <img src="../../../../assets/img/icons/icon1.png" v-show="scope.row.coordinateStatus === 0">
             </el-tooltip>
           </template>
         </el-table-column>
-        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" min-width="120"></el-table-column>
-        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" min-width="120"></el-table-column>
-        <el-table-column label="操作" min-width="120">
+        <el-table-column prop="dataExtendList[0].valueContent" label="员工人数(人)" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="注册资金(万元)" ></el-table-column>
+        <el-table-column prop="dataExtendList[2].valueContent" label="详细地址" ></el-table-column>
+        <el-table-column label="操作" width="120">
           <template slot-scope="scope">
             <el-button type="text" @click="modify5(scope)">修改</el-button>
             <el-button type="text" class="vis-bg-del-btn" @click="shchu(scope)">删除</el-button>
@@ -611,7 +716,7 @@
         </div>
       </el-dialog>
       <!--添加弹窗-->
-      <el-dialog title="添加" :visible.sync="dialogFormVisible1" width="600px"  >
+      <el-dialog title="添加" :visible.sync="dialogFormVisible1" width="600px">
         <el-form :model="form1" ref ="form1"  :rules="rules" style="padding-right: 60px;">
           <el-form-item :label="getName" :label-width="formLabelWidth" prop="name">
             <el-input v-model="form1.name" auto-complete="off"></el-input>
@@ -930,7 +1035,7 @@ export default {
           }
         ],
         dataTypeId: '61894e2c-7738-41af-b797-b8d735a44428',
-        iconType: 0,
+        iconType: 12,
         latitude: 0,
         locationName: '',
         locationTag: '规上工业企业名称',
@@ -959,7 +1064,7 @@ export default {
           }
         ],
         dataTypeId: '9487e07e-6b2f-49c6-b464-2216a680cc3e',
-        iconType: 0,
+        iconType: 12,
         latitude: 0,
         locationName: '',
         locationTag: '规上建筑企业名称',
@@ -988,7 +1093,7 @@ export default {
           }
         ],
         dataTypeId: '1bfa2f78-2174-4e9d-8f2f-58264a00ce83',
-        iconType: 0,
+        iconType: 12,
         latitude: 0,
         locationName: '',
         locationTag: '规上商贸企业名称',

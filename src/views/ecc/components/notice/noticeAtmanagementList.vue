@@ -32,10 +32,12 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
-            <el-option label="联动单位A" :value="0"></el-option>
-            <el-option label="联动单位B" :value="1"></el-option>
-            <el-option label="联动单位C" :value="2"></el-option>
-            <el-option label="应急指挥中心" :value="2"></el-option>
+            <el-option
+              v-for="item in DepartmentList"
+              :key="item.uid"
+              :label="item.organName"
+              :value="item.uid">
+            </el-option>
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -48,11 +50,11 @@
       :data="tableData"
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" width="80"  type="index"></el-table-column>
-      <el-table-column prop="emiMessage.title" label="主题" min-width="120">
+      <el-table-column  label="序号" width="60"  type="index"></el-table-column>
+      <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要" min-width="150"></el-table-column>
-      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100">
+      <el-table-column prop="emiMessage.details" label="摘要"  min-width="200" align="center"></el-table-column>
+      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center">
         <template slot-scope="scope">
           <span style="color: #13ce66;" v-if="scope.row.emiMessage.terminal == 1">移动端</span>
           <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.terminal == 2">PC端</span>
@@ -60,25 +62,28 @@
           <span style="color: #999;" v-else >不发送</span>
         </template>
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUser" label="发布用户" min-width="100">
+      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUser" label="发布单位" min-width="100">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100"></el-table-column>
-      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100">
+      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100" align="center"></el-table-column>
+      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100" align="center">
         <template slot-scope="scope">
           <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
           <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
-          <span style="color: #999;" v-else >已撤销</span>
+          <span style="color: #999;" v-else-if="scope.row.emiMessage.publishState == 3" >已撤销</span>
         </template>
       </el-table-column>
       <el-table-column
         label="操作"
-        width="150">
+        width="150" align="center">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>
-          <el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>
-          <el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" />
+          <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
+          <!--<el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>-->
+          <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -113,13 +118,15 @@ export default {
       total: 0,
       tableData: [
         {emiMessage: []}
-      ]
+      ],
+      DepartmentList: []
     }
   },
   computed: {
   },
   created () {
     this.getTableData();
+    this.getDepartmentList();
   },
   mounted () {
   },
@@ -146,9 +153,24 @@ export default {
         .catch(() => {
         });
     },
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            console.log(res)
+            this.DepartmentList = res.data.list
+          }
+        })
+        .catch(() => {})
+    },
     edit () {
     },
     doSearch () {
+      this.getTableData();
+    },
+    searchFormReset () {
+      this.searchForm.publishTime = '';
+      this.searchForm.publishState = '';
       this.getTableData();
     },
     del (scope) {
@@ -220,7 +242,7 @@ export default {
       text-align: center;
     }
     .el-date-editor /deep/.el-range-separator{
-      width: 10%!important;
+      width: 13%!important;
     }
   }
 </style>

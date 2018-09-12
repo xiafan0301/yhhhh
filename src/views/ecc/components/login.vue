@@ -72,13 +72,9 @@ export default {
       }
     });
     _this.isRemember = Boolean(getCookie('cookieStatus'));
-    console.log('1', _this.isRemember)
-    console.log('2', Boolean(getCookie('cookieStatus')))
     if (Boolean(getCookie('cookieStatus')) === true) {
-      console.log('222222')
       this.loginForm.userMobile = getCookie('cookieUserName');
     } else {
-      console.log('111111')
       this.loginForm.userMobile = null;
     }
   },
@@ -93,13 +89,10 @@ export default {
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
               let oUser = response.data;
-              console.log(oUser)
               setCookie('cookieUserId', oUser.userId, 24, '/');
               // 保存用户手机号到cookie
               setCookie('cookieUserName', oUser.userMobile, 24, '/');
-              console.log(_this.isRemember);
               setCookie('cookieStatus', _this.isRemember, 24, '/');
-              console.log(getCookie('cookieStatus'))
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
                 userName: oUser.userName
@@ -116,7 +109,6 @@ export default {
       });
     },
     changeRemember (val) {
-      console.log(val);
       this.isRemember = val;
       delCookie('cookieStatus', 24);
     },
@@ -124,8 +116,6 @@ export default {
       this.$router.push({name: 'forget'});
     },
     changeImg () { // 点击更换图片验证码
-      console.log(getCookie('cookieStatus'))
-      console.log(getCookie('cookieUserName'))
       const img = ajaxCtx2 + '/authServices/users/validCodeImg?' + Math.random();
       this.imgSrc = img;
     }

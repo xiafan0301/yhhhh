@@ -1,27 +1,19 @@
 <template>
   <div class="um-main">
-    <div class='header'>
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>系统管理</el-breadcrumb-item>
-        <el-breadcrumb-item>项目用户</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>创建用户</span></el-breadcrumb-item>
-      </el-breadcrumb>
-    </div>
     <div class="um-box">
-      <div class="box-header-tip">创建用户会为新用户直接创建账号，系统将密码以短信形式发送至新用户。</div>
       <div class="box-singer-create">
-        <div class="title"><span>单个创建</span></div>
         <el-form
         ref="form"
         :model="createUserData"
+        :inline-message= true
         class="pa-box-form"
-        label-width="80px"
-        :rules="rules">
+        label-width="120px"
+        :rules="rules" >
           <el-form-item label="手机号码" prop="userMobile">
             <el-input v-model="createUserData.userMobile" placeholder="请输入用户手机号码"/>
           </el-form-item>
           <el-form-item label="岗位角色" prop="userMobile">
-            <el-input v-model="createUserData.userMobile" placeholder="请输入岗位角色"/>
+            <el-input v-model="createUserData.userIdentity" placeholder="请输入岗位角色"/>
           </el-form-item>
           <el-form-item label="姓名" prop="userName">
             <el-input v-model="createUserData.userName" placeholder="请输入用户姓名"/>
@@ -41,7 +33,7 @@
           <el-form-item label="居住地">
             <el-select
               v-model="createUserData.province"
-              style="width: 49%;"
+              style="width: 246px;"
               clearable
               placeholder="请选择省份"
               @change="onProvinceChange"
@@ -50,40 +42,40 @@
             </el-select>
             <el-select
               v-model="createUserData.city"
-              style="width: 49%;float: right;"
+              style="width: 246px;"
               clearable
               placeholder="请选择城市">
               <el-option v-for="item in cityData" :key="item.uid" :label="item.cname" :value="item.cname"/>
             </el-select>
           </el-form-item>
         </el-form>
-        <div class="bottom-btn">
-          <span @click="goBack">返 回</span>
-          <span @click="onCreateSinger">创 建</span>
-        </div>
       </div>
-      <div class="box-multi-create">
-        <div class="title"><span>批量创建</span></div>
-        <div class="content">
-          <div class="one">您需要下载模板文件并按要求填写相关信息，上传成功后，点击创建批量创建用户账号。</div>
-          <div class="two">下载模板</div>
-          <el-input class="three" placeholder="未选择任何文件">
-            <el-upload
-              slot="append"
-              class="singe-upload"
-              :action="$store.state.fileUploadUrl + '/api/network/upload/new'"
-              :limit="1"
-              :show-file-list="false"
-              :on-success="onSelectPhoto">
-              <el-button size="small" type="primary">选择文件</el-button>
-            </el-upload>
-          </el-input>
-          <div class="bottom-btn">
-            <span @click="goBack">返 回</span>
-            <span @click="onCreateSinger">创 建</span>
-          </div>
-        </div>
+      <div class="bottom-btn">
+        <span @click="goBack">返 回</span>
+        <span @click="onCreateSinger">创 建</span>
       </div>
+      <!--<div class="box-multi-create">-->
+        <!--<div class="title"><span>批量创建</span></div>-->
+        <!--<div class="content">-->
+          <!--<div class="one">您需要下载模板文件并按要求填写相关信息，上传成功后，点击创建批量创建用户账号。</div>-->
+          <!--<div class="two">下载模板</div>-->
+          <!--<el-input class="three" placeholder="未选择任何文件">-->
+            <!--<el-upload-->
+              <!--slot="append"-->
+              <!--class="singe-upload"-->
+              <!--:action="$store.state.fileUploadUrl + '/api/network/upload/new'"-->
+              <!--:limit="1"-->
+              <!--:show-file-list="false"-->
+              <!--:on-success="onSelectPhoto">-->
+              <!--<el-button size="small" type="primary">选择文件</el-button>-->
+            <!--</el-upload>-->
+          <!--</el-input>-->
+          <!--<div class="bottom-btn">-->
+            <!--<span @click="goBack">返 回</span>-->
+            <!--<span @click="onCreateSinger">创 建</span>-->
+          <!--</div>-->
+        <!--</div>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -101,12 +93,13 @@ export default {
       createUserData: {
         userMobile: null,
         userName: null,
-        proKey: this.$store.state.proKey,
+        // proKey: this.$store.state.proKey,
         userIdcard: null,
         userSex: null,
         userEmail: null,
         province: null,
-        city: null
+        city: null,
+        userIdentity: null
       },
       rules: {
         userMobile: [
@@ -125,22 +118,22 @@ export default {
   },
   methods: {
     getSelectList () {
-      this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
-        .then(res => {
-          if (res) {
-            this.selectList = res.data.list;
-          }
-        })
+      // this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
+      //   .then(res => {
+      //     if (res) {
+      //       this.selectList = res.data.list;
+      //     }
+      //   })
     },
     // 获取省份列表
     getProvince () {
-      let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.provinceData = res.data;
-          }
-        })
+      // let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
+      // this.axios.get('/usersServices/areas', {params})
+      //   .then((res) => {
+      //     if (res) {
+      //       this.provinceData = res.data;
+      //     }
+      //   })
     },
     // 省份改变时
     onProvinceChange (obj) {
@@ -158,8 +151,8 @@ export default {
     onCreateSinger () {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          this.createUserData.province = this.createUserData.province.cname;
-          this.axios.post('S2/auth/authServices/user', this.createUserData)
+          // this.createUserData.province = this.createUserData.province.cname;
+          this.axios.post('A2/authServices/user', this.createUserData)
             .then(res => {
               if (res) {
                 this.$message.success('创建成功');
@@ -178,7 +171,6 @@ export default {
 
 <style lang="scss" scoped>
 .um-main {
-  padding: 20px;
   .header {
     margin-bottom: 10px;
     display: flex;
@@ -198,7 +190,7 @@ export default {
     .box-singer-create {
       background: #FFF;
       display: inline-block;
-      width: 49.5%;
+      width: 100%;
       .title {
         height: 60px; line-height: 60px;
         border-left: 5px solid #0785FD;
@@ -211,7 +203,7 @@ export default {
       }
       .pa-box-form {
         padding: 28px 190px 18px 20px;
-        /deep/ .el-form-item__label { font-weight: 600; }
+        /deep/ .el-form-item__label {font-weight:400; font-size:14px;}
         .retire-page-radio {
           margin-left: 15px;
           /deep/ .el-radio__input.is-checked .el-radio__inner {
@@ -225,15 +217,18 @@ export default {
             border-color: #0785FD;
           }
         }
+        .el-input{
+          width: 500px;
+        }
         .el-form-item {
-          margin-bottom: 28px;
+          margin-bottom: 14px;
           /deep/ .el-form-item__content {
             width: 80%;
-            .el-form-item__error {
-              right: -105px;
-              top: 11px;
-              left: auto;
-            }
+            /*<!--.el-form-item__error {-->*/
+              /*<!--right: -105px;-->*/
+              /*<!--top: 11px;-->*/
+              /*<!--left: auto;-->*/
+            /*<!--}-->*/
           }
         }
         .el-form-item.is-required /deep/ .el-form-item__label:before {
@@ -252,6 +247,26 @@ export default {
         text-align: center;
         padding-bottom: 55px;
         padding-right: 90px;
+        span {
+          display: inline-block;
+          width: 120px; height: 42px;
+          line-height: 42px;
+          text-align: center;
+          cursor: pointer;
+          border-radius:3px;
+        }
+        span:nth-child(1) {
+          border: 1px solid #DBDBDB;
+          color: #666;
+          margin-right: 20px;
+        }
+        span:nth-child(2) {
+          color: #fff;
+          background: #0785FD;
+        }
+      }
+      .bottom-btn {
+        text-align: center;
         span {
           display: inline-block;
           width: 120px; height: 42px;
@@ -332,6 +347,47 @@ export default {
             background: #0785FD;
           }
         }
+      }
+    }
+    .bottom-btn {
+      padding-top: 20px;
+      padding-bottom: 55px;
+      padding-right: 90px;
+      span {
+        display: inline-block;
+        width: 80px; height: 42px;
+        line-height: 42px;
+        text-align: center;
+        cursor: pointer;
+        border-radius:3px;
+      }
+      span:nth-child(1) {
+        border: 1px solid #DBDBDB;
+        color: #666;
+        margin-right: 20px;
+      }
+      span:nth-child(2) {
+        color: #fff;
+        background: #0785FD;
+      }
+    }
+    .bottom-btn {
+      span {
+        display: inline-block;
+        width: 80px; height: 42px;
+        line-height: 42px;
+        text-align: center;
+        cursor: pointer;
+        border-radius:3px;
+      }
+      span:nth-child(1) {
+        border: 1px solid #DBDBDB;
+        color: #666;
+        margin-right: 20px;
+      }
+      span:nth-child(2) {
+        color: #fff;
+        background: #0785FD;
       }
     }
   }
