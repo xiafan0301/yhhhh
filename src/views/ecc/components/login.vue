@@ -14,14 +14,14 @@
           </el-input>
           <img src="../../../assets/img/login/lock.png" />
         </el-form-item>
-        <el-form-item prop="codeImg" class="code-item" style="margin-bottom: 10px">
-          <el-input v-model="loginForm.codeImg" :type="'text'" placeholder="请输入验证码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
+        <el-form-item prop="code" class="code-item" style="margin-bottom: 10px">
+          <el-input v-model="loginForm.code" :type="'text'" placeholder="请输入验证码" @keyup.enter.native="loginSubmit('loginForm')"></el-input>
           <div class="img-code" @click="changeImg">
             <img class="img-code-box" :src="imgSrc" />
           </div>
         </el-form-item>
         <el-form-item class="login-form-item clearfix">
-          <el-checkbox style="color: #999999" v-model="isAutoLogin">下次自动登录</el-checkbox>
+          <el-checkbox style="color: #999999" v-model="isRemember" @change="changeRemember">记住用户名</el-checkbox>
           <span style="float:right;color:#999999;cursor:pointer" @click="forgetPwd">忘记密码?</span>
         </el-form-item>
         <el-form-item>
@@ -33,20 +33,20 @@
   </div>
 </template>
 <script>
-import { cookieUserId, cookieUserName, cookieTime, ajaxCtx2 } from '@/config/config.js';
-import { setCookie, getCookie } from '@/utils/util.js';
+import { cookieTime, ajaxCtx2 } from '@/config/config.js';
+import { setCookie, getCookie, delCookie } from '@/utils/util.js';
 import {valiPhone, checkPwd} from '@/utils/validator.js';
 export default {
   data () {
     return {
-      imgSrc: ajaxCtx2 + '/authServices/users/validCodeImg',
+      imgSrc: ajaxCtx2 + '/authServices/users/validCodeImg?' + Math.random(),
       loginForm: {
-        userMobile: null,
-        userPassword: null,
-        codeImg: null
+        userMobile: '',
+        userPassword: '',
+        code: null
       },
       loginBtnLoading: false,
-      isAutoLogin: false, // 是否自动登陆
+      isRemember: false, // 是否记住用户名
       loginFormRules: {
         userMobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -55,10 +55,10 @@ export default {
         userPassword: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { validator: checkPwd, trigger: 'blur' }
+        ],
+        code: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
-        // codeImg: [
-        //   { required: true, message: '请输入验证码', trigger: 'blur' }
-        // ]
       }
     }
   },
@@ -71,6 +71,16 @@ export default {
         _this.loginSubmit('loginForm');
       }
     });
+    _this.isRemember = Boolean(getCookie('cookieStatus'));
+    console.log('1', _this.isRemember)
+    console.log('2', Boolean(getCookie('cookieStatus')))
+    if (Boolean(getCookie('cookieStatus')) === true) {
+      console.log('222222')
+      this.loginForm.userMobile = getCookie('cookieUserName');
+    } else {
+      console.log('111111')
+      this.loginForm.userMobile = null;
+    }
   },
   methods: {
     loginSubmit (formName) {
@@ -84,9 +94,12 @@ export default {
             if (response) {
               let oUser = response.data;
               console.log(oUser)
-              setCookie(cookieUserId, oUser.userId, cookieTime, '/');
+              setCookie('cookieUserId', oUser.userId, 24, '/');
               // 保存用户手机号到cookie
-              setCookie(cookieUserName, oUser.userMobile, cookieTime, '/');
+              setCookie('cookieUserName', oUser.userMobile, 24, '/');
+              console.log(_this.isRemember);
+              setCookie('cookieStatus', _this.isRemember, 24, '/');
+              console.log(getCookie('cookieStatus'))
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
                 userName: oUser.userName
@@ -102,10 +115,17 @@ export default {
         }
       });
     },
+    changeRemember (val) {
+      console.log(val);
+      this.isRemember = val;
+      delCookie('cookieStatus', 24);
+    },
     forgetPwd () {
       this.$router.push({name: 'forget'});
     },
     changeImg () { // 点击更换图片验证码
+      console.log(getCookie('cookieStatus'))
+      console.log(getCookie('cookieUserName'))
       const img = ajaxCtx2 + '/authServices/users/validCodeImg?' + Math.random();
       this.imgSrc = img;
     }

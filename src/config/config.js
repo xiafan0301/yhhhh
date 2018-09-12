@@ -80,6 +80,7 @@ export const fileBaseUrl = oDomains.fileDomain[sENV] + '/';
 // cookie名
 export const cookieUserId = 'sc.vis_id';
 export const cookieUserName = 'sc.vis_name';
+export const cookieStatus = 'sc.vis_status';
 // cookie默认有效时间（小时）
 export const cookieTime = 24;
 

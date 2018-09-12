@@ -80,6 +80,7 @@ export const setCookie = (name, value, expires, path, domain, secure) => {
   if (domain) { str += ';domain=' + domain; }
   if (secure) { str += ';secure=' + secure; }
   document.cookie = str;
+  console.log(document.cookie)
 };
 /**
  * @summary 读取cookie
@@ -113,4 +114,17 @@ export const setLocalStore = (sName, sCntent) => {
 export const getLocalStore = name => {
   if (!name) return null;
   return window.localStorage.getItem(name);
+};
+/**
+* 删除cookie
+*/
+export const delCookie = (name, expires) => {
+  let exp = new Date();
+  exp.setTime(exp.getTime() + expires * 3600 * 1000);
+  const cval = getCookie(name);
+  if (cval != null) {
+    const str = name + '=' + encodeURIComponent(cval) + ';expires=' + exp.toGMTString() + ';path=/';
+    document.cookie = str;
+    console.log(document.cookie)
+  }
 };
