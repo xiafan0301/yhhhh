@@ -26,8 +26,8 @@
       <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
       <el-table-column label="操作" align='center' class="operation">
         <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="editDepart(scope, $event)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteDepart(scope, $event)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click.stop="editDepart(scope)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click.stop="deleteDepart(scope)" />
         </template>
       </el-table-column>
     </el-table>
@@ -57,20 +57,33 @@
         <el-button class='noSureBtn' @click="deleteDepartmentDialog = false">取消</el-button>
       </span>
     </el-dialog>
-    <el-dialog title="新建部门" :visible.sync="dialogFormVisible" center width='400px' class="new-department">
+    <el-dialog
+      title="删除"
+      :visible.sync="deleteDepartmentChildDialog"
+      width="340px"
+      height='205px'
+      center>
+      <span style='text-align:center;color:#333333;font-size:14px'>删除时将删除部门及其下级部门，是否确认删除?</span>
+      <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click='submitdeletDepartChild'>确认</el-button>
+        <el-button class='noSureBtn' @click="deleteDepartmentChildDialog = false">取消</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="新建部门" :visible.sync="dialogFormVisible" center width='480px' class="new-department">
       <el-form class='add-depart-form' :model='addForm' ref="addForm">
-        <el-form-item label="部门名称" label-width='85px' prop='organName'>
+        <el-form-item label="部门名称" label-width='100px' prop='organName'>
           <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='addForm.organName'></el-input>
         </el-form-item>
-        <el-form-item label="上级部门" label-width='85px'>
+        <el-form-item label="上级部门" label-width='100px'>
           <el-select placeholder="请选择上级部门" style='width: 98%' v-model='addForm.organPid'>
             <el-option v-for="item in departmentList" :key="item.uid" :label="item.organName" :value="item.uid"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="部门负责人" label-width='85px'>
+        <el-form-item label="部门负责人" label-width='100px' class="depart-charge">
           <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='addForm.chargeUserName'></el-input>
         </el-form-item>
-        <el-form-item label-width='85px' v-show="isShowError">
+        <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
             <i class="el-icon-error"></i>
             <span>{{errorMsg}}</span>
@@ -82,15 +95,15 @@
         <el-button class='noSureBtn' type="primary" @click="submitAddData">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="编辑部门" :visible.sync="editFormVisible" center width='400px' class="new-department">
+    <el-dialog title="编辑部门" :visible.sync="editFormVisible" center width='480px' class="new-department">
       <el-form class='add-depart-form' :model='editForm'>
-        <el-form-item label="部门名称" label-width='85px'>
+        <el-form-item label="部门名称" label-width='100px'>
           <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='editForm.organName'></el-input>
         </el-form-item>
-        <el-form-item label="部门负责人" label-width='85px'>
+        <el-form-item label="部门负责人" label-width='100px' class="depart-charge">
           <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='editForm.chargeUserName'></el-input>
         </el-form-item>
-        <el-form-item label-width='85px' v-show="isShowError">
+        <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
             <i class="el-icon-error"></i>
             <span>{{errorMsg}}</span>
@@ -111,6 +124,7 @@ export default {
       deleteDepartmentDialog: false, // 删除部门
       dialogFormVisible: false, // 新建部门
       editFormVisible: false, // 编辑部门
+      deleteDepartmentChildDialog: false, // 删除部门及下级部门
       selectForm: {
         organName: ''
       },
@@ -186,10 +200,14 @@ export default {
         })
         .catch(() => {})
     },
-    deleteDepart (scope, e) { // 删除部门显示弹出框
-      e.stopPropagation();
+    deleteDepart (scope) { // 删除部门显示弹出框
       this.deleteId = scope.row.uid;
-      this.deleteDepartmentDialog = true;
+      console.log(scope)
+      if ((scope.row.organRight - scope.row.organLeft) > 1) {
+        this.deleteDepartmentChildDialog = true;
+      } else {
+        this.deleteDepartmentDialog = true;
+      }
     },
     submitdeletDepart () { // 删除部门
       if (this.deleteId) {
@@ -204,8 +222,20 @@ export default {
           .catch(() => {});
       }
     },
-    editDepart (scope, e) { // 显示编辑部门弹出框
-      e.stopPropagation();
+    submitdeletDepartChild () { // 删除部门及下级部门
+      if (this.deleteId) {
+        this.axios.delete('A3/authServices/organInfo?uids=' + this.deleteId)
+          .then(res => {
+            if (res) {
+              this.$message.success('删除成功');
+              this.getDepartmentList();
+              this.deleteDepartmentChildDialog = false;
+            }
+          })
+          .catch(() => {});
+      }
+    },
+    editDepart (scope) { // 显示编辑部门弹出框
       this.editForm.uid = scope.row.uid;
       this.editForm.organName = scope.row.organName;
       this.editForm.chargeUserName = scope.row.chargeUserName;
@@ -256,6 +286,10 @@ export default {
       if (!this.editForm.organName) {
         this.errorMsg = '部门名称不可为空';
         this.isShowError = true;
+        return;
+      } else if (!this.editForm.chargeUserName) {
+        this.isShowError = true;
+        this.errorMsg = '部门负责人不可为空';
         return;
       }
       this.axios.put('A3/authServices/organInfo', this.editForm)
@@ -352,6 +386,11 @@ export default {
           margin-bottom: 10px;
         }
         /deep/ .el-form-item:first-child label:after {
+          content: '*';
+          color: #f56c6c;
+          margin-left: 4px;
+        }
+        .depart-charge /deep/ .el-form-item__label:after {
           content: '*';
           color: #f56c6c;
           margin-left: 4px;

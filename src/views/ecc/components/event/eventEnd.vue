@@ -19,14 +19,16 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary'>
-          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...'></el-input>
+        <el-form-item label="请输入事件总结" label-width='150px' prop='eventSummary' class="event-summary">
+          <el-input type='textarea' v-model='endForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件详细情况...' @input="calNumber(endForm.eventSummary)"></el-input>
+          <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
         </el-form-item>
       </el-form>
       <div class='show-img-div'>
         <el-upload
           action="http://10.16.4.50:8001/api/network/upload/new"
           list-type='picture-card'
+          :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
           :before-upload='handleBeforeUpload'
           :on-success="handleSuccess"
@@ -76,6 +78,11 @@ export default {
   data () {
     return {
       closeReturnVisiable: false,
+      currentNum: 0, // 事件情况当前字数
+      totalNum: 10000, // 可输入的总字数
+      imgParam: {
+        projectType: 3
+      },
       endForm: {
         eventId: '',
         eventLevel: '', // 事件等级
@@ -108,6 +115,12 @@ export default {
     }, 1000);
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      if (val.length > this.totalNum) {
+        return;
+      }
+      this.currentNum = val.length;
+    },
     back (form) {
       const data = JSON.stringify(this.endForm);
       if (this.dataStr === data) {
@@ -139,7 +152,11 @@ export default {
     handleSuccess (res, file) {
       if (res && res.data) {
         const fileName = res.data.fileName;
-        const type = fileName.substring(fileName.lastIndexOf('.'));
+        let type;
+        console.log(fileName)
+        if (fileName) {
+          type = fileName.substring(fileName.lastIndexOf('.'));
+        }
         let data;
         res.data.fileName = file.name;
         if (type === '.png' || type === '.jpg' || type === '.bmp') {
@@ -198,7 +215,7 @@ export default {
                   message: '宣布事件结束成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'event-list'});
+                this.$router.back(-1);
               } else {
                 this.$message.error('宣布事件结束失败');
               }
@@ -223,6 +240,16 @@ export default {
       background: #fff;
       .event-end-form {
         padding-top: 2%;
+        .event-summary {
+          position: relative;
+          .number-tip {
+            position: absolute;
+            bottom: 0;
+            left: 440px;
+            color: #999999;
+            font-size: 13px;
+          }
+        }
       }
       .show-img-div {
         width: 500px;
