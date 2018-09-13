@@ -70,7 +70,7 @@ exports.htmlPlugins = function() {
     console.log('loading chunk:', _chunk);
     // _chunk ：views/index/index
     let conf = {
-      favicon: pathSrc + '/assets/img/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
+      // favicon: pathSrc + '/assets/img/favicon.ico', //favicon路径，通过webpack引入同时可以生成hash值
       template: entryHtmls[_chunk], // html模板路径
       // filename: 'views/' + fileName, // 生成的html存放路径，相对于path
       filename: _chunk + '.html',

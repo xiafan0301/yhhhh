@@ -275,7 +275,10 @@ export default {
       this.$router.push({name: 'replan-list', query: {eventId: this.$route.query.eventId}});
     },
     back (form) {
+      // console.log(this.taskList.length)
       const data = JSON.stringify(this.taskForm);
+      // console.log(data)
+      // console.log(this.dataStr)
       if (this.dataStr === data && this.taskList.length === 0) {
         this.$router.back(-1);
       } else {

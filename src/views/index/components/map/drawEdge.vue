@@ -207,14 +207,7 @@ export default {
           let borderList = this.tableData[i].borderList;
           let bounds = [];
           for (let j = 0; j < borderList.length; j++) {
-            bounds.push({
-              Q: borderList[j].longitude,
-              O: borderList[j].longitude,
-              lng: borderList[j].longitude,
-              N: borderList[j].latitude,
-              p: borderList[j].latitude,
-              lat: borderList[j].latitude
-            });
+            bounds.push(new AMap.LngLat(borderList[j].longitude, borderList[j].latitude));
           }
           // console.log('setsonPolygons bounds', bounds);
           // 行政区边界渲染，使用多边形覆盖物实现

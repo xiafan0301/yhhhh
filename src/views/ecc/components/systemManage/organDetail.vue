@@ -798,7 +798,7 @@ export default {
       background: #fff;
       padding: 25px 25px 80px 25px;
       /deep/ .el-pagination {
-        float: right;
+        text-align: center;
         margin-top: 20px;
       }
       .filter {
