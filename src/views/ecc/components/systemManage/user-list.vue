@@ -34,8 +34,7 @@
         width="50px"
         label="序号"
         align="center"
-        :show-overflow-tooltip="true"
-        :index="indexMethod"/>
+        :show-overflow-tooltip="true"/>
       <el-table-column
         prop="userMobile"
         label="账户名"
@@ -100,13 +99,15 @@
       </el-table-column>
       <el-table-column
         prop=""
+        type="index"
         label="操作"
         align="center"
         width="200px"
         class-name="operate">
-        <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEdit(scope.row)" />
-          <img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />
+        <template  slot-scope="scope" >
+          <!--<img :src="img2[scope.$index]" alt="" >-->
+          <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" >
+          <!--<img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />-->
           <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
           <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
           <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onForBidUser(scope.row)" >
@@ -302,7 +303,10 @@ export default {
         order: null
       },
       currentPage: 1,
-      closeShow: false
+      closeShow: false,
+      img1: require('../../../../assets/img/temp/edit.png'),
+      img2: [],
+      isShow: true
     }
   },
   created () {
@@ -311,6 +315,13 @@ export default {
     this.getProvince(); // 省份
   },
   methods: {
+    qq (scope) {
+      this.img2.push(require('../../../../assets/img/temp/edit-checked.png'));
+      this.isShow = false;
+    },
+    bb () {
+      this.img1 = require('../../../../assets/img/temp/edit.png')
+    },
     onCreateProject () {
       this.$router.push({name: 'user-create'});
     },

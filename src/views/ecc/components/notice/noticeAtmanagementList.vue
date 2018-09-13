@@ -52,8 +52,16 @@
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column  label="序号" width="60"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center">
+        <template slot-scope="scope">
+          <!--{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length}}-->
+          <div>{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length > 20 ? (scope.row.emiMessage.title).slice(0,20) + '....': scope.row.emiMessage.title }}</div>
+        </template>
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要"  min-width="200" align="center"></el-table-column>
+      <el-table-column prop="emiMessage.details" label="摘要"  min-width="150" align="center"  :show-overflow-tooltip="true">
+        <!--<template slot-scope="scope">-->
+          <!--&lt;!&ndash;<div>{{scope.row.emiMessage.details.length > 20 ? (scope.row.emiMessage.details).slice(0,20) + '....': scope.row.emiMessage.details }}</div>&ndash;&gt;-->
+        <!--</template>-->
+      </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center">
         <template slot-scope="scope">
           <span style="color: #13ce66;" v-if="scope.row.emiMessage.terminal == 1">移动端</span>
@@ -242,7 +250,7 @@ export default {
       text-align: center;
     }
     .el-date-editor /deep/.el-range-separator{
-      width: 13%!important;
+      width: 15%!important;
     }
   }
 </style>

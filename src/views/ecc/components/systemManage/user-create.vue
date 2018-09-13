@@ -12,7 +12,7 @@
           <el-form-item label="手机号码" prop="userMobile">
             <el-input v-model="createUserData.userMobile" placeholder="请输入用户手机号码"/>
           </el-form-item>
-          <el-form-item label="岗位角色" prop="userMobile">
+          <el-form-item label="岗位角色" prop="userIdentity">
             <el-input v-model="createUserData.userIdentity" placeholder="请输入岗位角色"/>
           </el-form-item>
           <el-form-item label="姓名" prop="userName">
@@ -106,6 +106,7 @@ export default {
           { required: true, message: '该项内容不可为空' },
           { validator: checkTel, trigger: 'blur' }
         ],
+        userIdentity: [{ required: true, message: '该项内容不可为空' }],
         userName: [{ required: true, message: '该项内容不可为空' }],
         userEmail: [{ validator: checkEmail, trigger: 'blur' }],
         userIdcard: [{ validator: checkIdCard, trigger: 'blur' }]

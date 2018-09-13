@@ -112,49 +112,49 @@ export default {
   },
   methods: {
     getSelectList () {
-      this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
-        .then(res => {
-          if (res) {
-            this.selectList = res.data.list;
-          }
-        })
+      // this.axios.get('S2/auth/authServices/plateList', {params: { 'where.authState': 2 }})
+      //   .then(res => {
+      //     if (res) {
+      //       this.selectList = res.data.list;
+      //     }
+      //   })
     },
     // 获取省份列表
     getProvince () {
-      let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.provinceData = res.data;
-          }
-        })
+      // let params = { parentUid: '00000000-0000-0000-0000-000000000000' }
+      // this.axios.get('/usersServices/areas', {params})
+      //   .then((res) => {
+      //     if (res) {
+      //       this.provinceData = res.data;
+      //     }
+      //   })
     },
     // 省份改变时
     onProvinceChange (obj) {
-      this.cityData = {};
-      this.createUserData.city = null;
-      let params = { parentUid: obj.uid }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.cityData = res.data;
-          }
-        })
+      // this.cityData = {};
+      // this.createUserData.city = null;
+      // let params = { parentUid: obj.uid }
+      // this.axios.get('/usersServices/areas', {params})
+      //   .then((res) => {
+      //     if (res) {
+      //       this.cityData = res.data;
+      //     }
+      //   })
     },
     onSelectPhoto () {},
     onCreateSinger () {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          this.createUserData.province = this.createUserData.province.cname;
-          this.axios.post('S2/auth/authServices/user', this.createUserData)
-            .then(res => {
-              if (res) {
-                this.$message.success('创建成功');
-                this.$router.push({name: 'user-list'});
-              }
-            })
-        }
-      })
+      // this.$refs['form'].validate(valid => {
+      //   if (valid) {
+      //     this.createUserData.province = this.createUserData.province.cname;
+      //     this.axios.post('S2/auth/authServices/user', this.createUserData)
+      //       .then(res => {
+      //         if (res) {
+      //           this.$message.success('创建成功');
+      //           this.$router.push({name: 'user-list'});
+      //         }
+      //       })
+      //   }
+      // })
     },
     goBack () {
       this.$router.go(-1);

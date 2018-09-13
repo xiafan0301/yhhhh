@@ -85,7 +85,7 @@ export const checkPwd = (rule, value, callback) => {
  */
 export const checkEmail = (rule, value, callback) => {
   if (value) {
-    let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    let reg = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
     if (!reg.test(value)) {
       callback(new Error('邮箱格式填写错误'));
     } else {

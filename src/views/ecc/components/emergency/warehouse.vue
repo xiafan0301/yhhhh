@@ -20,8 +20,13 @@
             <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="上报单位" label-width='150px' >
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.reportingUnit">
-              <el-option label="联动单位" value="shanghai"></el-option>
+            <el-select  placeholder="请选择上报单位" style='width: 500px' v-model="form.reportingUnit">
+              <el-option
+                v-for="item in DepartmentList"
+                :key="item.uid"
+                :label="item.organName"
+                :value="item.uid">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="负责人" label-width='150px' prop="administrators">
@@ -56,11 +61,12 @@ export default {
         adminTel: '',
         administrators: '',
         coordinate: '',
-        reportingUnit: '1f1a9b3e-ddc3-4def-9825-aaa4c1f53458',
+        reportingUnit: '',
         warehouseAddress: '',
         warehouseId: '',
         warehouseName: ''
       },
+      DepartmentList: [],
       rule: {
         warehouseName: [
           { required: true, message: '请输入仓库名称', trigger: 'blur' }
@@ -82,6 +88,7 @@ export default {
     if (this.$route.query.status === 'modify') {
       this.getmaterialck()
     }
+    this.getDepartmentList();
   },
   computed: {
   },
@@ -108,6 +115,15 @@ export default {
         this.form.coordinate = val;
         this.form.warehouseAddress = address
       }
+    },
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            this.DepartmentList = res.data.list
+          }
+        })
+        .catch(() => {})
     },
     getmaterialck () {
       const warehouseId = this.$route.query.warehouseId;
