@@ -437,15 +437,15 @@ export default {
     },
     changeDepartment (value) {
       this.departmentList.map((item) => {
-        if (item.departmentId === value) {
-          this.taskForm.departmentName = item.departmentName;
+        if (item.uid === value) {
+          this.taskForm.departmentName = item.organName;
         }
       });
     },
     changeModifyDepartment (value) {
       this.departmentList.map((item) => {
-        if (item.departmentId === value) {
-          this.modifyTaskForm.departmentName = item.departmentName;
+        if (item.uid === value) {
+          this.modifyTaskForm.departmentName = item.organName;
         }
       });
     },
