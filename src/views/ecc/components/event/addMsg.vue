@@ -10,21 +10,23 @@
       <div class='add-form-person'>
         <el-form class='form-content-person' inline-message :model='operationForm' ref='operationForm' :rules='rules'>
           <el-form-item label="事发时间" label-width='150px' prop='reportTime'>
-            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" v-model='operationForm.reportTime' type="datetime" placeholder="选择事发时间" style="width: 500px;"></el-date-picker>
+            <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" v-model='operationForm.reportTime' type="datetime" placeholder="选择事发时间" style="width: 500px;"></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' class="address" prop='eventAddress'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='operationForm.eventAddress'></el-input>
-            <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>选择地点</span> -->
             <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
-            <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
+          <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
+            <el-input type="textarea" v-model='operationForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7' @input="calNumber(operationForm.eventDetail)"></el-input>
+            <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              :data="imgParam"
               accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
               :file-list="operationForm.attachmentList"
               :before-upload='handleBeforeUpload'
               :on-remove="handleRemove"
@@ -34,6 +36,9 @@
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
             </el-upload>
+            <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+              <img :src="dialogImageUrl" alt="">
+            </el-dialog>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>
@@ -89,7 +94,19 @@ export default {
       status: '', // 添加或修改消息
       open: false,
       oConfig: {},
+      imgParam: {
+        projectType: 3
+      },
+      pickerOptions0: {
+        disabledDate (time) {
+          return time.getTime() > (new Date().getTime());
+        }
+      },
+      dialogImageUrl: '',
+      dialogVisible: false,
       closeReturnVisiable: false,
+      currentNum: 0, // 事件情况当前字数
+      totalNum: 140, // 可输入的总字数
       operationForm: {
         eventSource: 'b663a0c6-97b1-11e8-b784-e756beb98040',
         reportTime: '',
@@ -136,6 +153,12 @@ export default {
     }, 1000);
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      if (val.length > this.totalNum) {
+        return;
+      }
+      this.currentNum = val.length;
+    },
     back () {
       const data = JSON.stringify(this.operationForm);
       if (this.dataStr === data) {
@@ -258,6 +281,7 @@ export default {
               this.operationForm.latitude = res.data.latitude;
               this.operationForm.eventDetail = res.data.eventDetail;
               this.operationForm.attachmentList = res.data.attachmentList;
+              this.currentNum = res.data.eventDetail.length;
               if (res.data.radius) {
                 if (res.data.radius > 0) {
                   this.operationForm.radius = '推送';
@@ -299,11 +323,15 @@ export default {
             .catch(() => {})
         }
       });
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     }
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .add-msg-person {
     padding: 20px;
     .add-msg-header {
@@ -318,6 +346,16 @@ export default {
           .el-form-item {
             margin-bottom: 15px;
           }
+          .event-detail {
+            position: relative;
+            .number-tip {
+              position: absolute;
+              bottom: 0;
+              left: 450px;
+              color: #999999;
+              font-size: 13px;
+            }
+          }
         }
       }
     }
@@ -330,7 +368,7 @@ export default {
     .operation-btn-msg {
       margin-top: 2%;
     }
-    .el-upload--picture-card {
+    /deep/ .el-upload--picture-card {
       width: 100px;
       height: 100px;
       line-height: 100px;
@@ -352,7 +390,7 @@ export default {
         left: 25%;
       }
     }
-    .el-upload-list--picture-card .el-upload-list__item {
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
       width: 100px !important;
       height: 100px !important;
     }
@@ -386,6 +424,14 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
     }
   }
 </style>

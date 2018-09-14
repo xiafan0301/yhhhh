@@ -50,11 +50,14 @@
             <div style='width:100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='enable-replan-detail-basic-list enable-replan-detail-img-content'>
-            <img
-              v-for='item in eventDetailObj.attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-            />
+            <el-upload
+              action=""
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
+              :file-list="eventDetailObj.attachmentList"
+            >
+            </el-upload>
           </div>
         </div>
       </div>
@@ -74,7 +77,7 @@
                   <p>任务内容： {{item.taskContent}}</p>
                 </div>
                 <div class='enable-operation'>
-                  <span @click='modifyDepartment(index)'>修改</span>
+                  <span @click='modifyDepartment(index, item.taskContent)'>修改</span>
                   /
                   <span @click='deleteDepartment(index)'>删除</span>
                 </div>
@@ -88,9 +91,9 @@
                 <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 480px' v-model='taskForm.departmentId'>
                   <el-option
                     v-for="item in departmentList"
-                    :key="item.departmentId"
-                    :label="item.departmentName"
-                    :value="item.departmentId"
+                    :key="item.uid"
+                    :label="item.organName"
+                    :value="item.uid"
                   >
                   </el-option>
                 </el-select>
@@ -98,8 +101,9 @@
               <el-form-item label="任务名称" label-width='80px' prop='taskName'>
                 <el-input type="text" placeholder='请输入任务名称' style='width: 480px' v-model='taskForm.taskName'></el-input>
               </el-form-item>
-              <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
-                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='taskForm.taskContent'></el-input>
+              <el-form-item label="任务内容" label-width='80px' prop='taskContent' class="task-content">
+                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='taskForm.taskContent' @input="calNumber(taskForm.taskContent)"></el-input>
+                <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
               </el-form-item>
               <el-form-item label="" label-width='80px' v-show='taskList.length > 0'>
                 <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
@@ -124,9 +128,9 @@
           <el-select @change='changeModifyDepartment' placeholder="请选择执行部门" style='width: 98%' v-model='modifyTaskForm.departmentId'>
             <el-option
               v-for="item in departmentList"
-              :key="item.departmentId"
-              :label="item.departmentName"
-              :value="item.departmentId"
+              :key="item.uid"
+              :label="item.organName"
+              :value="item.uid"
             >
             </el-option>
           </el-select>
@@ -134,8 +138,9 @@
         <el-form-item label="任务名称" label-width='80px' prop='taskName'>
           <el-input type="text" placeholder='请输入任务名称' style='width: 98%' v-model='modifyTaskForm.taskName'></el-input>
         </el-form-item>
-        <el-form-item label="任务内容" label-width='80px' prop='taskContent'>
-          <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 98%' v-model='modifyTaskForm.taskContent'></el-input>
+        <el-form-item label="任务内容" label-width='80px' prop='taskContent' class="task-content">
+          <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 98%' v-model='modifyTaskForm.taskContent' @input="calUpdateNumber(modifyTaskForm.taskContent)"></el-input>
+          <span class="number-tip">{{updatecurrentNum}}/{{totalNum}}</span>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,6 +161,9 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -165,6 +173,11 @@ export default {
       eventDetailObj: {},
       dialogFormVisible: false,
       closeReturnVisiable: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
+      currentNum: 0, // 事件情况当前字数
+      updatecurrentNum: 0,
+      totalNum: 10000, // 可输入的总字数
       modifyIndex: '', // 要修改的任务信息索引
       taskList: [], // 预案详情中的任务列表
       departmentList: [], // 部门数据列表
@@ -206,6 +219,22 @@ export default {
     }, 1000);
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      if (val.length > this.totalNum) {
+        return;
+      }
+      this.currentNum = val.length;
+    },
+    calUpdateNumber (val) { // 计算事件情况字数
+      if (val.length > this.totalNum) {
+        return;
+      }
+      this.updatecurrentNum = val.length;
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     selectMorePlan () { // 查看更多预案
       this.$router.push({name: 'replan-list'});
     },
@@ -234,10 +263,10 @@ export default {
       }
     },
     getDepartmentList () { // 获取部门列表
-      this.axios.get('A2/departmentServices/departments')
+      this.axios.get('A3/authServices/organInfos')
         .then((res) => {
           if (res && res.data) {
-            this.departmentList = res.data;
+            this.departmentList = res.data.list;
           }
         })
         .catch(() => {})
@@ -248,7 +277,8 @@ export default {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {
             if (res) {
-              this.taskList = res.data.taskList;
+              console.log(res.data.taskList)
+              this.taskList = JSON.parse(JSON.stringify(res.data.taskList));
             }
           })
           .catch(() => {})
@@ -275,13 +305,14 @@ export default {
         }
       });
     },
-    modifyDepartment (index) { // 修改任务
+    modifyDepartment (index, content) { // 修改任务
       this.dialogFormVisible = true;
       this.modifyIndex = index;
       this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
       this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
       this.modifyTaskForm.taskName = this.taskList[index].taskName;
       this.modifyTaskForm.taskContent = this.taskList[index].taskContent;
+      this.updatecurrentNum = content.length;
     },
     deleteDepartment (index) { // 删除任务信息
       this.taskList.splice(index, 1);
@@ -292,6 +323,7 @@ export default {
           const task = JSON.parse(JSON.stringify(this.taskForm));
           this.taskList.push(task);
           this.$refs[form].resetFields();
+          this.currentNum = 0;
         }
       });
     },
@@ -304,6 +336,7 @@ export default {
           const task = JSON.parse(JSON.stringify(this.taskForm));
           this.taskList.push(task);
           this.$refs[form].resetFields();
+          this.currentNum = 0;
         }
       });
     },
@@ -527,6 +560,16 @@ export default {
               width: 580px;
               margin-left: 50px;
               border: 1px solid transparent;
+              .task-content {
+                position: relative;
+                .number-tip {
+                  position: absolute;
+                  bottom: 0;
+                  left: 420px;
+                  color: #999999;
+                  font-size: 13px;
+                }
+              }
             }
             .active {
               &:hover {
@@ -573,6 +616,31 @@ export default {
       margin-top: 1%;
       margin-bottom: 1%;
     }
+    .update-task {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        text-align: left !important;
+        font-weight: bold;
+        color: #555555;
+        font-size: 16px;
+      }
+      /deep/ .el-dialog__footer {
+        padding: 0 20px 20px !important;
+      }
+      /deep/  .el-dialog--center .el-dialog__body {
+        padding: 10px 25px 0 !important;
+      }
+      .task-content {
+        position: relative;
+        .number-tip {
+          position: absolute;
+          bottom: 0;
+          left: 400px;
+          color: #999999;
+          font-size: 13px;
+        }
+      }
+    }
     .close-dialog {
       /deep/ .el-dialog__header {
         background: #F0F0F0 !important;
@@ -596,6 +664,33 @@ export default {
         line-height: 10px;
         color:#666666;
       }
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        background: #F0F0F0 !important;
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

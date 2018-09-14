@@ -64,10 +64,10 @@
               <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change" >
                 <el-option
                   :disabled="item.disabled"
-                  v-for="item in  departmentsList"
-                  :key="item.departmentId"
-                  :label="item.departmentName"
-                  :value="item.departmentId">
+                  v-for="item in DepartmentList"
+                  :key="item.uid"
+                  :label="item.organName"
+                  :value="item.uid">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -152,7 +152,7 @@ export default {
       },
       eventTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
-      departmentsList: []
+      DepartmentList: []
     }
   },
   computed: {
@@ -160,10 +160,10 @@ export default {
   created () {
     this.getEventLevel();
     this.getEventType();
-    this.getdepartments();
     if (this.$route.query.status === 'modify') {
       this.getplans()
     }
+    this.getDepartmentList();
   },
   mounted () {
     if (this.$route.query.status === 'add') {
@@ -177,14 +177,13 @@ export default {
       this.form.taskList.splice(index, 1)
     },
     change (val) {
-      this.departmentsList && this.departmentsList.map((item, index) => {
-        if (item.departmentId === val) {
-          this.departmentsList[index].disabled = true;
+      this.DepartmentList && this.DepartmentList.map((item, index) => {
+        if (item.uid === val) {
+          this.DepartmentList[index].disabled = true;
         } else {
-          this.departmentsList[index].disabled = false;
+          this.DepartmentList[index].disabled = false;
         }
       });
-      console.log(this.departmentsList)
     },
     addPlan () {
       this.form.taskList.push({departmentName: '',
@@ -199,10 +198,10 @@ export default {
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.$route.query.status === 'add') {
-            this.departmentsList && this.departmentsList.map((item, index) => {
+            this.DepartmentList && this.DepartmentList.map((item, index) => {
               this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.departmentId === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.departmentName;
+                if (item.uid === ite.departmentId) {
+                  this.form.taskList[ind].departmentName = item.organName;
                 }
               });
             });
@@ -229,10 +228,10 @@ export default {
                 this.$router.push({name: 'emergency-planList'})
               })
           } else {
-            this.departmentsList && this.departmentsList.map((item, index) => {
+            this.DepartmentList && this.DepartmentList.map((item, index) => {
               this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.departmentId === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.departmentName;
+                if (item.uid === ite.departmentId) {
+                  this.form.taskList[ind].departmentName = item.organName;
                 }
               });
             });
@@ -292,11 +291,15 @@ export default {
           this.eventTypeList = res.data;
         })
     },
-    getdepartments () {
-      this.axios.get('A2/departmentServices/departments')
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
         .then((res) => {
-          this.departmentsList = res.data;
+          if (res && res.data.list) {
+            console.log(res)
+            this.DepartmentList = res.data.list
+          }
         })
+        .catch(() => {})
     },
     getplans () {
       const planId = this.$route.query.planId;

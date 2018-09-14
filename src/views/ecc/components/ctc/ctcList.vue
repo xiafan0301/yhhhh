@@ -55,19 +55,19 @@
       <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
       <el-table-column prop='eventTypeName' label="事件类型" align='center'>
         <template slot-scope="scope">
-          <span v-if="scope.row.eventTypeName > 0">{{scope.row.eventTypeName}}</span>
+          <span v-if="scope.row.eventTypeName">{{scope.row.eventTypeName}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
       <el-table-column prop='eventLevelName' label="事件等级" align='center'>
         <template slot-scope="scope">
-          <span v-if="scope.row.eventLevelName > 0">{{scope.row.eventLevelName}}</span>
+          <span v-if="scope.row.eventLevelName">{{scope.row.eventLevelName}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column prop='assignTime' label="受理时间" align='center'>
+      <el-table-column prop='acceptTime' label="受理时间" align='center'>
         <template slot-scope="scope">
-          <span v-if="scope.row.assignTime">{{scope.row.assignTime}}</span>
+          <span v-if="scope.row.acceptTime">{{scope.row.acceptTime}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="url + '?eventId=' + scope.row.eventId" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" @click="skipLookEventDetail(scope)" /></a>
+          <a :href="url + '?eventId=' + scope.row.eventId" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" /></a>
           <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
           <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" />
         </template>
@@ -135,7 +135,7 @@ export default {
   },
   methods: {
     skipCtcDetail (scope) { // 跳到调度指挥页面
-      this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId}});
+      this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId, eventType: scope.row.eventType}});
     },
     skipCtcEnd (scope) { // 跳转到事件结束页面
       this.$router.push({name: 'event-end', query: {eventId: scope.row.eventId, eventLevel: scope.row.eventLevel}});

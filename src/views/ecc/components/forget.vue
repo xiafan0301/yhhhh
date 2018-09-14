@@ -88,11 +88,16 @@ export default {
   },
   methods: {
     sendMsg () { // 发送验证码
+      let reg = /^[1][3,4,5,7,8][0-9]{9}$/;
       if (!this.loginForm.userMobile) {
         this.$message.error('请先填写手机号');
         return;
       }
+      if (!reg.test(this.loginForm.userMobile)) {
+        return;
+      }
       this.isShowTimer = true;
+      this.time = 90;
       const smsType = '7fce6448-269d-4560-a229-ced2213b3c36';
       this.getTimeout();
       this.axios.get('A2/authServices/user/sendSMS/' + this.loginForm.userMobile + '/' + smsType)

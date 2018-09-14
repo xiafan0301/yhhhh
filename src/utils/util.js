@@ -80,7 +80,6 @@ export const setCookie = (name, value, expires, path, domain, secure) => {
   if (domain) { str += ';domain=' + domain; }
   if (secure) { str += ';secure=' + secure; }
   document.cookie = str;
-  console.log(document.cookie)
 };
 /**
  * @summary 读取cookie
@@ -125,6 +124,5 @@ export const delCookie = (name, expires) => {
   if (cval != null) {
     const str = name + '=' + encodeURIComponent(cval) + ';expires=' + exp.toGMTString() + ';path=/';
     document.cookie = str;
-    console.log(document.cookie)
   }
 };

@@ -89,10 +89,11 @@ export default {
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
               let oUser = response.data;
-              setCookie('cookieUserId', oUser.userId, 24, '/');
               // 保存用户手机号到cookie
-              setCookie('cookieUserName', oUser.userMobile, 24, '/');
-              setCookie('cookieStatus', _this.isRemember, 24, '/');
+              if (_this.isRemember === true) {
+                setCookie('cookieUserName', oUser.userMobile, 24, '/');
+                setCookie('cookieStatus', _this.isRemember, 24, '/');
+              }
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
                 userName: oUser.userName
@@ -110,7 +111,10 @@ export default {
     },
     changeRemember (val) {
       this.isRemember = val;
-      delCookie('cookieStatus', 24);
+      if (val === false) {
+        // setCookie('cookieUserName', oUser.userMobile, 24, '/');
+        setCookie('cookieStatus', this.isRemember, -1, '/');
+      }
     },
     forgetPwd () {
       this.$router.push({name: 'forget'});
