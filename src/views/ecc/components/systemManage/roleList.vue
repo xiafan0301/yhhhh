@@ -138,7 +138,7 @@
       width="410px"
       center>
       <div class="content">
-        <div class="title">角色名称</div>
+        <div class="title">角色名称{{defaultKeys}}</div>
         <div class="tree-list">
           <el-tree
             class="filter-tree"
@@ -153,7 +153,7 @@
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
-        <el-button style="background: #fff;color:#666666" @click="editLimitDialogVisible === false">返回</el-button>
+        <el-button style="background: #fff;color:#666666" @click="editLimitDialogVisible = false">取消</el-button>
         <el-button style="background: #0785FD" @click="onConfirmEditLimit">确定</el-button>
       </span>
     </el-dialog>
@@ -540,38 +540,33 @@ export default {
       this.onEditLimit(this.seeLimitItem);
     },
     onEditLimit (obj) { // 配置权限
-      // console.log(this.selectLimitItem)
-      // console.log(obj)
-      const keysArr = [];
-      this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
+      let keysArr = [];
+      // this.defaultKeys = [];
       // if (!obj.roleAuthList) {
       //   obj.roleAuthList = [];
       // }
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
           this.allLimitObj.A.forEach(a => {
-            // if (item.resourceName === a.resourceName) {
-            //   this.defaultKeys.push(a.resourceName);
-            // }
             if (a.children && a.children.length > 0) {
               a.children.forEach(b => {
                 if (item.resourceName === b.resourceName) {
-                  this.defaultKeys.push(b.resourceName);
+                  keysArr.push(b.resourceName);
                 }
                 if (b.children && b.children.length > 0) {
                   b.children.forEach(c => {
                     if (item.resourceName === c.resourceName) {
-                      this.defaultKeys.push(c.resourceName);
+                      keysArr.push(c.resourceName);
                     }
                     if (c.children && c.children.length > 0) {
                       c.children.forEach(d => {
                         if (item.resourceName === d.resourceName) {
-                          this.defaultKeys.push(d.resourceName);
+                          keysArr.push(d.resourceName);
                         }
                         if (d.children && d.children.length > 0) {
                           d.children.forEach(f => {
                             if (item.resourceName === f.resourceName) {
-                              this.defaultKeys.push(f.resourceName);
+                              keysArr.push(f.resourceName);
                             }
                           })
                         }
@@ -584,7 +579,8 @@ export default {
           })
         })
       }
-      // console.log(this.defaultKeys)
+      this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
+      console.log(this.defaultKeys)
       this.selectLimitItem = Object.assign({}, obj);
       this.editLimitDialogVisible = true;
     },

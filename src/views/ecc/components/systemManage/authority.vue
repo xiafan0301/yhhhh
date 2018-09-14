@@ -177,6 +177,17 @@ export default {
         this.isShowError = true;
         this.errorMsg = '此项内容不可为空';
         return false;
+      } else {
+        this.isShowError = false;
+        this.errorMsg = '';
+      }
+      if (!this.addForm.resourceType) {
+        this.isShowError = true;
+        this.errorMsg = '此项内容不可为空';
+        return false;
+      } else {
+        this.isShowError = false;
+        this.errorMsg = '';
       }
       this.axios.post('A2/authServices/authResource', this.addForm)
         .then(res => {
@@ -306,7 +317,6 @@ export default {
                 })
               }
             })
-            console.log('111', this.allLimitObj.A);
           }
         })
         .catch(() => {})
@@ -464,7 +474,7 @@ export default {
         /deep/ .el-form-item {
           margin-bottom: 10px;
         }
-        /deep/ .el-form-item:first-child label:after {
+        /deep/ .el-form-item label:after {
           content: '*';
           color: #f56c6c;
           margin-left: 4px;

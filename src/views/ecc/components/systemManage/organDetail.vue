@@ -41,7 +41,12 @@
         <div class="down-depart-title"><span>下级部门</span></div>
         <div class="btn-group">
           <div class="create-btn" @click="onAddDepart"><i class="el-icon-plus"></i>添加部门</div>
-          <div class="delete-btn" @click="onDeleteBtn">删除部门</div>
+          <template v-if="departData.length > 0">
+            <div class="delete-btn" @click="onDeleteBtn">删除部门</div>
+          </template>
+           <template v-else>
+            <div class="delete-btn" style="background: #dddddd;cursor:no-drop">删除部门</div>
+          </template>
         </div>
         <ul class="list-box">
           <li class="list" v-if="selectAgree" style="background: #FAFAFA;"><el-checkbox v-model="allSelect" @change="onAllSelectChange"></el-checkbox><span style="margin-left: 10px; font-size: 12px;">全选</span></li>
@@ -63,13 +68,13 @@
                 <li v-for="(a, b) in item.sonList" :key="b + 't'">
                 <el-checkbox v-if="selectAgree" v-model="a.isSelect" @change="onChange"></el-checkbox>
                 <span style="margin-left: 8px;">{{a.sonName}}</span>
-                <i class="el-icon-arrow-right sec-right"  @click="goDepartDetail(a)"></i>
+                <i class="el-icon-arrow-right sec-right" @click="goDepartDetail(a)"></i>
               </li>
               </ul>
             </li>
           </div>
           <li class="list" v-if="departData.length <= 0"><span style="color: #333;margin-left: 47px;">暂无子级部门，请添加。</span></li>
-          <div v-if="selectAgree" class="bottom-btn">
+          <div v-if="departData.length > 0" class="bottom-btn">
             <span @click="selectAgree = false">取 消</span>
             <span @click="onDeleteDepart">确 认</span>
           </div>
