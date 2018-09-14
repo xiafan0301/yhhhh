@@ -165,7 +165,7 @@
         </div>
         <div class="right">
           <div class="title">可选成员</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-select class="fuzzy" placeholder="请输入成员名称" multiple filterable allow-create default-first-option v-moudle="userName"/>
           <el-checkbox-group v-model="checkInNumbers" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allNumbers" :key="index + 'rolea'" :label="item">{{item.userName}}</el-checkbox>
           </el-checkbox-group>
@@ -219,6 +219,7 @@
 export default {
   data () {
     return {
+      userName: '',
       selectForm: {
         organName: ''
       },
@@ -395,7 +396,9 @@ export default {
           userName: item.userName
         })
       });
-      let params = {pageSize: 9999999};
+      let params = {
+        pageSize: 999999
+      };
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {

@@ -45,24 +45,31 @@
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column  label="序号" width="80"  type="index"></el-table-column>
-      <el-table-column prop="planName" label="预案名称" min-width="100">
+      <el-table-column prop="planName" label="预案名称"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="eventTypeName" label="预案类型" min-width="100"></el-table-column>
-      <el-table-column prop="levelNameList" label="适用事件等级" min-width="100">
+      <el-table-column prop="eventTypeName" label="预案类型"  :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="levelNameList" label="适用事件等级"  :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="createRealName" label="创建用户" min-width="100">
+      <el-table-column prop="createRealName" label="创建用户"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" min-width="100"></el-table-column>
+      <el-table-column prop="createTime" label="创建时间" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span>{{(scope.row.createTime).slice(0,16)}}</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
-        min-width="100">
+        width="130">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>
-          <el-button type="text"  @click="modify('modify', scope.row)">修改</el-button>
-          <el-button @click="del(scope.row)" type="text" size="small">删除</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png"  @click="see(scope.row)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modify', scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row)" />
+          <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
+          <!--<el-button type="text"  @click="modify('modify', scope.row)">修改</el-button>-->
+          <!--<el-button @click="del(scope.row)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>

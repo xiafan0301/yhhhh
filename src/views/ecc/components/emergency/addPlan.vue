@@ -38,18 +38,23 @@
             <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
           <el-form-item label="附件" label-width='150px'>
-            <el-input  style='width: 389px; position: relative;'  v-model="form.attachmentName" class="xfinput" disabled  placeholder='未选择文件'>
+            <el-input  style='width: 389px; position: relative;' class="xfinput" disabled  :placeholder='placeholderStatus'>
             </el-input>
             <el-upload style="display: inline-block"
                        action="http://10.16.4.50:8001/api/network/upload/new"
                        ref="upload"
+                       :limit = "1"
+                       :on-change = "aa"
                        :on-success="handSuccess"
-                       :show-file-list ="false"
+                       :auto-upload="false"
                        :before-upload="handpreview">
               <el-button  type="primary" size="mini" style="position: absolute; left: 5px; top: 6px; background-color: #FAFAFA; border: 1px solid #EAEAEA"  >
               <span style="font-size:12px;color:#555555">浏览..</span></el-button>
             </el-upload>
-            <el-button type="primary" size="medium"  @click="submitUpload">上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if="status === '添加预案'">上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "form.attachmentName && status === '修改预案'">重新上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "!form.attachmentName && status === '修改预案'">上传</el-button>
+            <span style="font-size: 14px; font-weight: 400; color: #0785FD">支持PDF、word、txt文档</span>
           </el-form-item>
             <!--<div style="background-color: #FAFAFA; margin-left: 150px;width: 500px; margin-bottom: 20px"  v-for="(item, index) in staskList" :key="'fawe' + index">-->
               <!--<ul>-->
@@ -109,6 +114,7 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      placeholderStatus: '未选择文件',
       staskList: [],
       status: '',
       form: {
@@ -307,6 +313,7 @@ export default {
         .then((res) => {
           this.form = Object.assign({}, res.data);
           this.form.url = res.data.url;
+          this.placeholderStatus = this.form.attachmentName
           console.log(this.form.url);
           console.log(this.form)
         })
@@ -317,10 +324,19 @@ export default {
     handSuccess (response, file, fileList) {
       this.form.url = response.data.newFileName;
       this.form.attachmentType = dictType.fileId;
+      if (response.data) {
+        this.$message({
+          type: 'success',
+          message: '上传成功!'
+        });
+      }
     },
     handpreview (file) {
       this.form.attachmentName = file.name;
-      console.log(file)
+    },
+    aa (file) {
+      this.placeholderStatus = '';
+      this.form.attachmentName = file.name;
     },
     handleRemove (response, file, fileList) {
       console.log(response);
@@ -347,6 +363,15 @@ export default {
           padding-top: 2%;
           .el-form-item {
             margin-bottom: 15px;
+          }
+          /deep/.el-upload-list{
+            position: absolute;
+            left: 71px;
+            top: -2px;
+            height: 40px;
+            /deep/.el-upload-list__item{
+              padding: 0;
+            }
           }
           .add-plan {
             width: 100px;

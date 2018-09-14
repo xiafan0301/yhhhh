@@ -15,7 +15,7 @@
         <li><span class="title" style="vertical-align: top">预案正文</span>
           <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
-        <li><span class="title">附件</span><a class="content" :href="seeplanList.url" style="color:#0785FD"> {{seeplanList.attachmentName}}</a></li>
+        <li><span class="title">附件</span><a class="content" :href="seeplanList.url" style="color:#0785FD;text-decoration:none;"> {{seeplanList.attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium">下载</el-button></a></li>
         <li><span class="title">响应处置</span>
         <div style="margin-left: 118px; padding-bottom: 20px" v-for="(item, index) in seeplanList.taskList" :key="'faw'+index">
           <ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">
@@ -32,7 +32,7 @@
             <!--</ul >-->
           <!--</div>-->
       </li>
-        <li><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
+        <li><span class="title">发布用户</span><span class="content">{{seeplanList.createRealName && seeplanList.createRealName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px" >

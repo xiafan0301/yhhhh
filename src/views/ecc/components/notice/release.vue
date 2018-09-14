@@ -210,12 +210,15 @@ export default {
             if (this.form.attachmentList.length === 0) {
               this.form.attachmentList = null;
             }
+            if (this.form.receiveRelations.length === 0) {
+              this.form.receiveRelations = null;
+            }
             // if (this.value === '') {
             //   this.value = null
             // }
             this.value && this.value.map((item, index) => {
-              this.form.receiveRelations.push({receiveUser: item})
-              console.log(this.form.receiveRelations)
+              this.form.receiveRelations.push({receiveUser: item});
+              console.log(this.form.receiveRelations);
               console.log(1)
             });
             let params = {
@@ -226,8 +229,8 @@ export default {
                 title: this.form.title,
                 publishTime: this.form.publishTime
               },
-              emiAttachments: this.form.attachmentList
-              // receiveRelations: this.form.receiveRelations
+              emiAttachments: this.form.attachmentList,
+              receiveRelations: this.form.receiveRelations
               // receiveRelations: [
               //   {
               //     messageId: 'string',

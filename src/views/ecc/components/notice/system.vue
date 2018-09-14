@@ -83,9 +83,12 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>
-          <el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>
-          <el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifysystem', scope.row.emiMessage)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" />
+          <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
+          <!--<el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>-->
+          <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
