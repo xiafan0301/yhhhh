@@ -42,7 +42,7 @@
                 </template>
               </template>
             </div>
-            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -62,11 +62,14 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <img
-              v-for='item in eventDetailObj.attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-            />
+            <el-upload
+              action=""
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
+              :file-list="eventDetailObj.attachmentList"
+            >
+            </el-upload>
           </div>
         </div>
       </div>
@@ -82,7 +85,7 @@
           <ul>
             <li v-for="(item, index) in commentList" :key="'item'+index">
               <div class='info-top'>
-                <p class='phone'>{{item.commentUserId}}</p>
+                <p class='phone'>{{item.commentUserMobile}}({{item.commentUserIdentity}})</p>
                 <p class='time'>{{item.createTime}}</p>
               </div>
               <div class='info-detail'>{{item.content}}</div>
@@ -137,6 +140,9 @@
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -145,6 +151,8 @@ export default {
     return {
       closeCommentVisiable: false,
       mutualEndVisiable: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
       imgUrl: '',
       delCommentId: '', // 要删除的评论id
       eventDetailObj: {}, // 事件详情
@@ -166,6 +174,10 @@ export default {
     }
   },
   methods: {
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     back () {
       this.$router.back(-1);
     },
@@ -298,7 +310,6 @@ export default {
         }
         .mutual-status {
           color: #fff;
-          // background: #0785FD;
           width: 100px;
           height: 40px;
           border-radius: 2px;
@@ -371,6 +382,9 @@ export default {
                   color: #888888;
                 }
               }
+              .info-detail {
+                width: 95%;
+              }
               .close {
                 position: absolute;
                 cursor: pointer;
@@ -394,7 +408,7 @@ export default {
       font-weight: bold;
       font-size: 16px;
     }
-    /deep/  .el-dialog--center .el-dialog__body {
+    /deep/ .el-dialog__body {
       text-align: center !important;
     }
     .sureBtn {
@@ -408,6 +422,32 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

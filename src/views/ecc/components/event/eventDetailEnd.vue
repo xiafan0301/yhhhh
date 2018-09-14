@@ -51,7 +51,7 @@
               <span class='title'>报案人：</span>
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
             </div>
-            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -71,11 +71,14 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <img
-              v-for='item in eventDetailObj.attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-            />
+            <el-upload
+              action=""
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
+              :file-list="eventDetailObj.attachmentList"
+            >
+            </el-upload>
           </div>
         </div>
       </div>
@@ -104,14 +107,15 @@
             </div>
           </div>
         </template>
-        <template v-if='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
+        <template
+          v-if='(eventDetailObj.processingList && eventDetailObj.processingList.length > 0) || (eventDetailObj.taskList && eventDetailObj.taskList.length > 0) || (commentList && commentList.length > 0)'>
           <div class='event-progress'>
             <div class='event-progress-header'>
               <div class='flag'></div>
               <p class='event-progress-text'>事件进展</p>
             </div>
             <div class='event-progress-body'>
-              <div class='depart'>
+              <div class='depart' v-show="eventDetailObj.taskList && eventDetailObj.taskList.length > 0">
                 <p class='progress-title'>参与部门</p>
                 <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'items'+index">
                   <p>{{item.departmentName}}</p>
@@ -119,8 +123,8 @@
                   <p>{{item.taskStatusName}}</p>
                 </div>
               </div>
-              <div class=divide></div>
-              <div class='event-process'>
+              <div class=divide v-show="eventDetailObj.processingList && eventDetailObj.processingList.length > 0"></div>
+              <div class='event-process' v-show="eventDetailObj.processingList && eventDetailObj.processingList.length > 0">
                 <p class='progress-title'>事件过程</p>
                 <ul>
                   <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
@@ -148,7 +152,7 @@
                 <ul>
                   <li v-for='(item, index) in commentList' :key="'item'+index">
                     <div class='info-top'>
-                      <p class='phone'>{{item.commentUserId}}</p>
+                      <p class='phone'>{{item.commentUserMobile}}({{item.commentUserIdentity}})</p>
                       <p class='time'>{{item.createTime}}</p>
                     </div>
                     <div class='info-detail'>{{item.content}}</div>
@@ -228,6 +232,9 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -238,6 +245,8 @@ export default {
       dialogFormVisible: false,
       closeCommentVisiable: false,
       closeReturnVisiable: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
       isSave: false, // 是否显示保存按钮
       imgSrc: '', // 事件状态图片
       pagination: {
@@ -268,6 +277,10 @@ export default {
     }, 1000);
   },
   methods: {
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     back (form) {
       const data = JSON.stringify(this.modifyForm);
       if (this.dataStr === data) {
@@ -378,6 +391,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
+            this.closeCommentVisiable = true;
           })
           .catch(() => {})
       }
@@ -581,6 +595,9 @@ export default {
                     color: #888888;
                   }
                 }
+                .info-detail {
+                  width: 95%;
+                }
                 .close {
                   position: absolute;
                   font-size: 21px;
@@ -642,6 +659,32 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

@@ -35,7 +35,7 @@
               <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
               <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
             </div>
-            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -55,11 +55,14 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <img
-              v-for='item in eventDetailObj.attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-            />
+            <el-upload
+              action=""
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
+              :file-list="imgList"
+            >
+            </el-upload>
           </div>
         </div>
       </div>
@@ -83,13 +86,14 @@
           </ul>
         </div>
       </div>
-      <div class='event-progress' v-show='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
+      <div class='event-progress'
+        v-show="(eventDetailObj.taskList && eventDetailObj.taskList.length > 0) || (eventDetailObj.processingList && eventDetailObj.processingList.length > 0) || (commentList && commentList.length > 0)">
         <div class='event-progress-header'>
           <div class='flag'></div>
           <p class='event-progress-text'>事件进展</p>
         </div>
         <div class='event-progress-body'>
-          <div class='depart'>
+          <div class='depart' v-show="eventDetailObj.taskList && eventDetailObj.taskList.length > 0">
             <p class='progress-title'>参与部门</p>
             <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'item'+index">
               <p>{{item.departmentName}}</p>
@@ -97,8 +101,8 @@
               <p>{{item.taskStatusName}}</p>
             </div>
           </div>
-          <div class=divide></div>
-          <div class='event-process'>
+          <div class=divide v-show="eventDetailObj.processingList && eventDetailObj.processingList.length > 0"></div>
+          <div class='event-process' v-show="eventDetailObj.processingList && eventDetailObj.processingList.length > 0">
             <p class='progress-title'>事件过程</p>
             <ul>
               <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
@@ -110,7 +114,6 @@
                 <template v-if='eventDetailObj.processingList.length > 1'>
                   <div class='line'></div>
                 </template>
-                <!-- <div class='line'></div> -->
                 <div class='content-right'>
                   <div class='time'>{{item.createTime}}</div>
                   <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
@@ -118,7 +121,7 @@
               </li>
             </ul>
           </div>
-          <div class=divide></div>
+          <div class=divide v-show="commentList && commentList.length > 0"></div>
           <div class='comment' v-show='commentList && commentList.length > 0'>
             <p class='progress-title'>
               APP端互助
@@ -127,36 +130,12 @@
             <ul>
               <li v-for='(item, index) in commentList' :key="'item'+index">
                 <div class='info-top'>
-                  <p class='phone'>{{item.commentUserId}}</p>
+                  <p class='phone'>{{item.commentUserMobile}}({{item.commentUserIdentity}})</p>
                   <p class='time'>{{item.createTime}}</p>
                 </div>
                 <div class='info-detail'>{{item.content}}</div>
                 <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
               </li>
-              <!-- <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
-                </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
-                </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li>
-              <li>
-                <div class='info-top'>
-                  <p class='phone'>13812341234</p>
-                  <p class='time'>06-25 11:30</p>
-                </div>
-                <div class='info-detail'>火势好大！</div>
-                <i class='el-icon-circle-close close'></i>
-              </li> -->
             </ul>
             <template v-if='this.pagination.total > 5'>
               <el-pagination
@@ -201,36 +180,28 @@
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
       closeCommentVisiable: false,
       delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
+      dialogImageUrl: '',
+      dialogVisible: false,
+      videoList: [], // 视频数据列表
+      imgList: [], // 图片数据列表
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 5
       },
-      options1: [{
-        value: '选项1',
-        label: '黄金糕'
-      }, {
-        value: '选项2',
-        label: '双皮奶'
-      }, {
-        value: '选项3',
-        label: '蚵仔煎'
-      }, {
-        value: '选项4',
-        label: '龙须面'
-      }, {
-        value: '选项5',
-        label: '北京烤鸭'
-      }],
       value: '',
       eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
@@ -241,6 +212,10 @@ export default {
     this.getCommentList();
   },
   methods: {
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     skipEventEnd () { // 跳到事件结束页面
       this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
     },
@@ -264,8 +239,16 @@ export default {
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
-            // console.log(res)
+            console.log(res.data)
             if (res && res.data) {
+              res.data.attachmentList && res.data.attachmentList.map((item, index) => {
+                if (item.attachmentType === dictType.videoId) { // 视频
+                  this.videoList.push(item);
+                } else {
+                  this.imgList.push(item);
+                }
+              });
+              console.log(this.imgList)
               this.eventDetailObj = res.data;
             }
           })
@@ -307,6 +290,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
+            this.closeCommentVisiable = false;
           })
           .catch(() => {})
       }
@@ -513,6 +497,9 @@ export default {
                     color: #888888;
                   }
                 }
+                .info-detail {
+                  width: 95%;
+                }
                 .close {
                   position: absolute;
                   font-size: 21px;
@@ -574,6 +561,32 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

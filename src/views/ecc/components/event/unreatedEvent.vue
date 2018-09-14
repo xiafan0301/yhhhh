@@ -1,5 +1,5 @@
 <template>
-  <div class="untreatedEvent">
+  <div class="untreated-event">
     <div style="margin-bottom: 20px;">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
@@ -15,7 +15,7 @@
         <img src='../../../../assets/img/temp/untreated.png' />
       </div>
       <div class='untreated-form'>
-        <el-form class='untreated-form-content' :model='detailForm' ref='detailForm' :rules='rules'>
+        <el-form class='untreated-form-content' :model='detailForm' ref='detailForm' :rules='rules' inline-message>
           <el-form-item label="上报人手机号" label-width='150px'>
             <div class="phone-number">
               <span style='color:#333333; font-size: 13px'>{{detailForm.reporterPhone}}</span>
@@ -28,19 +28,20 @@
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
-            <!-- <span class='look-map' style='color:#0785FD;font-size:13px;position:relative;right:75px'>查看地图</span> -->
             <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" @click='showMap' style='cursor:pointer' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
             <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
-            <img
-              v-for='item in attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-              class='img-list'
-            />
+            <el-upload
+              action=""
+              list-type="picture-card"
+              accept=".png,.jpg,.bmp"
+              :on-preview="handlePictureCardPreview"
+              :file-list="attachmentList"
+            >
+            </el-upload>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model='detailForm.eventType'>
@@ -72,8 +73,8 @@
             </el-radio-group>
             <el-input v-show="detailForm.casualties === '有'" style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input><span v-show="detailForm.casualties === '有'" style='margin-left:1%'>人</span>
           </el-form-item>
-          <el-form-item label="事件性质" label-width='150px' prop='flagType'>
-            <el-checkbox-group v-model='detailForm.flagType'>
+          <el-form-item label="事件性质" label-width='150px' prop='flagType' class="flag-type-item">
+            <el-checkbox-group v-model='detailForm.flagType' class="flag-type">
               <el-checkbox label="应急事件" name="type"></el-checkbox>
               <el-checkbox label="民众互助" name="type"></el-checkbox>
             </el-checkbox-group>
@@ -89,7 +90,7 @@
       <template v-else>
         <el-button style='background: #0785FD;color:#fff' @click='dialogFormVisible = true'>关闭事件</el-button>
       </template>
-      <el-button style='background: #FB796C;color:#fff' @click='skipCtcDetail'>去调度指挥</el-button>
+      <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('detailForm')">去调度指挥</el-button>
     </div>
     <el-dialog title="操作提示" :visible.sync="dialogFormVisible" center width='30%' class="close-reason-dialog">
       <p class='close-reason-p'>请选择关闭事件的原因:</p>
@@ -134,10 +135,14 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {valiPhone} from '@/utils/validator.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 export default {
   components: {mapPoint},
@@ -145,6 +150,8 @@ export default {
     return {
       open: false,
       oConfig: {},
+      dialogImageUrl: '',
+      dialogVisible: false,
       dialogFormVisible: false,
       closeReturnVisiable: false,
       eventDetail: {}, // 事件详情
@@ -163,14 +170,18 @@ export default {
         flagType: [] // 事件性质
       },
       rules: {
+        eventAddress: [
+          { required: true, message: '请输入事发地点', trigger: 'blur' }
+        ],
         eventDetail: [
+          { required: true, message: '请输入事件情况', trigger: 'blur' },
           { max: 140, message: '最多可以输入140个字' }
         ],
         eventType: [
           { required: true, message: '请选择事件类型', trigger: 'blur' }
         ],
         flagType: [
-          { required: true, message: '请选择事件性质', trigger: 'blur' }
+          { required: true, message: '请勾选事件性质', trigger: 'blur' }
         ]
       },
       attachmentList: [], // 附件列表
@@ -206,6 +217,10 @@ export default {
     }, 1000);
   },
   methods: {
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     back (form) {
       const data = JSON.stringify(this.detailForm);
       if (this.dataStr === data) {
@@ -238,8 +253,38 @@ export default {
       }
       // this.editForm.gps = val;
     },
-    skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+    skipCtcDetail (form) {
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          if (this.detailForm.flagType.length > 0) {
+            this.detailForm.flagType.map((item, index) => {
+              if (item === '应急事件') {
+                this.detailForm.eventFlag = true;
+              }
+              if (item === '民众互助') {
+                this.detailForm.mutualFlag = true;
+              }
+            });
+          }
+          if (this.detailForm.casualties === '无') {
+            this.detailForm.casualties = 0;
+          } else if (this.detailForm.casualties === '不确定') {
+            this.detailForm.casualties = -1;
+          } else if (this.detailForm.casualties === '有') {
+            this.detailForm.casualties = this.dieNumber;
+          }
+        }
+        const params = {
+          emiEvent: this.detailForm
+        }
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
+          .then((res) => {
+            if (res) {
+              this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+            }
+          })
+          .catch(() => {})
+      });
     },
     getEventDetail () { // 获取事件详情
       const eventId = this.$route.query.eventId;
@@ -374,8 +419,8 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .untreatedEvent {
+<style lang="scss" scoped>
+  .untreated-event {
     padding: 20px;
     .untreated-body {
       background: #fff;
@@ -434,6 +479,15 @@ export default {
               height: 34px;
               margin-right: 10px;
               cursor: pointer;
+            }
+          }
+          .flag-type-item {
+            /deep/ .el-form-item__content {
+              display: flex;
+              align-items: center;
+            }
+            /deep/ .el-form-item__error {
+              margin-top: -10px;
             }
           }
         }
@@ -512,6 +566,32 @@ export default {
         line-height: 10px;
         color:#666666;
       }
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

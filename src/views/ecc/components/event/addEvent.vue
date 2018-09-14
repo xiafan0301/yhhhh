@@ -13,21 +13,24 @@
             <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
-            <el-date-picker value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
+            <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
-            <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
+            <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
-          <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail'></el-input>
+          <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
+            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
+            <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              :data="imgParam"
               accept=".png,.jpg,.bmp"
               :before-upload='handleBeforeUpload'
+              :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
               :on-success='handleSuccess'
               :limit='9'
@@ -35,6 +38,9 @@
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
             </el-upload>
+            <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+              <img :src="dialogImageUrl" alt="">
+            </el-dialog>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model="addForm.eventType">
@@ -67,6 +73,7 @@
             <template v-if="addForm.casualties === '有'">
               <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input>
               <span style='margin-left:1%'>人</span>
+              <div class="el-form-item__error--inline el-form-item__error" v-show="isDieError">{{dieTip}}</div>
             </template>
           </el-form-item>
           <el-form-item label="事件性质" label-width='150px'>
@@ -105,9 +112,23 @@ export default {
   data () {
     return {
       open: false,
+      dialogImageUrl: '',
+      dialogVisible: false,
       closeReturnVisiable: false,
       oConfig: {},
+      isDieError: false,
+      dieTip: '',
+      imgParam: {
+        projectType: 3
+      },
+      pickerOptions0: {
+        disabledDate (time) {
+          return time.getTime() > (new Date().getTime());
+        }
+      },
       isDefaultChecked: true,
+      currentNum: 0, // 事件情况当前字数
+      totalNum: 140, // 可输入的总字数
       dieNumber: '', // 死亡人数
       addForm: {
         reporterPhone: '',
@@ -122,6 +143,7 @@ export default {
         casualties: '',
         eventFlag: true,
         mutualFlag: false,
+        dispatchFlag: null,
         attachmentList: [] // 附件列表
       },
       rules: {
@@ -153,9 +175,20 @@ export default {
     this.getEventLevel();
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      if (val.length > this.totalNum) {
+        return;
+      }
+      this.currentNum = val.length;
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     skipCtcDetail (form) { // 跳到调度指挥方案制定页面
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.addForm.dispatchFlag = true;
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
@@ -214,6 +247,7 @@ export default {
       this.$router.back(-1);
     },
     submitForm (form) { // 保存数据
+      let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.addForm.casualties === '无') {
@@ -222,6 +256,22 @@ export default {
             this.addForm.casualties = -1;
           } else if (this.addForm.casualties === '有') {
             this.addForm.casualties = this.dieNumber;
+          }
+          if (!reg.test(this.dieNumber)) {
+            this.isDieError = true;
+            this.dieTip = '死亡人数只能为正整数';
+            return;
+          } else {
+            this.isDieError = false;
+            this.dieTip = '';
+          }
+          if (this.dieNumber > 9999) {
+            this.isDieError = true;
+            this.dieTip = '可输入的最大死亡人数为9999';
+            return;
+          } else {
+            this.isDieError = false;
+            this.dieTip = '';
           }
           const param = {
             emiEvent: this.addForm
@@ -301,7 +351,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .addEvent {
     padding: 20px;
     .add-body {
@@ -313,13 +363,23 @@ export default {
           .el-form-item {
             margin-bottom: 15px;
           }
+          .event-detail {
+            position: relative;
+            .number-tip {
+              position: absolute;
+              bottom: 0;
+              left: 450px;
+              color: #999999;
+              font-size: 13px;
+            }
+          }
         }
       }
     }
     .operation-btn {
       margin-top: 3%;
     }
-    .el-upload--picture-card {
+    /deep/ .el-upload--picture-card {
       width: 100px;
       height: 100px;
       line-height: 100px;
@@ -341,7 +401,7 @@ export default {
         left: 25%;
       }
     }
-    .el-upload-list--picture-card .el-upload-list__item {
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
       width: 100px !important;
       height: 100px !important;
     }
@@ -361,7 +421,7 @@ export default {
       font-weight: bold;
       font-size: 16px;
     }
-    /deep/  .el-dialog--center .el-dialog__body {
+    /deep/  .el-dialog__body {
       text-align: center !important;
     }
     .sureBtn {
@@ -375,6 +435,14 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
     }
   }
 </style>
