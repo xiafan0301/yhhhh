@@ -226,8 +226,8 @@ export default {
                 title: this.form.title,
                 publishTime: this.form.publishTime
               },
-              emiAttachments: this.form.attachmentList,
-              receiveRelations: this.form.receiveRelations
+              emiAttachments: this.form.attachmentList
+              // receiveRelations: this.form.receiveRelations
               // receiveRelations: [
               //   {
               //     messageId: 'string',

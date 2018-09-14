@@ -15,7 +15,7 @@
         <li><span class="title" style="vertical-align: top">预案正文</span>
           <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
-        <li><span class="title">附件</span><a class="content" href="seeplanList.url" style="color:#0785FD"> {{seeplanList.attachmentName}}</a></li>
+        <li><span class="title">附件</span><a class="content" :href="seeplanList.url" style="color:#0785FD"> {{seeplanList.attachmentName}}</a></li>
         <li><span class="title">响应处置</span>
         <div style="margin-left: 118px; padding-bottom: 20px" v-for="(item, index) in seeplanList.taskList" :key="'faw'+index">
           <ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">
@@ -39,19 +39,21 @@
       <el-button @click="back">取消</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
       <!--<el-button type="primary" @click="preview" >预览</el-button>-->
-      <a target="_blank" :href="'http://10.16.3.43:8080/api/emi/planServices/plans/preview/' + this.$route.query.planId">
+      <a target="_blank" :href="ajaxCtx2 + '/planServices/plans/preview/' + this.$route.query.planId">
         <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff">预览</el-button>
       </a>
     </div>
   </div>
 </template>
 <script>
+import {ajaxCtx2} from '@/config/config.js';
 export default {
   data () {
     return {
       seeplanList: {},
       tasklist: [{taskName: ''}],
-      taskName: ''
+      taskName: '',
+      ajaxCtx2: ''
     }
   },
   computed: {
@@ -60,6 +62,7 @@ export default {
     this.getplans()
   },
   mounted () {
+    this.ajaxCtx2 = ajaxCtx2
   },
   methods: {
     getplans () {

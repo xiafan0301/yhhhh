@@ -11,7 +11,7 @@
       <ul class="listxf" >
         <li><span class="title">仓库名称</span><span class="content">{{this.obj.warehouseName}}</span></li>
         <li><span class="title">仓库地点</span><span class="content"> {{this.obj.warehouseAddress}}</span></li>
-        <li><span class="title">上报单位</span><span class="content"> {{this.obj.reportingUnit}}</span></li>
+        <li><span class="title">上报单位</span><span class="content" v-for="(item, index) in  DepartmentList" :key="index + 'y'" v-show="item.uid === obj.reportingUnit"> {{item.uid === obj.reportingUnit? item.organName: ''}}</span></li>
         <li><span class="title">负责人</span><span class="content"> {{this.obj.administrators}}</span></li>
         <li><span class="title">联系电话</span><span class="content"> {{this.obj.adminTel}}</span></li>
         <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId}}</span></li>
@@ -37,11 +37,13 @@ export default {
         authUserId: '',
         createTime: '',
         coordinate: 0
-      }
+      },
+      DepartmentList: []
     }
   },
   created () {
-    this.getmaterialck()
+    this.getmaterialck();
+    this.getDepartmentList();
   },
   computed: {
   },
@@ -55,6 +57,15 @@ export default {
           this.obj = res.data;
           this.obj.coordinate = res.data.longitude + ',' + res.data.latitude
         })
+    },
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            this.DepartmentList = res.data.list;
+          }
+        })
+        .catch(() => {})
     },
     back () {
       this.$router.push({name: 'emergency-materialList'});

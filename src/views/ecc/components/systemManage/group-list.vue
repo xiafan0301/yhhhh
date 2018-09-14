@@ -395,7 +395,8 @@ export default {
           userName: item.userName
         })
       });
-      this.axios.get('A2/authServices/users')
+      let params = {pageSize: 9999999};
+      this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {
             this.selectNumbers.forEach(aa => {
