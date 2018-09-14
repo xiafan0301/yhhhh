@@ -256,8 +256,34 @@ export default {
     skipCtcDetail (form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-          this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+          if (this.detailForm.flagType.length > 0) {
+            this.detailForm.flagType.map((item, index) => {
+              if (item === '应急事件') {
+                this.detailForm.eventFlag = true;
+              }
+              if (item === '民众互助') {
+                this.detailForm.mutualFlag = true;
+              }
+            });
+          }
+          if (this.detailForm.casualties === '无') {
+            this.detailForm.casualties = 0;
+          } else if (this.detailForm.casualties === '不确定') {
+            this.detailForm.casualties = -1;
+          } else if (this.detailForm.casualties === '有') {
+            this.detailForm.casualties = this.dieNumber;
+          }
         }
+        const params = {
+          emiEvent: this.detailForm
+        }
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
+          .then((res) => {
+            if (res) {
+              this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+            }
+          })
+          .catch(() => {})
       });
     },
     getEventDetail () { // 获取事件详情
