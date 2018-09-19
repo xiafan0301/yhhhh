@@ -24,7 +24,8 @@ module.exports = {
     Vue: true,
     AMap: true, // MAP
     Swiper: true, // Swiper
-    Steer: true // Steer
+    Steer: true, // Steer
+    ZxImageView: true
   },
   // required to lint *.vue files
   plugins: [

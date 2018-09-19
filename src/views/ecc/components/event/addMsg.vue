@@ -440,7 +440,7 @@ export default {
       font-weight: bold;
       font-size: 16px;
     }
-    /deep/  .el-dialog--center .el-dialog__body {
+    /deep/ .el-dialog--center .el-dialog__body {
       text-align: center !important;
     }
     .sureBtn {
@@ -459,7 +459,7 @@ export default {
       /deep/ .el-dialog__header {
         padding: 40px 20px 10px;
       }
-       /deep/  .el-dialog__body {
+       /deep/ .el-dialog__body {
         text-align: center !important;
       }
     }
