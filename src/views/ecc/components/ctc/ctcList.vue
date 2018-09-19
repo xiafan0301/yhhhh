@@ -51,7 +51,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table style="width: 100%" :data='ctcDataList'>
+    <el-table style="width: 100%" :data='ctcDataList' class="table-ctc">
       <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
       <el-table-column prop='eventTypeName' label="事件类型" align='center'>
         <template slot-scope="scope">
@@ -258,6 +258,11 @@ export default {
     }
     .el-pagination {
       text-align: center;
+    }
+    .table-ctc {
+      img {
+        margin: 0 10px;
+      }
     }
   }
 </style>

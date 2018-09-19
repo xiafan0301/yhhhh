@@ -60,7 +60,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer double-btn-80">
         <el-button class="sureBtn" @click="addLimitDialogVisible = false">取 消</el-button>
-        <el-button class="noSureBtn" @click="onConfirmAddLimit">保 存</el-button>
+        <el-button class="noSureBtn" :loading="isAddLoading" @click="onConfirmAddLimit">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 编辑权限弹框 -->
@@ -89,7 +89,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer double-btn-80">
         <el-button class="sureBtn" @click="editLimitDialogVisible = false">取 消</el-button>
-        <el-button class="noSureBtn" @click="onConfirmEditLimit">保 存</el-button>
+        <el-button class="noSureBtn" :loading="isEditLoading" @click="onConfirmEditLimit">保 存</el-button>
       </span>
     </el-dialog>
     <!-- 删除权限弹框 -->
@@ -101,7 +101,7 @@
       <span style='text-align:center;color:#333333;font-size:14px'>是否确定删除该权限?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
-        <el-button class="noSureBtn" @click="onConfirmDelete">确 认</el-button>
+        <el-button class="noSureBtn" :loading="isDeleteLoading" @click="onConfirmDelete">确 认</el-button>
         <el-button class="sureBtn" @click="deleteLimitdialogVisible = false">取 消</el-button>
       </span>
     </el-dialog>
@@ -111,6 +111,9 @@
 export default {
   data () {
     return {
+      isAddLoading: false, // 添加权限加载中
+      isDeleteLoading: false, // 删除权限加载中
+      isEditLoading: false, // 编辑权限加载中
       allLimitObj: { A: [], B: [], C: [], D: [], E: [] },
       deleteLimitdialogVisible: false, // 删除权限
       editLimitDialogVisible: false, // 编辑权限
@@ -140,15 +143,19 @@ export default {
       this.addLimitDialogVisible = true;
     },
     onConfirmDelete () { // 确认删除权限
-      this.axios.delete('A2/authServices/authResource?uid=' + this.deleteItem.uid)
-        .then(res => {
-          if (res) {
-            this.$message.success('删除成功');
-            this.getAuthorityList();
-            this.deleteLimitdialogVisible = false;
-          }
-        })
-        .catch(() => {});
+      if (this.deleteItem.uid) {
+        this.isDeleteLoading = true;
+        this.axios.delete('A2/authServices/authResource?uid=' + this.deleteItem.uid)
+          .then(res => {
+            if (res) {
+              this.$message.success('删除成功');
+              this.getAuthorityList();
+              this.deleteLimitdialogVisible = false;
+              this.isDeleteLoading = false;
+            }
+          })
+          .catch(() => {});
+      }
     },
     onConfirmEditLimit () { // 确认编辑权限
       if (!this.editLimitItem.resourceName) {
@@ -156,6 +163,7 @@ export default {
         this.errorMsg = '此项内容不可为空';
         return false;
       }
+      this.isEditLoading = true;
       let params = {
         parentUid: this.editLimitItem.parentUid,
         resourceName: this.editLimitItem.resourceName,
@@ -168,6 +176,7 @@ export default {
             this.$message.success('修改成功');
             this.getAuthorityList();
             this.editLimitDialogVisible = false;
+            this.isEditLoading = false;
           }
         })
         .catch(() => {})
@@ -189,12 +198,14 @@ export default {
         this.isShowError = false;
         this.errorMsg = '';
       }
+      this.isAddLoading = true;
       this.axios.post('A2/authServices/authResource', this.addForm)
         .then(res => {
           if (res) {
             this.$message.success('新增成功');
             this.getAuthorityList();
             this.addLimitDialogVisible = false;
+            this.isAddLoading = false;
           }
         })
         .catch(() => {})

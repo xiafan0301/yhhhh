@@ -41,7 +41,7 @@
       </div>
       <div class='operation-btn-msg' >
         <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="onSubmit('form')" >确定</el-button>
+        <el-button type="primary"  :loading="addLoading" @click="onSubmit('form')" >确定</el-button>
       </div>
     </div>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
@@ -49,11 +49,12 @@
 </template>
 <script>
 import mapPoint from '@/components/common/mapPoint.vue';
-import {valiPhone} from '@/utils/validator.js';
+import { checkZel } from '@/utils/validator.js';
 export default {
   components: {mapPoint},
   data () {
     return {
+      addLoading: false,
       open: false,
       oConfig: {},
       status: '',
@@ -79,7 +80,7 @@ export default {
         ],
         adminTel: [
           { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { validator: valiPhone, trigger: 'blur' }
+          { validator: checkZel, trigger: 'blur' }
         ]
       }
     }
@@ -138,21 +139,23 @@ export default {
         if (valid) {
           if (this.$route.query.status === 'add') {
             let params = this.form;
+            this.addLoading = true
             params.longitude = this.form.coordinate.split(',')[0];
             params.latitude = this.form.coordinate.split(',')[1];
             console.log(params);
             this.axios.post('A2/warehouseService', params)
               .then((res) => {
-                console.log(res);
+                this.addLoading = false
                 this.$router.push({name: 'emergency-materialList'});
               })
           } else {
             let params = this.form;
             params.longitude = this.form.coordinate.split(',')[0];
             params.latitude = this.form.coordinate.split(',')[1];
+            this.addLoading = true
             this.axios.put('A2/warehouseService/updateOne', params)
               .then((res) => {
-                console.log(res);
+                this.addLoading = false
                 this.$router.push({name: 'emergency-materialList'});
               })
           }

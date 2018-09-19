@@ -142,7 +142,7 @@
         </div>
         <div class="right">
           <div class="title">可选组</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入组名" @input="onChangeallGroupsName"/>
           <el-checkbox-group v-model="checkInGroups" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allGroups" :key="index + 'groupa'" :label="item">{{item.groupName}}</el-checkbox>
           </el-checkbox-group>
@@ -167,7 +167,7 @@
         </div>
         <div class="right">
           <div class="title">可选角色</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入角色名" @input="onChangeRolesName"/>
           <el-checkbox-group v-model="checkInRoles" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allRoles" :key="index + 'rolea'" :label="item">{{item.roleName}}</el-checkbox>
           </el-checkbox-group>
@@ -415,6 +415,37 @@ export default {
         })
       this.editGroupdialogVisible = true;
     },
+    onChangeallGroupsName (val) {
+      this.allGroups.forEach(aa => {
+        if (aa.groupName === val) {
+          this.allGroups = [{
+            uid: aa.uid,
+            groupName: aa.groupName
+          }]
+        }
+      });
+      if (val === '') {
+        this.allGroups = []
+        this.axios.get('A2/authServices/userGroups')
+          .then(res => {
+            if (res) {
+              this.selectGroups.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.groupName === bb.groupName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              res.data.list.forEach(zz => {
+                this.allGroups.push({
+                  uid: zz.uid,
+                  groupName: zz.groupName
+                })
+              })
+            }
+          })
+      }
+    },
     onEditRoles (obj) {
       this.roleUserId = obj.uid;
       this.selectRoles = [];
@@ -449,6 +480,41 @@ export default {
           }
         })
       this.newRoledialogVisible = true;
+    },
+    onChangeRolesName (val) {
+      console.log(val)
+      console.log(this.allRoles)
+      this.allRoles.forEach(aa => {
+        if (aa.roleName === val) {
+          this.allRoles = [{
+            uid: aa.uid,
+            roleName: aa.roleName
+          }]
+        }
+      });
+      console.log(this.allRoles)
+      if (val === '') {
+        this.allRoles = []
+        this.axios.get('A2/authServices/userRoles')
+          .then(res => {
+            if (res) {
+              this.selectRoles.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.roleName === bb.roleName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              console.log(res.data.list);
+              res.data.list.forEach(zz => {
+                this.allRoles.push({
+                  uid: zz.uid,
+                  roleName: zz.roleName
+                })
+              })
+            }
+          })
+      }
     },
     // 加入所选组
     onAddSelectGroup () {

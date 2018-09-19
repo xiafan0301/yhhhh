@@ -20,7 +20,7 @@
             <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
+            <el-input type="textarea" style='width: 500px' placeholder='请输入事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
             <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
@@ -71,7 +71,7 @@
               <el-radio label="有" style='margin-left:22%'></el-radio>
             </el-radio-group>
             <template v-if="addForm.casualties === '有'">
-              <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input>
+              <el-input style='width: 150px;margin-left:-1%' placeholder='请输入伤亡人数' v-model='dieNumber'></el-input>
               <span style='margin-left:1%'>人</span>
               <div class="el-form-item__error--inline el-form-item__error" v-show="isDieError">{{dieTip}}</div>
             </template>
@@ -84,7 +84,7 @@
       </div>
       <div class='operation-btn'>
         <el-button @click="back('addForm')">返回</el-button>
-        <el-button style='background: #0785FD;color:#fff' @click="submitForm('addForm')">保存</el-button>
+        <el-button style='background: #0785FD;color:#fff' :loading="isAddLoading" @click="submitForm('addForm')">保存</el-button>
         <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('addForm')">去调度指挥</el-button>
       </div>
     </div>
@@ -116,6 +116,7 @@ export default {
       dialogVisible: false,
       closeReturnVisiable: false,
       oConfig: {},
+      isAddLoading: false, // 保存加载中图标
       isDieError: false,
       dieTip: '',
       imgParam: {
@@ -139,7 +140,7 @@ export default {
         longitude: '', // 经度
         latitude: '', // 纬度
         eventType: '',
-        eventLevel: '',
+        eventLevel: null,
         casualties: '',
         eventFlag: true,
         mutualFlag: false,
@@ -250,28 +251,29 @@ export default {
       let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isAddLoading = true;
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
             this.addForm.casualties = -1;
           } else if (this.addForm.casualties === '有') {
             this.addForm.casualties = this.dieNumber;
-          }
-          if (!reg.test(this.dieNumber)) {
-            this.isDieError = true;
-            this.dieTip = '死亡人数只能为正整数';
-            return;
-          } else {
-            this.isDieError = false;
-            this.dieTip = '';
-          }
-          if (this.dieNumber > 9999) {
-            this.isDieError = true;
-            this.dieTip = '可输入的最大死亡人数为9999';
-            return;
-          } else {
-            this.isDieError = false;
-            this.dieTip = '';
+            if (!reg.test(this.dieNumber)) {
+              this.isDieError = true;
+              this.dieTip = '死亡人数只能为正整数';
+              return;
+            } else {
+              this.isDieError = false;
+              this.dieTip = '';
+            }
+            if (this.dieNumber > 9999) {
+              this.isDieError = true;
+              this.dieTip = '可输入的最大死亡人数为9999';
+              return;
+            } else {
+              this.isDieError = false;
+              this.dieTip = '';
+            }
           }
           const param = {
             emiEvent: this.addForm
@@ -287,6 +289,7 @@ export default {
               } else {
                 this.$message.error('添加事件失败');
               }
+              this.isAddLoading = false;
             })
             .catch(() => {})
         }
@@ -372,6 +375,30 @@ export default {
               color: #999999;
               font-size: 13px;
             }
+          }
+          /deep/ .el-form-item__error {
+            border: 1px solid #FA796C;
+            height: 35px;
+            line-height: 35px;
+            background-color: #FEE6E0;
+            border-radius: 2px;
+            color: #FA796C;
+            padding-top: 0;
+            padding: 0 13px 0 26px;
+          }
+          /deep/ .el-form-item__error:before {
+            content: '!';
+            position: absolute;
+            left: 5px;
+            top: 9px;
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            line-height: 16px;
+            color: #FFF;
+            font-weight: bold;
+            background-color: #FA796C;
+            border-radius: 50%;
           }
         }
       }

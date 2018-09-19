@@ -74,8 +74,8 @@
             </li>
           </div>
           <li class="list" v-if="departData.length <= 0"><span style="color: #333;margin-left: 47px;">暂无子级部门，请添加。</span></li>
-          <div v-if="departData.length > 0" class="bottom-btn">
-            <span @click="selectAgree = false">取 消</span>
+          <div v-show="isShowDelete && departData.length > 0" class="bottom-btn">
+            <span @click="selectAgree = false;isShowDelete = false">取 消</span>
             <span @click="onDeleteDepart">确 认</span>
           </div>
         </ul>
@@ -190,7 +190,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button class="sureBtn" @click="newDepartdialogVisible = false">取 消</el-button>
-        <el-button class="noSureBtn" @click="onConfirmNewDepart">确 认</el-button>
+        <el-button class="noSureBtn" :loading="isAddLoading" @click="onConfirmNewDepart">确 认</el-button>
       </span>
     </el-dialog>
     <!-- 管理成员弹框 -->
@@ -227,7 +227,7 @@
       center>
       <span style='text-align:center;color:#333333;font-size:14px'>删除时将删除部门及其下级部门，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='onConfirmDeleteDepart'>确认</el-button>
+        <el-button class='sureBtn' :laoding="isDeleteLoading" @click='onConfirmDeleteDepart'>确认</el-button>
         <el-button class='noSureBtn' @click="deleteDepartdialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
@@ -238,8 +238,12 @@
 export default {
   data () {
     return {
+      isAddLoading: false,
+      isDeleteLoading: false,
       tabState: 1,
       listData: {},
+      deleteArr: [], // 要删除的部门uid
+      isShowDelete: false, // 是否显示确认删除等按钮
       newNumberdialogVisible: false,
       checkOutNumbers: [], // 选中需要移除的配置成员
       checkInNumbers: [], // 选中需要移入的配置成员
@@ -396,6 +400,7 @@ export default {
     // 删除按钮事件
     onDeleteBtn () {
       this.selectAgree = true;
+      this.isShowDelete = true;
     },
     // 新增部门
     onAddDepart () {
@@ -413,12 +418,14 @@ export default {
         this.errorMsg = '此项内容不可为空';
         return false;
       }
+      this.isAddLoading = true;
       this.axios.post('A3/authServices/organInfo', this.newDepartData)
         .then(res => {
           if (res) {
             this.$message.success('创建成功');
             this.getDetailData();
             this.newDepartdialogVisible = false;
+            this.isAddLoading = false;
           }
         })
         .catch(() => {});
@@ -440,11 +447,6 @@ export default {
     },
     // 删除
     onDeleteDepart () {
-      this.deleteDepartdialogVisible = true;
-    },
-    // 确认删除
-    onConfirmDeleteDepart () {
-      console.log(this.departData);
       let arr = [];
       this.departData.forEach(item => {
         if (item.isSelect) {
@@ -459,20 +461,33 @@ export default {
         }
       })
       arr = arr.join(',');
-      let params = {
-        proKey: this.$store.state.proKey,
-        uids: arr
+      if (!arr) {
+        this.$message.error('请先勾选要删除的部门');
+      } else {
+        this.deleteArr = arr;
+        this.deleteDepartdialogVisible = true;
       }
-      this.axios.delete('A3/authServices/organInfo', {params})
-        .then(res => {
-          if (res) {
-            this.$message.success('删除成功');
-            this.deleteDepartdialogVisible = false;
-            this.selectAgree = false;
-            this.getDetailData();
-          }
-        })
-        .catch(() => {});
+    },
+    // 确认删除
+    onConfirmDeleteDepart () {
+      if (this.deleteArr.length > 0) {
+        this.isDeleteLoading = true;
+        let params = {
+          proKey: this.$store.state.proKey,
+          uids: this.deleteArr
+        }
+        this.axios.delete('A3/authServices/organInfo', {params})
+          .then(res => {
+            if (res) {
+              this.$message.success('删除成功');
+              this.deleteDepartdialogVisible = false;
+              this.selectAgree = false;
+              this.isDeleteLoading = false;
+              this.getDetailData();
+            }
+          })
+          .catch(() => {});
+      }
     },
     // 全选
     onAllSelectChange (val) {
@@ -533,7 +548,6 @@ export default {
     },
     // 添加所选成员
     onAddSelectNumber () {
-      console.log(this.checkInNumbers);
       let params = {
         organId: this.$route.params.id,
         userIds: []
