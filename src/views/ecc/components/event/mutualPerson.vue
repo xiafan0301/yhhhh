@@ -287,5 +287,10 @@ export default {
     .el-pagination {
       text-align: center;
     }
+    .person-table {
+      img {
+        margin: 0 10px;
+      }
+    }
   }
 </style>

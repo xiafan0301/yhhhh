@@ -176,7 +176,7 @@
       center>
       <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
@@ -190,6 +190,7 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isDeleteLoading: false, // 删除评论加载中
       closeCommentVisiable: false,
       delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
@@ -239,7 +240,6 @@ export default {
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
-            console.log(res.data)
             if (res && res.data) {
               res.data.attachmentList && res.data.attachmentList.map((item, index) => {
                 if (item.attachmentType === dictType.videoId) { // 视频
@@ -248,7 +248,6 @@ export default {
                   this.imgList.push(item);
                 }
               });
-              console.log(this.imgList)
               this.eventDetailObj = res.data;
             }
           })
@@ -279,6 +278,7 @@ export default {
     },
     deleteComment () { // 删除评论
       if (this.delCommentId) {
+        this.isDeleteLoading = true;
         this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
           .then((res) => {
             if (res) {
@@ -291,6 +291,7 @@ export default {
               this.$message.error('评论删除失败');
             }
             this.closeCommentVisiable = false;
+            this.isDeleteLoading = false;
           })
           .catch(() => {})
       }

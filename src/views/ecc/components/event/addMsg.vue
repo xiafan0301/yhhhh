@@ -62,10 +62,10 @@
       <div class='operation-btn-msg'>
         <el-button @click='back'>返回</el-button>
         <template v-if="this.$route.query.status === 'add'">
-          <el-button style='background: #0785FD;color:#fff' @click="submitData('operationForm')">确认发布</el-button>
+          <el-button style='background: #0785FD;color:#fff' :loading="isAddLoading" @click="submitData('operationForm')">确认发布</el-button>
         </template>
         <template v-else>
-          <el-button style='background: #0785FD;color:#fff' @click="modifyData('operationForm')">确认修改</el-button>
+          <el-button style='background: #0785FD;color:#fff' :loading="isEditLoading" @click="modifyData('operationForm')">确认修改</el-button>
         </template>
       </div>
     </div>
@@ -91,6 +91,8 @@ export default {
   components: {mapPoint},
   data () {
     return {
+      isAddLoading: false,
+      isEditLoading: false,
       status: '', // 添加或修改消息
       open: false,
       oConfig: {},
@@ -231,6 +233,7 @@ export default {
     submitData (form) { // 确认发布
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isAddLoading = true;
           if (this.operationForm.radius === '不推送') {
             this.operationForm.radius = -1;
           } else {
@@ -250,6 +253,7 @@ export default {
               } else {
                 this.$message.error('添加消息失败');
               }
+              this.isAddLoading = false;
             })
             .catch(() => {})
         }
@@ -300,6 +304,7 @@ export default {
       }
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isEditLoading = true;
           if (this.operationForm.radius === '不推送') {
             this.operationForm.radius = -1;
           } else {
@@ -319,6 +324,7 @@ export default {
               } else {
                 this.$message.error('修改消息失败');
               }
+              this.isEditLoading = false;
             })
             .catch(() => {})
         }
@@ -355,6 +361,30 @@ export default {
               color: #999999;
               font-size: 13px;
             }
+          }
+          /deep/ .el-form-item__error {
+            border: 1px solid #FA796C;
+            height: 35px;
+            line-height: 35px;
+            background-color: #FEE6E0;
+            border-radius: 2px;
+            color: #FA796C;
+            padding-top: 0;
+            padding: 0 13px 0 26px;
+          }
+          /deep/ .el-form-item__error:before {
+            content: '!';
+            position: absolute;
+            left: 5px;
+            top: 9px;
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            line-height: 16px;
+            color: #FFF;
+            font-weight: bold;
+            background-color: #FA796C;
+            border-radius: 50%;
           }
         }
       }

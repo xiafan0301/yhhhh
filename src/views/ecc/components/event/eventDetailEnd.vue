@@ -203,7 +203,7 @@
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
       <template v-if="!eventDetailObj.closeReason">
-        <el-button v-show='isSave' type="primary" style='background: #0785FD' @click='handleSave'>保存</el-button>
+        <el-button v-show='isSave' type="primary" :loading="isSaveLoading" style='background: #0785FD' @click='handleSave'>保存</el-button>
         <el-button v-show='!isSave' type="primary" style='background: #FB796C;border-color:#FB796C' @click="modifyEvent">修改</el-button>
       </template>
     </div>
@@ -215,7 +215,7 @@
       center>
       <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
@@ -242,6 +242,8 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isSaveLoading: false, // 保存加载中
+      isDeleteLoading: false, // 删除评论加载中
       dialogFormVisible: false,
       closeCommentVisiable: false,
       closeReturnVisiable: false,
@@ -341,6 +343,7 @@ export default {
     },
     handleSave () { // 保存修改
       if (this.modifyForm) {
+        this.isSaveLoading = true;
         this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, this.modifyForm)
           .then((res) => {
             if (res) {
@@ -352,6 +355,7 @@ export default {
             } else {
               this.$message.error('保存失败');
             }
+            this.isSaveLoading = false;
           })
           .catch(() => {})
       }
@@ -380,6 +384,7 @@ export default {
     },
     deleteComment () { // 删除评论
       if (this.delCommentId) {
+        this.isDeleteLoading = true;
         this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
           .then((res) => {
             if (res) {
@@ -392,6 +397,7 @@ export default {
               this.$message.error('评论删除失败');
             }
             this.closeCommentVisiable = true;
+            this.isDeleteLoading = false;
           })
           .catch(() => {})
       }
