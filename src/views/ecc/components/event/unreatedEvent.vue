@@ -85,7 +85,7 @@
     <div class='operation-btn-untreated'>
       <el-button @click='back'>返回</el-button>
       <template v-if="detailForm.flagType.indexOf('民众互助') !== -1">
-        <el-button style='background: #0785FD;color:#fff' @click="modifyEvent('detailForm')">保存</el-button>
+        <el-button style='background: #0785FD;color:#fff' :loading="isSaveLoading" @click="modifyEvent('detailForm')">保存</el-button>
       </template>
       <template v-else>
         <el-button style='background: #0785FD;color:#fff' @click='dialogFormVisible = true'>关闭事件</el-button>
@@ -118,7 +118,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="resetForm('closeForm')">取 消</el-button>
-        <el-button style='color:#fff;background:#0785FD' @click="closeEvent('closeForm')">确 定</el-button>
+        <el-button style='color:#fff;background:#0785FD' :loading="isCloseLoading" @click="closeEvent('closeForm')">确 定</el-button>
       </div>
     </el-dialog>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
@@ -148,6 +148,8 @@ export default {
   components: {mapPoint},
   data () {
     return {
+      isCloseLoading: false, // 关闭事件加载中
+      isSaveLoading: false, // 保存加载中
       open: false,
       oConfig: {},
       dialogImageUrl: '',
@@ -251,7 +253,6 @@ export default {
         this.detailForm.latitude = Number(str[1]);
         this.detailForm.eventAddress = address;
       }
-      // this.editForm.gps = val;
     },
     skipCtcDetail (form) {
       this.$refs[form].validate(valid => {
@@ -280,7 +281,7 @@ export default {
         this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
           .then((res) => {
             if (res) {
-              this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+              this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.detailForm.eventType}});
             }
           })
           .catch(() => {})
@@ -357,6 +358,7 @@ export default {
     closeEvent (form) { // 关闭事件
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isCloseLoading = true;
           const params = {
             emiEvent: this.closeForm
           }
@@ -372,6 +374,7 @@ export default {
               } else {
                 this.$message.error('关闭事件失败');
               }
+              this.isCloseLoading = false;
             })
             .catch(() => {})
         }
@@ -380,6 +383,7 @@ export default {
     modifyEvent (form) { // 修改事件
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isSaveLoading = true;
           if (this.detailForm.flagType.length > 0) {
             this.detailForm.flagType.map((item, index) => {
               if (item === '应急事件') {
@@ -412,6 +416,7 @@ export default {
             } else {
               this.$message.error('修改事件失败');
             }
+            this.isSaveLoading = false;
           })
           .catch(() => {})
       });

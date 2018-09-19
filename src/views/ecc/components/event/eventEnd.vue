@@ -7,7 +7,7 @@
       </el-breadcrumb>
     </div>
     <div class='event-end-body'>
-      <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules'>
+      <el-form class='event-end-form' :model='endForm' ref='endForm' :rules='rules' inline-message>
         <el-form-item label="请确认事件等级" label-width='150px' prop='eventLevel'>
           <el-select  placeholder="请选择事件等级" style='width: 500px' v-model='endForm.eventLevel'>
             <el-option
@@ -56,7 +56,7 @@
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click="endEvent('endForm')">确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' :loading="isEndLoading" @click="endEvent('endForm')">确定</el-button>
     </div>
      <el-dialog
       title="操作提示"
@@ -77,6 +77,7 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isEndLoading: false, // 结束加载中
       closeReturnVisiable: false,
       currentNum: 0, // 事件情况当前字数
       totalNum: 10000, // 可输入的总字数
@@ -156,32 +157,32 @@ export default {
         console.log(fileName)
         if (fileName) {
           type = fileName.substring(fileName.lastIndexOf('.'));
-        }
-        let data;
-        res.data.fileName = file.name;
-        if (type === '.png' || type === '.jpg' || type === '.bmp') {
-          data = {
-            attachmentType: dictType.imgId,
-            url: res.data.newFileName,
-            attachmentName: res.data.fileName,
-            attachmentSize: res.data.fileSize,
-            attachmentWidth: res.data.imageWidth,
-            attachmentHeight: res.data.imageHeight,
-            thumbnailUrl: res.data.thumbnailUrl,
-            thumbnailWidth: res.data.thumbImageWidth,
-            thumbnailHeight: res.data.thumbImageHeight
+          let data;
+          res.data.fileName = file.name;
+          if (type === '.png' || type === '.jpg' || type === '.bmp') {
+            data = {
+              attachmentType: dictType.imgId,
+              url: res.data.newFileName,
+              attachmentName: res.data.fileName,
+              attachmentSize: res.data.fileSize,
+              attachmentWidth: res.data.imageWidth,
+              attachmentHeight: res.data.imageHeight,
+              thumbnailUrl: res.data.thumbnailUrl,
+              thumbnailWidth: res.data.thumbImageWidth,
+              thumbnailHeight: res.data.thumbImageHeight
+            }
+            this.imgList.push(res.data);
+          } else {
+            data = {
+              attachmentType: dictType.fileId,
+              url: res.data.newFileName,
+              attachmentName: res.data.fileName,
+              attachmentSize: res.data.fileSize
+            }
+            this.fileList.push(res.data);
           }
-          this.imgList.push(res.data);
-        } else {
-          data = {
-            attachmentType: dictType.fileId,
-            url: res.data.newFileName,
-            attachmentName: res.data.fileName,
-            attachmentSize: res.data.fileSize
-          }
-          this.fileList.push(res.data);
+          this.endForm.attachmentList.push(data);
         }
-        this.endForm.attachmentList.push(data);
       }
     },
     handleBeforeUpload (file) { // 附件上传之前
@@ -204,6 +205,7 @@ export default {
       const eventId = this.$route.query.eventId;
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isEndLoading = true;
           const data = {
             eventFinishDto: this.endForm
           }
@@ -219,6 +221,7 @@ export default {
               } else {
                 this.$message.error('宣布事件结束失败');
               }
+              this.isEndLoading = false;
             })
             .catch(() => {})
         }
@@ -249,6 +252,30 @@ export default {
             color: #999999;
             font-size: 13px;
           }
+        }
+        /deep/ .el-form-item__error {
+          border: 1px solid #FA796C;
+          height: 35px;
+          line-height: 35px;
+          background-color: #FEE6E0;
+          border-radius: 2px;
+          color: #FA796C;
+          padding-top: 0;
+          padding: 0 13px 0 26px;
+        }
+        /deep/ .el-form-item__error:before {
+          content: '!';
+          position: absolute;
+          left: 5px;
+          top: 9px;
+          width: 15px;
+          height: 15px;
+          text-align: center;
+          line-height: 16px;
+          color: #FFF;
+          font-weight: bold;
+          background-color: #FA796C;
+          border-radius: 50%;
         }
       }
       .show-img-div {

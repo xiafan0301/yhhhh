@@ -176,7 +176,7 @@
     </div>
     <div class='operation-btn-ctc-detail'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click="submitData('taskForm')">确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' :loading="isTaskLoading" @click="submitData('taskForm')">确定</el-button>
     </div>
     <el-dialog title="修改任务" :visible.sync="dialogFormVisible" center width='600px' class="update-task">
       <el-form class='ctc-idea-body-list-form' :model='modifyTaskForm' ref="modifyTaskForm" :rules='rules'>
@@ -227,6 +227,7 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isTaskLoading: false, // 调度指挥加载中
       dialogFormVisible: false, // 是否显示要修改的表单
       closeReturnVisiable: false,
       dialogImageUrl: '',
@@ -453,6 +454,7 @@ export default {
       const eventId = this.$route.query.eventId;
       let taskList = [];
       if (this.taskList.length > 0) {
+        this.isTaskLoading = true;
         const data = {
           taskList: this.taskList
         }
@@ -467,11 +469,13 @@ export default {
             } else {
               this.$message.error('添加任务失败');
             }
+            this.isTaskLoading = false;
           })
           .catch(() => {});
       } else {
         this.$refs[form].validate((valid) => {
           if (valid) {
+            this.isTaskLoading = true;
             taskList.push(this.taskForm);
             const data = {
               taskList: taskList
@@ -487,6 +491,7 @@ export default {
                 } else {
                   this.$message.error('添加任务失败');
                 }
+                this.isTaskLoading = false;
               })
               .catch(() => {});
           }

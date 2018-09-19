@@ -124,7 +124,7 @@
       center>
       <span style='text-align:center'>确定要结束互助?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click="sureEndEvent">确定结束</el-button>
+        <el-button class='sureBtn' :loading="isEndLoading" @click="sureEndEvent">确定结束</el-button>
         <el-button class='noSureBtn' @click="mutualEndVisiable = false">暂不结束</el-button>
       </span>
     </el-dialog>
@@ -136,7 +136,7 @@
       center>
       <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
@@ -149,6 +149,8 @@
 export default {
   data () {
     return {
+      isDeleteLoading: false, // 删除评论加载中
+      isEndLoading: false, // 结束互助加载中
       closeCommentVisiable: false,
       mutualEndVisiable: false,
       dialogImageUrl: '',
@@ -199,7 +201,6 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res && res.data) {
-              // console.log(res.data)
               this.eventDetailObj = res.data;
             }
           })
@@ -210,11 +211,11 @@ export default {
       this.mutualEndVisiable = true;
     },
     sureEndEvent () { // 结束事件
+      this.isEndLoading = true;
       const eventId = this.$route.query.eventId;
       this.axios.put('A2/eventServices/events/finish/' + eventId, {eventId: eventId})
         .then((res) => {
           if (res) {
-            // console.log(res)
             this.$message({
               message: '宣布事件结束成功',
               type: 'success'
@@ -225,6 +226,7 @@ export default {
             this.$message.error('宣布事件结束失败');
             this.mutualEndVisiable = false;
           }
+          this.isEndLoading = false;
         })
         .catch(() => {})
     },
@@ -237,7 +239,6 @@ export default {
       }
       this.axios.get('A2/eventServices/comments/page', {params: data})
         .then((res) => {
-          // console.log(res)
           if (res && res.data.list) {
             this.commentList = res.data.list;
             this.pagination.total = res.data.total;
@@ -251,6 +252,7 @@ export default {
     },
     deleteComment () { // 删除评论
       if (this.delCommentId) {
+        this.isDeleteLoading = true;
         this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
           .then((res) => {
             if (res) {
@@ -263,6 +265,7 @@ export default {
               this.$message.error('评论删除失败');
             }
             this.closeCommentVisiable = false;
+            this.isDeleteLoading = false;
           })
           .catch(() => {})
       }

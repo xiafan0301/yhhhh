@@ -90,7 +90,6 @@ export default {
         this.axios.get('A2/planServices/plans/' + planId, planId)
           .then((res) => {
             if (res && res.data) {
-              // console.log(res.data)
               this.replanDetail = res.data;
             }
           })

@@ -28,7 +28,7 @@
           <span>{{scope.row.createTime | moment}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align='center'>
+      <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
           <img title="查看权限" src="../../../../assets/img/temp/select.png" @click="onSeeLimit(scope.row)" />
           <img title="编辑角色" src="../../../../assets/img/temp/edit.png" @click="onEditRole(scope.row)" />
@@ -60,7 +60,7 @@
       <span style='text-align:center;color:#333333;font-size:14px'>是否确定删除该角色及关联信息?</span>
       <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>删除后数据不可恢复</p>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='onConfirmDelete'>确认</el-button>
+        <el-button class='sureBtn' :loading="isDeleteLoading" @click='onConfirmDelete'>确认</el-button>
         <el-button class='noSureBtn' @click="deleteRoleDialog = false">取消</el-button>
       </span>
     </el-dialog>
@@ -82,7 +82,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class='sureBtn' @click="cancelAdd">取 消</el-button>
-        <el-button class='noSureBtn' type="primary" @click="submitAddData">确认</el-button>
+        <el-button class='noSureBtn' type="primary" :loading="isAddLoading" @click="submitAddData">确认</el-button>
       </div>
     </el-dialog>
     <!-- 编辑角色弹框 -->
@@ -103,7 +103,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button class='sureBtn' @click="cancelEdit">取 消</el-button>
-        <el-button class='noSureBtn' type="primary" @click="onConfirmEditRole">确认</el-button>
+        <el-button class='noSureBtn' type="primary" :loading="isEditLoading" @click="onConfirmEditRole">确认</el-button>
       </div>
     </el-dialog>
     <!-- 查看权限弹框 -->
@@ -138,7 +138,7 @@
       width="410px"
       center>
       <div class="content">
-        <div class="title">角色名称{{defaultKeys}}</div>
+        <div class="title">{{limitRoleName}}</div>
         <div class="tree-list">
           <el-tree
             class="filter-tree"
@@ -154,7 +154,7 @@
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button style="background: #fff;color:#666666" @click="editLimitDialogVisible = false">取消</el-button>
-        <el-button style="background: #0785FD" @click="onConfirmEditLimit">确定</el-button>
+        <el-button style="background: #0785FD" :loading="isLimitLoading" @click="onConfirmEditLimit">确定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -163,10 +163,15 @@
 export default {
   data () {
     return {
+      isAddLoading: false, // 添加角色加载中
+      isDeleteLoading: false, // 删除加载中
+      isEditLoading: false,
+      isLimitLoading: false, // 配置权限加载中
       defaultProps: {
         children: 'children',
         label: 'resourceName'
       },
+      limitRoleName: null, // 配置权限角色名称
       seeLimitObj: { A: [], B: [], C: [], D: [], E: [] },
       allLimitObj: { A: [], B: [], C: [], D: [], E: [] },
       defaultKeys: [], // 配置权限中默认选中的节点
@@ -478,12 +483,14 @@ export default {
         this.errorMsg = '必填项不能为空';
         return false;
       }
+      this.isEditLoading = true;
       this.axios.put('A2/authServices/userRole', this.editForm)
         .then(res => {
           if (res) {
             this.$message.success('修改成功');
             this.getRoleList();
             this.editFormVisible = false;
+            this.isEditLoading = false;
           }
         })
     },
@@ -508,11 +515,13 @@ export default {
         this.errorMsg = '此项内容不可为空';
         return;
       }
+      this.isAddLoading = true;
       this.axios.post('A2/authServices/userRole', this.addForm)
         .then((res) => {
           if (res) {
             this.$message.success('创建成功');
             this.dialogFormVisible = false;
+            this.isAddLoading = false;
             this.getRoleList();
           }
         })
@@ -523,17 +532,21 @@ export default {
       this.deleteId = obj.uid;
     },
     onConfirmDelete () { // 删除角色确认
-      this.axios.delete('A2/authServices/userRole/' + this.deleteId)
-        .then(res => {
-          if (res) {
-            this.$message.success('删除成功');
-            this.deleteRoleDialog = false;
-            this.getRoleList();
-          } else {
-            this.$message.error('删除失败，您暂无删除角色的权限');
-          }
-        })
-      this.deleteRoleDialog = false;
+      if (this.deleteId) {
+        this.isDeleteLoading = true;
+        this.axios.delete('A2/authServices/userRole/' + this.deleteId)
+          .then(res => {
+            if (res) {
+              this.$message.success('删除成功');
+              this.deleteRoleDialog = false;
+              this.getRoleList();
+            } else {
+              this.$message.error('删除失败，您暂无删除角色的权限');
+            }
+            this.isDeleteLoading = false;
+          })
+        this.deleteRoleDialog = false;
+      }
     },
     onGoEditLimitDialog () {
       this.seeLimitDialogVisible = false;
@@ -541,6 +554,7 @@ export default {
     },
     onEditLimit (obj) { // 配置权限
       let keysArr = [];
+      this.limitRoleName = obj.roleName;
       // this.defaultKeys = [];
       // if (!obj.roleAuthList) {
       //   obj.roleAuthList = [];
@@ -585,6 +599,7 @@ export default {
       this.editLimitDialogVisible = true;
     },
     onConfirmEditLimit () { // 配置权限确认
+      this.isLimitLoading = true;
       let arr = [];
       let addArr = [];
       let deleteArr = [];
@@ -632,8 +647,6 @@ export default {
           }
         }
       }
-      // console.log('d', deleteArr)
-      // console.log('a', addArr)
       let params = {
         uid: this.selectLimitItem.uid,
         authResourceList: []
@@ -657,10 +670,12 @@ export default {
               this.$message.success('配置成功');
               this.editLimitDialogVisible = false;
               this.getRoleList();
+              this.isLimitLoading = false;
             }
           })
       } else {
         this.editLimitDialogVisible = false;
+        this.isLimitLoading = false;
       }
     }
   }
@@ -813,6 +828,11 @@ export default {
     }
     .el-pagination {
       text-align: center;
+    }
+    .event-table {
+      img {
+        margin: 0 10px;
+      }
     }
   }
 </style>
