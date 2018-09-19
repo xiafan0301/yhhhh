@@ -18,7 +18,7 @@
           {{obj.warehouseId === item.warehouseId ?  item.warehouseName: ''}}
           </span>
         </li>
-        <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId }}</span></li>
+        <li><span class="title">创建用户</span><span class="content"> {{this.obj.createUserName }}</span></li>
         <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime | moment}}</span></li>
       </ul>
     </div>
@@ -66,6 +66,7 @@ export default {
       this.axios.get('A2/materialService/' + materialsId)
         .then((res) => {
           this.obj = res.data;
+          console.log(res)
         })
     },
     getTableDatack () {

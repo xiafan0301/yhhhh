@@ -35,12 +35,12 @@
         <li><span class="title">发布用户</span><span class="content">{{seeplanList.createRealName && seeplanList.createRealName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
-    <div style="margin-top: 21px" >
-      <el-button @click="back">取消</el-button>
+    <div style="margin-top: 21px; position: relative" >
+      <el-button @click="back" >取消</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
       <!--<el-button type="primary" @click="preview" >预览</el-button>-->
       <a target="_blank" :href="ajaxCtx2 + '/planServices/plans/preview/' + this.$route.query.planId">
-        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff">预览</el-button>
+        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff"> 预览</el-button>
       </a>
     </div>
   </div>
@@ -120,5 +120,11 @@ export default {
         display: inline-block;
       }
     }
+  }
+  .plan-bdg {
+    background: url(../../../../assets/img/temp/replan-checked.png)  no-repeat right  center;
+    display: inline-block;
+    width: 26px;
+    height: 28px;
   }
 </style>

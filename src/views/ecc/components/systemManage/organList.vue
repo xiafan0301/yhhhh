@@ -192,7 +192,7 @@ export default {
         .then(res => {
           if (res && res.data === true) {
             this.isShowError = true;
-            this.errorMsg = '该用户组已存在';
+            this.errorMsg = '该部门名称已存在';
           } else {
             this.isShowError = false;
             this.errorMsg = '';

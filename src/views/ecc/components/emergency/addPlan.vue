@@ -45,6 +45,7 @@
                        ref="upload"
                        :limit = "1"
                        :on-change = "aa"
+                       accept=".pdf,.doc,.txt,.docx"
                        :on-success="handSuccess"
                        :auto-upload="false"
                        :before-upload="handpreview">
@@ -333,6 +334,11 @@ export default {
     },
     handpreview (file) {
       this.form.attachmentName = file.name;
+      const isImg = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'text/plain' || file.type === 'application/msword' || file.type === 'application/pdf';
+      if (!isImg) {
+        this.$message.error('上传的文件只能是PDF、Word、txt格式!');
+      }
+      return isImg
     },
     aa (file) {
       this.placeholderStatus = '';

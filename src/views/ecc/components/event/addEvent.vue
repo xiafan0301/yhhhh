@@ -20,7 +20,7 @@
             <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
-            <el-input type="textarea" style='width: 500px' placeholder='请选择事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
+            <el-input type="textarea" style='width: 500px' placeholder='请输入事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
             <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item style='margin-left: 150px'>
@@ -71,7 +71,7 @@
               <el-radio label="有" style='margin-left:22%'></el-radio>
             </el-radio-group>
             <template v-if="addForm.casualties === '有'">
-              <el-input style='width: 150px;margin-left:-1%' placeholder='请输入死亡人数' v-model='dieNumber'></el-input>
+              <el-input style='width: 150px;margin-left:-1%' placeholder='请输入伤亡人数' v-model='dieNumber'></el-input>
               <span style='margin-left:1%'>人</span>
               <div class="el-form-item__error--inline el-form-item__error" v-show="isDieError">{{dieTip}}</div>
             </template>

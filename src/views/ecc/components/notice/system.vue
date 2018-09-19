@@ -32,7 +32,7 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.messageType" style="width: 140px;" placeholder="消息类型">
-            <el-option label="全部" value="39728bba-9b6f-11e8-8a14-3f814d634dc1,39728bba-9b6f-11e8-8a14-3f814d634dc3,39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
+            <el-option label="全部消息类型" value="39728bba-9b6f-11e8-8a14-3f814d634dc1,39728bba-9b6f-11e8-8a14-3f814d634dc3,39728bba-9b6f-11e8-8a14-3f814d634dc4" ></el-option>
             <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
             <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
             <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
@@ -61,22 +61,22 @@
       <el-table-column  label="序号" width="100"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.messageType" label="消息类型" min-width="140">
         <template slot-scope="scope">
-          <span style="color: #13ce66;" v-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc3'">APP应用升级</span>
-          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc4'">应急小秘书</span>
-          <span style="color: #999;" v-else >民众互助</span>
+          <span  v-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc3'">APP应用升级</span>
+          <span  v-else-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc4'">应急小秘书</span>
+          <span  v-else >民众互助</span>
         </template>
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="内容" min-width="100"></el-table-column>
-      <el-table-column prop="emiMessage.publishUser" label="发布用户" min-width="100">
+      <el-table-column prop="emiMessage.details" label="内容" min-width="180" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUnit" label="发布单位" min-width="100">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="120"></el-table-column>
+      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="120" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="120">
         <template slot-scope="scope">
-          <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState === 1">待发送</span>
-          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState === 2">发送成功</span>
-          <span style="color: #999;" v-else-if="scope.row.emiMessage.publishState === 3" >已撤销</span>
+          <span style="color: #1AAC19;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
+          <span style="color: #0785FD;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
+          <span style="color: #CCCCCC;" v-else-if="scope.row.emiMessage.publishState == 3" >已撤销</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -84,8 +84,9 @@
         width="150">
         <template slot-scope="scope">
           <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifysystem', scope.row.emiMessage)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifysystem', scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)"   v-if="scope.row.emiMessage.publishState === 3"/>
+          <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/>
           <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
           <!--<el-button type="text"  @click="modify('modifysystem', scope.row.emiMessage)">修改</el-button>-->
           <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
@@ -176,6 +177,22 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    Revoke (scope) {
+      let params = {
+        messageId: scope.messageId,
+        publishState: 3
+      };
+      this.axios.put('A2/messageService/updateOne', params)
+        .then((res) => {
+          if (res && res.data) {
+            this.$message.success('撤销成功');
+            this.getTableData();
+          } else {
+            this.$message.error('撤销失败');
+          }
+        })
+        .catch(() => {})
     },
     getTableData () {
       let params = {

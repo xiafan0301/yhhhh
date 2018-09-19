@@ -85,7 +85,7 @@ export const checkPwd = (rule, value, callback) => {
   if (value) {
     let reg = /^[a-zA-Z0-9]{6,32}$/;
     if (!reg.test(value)) {
-      callback(new Error('密码格式不正确'));
+      callback(new Error('密码为6-32个数字或英文字母组合'));
     } else {
       callback();
     }

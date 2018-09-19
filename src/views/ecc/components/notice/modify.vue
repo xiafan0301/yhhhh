@@ -9,8 +9,8 @@
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">
-      <el-form ref="form" :model="form" label-width="80px"  v-if="this.$route.query.status === 'modifyatgment'">
-        <el-form-item label="接收者">
+      <el-form ref="form" :model="form" label-width="80px"  v-if="this.$route.query.status === 'modifyatgment'"  :rules="rules" :inline-message="true">
+        <el-form-item label="接收者" prop="checkList">
           <div style="display: inline-block">
             <el-checkbox-group v-model="form.checkList">
               <el-checkbox label= 1>移动端</el-checkbox>
@@ -18,17 +18,23 @@
             </el-checkbox-group>
           </div>
           <div style="display: inline-block; margin-left: 20px;" >
-            <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2') " style="width: 170px">
+            <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2') "  multiple collapse-tags>
+              <el-option
+                v-for="item in DepartmentList"
+                :key="item.uid"
+                :label="item.organName"
+                :value="item.uid">
+              </el-option>
             </el-select>
           </div>
         </el-form-item>
-        <el-form-item label="主题">
+        <el-form-item label="主题" prop= "title">
           <el-input v-model="form.title" style="width: 500px"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop = "desc">
           <div style="width: 500px; position: relative">
-            <el-input type="textarea" v-model="form.desc" style="display: inline-block;"  :autosize="{ minRows: 5, maxRows: 7}" rows="7"></el-input>
-            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/100</span>
+            <el-input type="textarea" v-model="form.desc" style="display: inline-block;"  :autosize="{ minRows: 8, maxRows: 9}" ></el-input>
+            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/10000</span>
           </div>
         </el-form-item>
         <el-form-item  >
@@ -38,6 +44,7 @@
             accept=".png,.jpg,.bmp"
             :file-list="form.attachmentList"
             :before-upload='handleBeforeUpload'
+            :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success='handleSuccess'
             :limit='9'
@@ -45,8 +52,11 @@
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
             <span class='add-img-text'>添加图片</span>
           </el-upload>
+          <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+            <img  :src="dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
-        <el-form-item label="发送时间">
+        <el-form-item label="发送时间"  prop = 'time'>
           <el-radio-group v-model="form.time" style="width: 100%">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
@@ -64,24 +74,24 @@
           </el-radio-group>
         </el-form-item>
       </el-form>
-      <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'modifysystem'">
+      <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'modifysystem'" :rules="rule"  :inline-message="true">
         <el-form-item label="接收者">
           <el-checkbox label="移动端" name="type" v-model="form1.resource" disabled ></el-checkbox>
         </el-form-item>
-        <el-form-item label="类型">
+        <el-form-item label="类型" prop="type">
           <el-select v-model="form1.type" placeholder="系统消息" style="width: 500px">
             <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
             <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
             <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="内容">
-          <div style="width: 500px; position: relative">
-            <el-input type="textarea" v-model="form1.desc" style="display: inline-block;"  :autosize="{ minRows: 5, maxRows: 7}" rows="7"></el-input>
-            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/100</span>
+        <el-form-item label="内容" prop="desc">
+          <div style="position: relative; display: inline-block">
+            <el-input type="textarea" v-model="form1.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 8, maxRows: 9}" rows="7"></el-input>
+            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/10000</span>
           </div>
         </el-form-item>
-        <el-form-item label="发送时间">
+        <el-form-item label="发送时间" prop="time">
           <el-radio-group v-model="form1.time" style="width: 100%">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
@@ -101,8 +111,8 @@
       </el-form >
   </div>
     <div style="margin-top: 21px" >
-      <el-button >取消</el-button>
-      <el-button type="primary" @click="onSubmit" >确定</el-button>
+      <el-button  @click="back">取消</el-button>
+      <el-button type="primary" @click="onSubmit('form', 'form1')" >确定</el-button>
     </div>
   </div>
 </template>
@@ -111,6 +121,8 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       status: '',
       form: {
         publishTime: '',
@@ -129,13 +141,43 @@ export default {
         resource: true,
         desc: ''
       },
-      value: ''
+      value: [],
+      DepartmentList: [],
+      rules: {
+        checkList: [
+          {required: true, message: '请选择接收者'}
+        ],
+        title: [
+          { required: true, message: '请输入主题', trigger: 'blur' },
+          { max: 28, message: '最多可以输入28个字' }
+        ],
+        desc: [
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { max: 10000, message: '最多可以输入10000个字' }
+        ],
+        time: [
+          {required: true, message: '请选择发送时间'}
+        ]
+      },
+      rule: {
+        type: [
+          { required: true, message: '请选择消息类型' }
+        ],
+        desc: [
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { max: 10000, message: '最多可以输入10000个字' }
+        ],
+        time: [
+          {required: true, message: '请选择发送时间'}
+        ]
+      }
     }
   },
   computed: {
   },
   created () {
     this.getmessagedetial();
+    this.getDepartmentList();
   },
   mounted () {
     if (this.$route.query.status === 'modifyatgment') {
@@ -169,9 +211,9 @@ export default {
             }
             this.form.messageType = res.data.emiMessage.messageType;
             this.form.attachmentList = res.data.emiAttachments;
-            console.log(this.form.attachmentList);
-            console.log(res.data.emiMessage.attachmentList);
-            console.log(res)
+            res.data.receiveRelations && res.data.receiveRelations.map((item, index) => {
+              this.value.push(item.receiveUser);
+            });
           } else {
             if (res.data.emiMessage.publishTime === null) {
               this.form1.time = 1
@@ -184,51 +226,81 @@ export default {
           }
         })
     },
-    onSubmit () {
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            this.DepartmentList = res.data.list
+          }
+        })
+        .catch(() => {})
+    },
+    onSubmit (val, val1) {
       if (this.$route.query.status === 'modifyatgment') {
-        if (this.form.time === 1) {
-          this.form.publishTime = null
-        }
-        if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
-          this.form.terminal = 1
-        } else if (this.form.checkList[0] === '2' && this.form.checkList.length === 1) {
-          this.form.terminal = 2
-        } else if (this.form.checkList.length === 2) {
-          this.form.terminal = 3
-        } else if (this.form.checkList.length === 0) {
-          this.form.terminal = 4
-        }
-        console.log(this.form.publishTime);
-        let messageId = this.$route.query.messageId;
-        let params = {
-          messageId: messageId,
-          title: this.form.title,
-          details: this.form.desc,
-          messageType: this.form.messageType,
-          publishTime: this.form.publishTime,
-          terminal: this.form.terminal
-        };
-        this.axios.put('A2/messageService/updateOne', params)
-          .then((res) => {
-            this.$router.push({name: 'notice-atmanagementList'})
-          })
-          .catch(() => {
-          });
+        this.$refs[val].validate((valid) => {
+          if (valid) {
+            if (this.form.checkList[0] === '1' && this.form.checkList.length === 1) {
+              this.form.terminal = 1
+            } else if (this.form.checkList[0] === '2' && this.form.checkList.length === 1) {
+              this.form.terminal = 2
+            } else if (this.form.checkList.length === 2) {
+              this.form.terminal = 3
+            } else if (this.form.checkList.length === 0) {
+              this.form.terminal = 4
+            }
+            if (this.form.time === 1) {
+              this.form.publishTime = null;
+            }
+            let messageId = this.$route.query.messageId;
+            let params = {
+              messageId: messageId,
+              title: this.form.title,
+              details: this.form.desc,
+              messageType: this.form.messageType,
+              publishTime: this.form.publishTime,
+              terminal: this.form.terminal
+            };
+            if (this.form.time === 1) {
+              params.description = null
+            }
+            this.axios.put('A2/messageService/updateOne', params)
+              .then((res) => {
+                this.$router.push({name: 'notice-atmanagementList'})
+              })
+              .catch(() => {
+              });
+          } else {
+            return false;
+          }
+        });
       } else {
-        let messageId = this.$route.query.messageId;
-        let params = {
-          messageId: messageId,
-          details: this.form1.desc,
-          messageType: this.form1.type,
-          publishTime: this.form1.publishTime,
-          terminal: 1
-        };
-        this.axios.put('A2/messageService/updateOne', params)
-          .then((res) => {
-            this.$router.push({name: 'system'})
-          })
-          .catch(() => {
-          });
+        this.$refs[val1].validate((valid) => {
+          if (valid) {
+            let messageId = this.$route.query.messageId;
+            let params = {
+              messageId: messageId,
+              details: this.form1.desc,
+              messageType: this.form1.type,
+              publishTime: this.form1.publishTime,
+              terminal: 1
+            };
+            this.axios.put('A2/messageService/updateOne', params)
+              .then((res) => {
+                this.$router.push({name: 'system'})
+              })
+              .catch(() => {
+              });
+          } else {
+            return false;
+          }
+        });
+      }
+    },
+    back () {
+      if (this.$route.query.status === 'modifysystem') {
+        this.$router.push({name: 'system'})
+      } else {
+        this.$router.push({name: 'notice-atmanagementList'})
       }
     },
     handleSuccess (res, file) { // 图片上传成功
@@ -268,6 +340,10 @@ export default {
         this.$message.error('上传的图片大小不能超过10M');
       }
       return isImg && isLtTenM;
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     }
   }
 }
@@ -313,5 +389,23 @@ export default {
   /deep/ .el-upload-list--picture-card .el-upload-list__item {
     width: 100px !important;
     height: 100px !important;
+  }
+  /deep/ .el-dialog--center .el-dialog__body {
+    text-align: center !important;
+  }
+  /deep/ .el-dialog__header {
+    background: #F0F0F0 !important;
+    text-align: left !important;
+    color: #555555;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .img-dialog {
+    /deep/ .el-dialog__header {
+      padding: 40px 20px 10px;
+    }
+    /deep/  .el-dialog__body {
+      text-align: center !important;
+    }
   }
 </style>

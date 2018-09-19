@@ -127,7 +127,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="dataExtendList[0].valueContent" label="类型" ></el-table-column>
-        <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数(人)" ></el-table-column>
+        <el-table-column prop="dataExtendList[1].valueContent" label="工作人员数量(人)" ></el-table-column>
         <el-table-column prop="dataExtendList[2].valueContent" label="床位数(张)" ></el-table-column>
         <el-table-column prop="dataExtendList[3].valueContent" label="详细地址" ></el-table-column>
         <el-table-column label="操作" width="100">
@@ -645,7 +645,7 @@
           <el-form-item label="类型" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="工作人员数(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="工作人员数量(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form.teacher" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
@@ -684,9 +684,9 @@
       <!--块修改弹窗-->
       <el-dialog title="修改" :visible.sync="dialogFormVisible2" width="600px"  >
         <el-form :model="form2" ref ="form2" :rules="rule2" style="padding-right: 60px;">
-          <el-form-item label="镇名称" :label-width="formLabelWidth" prop="name">
-            <el-input v-model ="form2.name" auto-complete="off"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="镇名称" :label-width="formLabelWidth" prop="name">-->
+            <!--<el-input v-model ="form2.name" auto-complete="off"></el-input>-->
+          <!--</el-form-item>-->
           <el-form-item label="坐标" :label-width="formLabelWidth" prop="coordinate">
             <el-input v-model="form2.coordinate" auto-complete="off" style="width: 80%"></el-input>
             <i @click="selPosition" class="el-icon-location-outline" style="font-size: 24px; cursor: pointer; color: #409EFF; position: relative; top: 3px;"></i>
@@ -737,7 +737,7 @@
           <el-form-item label="类型" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.level" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="工作人员数(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
+          <el-form-item label="工作人员数量(人)" :label-width="formLabelWidth" prop="teacher" v-if="this.searchForm.dataTypeId == 'd60e1ff2-e6c0-4393-94c7-28bb9f118cce'">
             <el-input v-model="form1.teacher" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="级别" :label-width="formLabelWidth" prop="level" v-if="this.searchForm.dataTypeId == '739fe4f5-49c6-42ca-ba87-76f5300ab5af'">
@@ -1111,7 +1111,7 @@ export default {
           {
             valueContent: '',
             serialNumber: 1,
-            contentName: '工作人员数',
+            contentName: '工作人员数量',
             valueUnit: '人'
           },
           {
@@ -1431,7 +1431,7 @@ export default {
           }
         }
       } else if (this.dialogFormVisible) {
-        if (this.form.coordinate.split(',')[0] === 'null') {
+        if (this.form.coordinate === '') {
           this.oConfig = {};
         } else {
           this.oConfig = {
@@ -1564,6 +1564,9 @@ export default {
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.pople = this.obj.dataExtendList[0].valueContent;
       this.form.addrs = this.obj.dataExtendList[2].valueContent;
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     sure5 (form) {
       this.$refs[form].validate((valid) => {
@@ -1625,12 +1628,14 @@ export default {
         locationTag: scope.row.locationTag,
         longitude: scope.row.longitude
       };
-      console.log(scope);
       this.form.name = this.obj.locationName;
       this.form.level = this.obj.dataExtendList[0].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.pople = this.obj.dataExtendList[1].valueContent;
       this.form.addrs = this.obj.dataExtendList[2].valueContent;
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     surejy5 (form) {
       this.$refs[form].validate((valid) => {
@@ -1699,6 +1704,9 @@ export default {
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.pople = this.obj.dataExtendList[1].valueContent;
       this.form.addrs = this.obj.dataExtendList[2].valueContent;
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     surepk5 (form, scope) {
       this.$refs[form].validate((valid) => {
@@ -1780,7 +1788,9 @@ export default {
       this.form.teacher = this.obj.dataExtendList[1].valueContent;
       this.form.student = this.obj.dataExtendList[2].valueContent;
       this.form.addrs = this.obj.dataExtendList[3].valueContent;
-      console.log(this.obj)
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     sure6 (form) {
       this.$refs[form].validate((valid) => {
@@ -1840,6 +1850,9 @@ export default {
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.number = this.obj.dataExtendList[0].valueContent;
       this.form.addrs = this.obj.dataExtendList[1].valueContent;
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     sure4 (form) {
       this.$refs[form].validate((valid) => {
@@ -1889,6 +1902,9 @@ export default {
       this.form.name = this.obj.locationName;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.addrs = this.obj.dataExtendList[0].valueContent
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     sure3 (form) {
       this.$refs[form].validate((valid) => {
@@ -1936,6 +1952,9 @@ export default {
       this.form2.name = this.obj.locationName;
       this.form2.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form2.addrs = this.obj.dataExtendList[0].valueContent
+      if (this.form.coordinate === 'null,null') {
+        this.form.coordinate = ''
+      }
     },
     resetFormk (formRef) {
       if (this.$refs[formRef]) {
