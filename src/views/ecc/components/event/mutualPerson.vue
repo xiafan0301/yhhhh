@@ -19,7 +19,7 @@
             style="width: 100%;"
           ></el-date-picker>
         </el-form-item>
-        <el-form-item style="width: 150px;">
+        <el-form-item style="width: 150px;" prop='eventStatus'>
           <el-select placeholder="事件状态" style="width: 100%;" v-model='selectForm.eventStatus'>
             <el-option value='全部状态'></el-option>
             <el-option
@@ -91,7 +91,6 @@ export default {
     return {
       deleteVisiable: false,
       delEventId: '', // 要删除的eventid
-      // dictId: '',
       selectForm: {
         eventStatus: '4037156e-97b5-11e8-b784-93a0bc9b77e5',
         reportTime: []
@@ -133,10 +132,6 @@ export default {
         .then((res) => {
           if (res) {
             res.data.map((item) => {
-              // if (item.dictContent === '处理中') {
-              //   this.selectForm.eventStatus = item.dictId;
-              //   this.dictId = item.dictId;
-              // }
               if (item.dictContent !== '未处理') {
                 this.eventStatusList.push(item);
               }
@@ -183,9 +178,8 @@ export default {
     },
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
-      // this.selectForm.eventStatus = this.dictId;
       this.getOneMonth();
-      this.getAppEventList();
+      // this.getAppEventList();
     },
     showDelete (scope) { // 显示删除提示框
       this.delEventId = scope.row.eventId;

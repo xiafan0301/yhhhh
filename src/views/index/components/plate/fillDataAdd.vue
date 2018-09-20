@@ -1690,10 +1690,46 @@ export default {
           valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
           percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
         });
-        this.itemName = itemNameObj;
-        this.valueContent = valueContentObj;
-        this.valueUnit = valueUnitObj;
-        this.percentValueOne = percentValueOneObj;
+        for (let i in itemNameObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.itemName) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.itemName, j);
+            }
+          }
+        }
+        for (let i in valueContentObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.valueContent) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.valueContent, j);
+            }
+          }
+        }
+        for (let i in valueUnitObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.valueUnit) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.valueUnit, j);
+            }
+          }
+        }
+        for (let i in percentValueOneObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.percentValueOne) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.percentValueOne, j);
+            }
+          }
+        }
       }
     },
     deleteParentDataThree (name, idx) { // 类型三的删除主项
