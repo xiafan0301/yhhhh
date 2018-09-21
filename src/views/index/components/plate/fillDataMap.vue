@@ -294,7 +294,7 @@
             <p class="tip" style="color:red;">{{tip}}</p>
           </template>
         </div>
-        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按示例注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>

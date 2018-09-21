@@ -256,7 +256,6 @@ export default {
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
       this.getOneMonth();
-      // this.selectForm.eventStatus = this.dictId;
       this.getEventList();
     }
   }

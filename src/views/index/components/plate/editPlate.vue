@@ -266,7 +266,13 @@ export default {
       }
     }
     > .plate-ecl2-cr {
-      margin-left: 520px;
+      margin-left: 560px;
+      .remark-item {
+        width: 180px;
+        .el-form-item__content {
+          width: 60%;
+        }
+      }
     }
   }
   .ecl2-cr-list {

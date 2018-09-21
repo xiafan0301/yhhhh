@@ -12,7 +12,7 @@
           <el-form-item label="版块名称" prop='plateName'>
             <el-input v-model="dataForm.plateName" placeholder="必填" :maxlength='maxlength' @change='changePlateName($event)'></el-input>
           </el-form-item>
-          <el-form-item label="注释" prop='remark'>
+          <el-form-item label="注释" prop='remark' class="remark-item">
             <el-input v-model="dataForm.remark" placeholder="选填" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
@@ -674,7 +674,7 @@
             </template>
           </template>
         </div>
-        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按示例注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>
@@ -1690,10 +1690,46 @@ export default {
           valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
           percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
         });
-        this.itemName = itemNameObj;
-        this.valueContent = valueContentObj;
-        this.valueUnit = valueUnitObj;
-        this.percentValueOne = percentValueOneObj;
+        for (let i in itemNameObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.itemName) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.itemName, j);
+            }
+          }
+        }
+        for (let i in valueContentObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.valueContent) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.valueContent, j);
+            }
+          }
+        }
+        for (let i in valueUnitObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.valueUnit) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.valueUnit, j);
+            }
+          }
+        }
+        for (let i in percentValueOneObj) {
+          const str = i.split('_');
+          let str1;
+          for (let j in this.percentValueOne) {
+            str1 = j.split('_');
+            if (str[0] !== str1[0] && str[1] === str1[1]) {
+              this.$delete(this.percentValueOne, j);
+            }
+          }
+        }
       }
     },
     deleteParentDataThree (name, idx) { // 类型三的删除主项

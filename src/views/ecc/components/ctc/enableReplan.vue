@@ -86,7 +86,7 @@
             <div v-show='taskList.length > 0' class='divide'></div>
           </template>
           <div class='enable-replan-idea-body'>
-            <el-form class='enable-replan-idea-form' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
+            <el-form v-show="isShowTask" class='enable-replan-idea-form' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
               <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
                 <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 480px' v-model='taskForm.departmentId'>
                   <el-option
@@ -170,6 +170,7 @@
 export default {
   data () {
     return {
+      isShowTask: false, // 显示调度指挥表单
       isTaskLoading: false, // 调度指挥加载中
       eventDetailObj: {},
       dialogFormVisible: false,
@@ -319,21 +320,16 @@ export default {
       this.taskList.splice(index, 1);
     },
     addTask (form) { // 添加任务
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          const task = JSON.parse(JSON.stringify(this.taskForm));
-          this.taskList.push(task);
-          this.$refs[form].resetFields();
-          this.currentNum = 0;
-        }
-      });
+      this.isShowTask = true;
     },
     cancelForm (form) { // 取消填写的form
       this.$refs[form].resetFields();
+      this.isShowTask = false;
     },
     saveForm (form) { // 保存填写的form
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.isShowTask = false;
           const task = JSON.parse(JSON.stringify(this.taskForm));
           this.taskList.push(task);
           this.$refs[form].resetFields();

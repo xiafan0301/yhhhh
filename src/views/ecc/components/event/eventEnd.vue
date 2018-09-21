@@ -212,12 +212,11 @@ export default {
           this.axios.put('A2/eventServices/events/finish/' + eventId, data.eventFinishDto)
             .then((res) => {
               if (res) {
-                // console.log(res)
                 this.$message({
                   message: '宣布事件结束成功',
                   type: 'success'
                 });
-                this.$router.back(-1);
+                this.$router.push({name: 'event-list'});
               } else {
                 this.$message.error('宣布事件结束失败');
               }

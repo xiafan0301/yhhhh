@@ -1,5 +1,5 @@
 <template>
-  <div class='ctc-detail'>
+  <div class='ctc-details'>
     <div class='ctc-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
@@ -502,7 +502,7 @@ export default {
 }
 </script>
 <style lang='scss'>
-  .ctc-detail {
+  .ctc-details {
     padding: 20px;
     height: 100%;
     .ctc-detail-header {
@@ -645,7 +645,7 @@ export default {
                   .number-tip {
                     position: absolute;
                     bottom: 0;
-                    left: 450px;
+                    right: 22%;
                     color: #999999;
                     font-size: 13px;
                   }
