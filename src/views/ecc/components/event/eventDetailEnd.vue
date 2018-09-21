@@ -181,7 +181,10 @@
             <div class='flag'></div>
             <p class='event-summary-text'>事件总结</p>
           </div>
-          <div class='summary-content'>
+          <div style="margin-top:1%;" v-show="isSave">
+            <el-input type="textarea" rows="5" v-model="eventDetailObj.eventSummary"></el-input>
+          </div>
+          <div class='summary-content' v-show="!isSave">
             {{eventDetailObj.eventSummary}}
           </div>
         </div>

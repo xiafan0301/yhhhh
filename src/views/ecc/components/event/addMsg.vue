@@ -209,6 +209,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
+      console.log('file', file)
       if (file && file.response) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {

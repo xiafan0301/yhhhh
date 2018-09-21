@@ -183,7 +183,7 @@ export default {
         messageId: scope.messageId,
         publishState: 3
       };
-      this.axios.put('A2/messageService/updateOne', params)
+      this.axios.put('A2/messageService/update', params)
         .then((res) => {
           if (res && res.data) {
             this.$message.success('撤销成功');

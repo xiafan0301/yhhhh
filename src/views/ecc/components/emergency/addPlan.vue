@@ -1,5 +1,5 @@
 <template>
-  <div class="add-plan-person">
+  <div class="add-plans-person">
     <div class='add-msg-header'>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
@@ -37,7 +37,7 @@
           <el-form-item label="预案正文" label-width='150px' prop="planDetail" :rules="[ { required: true, message: '请输入预案正文', trigger: 'blur' }]">
             <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
-          <el-form-item label="附件" label-width='150px'>
+          <el-form-item label="附件" label-width='150px' style="position: relative">
             <el-input  style='width: 389px; position: relative;' class="xfinput" disabled  :placeholder='placeholderStatus'>
             </el-input>
             <el-upload style="display: inline-block"
@@ -77,9 +77,11 @@
                 </el-option>
               </el-select>
             </el-form-item>
+              <div style="margin:15px 0 15px 0">
               <el-form-item label="任务名称" label-position="left" :prop="'taskList.'+ index + '.taskName'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
                 <el-input style="width: 358px" placeholder='请输入任务名称' v-model="form.taskList[index].taskName" ></el-input>
               </el-form-item>
+              </div>
               <el-form-item label="任务内容" label-position="left" :prop="'taskList.'+ index + '.taskContent'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskList[index].taskContent"></el-input>
               </el-form-item>
@@ -232,7 +234,15 @@ export default {
             // // };
             this.axios.post('A2/planServices/plan', params)
               .then((res) => {
-                this.$router.push({name: 'emergency-planList'})
+                if (res) {
+                  this.$message({
+                    message: '添加消息成功',
+                    type: 'success'
+                  });
+                  this.$router.push({name: 'emergency-planList'})
+                } else {
+                  this.$message.error('添加消息失败');
+                }
               })
           } else {
             this.DepartmentList && this.DepartmentList.map((item, index) => {
@@ -272,7 +282,15 @@ export default {
             // };
             this.axios.put('A2/planServices/plans', params)
               .then((res) => {
-                this.$router.push({name: 'emergency-planList'})
+                if (res) {
+                  this.$message({
+                    message: '添加消息成功',
+                    type: 'success'
+                  });
+                  this.$router.push({name: 'emergency-planList'})
+                } else {
+                  this.$message.error('添加消息失败');
+                }
               })
           }
         } else {
@@ -355,8 +373,8 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .add-plan-person {
+<style lang="scss" scoped>
+  .add-plans-person {
     padding: 20px;
     .add-msg-header {
       margin-bottom: 20px;
@@ -370,13 +388,16 @@ export default {
           .el-form-item {
             margin-bottom: 15px;
           }
-          /deep/.el-upload-list{
+          /deep/ .el-upload-list{
             position: absolute;
             left: 71px;
             top: -2px;
             height: 40px;
             /deep/.el-upload-list__item{
               padding: 0;
+            }
+            /deep/ .el-upload-list__item-name {
+              max-width: 300px;
             }
           }
           .add-plan {
@@ -422,14 +443,14 @@ export default {
       }
     }
     .xfinput{
-      input{
+     /deep/ input{
         padding-left: 70px;
       }
     }
     .operation-btn-msg {
       margin-top: 2%;
     }
-    .el-upload--picture-card {
+    /deep/.el-upload--picture-card {
       width: 100px;
       height: 100px;
       line-height: 100px;
