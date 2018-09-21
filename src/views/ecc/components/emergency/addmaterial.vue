@@ -83,6 +83,7 @@ export default {
   mounted () {
     if (this.$route.query.status === 'add') {
       this.status = '添加物资'
+      this.form.warehouseId = this.$route.query.warehouseId
     } else if (this.$route.query.status === 'modify') {
       this.status = '修改物资'
     }
@@ -141,7 +142,7 @@ export default {
   }
 }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .add-plan-person {
     padding: 20px;
     .add-msg-header {

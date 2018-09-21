@@ -132,7 +132,8 @@ export default {
         time: '',
         title: '',
         messageType: '',
-        attachmentList: []
+        attachmentList: [],
+        receiveRelations: []
       },
       form1: {
         time: '',
@@ -251,17 +252,29 @@ export default {
             if (this.form.time === 1) {
               this.form.publishTime = null;
             }
+            this.value && this.value.map((item, index) => {
+              this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
+            });
+            if (this.form.attachmentList.length === 0) {
+              this.form.attachmentList = [];
+            }
             let messageId = this.$route.query.messageId;
             let params = {
-              messageId: messageId,
-              title: this.form.title,
-              details: this.form.desc,
-              messageType: this.form.messageType,
-              publishTime: this.form.publishTime,
-              terminal: this.form.terminal
+              emiMessage: {
+                messageId: messageId,
+                title: this.form.title,
+                details: this.form.desc,
+                messageType: this.form.messageType,
+                publishTime: this.form.publishTime,
+                terminal: this.form.terminal
+              },
+              receiveRelations: this.form.receiveRelations,
+              emiAttachments: this.form.attachmentList
             };
             if (this.form.time === 1) {
-              params.description = null
+              params.emiMessage.description = null
+            } else {
+              params.emiMessage.description = 1
             }
             this.axios.put('A2/messageService/updateOne', params)
               .then((res) => {
@@ -278,12 +291,17 @@ export default {
           if (valid) {
             let messageId = this.$route.query.messageId;
             let params = {
-              messageId: messageId,
-              details: this.form1.desc,
-              messageType: this.form1.type,
-              publishTime: this.form1.publishTime,
-              terminal: 1
+              emiMessage: {
+                messageId: messageId,
+                details: this.form1.desc,
+                messageType: this.form1.type,
+                publishTime: this.form1.publishTime,
+                terminal: 1
+              }
             };
+            if (this.form1.time === 2) {
+              params.emiMessage.description = 1;
+            }
             this.axios.put('A2/messageService/updateOne', params)
               .then((res) => {
                 this.$router.push({name: 'system'})
@@ -320,14 +338,14 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      if (file && file.response) {
-        if (this.form.attachmentList.length > 0) {
-          this.form.attachmentList.map((item, index) => {
-            if (item.url === file.response.data.newFileName) {
-              this.form.attachmentList.splice(index, 1);
-            }
-          });
-        }
+      console.log(file)
+      if (this.form.attachmentList.length > 0) {
+        this.form.attachmentList.map((item, index) => {
+          if (item.url === file.url) {
+            console.log('111111')
+            this.form.attachmentList.splice(index, 1);
+          }
+        });
       }
     },
     handleBeforeUpload (file) { // 图片上传之前

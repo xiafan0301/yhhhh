@@ -85,6 +85,7 @@
         width="150" align="center">
         <template slot-scope="scope">
           <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
+          <!--// v-if="scope.row.emiMessage.publishState === 3"-->
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"/>
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
           <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/>
@@ -183,7 +184,7 @@ export default {
         messageId: scope.messageId,
         publishState: 3
       };
-      this.axios.put('A2/messageService/updateOne', params)
+      this.axios.put('A2/messageService/update', params)
         .then((res) => {
           if (res && res.data) {
             this.$message.success('撤销成功');
