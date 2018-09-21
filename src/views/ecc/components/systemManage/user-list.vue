@@ -34,8 +34,7 @@
         width="50px"
         label="序号"
         align="center"
-        :show-overflow-tooltip="true"
-        :index="indexMethod"/>
+        :show-overflow-tooltip="true"/>
       <el-table-column
         prop="userMobile"
         label="账户名"
@@ -100,13 +99,15 @@
       </el-table-column>
       <el-table-column
         prop=""
+        type="index"
         label="操作"
         align="center"
         width="200px"
         class-name="operate">
-        <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEdit(scope.row)" />
-          <img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />
+        <template  slot-scope="scope" >
+          <!--<img :src="img2[scope.$index]" alt="" >-->
+          <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" >
+          <!--<img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />-->
           <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
           <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
           <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onForBidUser(scope.row)" >
@@ -141,7 +142,7 @@
         </div>
         <div class="right">
           <div class="title">可选组</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入组名" @input="onChangeallGroupsName"/>
           <el-checkbox-group v-model="checkInGroups" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allGroups" :key="index + 'groupa'" :label="item">{{item.groupName}}</el-checkbox>
           </el-checkbox-group>
@@ -166,7 +167,7 @@
         </div>
         <div class="right">
           <div class="title">可选角色</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入角色名" @input="onChangeRolesName"/>
           <el-checkbox-group v-model="checkInRoles" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allRoles" :key="index + 'rolea'" :label="item">{{item.roleName}}</el-checkbox>
           </el-checkbox-group>
@@ -302,7 +303,10 @@ export default {
         order: null
       },
       currentPage: 1,
-      closeShow: false
+      closeShow: false,
+      img1: require('../../../../assets/img/temp/edit.png'),
+      img2: [],
+      isShow: true
     }
   },
   created () {
@@ -311,6 +315,13 @@ export default {
     this.getProvince(); // 省份
   },
   methods: {
+    qq (scope) {
+      this.img2.push(require('../../../../assets/img/temp/edit-checked.png'));
+      this.isShow = false;
+    },
+    bb () {
+      this.img1 = require('../../../../assets/img/temp/edit.png')
+    },
     onCreateProject () {
       this.$router.push({name: 'user-create'});
     },
@@ -404,6 +415,37 @@ export default {
         })
       this.editGroupdialogVisible = true;
     },
+    onChangeallGroupsName (val) {
+      this.allGroups.forEach(aa => {
+        if (aa.groupName === val) {
+          this.allGroups = [{
+            uid: aa.uid,
+            groupName: aa.groupName
+          }]
+        }
+      });
+      if (val === '') {
+        this.allGroups = []
+        this.axios.get('A2/authServices/userGroups')
+          .then(res => {
+            if (res) {
+              this.selectGroups.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.groupName === bb.groupName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              res.data.list.forEach(zz => {
+                this.allGroups.push({
+                  uid: zz.uid,
+                  groupName: zz.groupName
+                })
+              })
+            }
+          })
+      }
+    },
     onEditRoles (obj) {
       this.roleUserId = obj.uid;
       this.selectRoles = [];
@@ -438,6 +480,41 @@ export default {
           }
         })
       this.newRoledialogVisible = true;
+    },
+    onChangeRolesName (val) {
+      console.log(val)
+      console.log(this.allRoles)
+      this.allRoles.forEach(aa => {
+        if (aa.roleName === val) {
+          this.allRoles = [{
+            uid: aa.uid,
+            roleName: aa.roleName
+          }]
+        }
+      });
+      console.log(this.allRoles)
+      if (val === '') {
+        this.allRoles = []
+        this.axios.get('A2/authServices/userRoles')
+          .then(res => {
+            if (res) {
+              this.selectRoles.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.roleName === bb.roleName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              console.log(res.data.list);
+              res.data.list.forEach(zz => {
+                this.allRoles.push({
+                  uid: zz.uid,
+                  roleName: zz.roleName
+                })
+              })
+            }
+          })
+      }
     },
     // 加入所选组
     onAddSelectGroup () {

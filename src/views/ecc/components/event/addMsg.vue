@@ -209,7 +209,7 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log('file',file)
+      console.log('file', file)
       if (file && file.response) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {
@@ -441,7 +441,7 @@ export default {
       font-weight: bold;
       font-size: 16px;
     }
-    /deep/  .el-dialog--center .el-dialog__body {
+    /deep/ .el-dialog--center .el-dialog__body {
       text-align: center !important;
     }
     .sureBtn {
@@ -460,7 +460,7 @@ export default {
       /deep/ .el-dialog__header {
         padding: 40px 20px 10px;
       }
-       /deep/  .el-dialog__body {
+       /deep/ .el-dialog__body {
         text-align: center !important;
       }
     }

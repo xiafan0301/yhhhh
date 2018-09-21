@@ -73,7 +73,7 @@
         <template slot-scope="scope">
           <img title="查看组成员" src="../../../../assets/img/temp/select.png" @click="onWatchNumber(scope.row)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditInfo(scope.row)" />
-          <img title="管理成员" src="../../../../assets/img/temp/password.png" @click="onAdminNumer(scope.row)" />
+          <img title="管理成员" src="../../../../assets/img/temp/managementMembers.png" @click="onAdminNumer(scope.row)" />
           <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
         </template>
@@ -165,7 +165,7 @@
         </div>
         <div class="right">
           <div class="title">可选成员</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入成员名"  @input="onChangeNumbersName"/>
           <el-checkbox-group v-model="checkInNumbers" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allNumbers" :key="index + 'rolea'" :label="item">{{item.userName}}</el-checkbox>
           </el-checkbox-group>
@@ -190,7 +190,7 @@
         </div>
         <div class="right">
           <div class="title">可选角色</div>
-          <el-input class="fuzzy" placeholder="请输入组名"/>
+          <el-input class="fuzzy" placeholder="请输入角色名"  @input="onChangeRolesName"/>
           <el-checkbox-group v-model="checkInRoles" class="middle" @change="onChange">
             <el-checkbox v-for="(item, index) in allRoles" :key="index + 'rolea'" :label="item">{{item.roleName}}</el-checkbox>
           </el-checkbox-group>
@@ -219,6 +219,7 @@
 export default {
   data () {
     return {
+      userName: '',
       selectForm: {
         organName: ''
       },
@@ -312,7 +313,7 @@ export default {
     onConfirmNewGroup () {
       if (!this.newGroupData.groupName) {
         this.isCurrentlyGroupName = true;
-        this.newGroupErrorMsg = '用户名不能为空';
+        this.newGroupErrorMsg = '用户组名称不能为空';
         return false;
       }
       this.axios.post('A2/authServices/userGroup', this.newGroupData)
@@ -395,7 +396,10 @@ export default {
           userName: item.userName
         })
       });
-      this.axios.get('A2/authServices/users')
+      let params = {
+        pageSize: 999999
+      };
+      this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {
             this.selectNumbers.forEach(aa => {
@@ -416,6 +420,42 @@ export default {
         })
         .catch(() => {});
       this.adminNumberdialogVisible = true;
+    },
+    onChangeNumbersName (val) {
+      this.allNumbers.forEach(aa => {
+        if (aa.userName === val) {
+          this.allNumbers = [{
+            uid: aa.uid,
+            userName: aa.userName
+          }]
+        }
+      });
+      if (val === '') {
+        this.allNumbers = []
+        let params = {
+          pageSize: 999999
+        };
+        this.axios.get('A2/authServices/users', {params})
+          .then(res => {
+            if (res) {
+              this.selectNumbers.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.userName === bb.userName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              console.log(res.data.list);
+              res.data.list.forEach(zz => {
+                this.allNumbers.push({
+                  uid: zz.uid,
+                  userName: zz.userName
+                })
+              })
+            }
+          })
+          .catch(() => {});
+      }
     },
     // 加入当前成员
     onAddSelectNumber () {
@@ -507,6 +547,41 @@ export default {
         })
         .catch(() => {});
       this.newRoledialogVisible = true;
+    },
+    onChangeRolesName (val) {
+      console.log(val)
+      console.log(this.allRoles)
+      this.allRoles.forEach(aa => {
+        if (aa.roleName === val) {
+          this.allRoles = [{
+            uid: aa.uid,
+            roleName: aa.roleName
+          }]
+        }
+      });
+      console.log(this.allRoles)
+      if (val === '') {
+        this.allRoles = []
+        this.axios.get('A2/authServices/userRoles')
+          .then(res => {
+            if (res) {
+              this.selectRoles.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.roleName === bb.roleName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+              console.log(res.data.list);
+              res.data.list.forEach(zz => {
+                this.allRoles.push({
+                  uid: zz.uid,
+                  roleName: zz.roleName
+                })
+              })
+            }
+          })
+      }
     },
     // 加入配置角色
     onAddSelectRole () {

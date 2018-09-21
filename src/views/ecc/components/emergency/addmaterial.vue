@@ -23,7 +23,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="所属仓库" label-width='150px' prop="warehouseId">
-            <el-select  placeholder="仓库名称A" style='width: 500px' v-model="form.warehouseId">
+            <el-select  placeholder="请选择仓库" style='width: 500px' v-model="form.warehouseId">
               <el-option
                 v-for="item in  tableDatack"
                 :key="item.warehouseId"
@@ -115,7 +115,13 @@ export default {
             let params = this.form;
             this.axios.post('A2/materialService', params)
               .then((res) => {
-                this.$router.push({name: 'emergency-materialList'});
+                if (res === undefined) {
+                  this.$message.error('已存在同名记录');
+                }
+                if (res && res.data) {
+                  console.log(res)
+                  this.$router.push({name: 'emergency-materialList'});
+                }
               })
           } else {
             let params = this.form;

@@ -15,7 +15,7 @@
         <li><span class="title" style="vertical-align: top">预案正文</span>
           <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
-        <li><span class="title">附件</span><a class="content" href="seeplanList.url" style="color:#0785FD"> {{seeplanList.attachmentName}}</a></li>
+        <li><span class="title">附件</span><a class="content" :href="seeplanList.url" style="color:#0785FD;text-decoration:none;"> {{seeplanList.attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium">下载</el-button></a></li>
         <li><span class="title">响应处置</span>
         <div style="margin-left: 118px; padding-bottom: 20px" v-for="(item, index) in seeplanList.taskList" :key="'faw'+index">
           <ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">
@@ -32,26 +32,28 @@
             <!--</ul >-->
           <!--</div>-->
       </li>
-        <li><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
+        <li><span class="title">发布用户</span><span class="content">{{seeplanList.createRealName && seeplanList.createRealName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
-    <div style="margin-top: 21px" >
-      <el-button @click="back">取消</el-button>
+    <div style="margin-top: 21px; position: relative" >
+      <el-button @click="back" >取消</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
       <!--<el-button type="primary" @click="preview" >预览</el-button>-->
-      <a target="_blank" :href="'http://10.16.3.43:8080/api/emi/planServices/plans/preview/' + this.$route.query.planId">
-        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff">预览</el-button>
+      <a target="_blank" :href="ajaxCtx2 + '/planServices/plans/preview/' + this.$route.query.planId">
+        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff"> 预览</el-button>
       </a>
     </div>
   </div>
 </template>
 <script>
+import {ajaxCtx2} from '@/config/config.js';
 export default {
   data () {
     return {
       seeplanList: {},
       tasklist: [{taskName: ''}],
-      taskName: ''
+      taskName: '',
+      ajaxCtx2: ''
     }
   },
   computed: {
@@ -60,6 +62,7 @@ export default {
     this.getplans()
   },
   mounted () {
+    this.ajaxCtx2 = ajaxCtx2
   },
   methods: {
     getplans () {
@@ -117,5 +120,11 @@ export default {
         display: inline-block;
       }
     }
+  }
+  .plan-bdg {
+    background: url(../../../../assets/img/temp/replan-checked.png)  no-repeat right  center;
+    display: inline-block;
+    width: 26px;
+    height: 28px;
   }
 </style>

@@ -68,12 +68,24 @@ export const checkTel = (rule, value, callback) => {
   }
   callback()
 }
+// 电话手机号码验证
+export const checkZel = (rule, value, callback) => {
+  if (value) {
+    let reg = /^(\d{8}|\d{11})$/;
+    if (!reg.test(value)) {
+      callback(new Error('手机格式不正确'));
+    } else {
+      callback();
+    }
+  }
+  callback()
+}
 // 密码验证
 export const checkPwd = (rule, value, callback) => {
   if (value) {
     let reg = /^[a-zA-Z0-9]{6,32}$/;
     if (!reg.test(value)) {
-      callback(new Error('密码格式不正确'));
+      callback(new Error('密码为6-32个数字或英文字母组合'));
     } else {
       callback();
     }
@@ -85,7 +97,7 @@ export const checkPwd = (rule, value, callback) => {
  */
 export const checkEmail = (rule, value, callback) => {
   if (value) {
-    let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    let reg = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/;
     if (!reg.test(value)) {
       callback(new Error('邮箱格式填写错误'));
     } else {

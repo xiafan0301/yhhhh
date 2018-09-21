@@ -9,10 +9,9 @@
     <div style="display: flex;">
     <div style=" width: 21%;background-color: #FAFAFA" class="warehouse">
       <div style="padding:20px 10px; box-sizing: border-box" class="clearfix">
-        <span class="doubt" style="display: inline-block; margin-top: 8px;color:#fff; margin-right: 5px">?</span>
-        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #555555; font-weight:bold" >仓库名称</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
+        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
-        <div @click="registrationChoice(0)" :class="{active: visitType === 0}" style="padding-bottom: 40px"> 所有仓库</div>
+        <div @click="registrationChoice(0)"  style="padding:20px 20px 20px 15px; background-color: #fff; border-bottom: 1px solid #EAEAEA"> 所有仓库</div>
         <div>
           <!--<ul style="width: 100%">-->
             <!--<li v-for="(item, index) in tableDatack" :key="index"  @click="registrationChoice(index + 1)" :class="{active: visitType === index + 1}"><span>{{item.warehouseName}}</span>-->
@@ -35,6 +34,7 @@
             :row-class-name="bb"
             @row-click="rowclick"
             :data="tableDatack"
+            empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
             <el-table-column
               prop="warehouseName" >
@@ -51,7 +51,7 @@
                     </div>
                     <el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>
                   </div>
-                <i class="icon iconfont" style="color: #0785FD; cursor: pointer;" slot="reference">&#xe601;</i>
+                <i class="icon iconfont anbutton" style="cursor: pointer;" slot="reference">&#xe6f4;</i>
                 </el-popover>
               </template>
             </el-table-column>
@@ -84,15 +84,24 @@
       <el-table-column prop="measurementUnit" label="单位" ></el-table-column>
       <el-table-column prop="warehouseName" label="所属仓库" >
         <template slot-scope="scope">
-          <span v-for="(item, index) in tableDatack" :key="index">{{scope.row.warehouseId === item.warehouseId ?  item.warehouseName: ''}}</span>
+          <el-popover placement="bottom" v-for="(item, index) in tableDatack" :key="index" effect="light"  trigger="hover">
+            <div>
+              <div style="padding-bottom: 15px"><span style="color: #555555; font-size: 14px; font-weight: bold">负责人：</span>{{scope.row.warehouseId === item.warehouseId ? item.administrators : ''}}</div>
+              <div><span style="color: #555555; font-size: 14px; font-weight: bold">电话：</span>{{scope.row.warehouseId === item.warehouseId ? item.adminTel : ''}}</div>
+            </div>
+          <span style="cursor: pointer" slot="reference">{{scope.row.warehouseId === item.warehouseId ?  (item.warehouseName).slice(0,30): ''}}</span>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>
-          <el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>
-          <el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>
+          <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="addmodify('modify',scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" />
+          <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
+          <!--<el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>-->
+          <!--<el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -177,7 +186,7 @@ export default {
       this.axios.get('A2/warehouseService/page', params)
         .then((res) => {
           this.tableDatack = res.data.list;
-          list = res.data.list;
+          console.log(res)
           // this.tableDatack && this.tableDatack.map((item, index) => {
           //   this.tableData && this.tableData.map((ite, inde) => {
           //     if (item.warehouseId === ite.warehouseId) {
@@ -192,11 +201,8 @@ export default {
     },
     // 状态切换
     registrationChoice (type) {
-      this.visitType = type;
-      if (type === 0) {
-        this.searchForm.warehouseId = ''
-        this.getTableData()
-      }
+      this.searchForm.warehouseId = '';
+      this.getTableData();
       if (type === 1) {
       }
       if (type === 2) {
@@ -270,10 +276,14 @@ export default {
       this.$router.push({name: 'emergency-seeWarehouse', query: {status: status, warehouseId: scope.warehouseId}});
     },
     addmodify (status, scope) {
-      if (status === 'add') {
-        this.$router.push({name: 'emergency-addMaterial', query: {status: status}});
+      if (this.tableDatack.length > 0) {
+        if (status === 'add') {
+          this.$router.push({name: 'emergency-addMaterial', query: {status: status}});
+        } else {
+          this.$router.push({name: 'emergency-addMaterial', query: {status: status, materialsId: scope.materialsId}});
+        }
       } else {
-        this.$router.push({name: 'emergency-addMaterial', query: {status: status, materialsId: scope.materialsId}});
+        this.$message.error('请先添加仓库');
       }
     },
     see (scope) {
@@ -312,11 +322,6 @@ export default {
     height: 100%;
     .warehouse{
       margin-right: 2%;
-      .doubt{
-        display: inline-block; width: 20px; height: 20px;border-radius:50%; background-color:#0785FD; vertical-align: middle;
-        text-align: center;
-        float: left;
-      }
       .el-table /deep/ .el-table__header .has-gutter{
           display: none !important;
         }
@@ -338,6 +343,11 @@ export default {
           position: absolute;
           right: -6px;
           top: 50%;
+        }
+      }
+      .anbutton{
+        &:hover {
+          color: #0785FD;
         }
       }
     }

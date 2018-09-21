@@ -31,7 +31,7 @@
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
+          <el-select v-model="searchForm.receiverId" style="width: 140px;" placeholder="发布单位">
             <el-option
               v-for="item in DepartmentList"
               :key="item.uid"
@@ -51,27 +51,33 @@
       style="width: 100%">
       <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
       <el-table-column  label="序号" width="60"  type="index"></el-table-column>
-      <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center">
+      <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center"  :show-overflow-tooltip="true">
+        <!--<template slot-scope="scope">-->
+          <!--&lt;!&ndash;{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length}}&ndash;&gt;-->
+          <!--<div>{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length > 20 ? (scope.row.emiMessage.title).slice(0,20) + '....': scope.row.emiMessage.title }}</div>-->
+        <!--</template>-->
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要"  min-width="200" align="center"></el-table-column>
+      <el-table-column prop="emiMessage.details" label="摘要"  min-width="150" align="center"  :show-overflow-tooltip="true">
+        <!--<template slot-scope="scope">-->
+          <!--&lt;!&ndash;<div>{{scope.row.emiMessage.details.length > 20 ? (scope.row.emiMessage.details).slice(0,20) + '....': scope.row.emiMessage.details }}</div>&ndash;&gt;-->
+        <!--</template>-->
+      </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center">
         <template slot-scope="scope">
-          <span style="color: #13ce66;" v-if="scope.row.emiMessage.terminal == 1">移动端</span>
-          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.terminal == 2">PC端</span>
-          <span style="color: #13ce66;" v-else-if ="scope.row.emiMessage.terminal == 3">APP端，Web端</span>
-          <span style="color: #999;" v-else >不发送</span>
+          <div  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</div>
+          <div v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}</div>
         </template>
       </el-table-column>
       <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
       </el-table-column>
       <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100" align="center"></el-table-column>
+      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100" align="center">
         <template slot-scope="scope">
-          <span style="color: #13ce66;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
-          <span style="color: #ff4949;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
-          <span style="color: #999;" v-else-if="scope.row.emiMessage.publishState == 3" >已撤销</span>
+          <span style="color: #1AAC19;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
+          <span style="color: #0785FD;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
+          <span style="color: #CCCCCC;" v-else-if="scope.row.emiMessage.publishState == 3" >已撤销</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -79,12 +85,13 @@
         width="150" align="center">
         <template slot-scope="scope">
           <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" />
+          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"/>
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
+          <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/>
           <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
           <!--<el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>-->
           <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
-        </template>
+          </template>
       </el-table-column>
     </el-table>
     <div class="bg-plan-tbp">
@@ -109,7 +116,7 @@ export default {
         publishState: '',
         messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
         publishUnitId: '',
-        receiverId: '',
+        receiverId: null,
         isReceive: '',
         publishTime: ''
       },
@@ -144,6 +151,9 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
+      if (this.searchForm.receiverId) {
+        params['where.receiverId'] = this.searchForm.receiverId
+      }
       this.axios.get('A2/messageService/page?' + $.param(params))
         .then((res) => {
           console.log(res);
@@ -168,9 +178,26 @@ export default {
     doSearch () {
       this.getTableData();
     },
+    Revoke (scope) {
+      let params = {
+        messageId: scope.messageId,
+        publishState: 3
+      };
+      this.axios.put('A2/messageService/updateOne', params)
+        .then((res) => {
+          if (res && res.data) {
+            this.$message.success('撤销成功');
+            this.getTableData();
+          } else {
+            this.$message.error('撤销失败');
+          }
+        })
+        .catch(() => {})
+    },
     searchFormReset () {
       this.searchForm.publishTime = '';
       this.searchForm.publishState = '';
+      this.searchForm.receiverId = '';
       this.getTableData();
     },
     del (scope) {
@@ -242,7 +269,7 @@ export default {
       text-align: center;
     }
     .el-date-editor /deep/.el-range-separator{
-      width: 13%!important;
+      width: 15%!important;
     }
   }
 </style>

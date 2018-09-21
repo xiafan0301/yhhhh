@@ -82,7 +82,7 @@ export default {
         ],
         confirmPwd: [
           {required: true, message: '确认密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 32, message: '密码长度6-32位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 32, message: '密码为6-32个数字或英文字母组合', trigger: 'blur'},
           {validator: validatePassCheck, trigger: 'blur'}
         ]
       }

@@ -8,6 +8,7 @@ import main from '@/components/main.vue'
 // page
 import data from '@/views/index/components/data/data.vue'
 import page from '@/views/index/components/page/page.vue'
+import zx from '@/views/index/components/data/zx-Image-view.vue'
 // plate
 import plate from '@/views/index/components/plate/plate.vue'
 import plateList from '@/views/index/components/plate/list.vue'
@@ -35,6 +36,7 @@ export default new Router({
         {path: '', redirect: {name: 'page'}},
         {path: 'data', name: 'data', component: data},
         {path: 'page', name: 'page', component: page},
+        {path: 'zx', name: 'zx', component: zx},
         {
           path: 'plate',
           component: plate,

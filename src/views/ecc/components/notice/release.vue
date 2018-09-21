@@ -19,7 +19,7 @@
               </el-checkbox-group>
              </div>
             <div style="display: inline-block; margin-left: 20px;" >
-              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2') " style="width: 170px" multiple collapse-tags>
+              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2')"  multiple collapse-tags>
                 <el-option
                   v-for="item in DepartmentList"
                   :key="item.uid"
@@ -35,7 +35,7 @@
         <el-form-item label="内容" prop = "desc">
           <div style=" position: relative; display: inline-block ">
           <el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 5, maxRows: 7}" rows="7"></el-input>
-            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/100</span>
+            <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/10000</span>
           </div>
         </el-form-item>
         <el-form-item>
@@ -44,6 +44,7 @@
             list-type="picture-card"
             accept=".png,.jpg,.bmp"
             :before-upload='handleBeforeUpload'
+            :on-preview="handlePictureCardPreview"
             :on-remove="handleRemove"
             :on-success='handleSuccess'
             :limit='9'
@@ -51,6 +52,9 @@
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
             <span class='add-img-text'>添加图片</span>
           </el-upload>
+          <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+            <img :src="dialogImageUrl" alt="">
+          </el-dialog>
         </el-form-item>
         <el-form-item label="发送时间" prop = 'time'>
           <el-radio-group v-model="form.time">
@@ -84,7 +88,7 @@
         <el-form-item label="内容" prop="desc">
           <div style="position: relative; display: inline-block">
           <el-input type="textarea" v-model="form1.desc" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 8}" rows="7"></el-input>
-          <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/100</span>
+          <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/10000</span>
           </div>
         </el-form-item>
         <el-form-item label="发送时间" prop="time">
@@ -118,6 +122,8 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       status: '',
       form: {
         publishTime: '',
@@ -127,7 +133,8 @@ export default {
         time: '',
         title: '',
         attachmentList: [],
-        receiveRelations: []
+        receiveRelations: [],
+        description: null
       },
       form1: {
         publishTime: '',
@@ -140,10 +147,12 @@ export default {
       DepartmentList: [],
       rules: {
         title: [
-          { required: true, message: '请输入主题', trigger: 'blur' }
+          { required: true, message: '请输入主题', trigger: 'blur' },
+          { max: 28, message: '最多可以输入28个字' }
         ],
         desc: [
-          { required: true, message: '请输入内容', trigger: 'blur' }
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { max: 10000, message: '最多可以输入10000个字' }
         ],
         time: [
           {required: true, message: '请选择发送时间'}
@@ -154,7 +163,8 @@ export default {
           { required: true, message: '请选择消息类型' }
         ],
         desc: [
-          { required: true, message: '请输入内容', trigger: 'blur' }
+          { required: true, message: '请输入内容', trigger: 'blur' },
+          { max: 10000, message: '最多可以输入10000个字' }
         ],
         time: [
           {required: true, message: '请选择发送时间'}
@@ -187,6 +197,10 @@ export default {
                 publishTime: this.form1.publishTime
               }
             };
+            if (this.form1.publishTime) {
+              params.emiMessage.description = 1;
+              params.emiMessage.publishState = 1
+            }
             this.axios.post('A2/messageService', params)
               .then((res) => {
                 this.$router.push({name: 'system'})
@@ -210,31 +224,30 @@ export default {
             if (this.form.attachmentList.length === 0) {
               this.form.attachmentList = null;
             }
-            // if (this.value === '') {
-            //   this.value = null
-            // }
+            if (this.form.publishTime) {
+              this.form.description = 1
+            }
             this.value && this.value.map((item, index) => {
-              this.form.receiveRelations.push({receiveUser: item})
-              console.log(this.form.receiveRelations)
-              console.log(1)
+              this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
             });
+            if (this.form.receiveRelations.length === 0) {
+              this.form.receiveRelations = null;
+            }
             let params = {
               emiMessage: {
                 details: this.form.desc,
                 messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
                 terminal: this.form.terminal,
                 title: this.form.title,
-                publishTime: this.form.publishTime
+                publishTime: this.form.publishTime,
+                description: this.form.description
               },
               emiAttachments: this.form.attachmentList,
               receiveRelations: this.form.receiveRelations
-              // receiveRelations: [
-              //   {
-              //     messageId: 'string',
-              //     receiveUser: ''
-              //   }
-              // ]
             };
+            if (this.form.description === 1) {
+              params.emiMessage.publishState = 1
+            }
             this.axios.post('A2/messageService', params)
               .then((res) => {
                 this.$router.push({name: 'notice-atmanagementList'})
@@ -255,6 +268,11 @@ export default {
         .catch(() => {})
     },
     back () {
+      if (this.$route.query.status === 'system') {
+        this.$router.push({name: 'system'})
+      } else {
+        this.$router.push({name: 'notice-atmanagementList'})
+      }
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
@@ -293,6 +311,10 @@ export default {
         this.$message.error('上传的图片大小不能超过10M');
       }
       return isImg && isLtTenM;
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     }
   }
 }
@@ -334,8 +356,26 @@ export default {
         left: 25%;
       }
     }
-    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+    /deep/  .el-upload-list--picture-card  .el-upload-list__item {
       width: 100px !important;
       height: 100px !important;
     }
+  /deep/ .el-dialog--center .el-dialog__body {
+    text-align: center !important;
+  }
+  /deep/ .el-dialog__header {
+    background: #F0F0F0 !important;
+    text-align: left !important;
+    color: #555555;
+    font-weight: bold;
+    font-size: 16px;
+  }
+  .img-dialog {
+    /deep/ .el-dialog__header {
+      padding: 40px 20px 10px;
+    }
+    /deep/  .el-dialog__body {
+      text-align: center !important;
+    }
+  }
 </style>

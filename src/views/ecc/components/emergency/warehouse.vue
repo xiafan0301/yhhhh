@@ -20,8 +20,13 @@
             <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="上报单位" label-width='150px' >
-            <el-select  placeholder="请选择APP用户" style='width: 500px' v-model="form.reportingUnit">
-              <el-option label="联动单位" value="shanghai"></el-option>
+            <el-select  placeholder="请选择上报单位" style='width: 500px' v-model="form.reportingUnit">
+              <el-option
+                v-for="item in DepartmentList"
+                :key="item.uid"
+                :label="item.organName"
+                :value="item.uid">
+              </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="负责人" label-width='150px' prop="administrators">
@@ -36,7 +41,7 @@
       </div>
       <div class='operation-btn-msg' >
         <el-button @click="cancel">取消</el-button>
-        <el-button type="primary" @click="onSubmit('form')" >确定</el-button>
+        <el-button type="primary"  :loading="addLoading" @click="onSubmit('form')" >确定</el-button>
       </div>
     </div>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
@@ -44,11 +49,12 @@
 </template>
 <script>
 import mapPoint from '@/components/common/mapPoint.vue';
-import {valiPhone} from '@/utils/validator.js';
+import { checkZel } from '@/utils/validator.js';
 export default {
   components: {mapPoint},
   data () {
     return {
+      addLoading: false,
       open: false,
       oConfig: {},
       status: '',
@@ -56,11 +62,12 @@ export default {
         adminTel: '',
         administrators: '',
         coordinate: '',
-        reportingUnit: '1f1a9b3e-ddc3-4def-9825-aaa4c1f53458',
+        reportingUnit: '',
         warehouseAddress: '',
         warehouseId: '',
         warehouseName: ''
       },
+      DepartmentList: [],
       rule: {
         warehouseName: [
           { required: true, message: '请输入仓库名称', trigger: 'blur' }
@@ -73,7 +80,7 @@ export default {
         ],
         adminTel: [
           { required: true, message: '请输入联系电话', trigger: 'blur' },
-          { validator: valiPhone, trigger: 'blur' }
+          { validator: checkZel, trigger: 'blur' }
         ]
       }
     }
@@ -82,6 +89,7 @@ export default {
     if (this.$route.query.status === 'modify') {
       this.getmaterialck()
     }
+    this.getDepartmentList();
   },
   computed: {
   },
@@ -109,6 +117,15 @@ export default {
         this.form.warehouseAddress = address
       }
     },
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
+        .then((res) => {
+          if (res && res.data.list) {
+            this.DepartmentList = res.data.list
+          }
+        })
+        .catch(() => {})
+    },
     getmaterialck () {
       const warehouseId = this.$route.query.warehouseId;
       this.axios.get('A2/warehouseService/' + warehouseId)
@@ -122,21 +139,23 @@ export default {
         if (valid) {
           if (this.$route.query.status === 'add') {
             let params = this.form;
+            this.addLoading = true
             params.longitude = this.form.coordinate.split(',')[0];
             params.latitude = this.form.coordinate.split(',')[1];
             console.log(params);
             this.axios.post('A2/warehouseService', params)
               .then((res) => {
-                console.log(res);
+                this.addLoading = false
                 this.$router.push({name: 'emergency-materialList'});
               })
           } else {
             let params = this.form;
             params.longitude = this.form.coordinate.split(',')[0];
             params.latitude = this.form.coordinate.split(',')[1];
+            this.addLoading = true
             this.axios.put('A2/warehouseService/updateOne', params)
               .then((res) => {
-                console.log(res);
+                this.addLoading = false
                 this.$router.push({name: 'emergency-materialList'});
               })
           }

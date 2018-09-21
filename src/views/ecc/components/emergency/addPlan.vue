@@ -38,18 +38,24 @@
             <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
           </el-form-item>
           <el-form-item label="附件" label-width='150px'>
-            <el-input  style='width: 389px; position: relative;'  v-model="form.attachmentName" class="xfinput" disabled  placeholder='未选择文件'>
+            <el-input  style='width: 389px; position: relative;' class="xfinput" disabled  :placeholder='placeholderStatus'>
             </el-input>
             <el-upload style="display: inline-block"
                        action="http://10.16.4.50:8001/api/network/upload/new"
                        ref="upload"
+                       :limit = "1"
+                       :on-change = "aa"
+                       accept=".pdf,.doc,.txt,.docx"
                        :on-success="handSuccess"
-                       :show-file-list ="false"
+                       :auto-upload="false"
                        :before-upload="handpreview">
               <el-button  type="primary" size="mini" style="position: absolute; left: 5px; top: 6px; background-color: #FAFAFA; border: 1px solid #EAEAEA"  >
               <span style="font-size:12px;color:#555555">浏览..</span></el-button>
             </el-upload>
-            <el-button type="primary" size="medium"  @click="submitUpload">上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if="status === '添加预案'">上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "form.attachmentName && status === '修改预案'">重新上传</el-button>
+            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "!form.attachmentName && status === '修改预案'">上传</el-button>
+            <span style="font-size: 14px; font-weight: 400; color: #0785FD">支持PDF、word、txt文档</span>
           </el-form-item>
             <!--<div style="background-color: #FAFAFA; margin-left: 150px;width: 500px; margin-bottom: 20px"  v-for="(item, index) in staskList" :key="'fawe' + index">-->
               <!--<ul>-->
@@ -64,10 +70,10 @@
               <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change" >
                 <el-option
                   :disabled="item.disabled"
-                  v-for="item in  departmentsList"
-                  :key="item.departmentId"
-                  :label="item.departmentName"
-                  :value="item.departmentId">
+                  v-for="item in DepartmentList"
+                  :key="item.uid"
+                  :label="item.organName"
+                  :value="item.uid">
                 </el-option>
               </el-select>
             </el-form-item>
@@ -109,6 +115,7 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      placeholderStatus: '未选择文件',
       staskList: [],
       status: '',
       form: {
@@ -152,7 +159,7 @@ export default {
       },
       eventTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
-      departmentsList: []
+      DepartmentList: []
     }
   },
   computed: {
@@ -160,10 +167,10 @@ export default {
   created () {
     this.getEventLevel();
     this.getEventType();
-    this.getdepartments();
     if (this.$route.query.status === 'modify') {
       this.getplans()
     }
+    this.getDepartmentList();
   },
   mounted () {
     if (this.$route.query.status === 'add') {
@@ -177,14 +184,13 @@ export default {
       this.form.taskList.splice(index, 1)
     },
     change (val) {
-      this.departmentsList && this.departmentsList.map((item, index) => {
-        if (item.departmentId === val) {
-          this.departmentsList[index].disabled = true;
+      this.DepartmentList && this.DepartmentList.map((item, index) => {
+        if (item.uid === val) {
+          this.DepartmentList[index].disabled = true;
         } else {
-          this.departmentsList[index].disabled = false;
+          this.DepartmentList[index].disabled = false;
         }
       });
-      console.log(this.departmentsList)
     },
     addPlan () {
       this.form.taskList.push({departmentName: '',
@@ -199,10 +205,10 @@ export default {
       this.$refs[form].validate((valid) => {
         if (valid) {
           if (this.$route.query.status === 'add') {
-            this.departmentsList && this.departmentsList.map((item, index) => {
+            this.DepartmentList && this.DepartmentList.map((item, index) => {
               this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.departmentId === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.departmentName;
+                if (item.uid === ite.departmentId) {
+                  this.form.taskList[ind].departmentName = item.organName;
                 }
               });
             });
@@ -229,10 +235,10 @@ export default {
                 this.$router.push({name: 'emergency-planList'})
               })
           } else {
-            this.departmentsList && this.departmentsList.map((item, index) => {
+            this.DepartmentList && this.DepartmentList.map((item, index) => {
               this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.departmentId === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.departmentName;
+                if (item.uid === ite.departmentId) {
+                  this.form.taskList[ind].departmentName = item.organName;
                 }
               });
             });
@@ -292,11 +298,15 @@ export default {
           this.eventTypeList = res.data;
         })
     },
-    getdepartments () {
-      this.axios.get('A2/departmentServices/departments')
+    getDepartmentList () {
+      this.axios.get('A3/authServices/organInfos')
         .then((res) => {
-          this.departmentsList = res.data;
+          if (res && res.data.list) {
+            console.log(res)
+            this.DepartmentList = res.data.list
+          }
         })
+        .catch(() => {})
     },
     getplans () {
       const planId = this.$route.query.planId;
@@ -304,6 +314,7 @@ export default {
         .then((res) => {
           this.form = Object.assign({}, res.data);
           this.form.url = res.data.url;
+          this.placeholderStatus = this.form.attachmentName
           console.log(this.form.url);
           console.log(this.form)
         })
@@ -314,10 +325,24 @@ export default {
     handSuccess (response, file, fileList) {
       this.form.url = response.data.newFileName;
       this.form.attachmentType = dictType.fileId;
+      if (response.data) {
+        this.$message({
+          type: 'success',
+          message: '上传成功!'
+        });
+      }
     },
     handpreview (file) {
       this.form.attachmentName = file.name;
-      console.log(file)
+      const isImg = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'text/plain' || file.type === 'application/msword' || file.type === 'application/pdf';
+      if (!isImg) {
+        this.$message.error('上传的文件只能是PDF、Word、txt格式!');
+      }
+      return isImg
+    },
+    aa (file) {
+      this.placeholderStatus = '';
+      this.form.attachmentName = file.name;
     },
     handleRemove (response, file, fileList) {
       console.log(response);
@@ -344,6 +369,15 @@ export default {
           padding-top: 2%;
           .el-form-item {
             margin-bottom: 15px;
+          }
+          /deep/.el-upload-list{
+            position: absolute;
+            left: 71px;
+            top: -2px;
+            height: 40px;
+            /deep/.el-upload-list__item{
+              padding: 0;
+            }
           }
           .add-plan {
             width: 100px;
