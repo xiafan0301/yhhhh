@@ -38,14 +38,15 @@
               placeholder="请选择省份"
               @change="onProvinceChange"
               value-key="uid">
-              <el-option v-for="item in provinceData" :key="item.uid" :label="item.cname" :value="item"/>
+              <el-option v-for="item in citys" :key="item.adcode" :label="item.name" :value="item.name"/>
             </el-select>
             <el-select
               v-model="createUserData.city"
               style="width: 246px;"
               clearable
               placeholder="请选择城市">
-              <el-option v-for="item in cityData" :key="item.uid" :label="item.cname" :value="item.cname"/>
+              <el-option v-for="item in cityData" :key="item.adcode" :label="item.name" :value="item.name"/>
+              <el-option v-if="!createUserData.province">请先选择省份</el-option>
             </el-select>
           </el-form-item>
         </el-form>
@@ -83,9 +84,11 @@
 <script>
 import { setCookie, getCookie } from '@/utils/util.js';
 import {checkTel, checkEmail, checkIdCard} from '../../../../utils/validator';
+import {citys} from '../../../../../static/js/citys.js';
 export default {
   data () {
     return {
+      citys: '',
       plateName: getCookie('plateName'),
       selectList: [],
       provinceData: [], // 省份列表
@@ -116,6 +119,7 @@ export default {
   created () {
     this.getSelectList();
     this.getProvince();
+    this.citys = citys
   },
   methods: {
     getSelectList () {
@@ -138,15 +142,20 @@ export default {
     },
     // 省份改变时
     onProvinceChange (obj) {
-      this.cityData = {};
-      this.createUserData.city = null;
-      let params = { parentUid: obj.uid }
-      this.axios.get('/usersServices/areas', {params})
-        .then((res) => {
-          if (res) {
-            this.cityData = res.data;
-          }
-        })
+      // this.cityData = {};
+      // this.createUserData.city = null;
+      // let params = { parentUid: obj.uid }
+      // this.axios.get('/usersServices/areas', {params})
+      //   .then((res) => {
+      //     if (res) {
+      //       this.cityData = res.data;
+      //     }
+      //   })
+      this.citys.forEach(aa => {
+        if (aa.name === obj) {
+          this.cityData = aa.districts
+        }
+      })
     },
     onSelectPhoto () {},
     onCreateSinger () {
