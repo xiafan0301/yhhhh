@@ -12,7 +12,7 @@
           <el-form-item label="版块名称" prop='plateName'>
             <el-input v-model="dataForm.plateName" placeholder="必填" :maxlength='maxlength' @change='changePlateName($event)'></el-input>
           </el-form-item>
-          <el-form-item label="注释" prop='remark'>
+          <el-form-item label="注释" prop='remark' class="remark-item">
             <el-input v-model="dataForm.remark" placeholder="选填" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
@@ -674,7 +674,7 @@
             </template>
           </template>
         </div>
-        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按示例注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>

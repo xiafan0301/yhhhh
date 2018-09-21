@@ -3,7 +3,7 @@
   <div class="plate-ecl2-c clearfix" style='border-bottom: 1px solid #ddd'>
     <h2 style='font-weight: bold;padding: 0 190px 10px'>示例注解图 - {{this.$store.state.plateInfo.configCode}}</h2>
     <div class="plate-ecl2-cl">
-      <img :src="this.$store.state.plateInfo.markUrl" style="width:500px;">
+      <img :src="this.$store.state.plateInfo.markUrl">
     </div>
     <div class="plate-ecl2-cr">
       <div>
@@ -11,7 +11,7 @@
           <el-form-item label="版块名称" prop='plateName'>
             <el-input v-model="dataForm.plateName" placeholder="版块名称" :maxlength='maxlength' @change='changePlateName($event)'></el-input>
           </el-form-item>
-          <el-form-item label="注释" prop='remark'>
+          <el-form-item label="注释" prop='remark' class="remark-item">
             <el-input v-model="dataForm.remark" placeholder="注释" :maxlength='maxlength'></el-input>
           </el-form-item>
         </el-form>
@@ -680,7 +680,7 @@
             </template>
           </template>
         </div>
-        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按样式注解图填写，有可能会展示不正常</span>
+        <span style='color:#F8560F;font-size:12px;margin-top:2%;display: inline-block'>如不按示例注解图填写，有可能会展示不正常</span>
       </div>
     </div>
   </div>

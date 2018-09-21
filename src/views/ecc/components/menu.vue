@@ -154,15 +154,12 @@ export default {
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-  .ecc-menu {
-  }
   .bg-ecc-menu {
     height: 100%;
     position: relative;
     > .bg-mu-t {
       position: absolute; top: 0; left: 0;
       width: 100%; height: 62px;
-      // background: url(../../../assets/img/aorise-logo.png) center center no-repeat;
     }
     > .bg-mu-u {
       height: 100%;
@@ -176,15 +173,15 @@ export default {
     }
     .el-submenu-active {
       background: #E6F7FF;
-      /deep/ .el-submenu__title {
+      .el-submenu__title {
         color: #0785FD !important;
       }
-      /deep/ .el-menu {
+      .el-menu {
         background: #E6F7FF;
-        /deep/ .el-menu-item {
+        .el-menu-item {
           color: #0785FD !important;
         }
-        /deep/ .is-active {
+        .is-active {
           background: #0785FD;
           color: #fff !important;
         }
@@ -192,8 +189,11 @@ export default {
       .el-submenu__title i {
         color: #0785FD !important;
       }
+      .el-submenu__title span {
+        color: #0785FD !important;
+      }
     }
-    /deep/ .el-submenu__title {
+    .el-submenu__title span{
       color: #666666 !important;
     }
   }
