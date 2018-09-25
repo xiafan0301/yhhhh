@@ -96,9 +96,12 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
+          <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="addmodify('modify',scope.row)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" @click="del('material',scope.row)" title="删除"></i>
+          <!-- <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="addmodify('modify',scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" /> -->
           <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
           <!--<el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>-->
           <!--<el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>-->
@@ -365,6 +368,13 @@ export default {
           right: 10px;
         }
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
   .bg-plan-tbp{

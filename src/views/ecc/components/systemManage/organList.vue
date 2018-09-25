@@ -26,8 +26,10 @@
       <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
       <el-table-column label="操作" align='center' class="operation" width="150px">
         <template slot-scope="scope">
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click.stop="editDepart(scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click.stop="deleteDepart(scope)" />
+          <i class="icon-xiugai-1 icon-hover" @click.stop="editDepart(scope)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" @click.stop="deleteDepart(scope)" title="删除"></i>
+          <!-- <img title="编辑" src="../../../../assets/img/temp/edit.png" @click.stop="editDepart(scope)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click.stop="deleteDepart(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -429,9 +431,16 @@ export default {
       text-align: center;
     }
     .event-table {
-      img {
+      i {
         margin: 0 10px;
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

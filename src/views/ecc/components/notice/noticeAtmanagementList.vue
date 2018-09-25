@@ -84,10 +84,14 @@
         label="操作"
         width="150" align="center">
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
+          <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
+          <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"></i>
+          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"/>
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
-          <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/>
+          <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/> -->
           <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
           <!--<el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>-->
           <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
@@ -270,6 +274,13 @@ export default {
     }
     .el-date-editor /deep/.el-range-separator{
       width: 15%!important;
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

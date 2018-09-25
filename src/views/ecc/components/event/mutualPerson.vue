@@ -50,10 +50,12 @@
       <el-table-column prop='commentNumbers' label="评论数量" align='center' ></el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipPersonDetail(scope)" />
-          <!-- <i class="icon-xiugai-"></i> -->
+          <i class="icon-chakan- icon-hover" @click="skipPersonDetail(scope)" title="查看"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="skipAddMsg('modify', scope)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" @click="showDelete(scope)" title="删除"></i>
+          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipPersonDetail(scope)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="skipAddMsg('modify', scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="showDelete(scope)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="showDelete(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -283,9 +285,16 @@ export default {
       text-align: center;
     }
     .person-table {
-      img {
+      i {
         margin: 0 10px;
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

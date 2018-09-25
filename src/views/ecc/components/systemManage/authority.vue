@@ -25,9 +25,12 @@
               <span>{{ data.resourceName }}</span>
               <span class="operation">
                 <!-- <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(data)" /> -->
-                <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onAddLimit(data)" />
+                <i class="icon-xinzeng- icon-hover" @click="onAddLimit(data)" title="添加"></i>
+                <i class="icon-xiugai-1 icon-hover" @click="onEditRole(data)" title="编辑"></i>
+                <i class="icon-shanchu- icon-hover" @click="onDeleteLimit(data)" title="删除"></i>
+                <!-- <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onAddLimit(data)" />
                 <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditRole(data)" />
-                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onDeleteLimit(data)" />
+                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onDeleteLimit(data)" /> -->
               </span>
             </span>
           </el-tree>
@@ -508,6 +511,13 @@ export default {
           }
         }
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

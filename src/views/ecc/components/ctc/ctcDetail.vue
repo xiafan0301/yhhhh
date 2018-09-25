@@ -166,8 +166,10 @@
               </el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
-                  <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
-                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" />
+                  <i class="icon-chakan- icon-hover" @click="selectReplanDetail(scope)" title="查看"></i>
+                  <i class="icon-qiyong- icon-hover" @click="skipEnableReplan(scope)" title="启用"></i>
+                  <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
+                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" /> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -899,6 +901,18 @@ export default {
     }
     /deep/ .el-upload-list__item-delete {
       display: none !important;
+    }
+    .ctc-table {
+      i {
+        margin: 0 10px;
+      }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>
