@@ -70,13 +70,16 @@ export default {
       DepartmentList: [],
       rule: {
         warehouseName: [
-          { required: true, message: '请输入仓库名称', trigger: 'blur' }
+          { required: true, message: '请输入仓库名称', trigger: 'blur' },
+          { max: 50, message: '最多可以输入50个字' }
         ],
         warehouseAddress: [
-          { required: true, message: '请输入仓库地点', trigger: 'blur' }
+          { required: true, message: '请输入仓库地点', trigger: 'blur' },
+          { max: 125, message: '最多可以输入125个字' }
         ],
         administrators: [
-          { required: true, message: '请输入负责人', trigger: 'blur' }
+          { required: true, message: '请输入负责人', trigger: 'blur' },
+          { max: 4, message: '最多可以输入4个字' }
         ],
         adminTel: [
           { required: true, message: '请输入联系电话', trigger: 'blur' },
@@ -142,7 +145,9 @@ export default {
             this.addLoading = true
             params.longitude = this.form.coordinate.split(',')[0];
             params.latitude = this.form.coordinate.split(',')[1];
-            console.log(params);
+            if (params.reportingUnit === '') {
+              params.reportingUnit = null
+            }
             this.axios.post('A2/warehouseService', params)
               .then((res) => {
                 this.addLoading = false

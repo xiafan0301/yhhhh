@@ -110,6 +110,7 @@
 import {dictType} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 import {ajaxCtx3} from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -136,9 +137,14 @@ export default {
     this.getEventLevel();
     this.getEventType();
     this.getCtcDataList();
-    this.url = ajaxCtx3;
+    this.url = ajaxCtx3 + '?' + this.userInfoParam();
   },
   methods: {
+    userInfoParam () {
+      let ln = getCookie('cookieUserName');
+      if (!ln) { ln = ''; }
+      return $.param({ln: ln});
+    },
     skipCtcDetail (scope) { // 跳到调度指挥页面
       this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId, eventType: scope.row.eventType}});
     },

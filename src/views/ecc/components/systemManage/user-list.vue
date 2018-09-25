@@ -221,7 +221,7 @@
             placeholder="请选择省份"
             @change="onProvinceChange"
             value-key="uid">
-            <el-option v-for="item in provinceData" :key="item.uid" :label="item.cname" :value="item"/>
+            <el-option v-for="item in citys" :key="item.adcode" :label="item.name" :value="item.name"/>
           </el-select>
           <el-select
             v-model="editItem.city"
@@ -229,7 +229,7 @@
             clearable
             size="small"
             placeholder="请选择城市">
-            <el-option v-for="item in cityData" :key="item.uid" :label="item.cname" :value="item.cname"/>
+            <el-option v-for="item in cityData" :key="item.adcode" :label="item.name" :value="item.name"/>
           </el-select>
         </div>
       </div>
@@ -269,10 +269,11 @@
 </template>
 
 <script>
+import {citys} from '../../../../../static/js/citys.js';
 export default {
   data () {
     return {
-      aa: '',
+      citys: '',
       selectForm: {
         organName: ''
       },
@@ -319,6 +320,7 @@ export default {
     this.getList();
     this.getAllGroups();
     this.getProvince(); // 省份
+    this.citys = citys
   },
   methods: {
     qq (scope) {
@@ -648,11 +650,22 @@ export default {
       //       this.cityData = res.data;
       //     }
       //   })
+      this.citys.forEach(aa => {
+        if (aa.name === obj) {
+          this.cityData = aa.districts
+        }
+      })
+      console.log(obj)
     },
     // 编辑信息
     onEdit (obj) {
       this.editItem = obj;
       this.editdialogVisible = true;
+      this.citys.forEach(aa => {
+        if (aa.name === obj.province) {
+          this.cityData = aa.districts
+        }
+      })
     },
     // 编辑信息确认
     onConfirmEdit () {
@@ -662,7 +675,7 @@ export default {
         userIdcard: this.editItem.userIdcard,
         userSex: this.editItem.userSex,
         userEmail: this.editItem.userEmail,
-        province: this.editItem.province.cname,
+        province: this.editItem.province,
         city: this.editItem.city
       };
       console.log(obj);

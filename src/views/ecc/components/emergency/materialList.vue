@@ -11,7 +11,7 @@
       <div style="padding:20px 10px; box-sizing: border-box" class="clearfix">
         <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
-        <div @click="registrationChoice(0)"  style="padding:20px 20px 20px 15px; background-color: #fff; border-bottom: 1px solid #EAEAEA"> 所有仓库</div>
+        <!--<div @click="registrationChoice(0)"  style="padding:20px 20px 20px 15px; background-color: #fff; border-bottom: 1px solid #EAEAEA"> 所有仓库</div>-->
         <div>
           <!--<ul style="width: 100%">-->
             <!--<li v-for="(item, index) in tableDatack" :key="index"  @click="registrationChoice(index + 1)" :class="{active: visitType === index + 1}"><span>{{item.warehouseName}}</span>-->
@@ -33,6 +33,7 @@
             :highlight-current-row ="true"
             :row-class-name="bb"
             @row-click="rowclick"
+            :show-header = 'false'
             :data="tableDatack"
             empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
@@ -138,7 +139,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      tableData: [{streamType: '11'}],
+      tableData: [],
       tableDatack: []
     }
   },
@@ -183,13 +184,14 @@ export default {
     },
     getTableDatack () {
       let params = {
-        pageNum: this.pageNum,
+        pageNum: -1,
         pageSize: this.pageSize
       };
       this.axios.get('A2/warehouseService/page', params)
         .then((res) => {
           this.tableDatack = res.data.list;
           console.log(res)
+          this.tableDatack.unshift({warehouseName: '所有仓库'})
           // this.tableDatack && this.tableDatack.map((item, index) => {
           //   this.tableData && this.tableData.map((ite, inde) => {
           //     if (item.warehouseId === ite.warehouseId) {
@@ -219,50 +221,62 @@ export default {
       this.getTableData();
     },
     del (status, scope) {
-      this.$confirm('确定删除吗?', '提示', {
+      let messageStatus = ''
+      if (status === 'material') {
+        messageStatus = '确认删除吗'
+      } else {
+        if (status === 'warehouse' && this.tableData.length === 0) {
+          messageStatus = '删除后不可恢复，是否确认删除'
+        } else {
+          messageStatus = '不可删除，请先删除该仓库下的物资'
+        }
+      }
+      // 不可删除，请先删除该仓库下的物资
+      this.$confirm(messageStatus, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        if (scope) {
-          const params = {
-            materialsId: scope.materialsId,
-            warehouseId: scope.warehouseId
-          };
-          if (status === 'material') {
-            this.axios.delete('A2/materialService/' + scope.materialsId, {params})
-              .then((res) => {
-                if (res) {
-                  this.getTableData();
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                } else {
-                  this.$message.error('删除失败');
-                }
-              })
-          } else {
-            this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
-              .then((res) => {
-                if (res) {
-                  this.getTableDatack();
-                  this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                  });
-                } else {
-                  this.$message.error('删除失败');
-                }
-              })
+      })
+        .then(() => {
+          if (scope) {
+            const params = {
+              materialsId: scope.materialsId,
+              warehouseId: scope.warehouseId
+            };
+            if (status === 'material') {
+              this.axios.delete('A2/materialService/' + scope.materialsId, {params})
+                .then((res) => {
+                  if (res) {
+                    this.getTableData();
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                  } else {
+                    this.$message.error('删除失败');
+                  }
+                })
+            } else {
+              this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
+                .then((res) => {
+                  if (res) {
+                    this.getTableDatack();
+                    this.$message({
+                      type: 'success',
+                      message: '删除成功!'
+                    });
+                  } else {
+                    this.$message.error('删除失败');
+                  }
+                })
+            }
           }
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
         });
-      });
     },
     searchFormReset () {
       this.searchForm.materialsName = '';
@@ -281,7 +295,7 @@ export default {
     addmodify (status, scope) {
       if (this.tableDatack.length > 0) {
         if (status === 'add') {
-          this.$router.push({name: 'emergency-addMaterial', query: {status: status}});
+          this.$router.push({name: 'emergency-addMaterial', query: {status: status, warehouseId: this.searchForm.warehouseId}});
         } else {
           this.$router.push({name: 'emergency-addMaterial', query: {status: status, materialsId: scope.materialsId}});
         }
@@ -325,8 +339,13 @@ export default {
     height: 100%;
     .warehouse{
       margin-right: 2%;
-      .el-table /deep/ .el-table__header .has-gutter{
-          display: none !important;
+        /deep/ .el-table__row:first-child {
+          border: 5px solid red;
+           .el-table_1_column_2 {
+           /deep/ .cell {
+              display: none;
+            }
+          }
         }
       .active{
         color: #ffffff;
