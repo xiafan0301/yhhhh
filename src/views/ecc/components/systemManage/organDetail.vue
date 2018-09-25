@@ -261,8 +261,7 @@ export default {
       newDepartData: {
         organName: null,
         organPid: null,
-        chargeUserName: null,
-        proKey: this.$store.state.proKey
+        chargeUserName: null
       }, // 新增部门弹框数据
       addDepartList: [],
       newDepartdialogVisible: false, // 新增部门弹窗提示
@@ -433,7 +432,6 @@ export default {
     // 验证重名
     onNewDepartChange (val) {
       let params = {
-        proKey: this.$store.state.proKey,
         organName: val
       }
       this.axios.get('A3/authServices/organName', {params})
@@ -473,7 +471,6 @@ export default {
       if (this.deleteArr.length > 0) {
         this.isDeleteLoading = true;
         let params = {
-          proKey: this.$store.state.proKey,
           uids: this.deleteArr
         }
         this.axios.delete('A3/authServices/organInfo', {params})

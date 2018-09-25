@@ -112,8 +112,8 @@ export default {
     changeRemember (val) {
       this.isRemember = val;
       if (val === false) {
-        // setCookie('cookieUserName', oUser.userMobile, 24, '/');
-        setCookie('cookieStatus', this.isRemember, -1, '/');
+        // setCookie('cookieUserName', '', 24, '/');
+        setCookie('cookieStatus', '', -1, '/');
       }
     },
     forgetPwd () {

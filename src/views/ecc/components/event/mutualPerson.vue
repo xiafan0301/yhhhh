@@ -51,6 +51,7 @@
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
           <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipPersonDetail(scope)" />
+          <!-- <i class="icon-xiugai-"></i> -->
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="skipAddMsg('modify', scope)" />
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="showDelete(scope)" />
         </template>
@@ -179,7 +180,7 @@ export default {
     resetForm (form) { // 重置查询条件
       this.$refs[form].resetFields();
       this.getOneMonth();
-      // this.getAppEventList();
+      this.getAppEventList();
     },
     showDelete (scope) { // 显示删除提示框
       this.delEventId = scope.row.eventId;
