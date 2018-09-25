@@ -85,7 +85,7 @@
               <el-form-item label="任务内容" label-position="left" :prop="'taskList.'+ index + '.taskContent'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskList[index].taskContent"></el-input>
               </el-form-item>
-              <el-button type='text' @click="del(index)" v-if="index>0">删除</el-button>
+              <el-button type='text' @click="del(index)" :disabled="form.taskList.length === 1">删除</el-button>
             </div>
           </el-form-item>
           <div class='add-plan' @click="addPlan('taskForm')">
@@ -200,7 +200,6 @@ export default {
         taskContent: '',
         departmentId: '',
         taskId: ''});
-      console.log(this.departmentsList)
       // this.staskList = JSON.parse(JSON.stringify(this.form.taskList));
     },
     onSubmit (form) {

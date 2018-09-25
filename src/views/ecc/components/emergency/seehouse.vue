@@ -14,7 +14,7 @@
         <li><span class="title">上报单位</span><span class="content" v-for="(item, index) in  DepartmentList" :key="index + 'y'" v-show="item.uid === obj.reportingUnit"> {{item.uid === obj.reportingUnit? item.organName: ''}}</span></li>
         <li><span class="title">负责人</span><span class="content"> {{this.obj.administrators}}</span></li>
         <li><span class="title">联系电话</span><span class="content"> {{this.obj.adminTel}}</span></li>
-        <li><span class="title">创建用户</span><span class="content"> {{this.obj.authUserId}}</span></li>
+        <li><span class="title">创建用户</span><span class="content"> {{this.obj.createrName}}</span></li>
         <li><span class="title">创建时间</span><span class="content"> {{this.obj.createTime | moment}}</span></li>
       </ul>
     </div>
@@ -56,6 +56,7 @@ export default {
         .then((res) => {
           this.obj = res.data;
           this.obj.coordinate = res.data.longitude + ',' + res.data.latitude
+          console.log(res)
         })
     },
     getDepartmentList () {

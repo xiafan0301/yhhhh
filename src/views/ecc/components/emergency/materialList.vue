@@ -34,13 +34,14 @@
             :row-class-name="bb"
             @row-click="rowclick"
             :show-header = 'false'
+            :cell-style = "cellStyle"
             :data="tableDatack"
             empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
             <el-table-column
               prop="warehouseName" >
             </el-table-column>
-            <el-table-column width="40%">
+            <el-table-column width="40%" prop="warehouseId">
               <template slot-scope="scope">
                 <el-popover trigger="click" width="50" style="padding: 0" class="tanchu">
                   <div style="text-align: center; margin: 0">
@@ -150,7 +151,8 @@ export default {
   },
   methods: {
     bb (row, rowindex) {
-      return 'active'
+    },
+    cellStyle (row, column, rowindex) {
     },
     rowclick (row, event, column) {
       console.log(row);
@@ -181,14 +183,14 @@ export default {
     },
     getTableDatack () {
       let params = {
-        pageNum: -1,
-        pageSize: this.pageSize
+        pageSize: 999999999
       };
-      this.axios.get('A2/warehouseService/page', params)
+      this.axios.get('A2/warehouseService/page', {params})
         .then((res) => {
-          this.tableDatack = res.data.list;
-          console.log(res)
-          this.tableDatack.unshift({warehouseName: '所有仓库'})
+          this.tableDatack.push({warehouseName: '所有仓库'})
+          res.data.list.forEach(aa => {
+            this.tableDatack.push(aa)
+          });
           // this.tableDatack && this.tableDatack.map((item, index) => {
           //   this.tableData && this.tableData.map((ite, inde) => {
           //     if (item.warehouseId === ite.warehouseId) {
@@ -336,13 +338,12 @@ export default {
     height: 100%;
     .warehouse{
       margin-right: 2%;
-        /deep/ .el-table__row:first-child {
-          border: 5px solid red;
-           .el-table_1_column_2 {
+        /deep/ .el-table__row:nth-child(1) {
            /deep/ .cell {
-              display: none;
+             .tanchu{
+               display: none;
+             }
             }
-          }
         }
       .active{
         color: #ffffff;
