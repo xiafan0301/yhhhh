@@ -497,6 +497,8 @@ export default {
             this.isEditLoading = false;
           }
         })
+        .catch(() => {})
+      this.isEditLoading = false;
     },
     showAddDialog () { // 创建角色
       this.dialogFormVisible = true;
@@ -530,6 +532,7 @@ export default {
           }
         })
         .catch(() => {});
+      this.isAddLoading = false;
     },
     deleteList (obj) { // 删除角色
       this.deleteRoleDialog = true;
@@ -677,6 +680,7 @@ export default {
               this.isLimitLoading = false;
             }
           })
+        this.isLimitLoading = false;
       } else {
         this.editLimitDialogVisible = false;
         this.isLimitLoading = false;
