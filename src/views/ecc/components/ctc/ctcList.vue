@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="url + '?eventId=' + scope.row.eventId" target="_blank">
+          <a :href="url + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank">
             <i class="icon-chakan- icon-hover" title="查看"></i>
             <!-- <img title="查看" src="../../../../assets/img/temp/select.png" /> -->
           </a>
