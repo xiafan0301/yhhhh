@@ -55,14 +55,16 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <el-upload
-              action=""
-              list-type="picture-card"
-              accept=".png,.jpg,.bmp"
-              :on-preview="handlePictureCardPreview"
-              :file-list="imgList"
-            >
-            </el-upload>
+            <div class='img-list' id="imgs" v-show="imgList && imgList.length > 0"></div>
+            <div class='video-list' v-show="imgList && videoList.length > 0">
+              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                <source :src="item.url" type="video/mp4">
+                <source :src="item.url" type="video/webm">
+                <source :src="item.url" type="video/ogg">
+                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+              </video>
+            </div>
           </div>
         </div>
       </div>
@@ -213,6 +215,44 @@ export default {
     this.getCommentList();
   },
   methods: {
+    // 预览图片公共方法
+    previewPictures (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -248,6 +288,9 @@ export default {
                   this.imgList.push(item);
                 }
               });
+              if (this.imgList.length > 0) {
+                this.previewPictures(this.imgList);
+              }
               this.eventDetailObj = res.data;
             }
           })

@@ -71,11 +71,16 @@
         width="200px"
         class-name="operate">
         <template slot-scope="scope">
-          <img title="查看组成员" src="../../../../assets/img/temp/select.png" @click="onWatchNumber(scope.row)" />
+          <i class="icon-chakan- icon-hover" @click="onWatchNumber(scope.row)" title="查看组成员"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="onEditInfo(scope.row)" title="编辑"></i>
+          <i class="icon-guanlichengyuan- icon-hover" @click="onAdminNumer(scope.row)" title="管理成员"></i>
+          <i class="icon-peizhiquanxian- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
+          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
+          <!-- <img title="查看组成员" src="../../../../assets/img/temp/select.png" @click="onWatchNumber(scope.row)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditInfo(scope.row)" />
           <img title="管理成员" src="../../../../assets/img/temp/managementMembers.png" @click="onAdminNumer(scope.row)" />
           <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -788,6 +793,13 @@ export default {
   }
   /deep/ .hover-row>td {
     background-color: #E6F7FF !important;
+  }
+  .icon-hover {
+    font-size: 30px !important;
+    color: #BBBBBB !important;
+  }
+  .icon-hover:hover {
+    color: #0785FD !important;
   }
 }
 .watch-dialog {

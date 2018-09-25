@@ -23,7 +23,7 @@
             <el-input type="textarea" style='width: 500px' placeholder='请输入事件详细情况...' rows='7' v-model='addForm.eventDetail' @input="calNumber(addForm.eventDetail)"></el-input>
             <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
-          <el-form-item style='margin-left: 150px'>
+          <el-form-item style='margin-left: 150px' class="img-form-item">
             <el-upload
               action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
@@ -38,9 +38,6 @@
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
             </el-upload>
-            <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-              <img :src="dialogImageUrl" alt="">
-            </el-dialog>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model="addForm.eventType">
@@ -293,6 +290,7 @@ export default {
             })
             .catch(() => {})
         }
+        this.isAddLoading = false;
       });
     },
     getEventType () { // 获取事件类型
@@ -339,6 +337,16 @@ export default {
             }
           });
         }
+      }
+    },
+    deleteImg (url) {
+      console.log(url)
+      if (url) {
+        this.addForm.attachmentList && this.addForm.attachmentList.map((item, index) => {
+          if (item.url === url) {
+            this.addForm.attachmentList.splice(index, 1);
+          }
+        });
       }
     },
     handleBeforeUpload (file) { // 图片上传之前
@@ -400,6 +408,24 @@ export default {
             font-weight: bold;
             background-color: #FA796C;
             border-radius: 50%;
+          }
+        }
+        .img-form-item /deep/ .el-form-item__content{
+          display: flex;
+          .img-list {
+            // width: 100px;
+            height: 100px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            .error-item {
+              position: absolute;
+              top: -10px;
+              right: -8px;
+              font-size: 18px;
+              color: #666;
+              z-index: 1;
+            }
           }
         }
       }
