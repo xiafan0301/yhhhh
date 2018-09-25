@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="url + '?eventId=' + scope.row.eventId" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" /></a>
+          <a :href="url + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" /></a>
           <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
           <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" />
         </template>
@@ -105,6 +105,7 @@
 import {dictType} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 import {ajaxCtx3} from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -131,9 +132,14 @@ export default {
     this.getEventLevel();
     this.getEventType();
     this.getCtcDataList();
-    this.url = ajaxCtx3;
+    this.url = ajaxCtx3 + '?' + this.userInfoParam();
   },
   methods: {
+    userInfoParam () {
+      let ln = getCookie('cookieUserName');
+      if (!ln) { ln = ''; }
+      return $.param({ln: ln});
+    },
     skipCtcDetail (scope) { // 跳到调度指挥页面
       this.$router.push({name: 'ctc-detail', query: {eventId: scope.row.eventId, eventType: scope.row.eventType}});
     },
