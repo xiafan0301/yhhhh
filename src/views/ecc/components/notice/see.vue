@@ -11,24 +11,25 @@
     <div class="bg-release-cot">
       <ul class="listxf" v-if="this.$route.query.status === '查看公告'">
       <li><span class="title">接收者</span><span class="content">{{messageInfo.emiMessage.terminal}}</span><span class="content" v-for="(item, index) in messageInfo.receiveRelations" :key="index" v-if="item.receiveUserName">{{item.receiveUserName}}</span></li>
-      <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUser}}</span></li>
+      <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUserName}}</span></li>
       <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
       <li><span class="title">主题</span><span class="content">{{messageInfo.emiMessage.title}}</span></li>
       <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span></li>
-      <li style="margin-left: 100px">
+      <li style="margin-left: 98px">
         <span class="content">
-        <el-upload
-          action=""
-          list-type="picture-card"
-          accept=".png,.jpg,.bmp"
-          :on-preview="handlePictureCardPreview"
-          :file-list="messageInfo.emiAttachments"
-        >
-          <span class='add-img-text'>添加图片</span>
-        </el-upload>
-        <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-          <img :src="dialogImageUrl" alt="">
-        </el-dialog>
+          <div id="imgs"></div>
+        <!--<el-upload-->
+          <!--action=""-->
+          <!--list-type="picture-card"-->
+          <!--accept=".png,.jpg,.bmp"-->
+          <!--:on-preview="handlePictureCardPreview"-->
+          <!--:file-list="messageInfo.emiAttachments"-->
+        <!--&gt;-->
+          <!--<span class='add-img-text'>添加图片</span>-->
+        <!--</el-upload>-->
+        <!--<el-dialog :visible.sync="dialogVisible" class="img-dialog">-->
+          <!--<img :src="dialogImageUrl" alt="">-->
+        <!--</el-dialog>-->
           </span>
       </li>
       <li><span class="title">发送时间</span> <span class="content">{{messageInfo.emiMessage.publishTime}}</span></li>
@@ -74,7 +75,8 @@ export default {
         checked: false,
         xtxx: '系统消息'
       },
-      messageInfo: {emiMessage: {terminal: ''}} // 消息详情
+      messageInfo: {emiMessage: {terminal: ''}}, // 消息详情
+      data: []
     }
   },
   computed: {
@@ -121,6 +123,10 @@ export default {
               } else if (res.data.emiMessage.messageType === '39728bba-9b6f-11e8-8a14-3f814d634dc4') {
                 this.messageInfo.emiMessage.messageType = '应急小秘书';
               }
+              this.messageInfo.emiAttachments.forEach(aa => {
+                this.data.push({fileFullPath: aa.url})
+              })
+              this.previewPictures(this.data)
             }
           })
           .catch(() => {})
@@ -129,6 +135,43 @@ export default {
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
+    },
+    previewPictures (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.fileFullPath);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;display: flex;align-items: center;justify-content: center;width: 82px;height: 115px;overflow: hidden;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: auto;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
     }
   }
 }
