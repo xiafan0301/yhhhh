@@ -105,14 +105,20 @@
         width="200px"
         class-name="operate">
         <template  slot-scope="scope" >
+          <i class="icon-xinzeng- icon-hover" @click="onEditGroups(scope.row)" title="编辑"></i>
+          <i class="icon-xiugaisuoshuzu- icon-hover" @click="onEditGroups(scope.row)" title="修改所属组"></i>
+          <i class="icon-peizhijiaose- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
+          <i class="icon-jinyong- icon-hover" @click="onForBidUser(scope.row)" title="禁用"></i>
+          <i class="icon-qiyong- icon-hover" @click="onUpUser(scope.row)" title="启用"></i>
+          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
           <!--<img :src="img2[scope.$index]" alt="" >-->
-          <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" >
+          <!-- <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" > -->
           <!--<img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />-->
-          <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
+          <!-- <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
           <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
           <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onForBidUser(scope.row)" >
           <img title="启用" src="../../../../assets/img/temp/open.png"  @click="onUpUser(scope.row)"/>
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -899,6 +905,13 @@ export default {
     line-height: 10px;
     color:#666666;
   }
+  .icon-hover {
+    font-size: 30px !important;
+    color: #BBBBBB !important;
+  }
+  .icon-hover:hover {
+    color: #0785FD !important;
+  }
 }
 .line {
   display: flex;
@@ -1043,4 +1056,5 @@ export default {
     }
   }
 }
+
 </style>

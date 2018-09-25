@@ -34,13 +34,14 @@
             :row-class-name="bb"
             @row-click="rowclick"
             :show-header = 'false'
+            :cell-style = "cellStyle"
             :data="tableDatack"
             empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
             <el-table-column
               prop="warehouseName" >
             </el-table-column>
-            <el-table-column width="40%">
+            <el-table-column width="40%" prop="warehouseId">
               <template slot-scope="scope">
                 <el-popover trigger="click" width="50" style="padding: 0" class="tanchu">
                   <div style="text-align: center; margin: 0">
@@ -97,9 +98,12 @@
       <el-table-column
         label="操作">
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
+          <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="addmodify('modify',scope.row)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" @click="del('material',scope.row)" title="删除"></i>
+          <!-- <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="addmodify('modify',scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" /> -->
           <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
           <!--<el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>-->
           <!--<el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>-->
@@ -150,7 +154,8 @@ export default {
   },
   methods: {
     bb (row, rowindex) {
-      return 'active'
+    },
+    cellStyle (row, column, rowindex) {
     },
     rowclick (row, event, column) {
       console.log(row);
@@ -181,14 +186,14 @@ export default {
     },
     getTableDatack () {
       let params = {
-        pageNum: -1,
-        pageSize: this.pageSize
+        pageSize: 999999999
       };
-      this.axios.get('A2/warehouseService/page', params)
+      this.axios.get('A2/warehouseService/page', {params})
         .then((res) => {
-          this.tableDatack = res.data.list;
-          console.log(res)
-          this.tableDatack.unshift({warehouseName: '所有仓库'})
+          this.tableDatack.push({warehouseName: '所有仓库'})
+          res.data.list.forEach(aa => {
+            this.tableDatack.push(aa)
+          });
           // this.tableDatack && this.tableDatack.map((item, index) => {
           //   this.tableData && this.tableData.map((ite, inde) => {
           //     if (item.warehouseId === ite.warehouseId) {
@@ -336,13 +341,12 @@ export default {
     height: 100%;
     .warehouse{
       margin-right: 2%;
-        /deep/ .el-table__row:first-child {
-          border: 5px solid red;
-           .el-table_1_column_2 {
+        /deep/ .el-table__row:nth-child(1) {
            /deep/ .cell {
-              display: none;
+             .tanchu{
+               display: none;
+             }
             }
-          }
         }
       .active{
         color: #ffffff;
@@ -384,6 +388,13 @@ export default {
           right: 10px;
         }
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
   .bg-plan-tbp{

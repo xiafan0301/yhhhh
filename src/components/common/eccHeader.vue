@@ -8,7 +8,7 @@
       </li>
       <li>
         <span>HI,{{$store.state.loginUser.userName}}</span>
-        <img src="../../assets/img/temp/photo.png" alt="">
+        <img src="../../assets/img/temp/title.png" alt="">
         <ul class="oa-header-uul">
           <li @click="pwdModal = true">
             <span class="st-icons st-icons-pwd"></span>修改密码

@@ -91,10 +91,9 @@ export default {
   methods: {
     getTableDatack () {
       let params = {
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
+        pageSize: 99999999
       };
-      this.axios.get('A2/warehouseService/page', params)
+      this.axios.get('A2/warehouseService/page', {params})
         .then((res) => {
           this.tableDatack = res.data.list;
           console.log(res)

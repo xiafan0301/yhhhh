@@ -51,14 +51,16 @@
             <div style='width:100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='ctc-detail-basic-list ctc-detail-img-content'>
-            <el-upload
-              action=""
-              list-type="picture-card"
-              accept=".png,.jpg,.bmp"
-              :on-preview="handlePictureCardPreview"
-              :file-list="eventDetailObj.attachmentList"
-            >
-            </el-upload>
+            <div class='img-list' id="imgs" v-show="imgList && imgList.length > 0"></div>
+            <div class='video-list' v-show="imgList && videoList.length > 0">
+              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                <source :src="item.url" type="video/mp4">
+                <source :src="item.url" type="video/webm">
+                <source :src="item.url" type="video/ogg">
+                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+              </video>
+            </div>
           </div>
         </div>
       </div>
@@ -164,8 +166,10 @@
               </el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
-                  <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
-                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" />
+                  <i class="icon-chakan- icon-hover" @click="selectReplanDetail(scope)" title="查看"></i>
+                  <i class="icon-qiyong- icon-hover" @click="skipEnableReplan(scope)" title="启用"></i>
+                  <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
+                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" /> -->
                 </template>
               </el-table-column>
             </el-table>
@@ -236,7 +240,9 @@ export default {
       eventDetailObj: {},
       currentNum: 0, // 事件情况当前字数
       updatecurrentNum: 0,
-      totalNum: 10000, // 可输入的总字数
+      videoList: [], // 视频数据列表
+      imgList: [], // 图片数据列表
+      totalNum: 1000, // 可输入的总字数
       reservePlanList: [],
       rules: {
         departmentId: [
@@ -244,11 +250,11 @@ export default {
         ],
         taskName: [
           { required: true, message: '请填写任务名称', trigger: 'blur' },
-          { max: 200, message: '最多可以输入200个字' }
+          { max: 50, message: '最多可以输入500个字' }
         ],
         taskContent: [
           { required: true, message: '请填写任务内容', trigger: 'blur' },
-          { max: 10000, message: '最多可以输入10000个字' }
+          { max: 1000, message: '最多可以输入1000个字' }
         ]
       },
       taskForm: {
@@ -284,6 +290,44 @@ export default {
     }, 1000);
   },
   methods: {
+    // 预览图片公共方法
+    previewPictures (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
     calNumber (val) { // 计算事件情况字数
       if (val.length > this.totalNum) {
         return;
@@ -364,8 +408,21 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res && res.data) {
+              res.data.attachmentList && res.data.attachmentList.map((item, index) => {
+                if (item.attachmentType === dictType.videoId) { // 视频
+                  this.videoList.push(item);
+                } else {
+                  this.imgList.push(item);
+                }
+              });
               this.eventDetailObj = res.data;
+              if (this.imgList.length > 0) {
+                this.previewPictures(this.imgList);
+              }
             }
+            // if (res && res.data) {
+            //   this.eventDetailObj = res.data;
+            // }
           })
           .catch(() => {})
       }
@@ -844,6 +901,18 @@ export default {
     }
     /deep/ .el-upload-list__item-delete {
       display: none !important;
+    }
+    .ctc-table {
+      i {
+        margin: 0 10px;
+      }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

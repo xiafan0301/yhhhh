@@ -62,11 +62,16 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="130">
+        width="130"
+        class="ctc-class"
+      >
         <template slot-scope="scope">
-          <img title="查看" src="../../../../assets/img/temp/select.png"  @click="see(scope.row)" />
+          <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="modify('modify', scope.row)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" @click="del(scope.row)" title="删除"></i>
+          <!-- <img title="查看" src="../../../../assets/img/temp/select.png"  @click="see(scope.row)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modify', scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row)" />
+          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row)" /> -->
           <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
           <!--<el-button type="text"  @click="modify('modify', scope.row)">修改</el-button>-->
           <!--<el-button @click="del(scope.row)" type="text" size="small">删除</el-button>-->
@@ -225,6 +230,18 @@ export default {
     .bg-plan-tbp{
       padding: 20px 0;
       text-align: center;
+    }
+    .ctc-class {
+      i {
+        margin: 0 10px;
+      }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

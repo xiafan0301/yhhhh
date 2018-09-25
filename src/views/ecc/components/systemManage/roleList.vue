@@ -30,10 +30,14 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
-          <img title="查看权限" src="../../../../assets/img/temp/select.png" @click="onSeeLimit(scope.row)" />
+          <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="onEditRole(scope.row)" title="编辑角色"></i>
+          <i class="icon-peizhiquanxian- icon-hover" @click="onEditLimit(scope.row)" title="配置权限"></i>
+          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除角色"></i>
+          <!-- <img title="查看权限" src="../../../../assets/img/temp/select.png" @click="onSeeLimit(scope.row)" />
           <img title="编辑角色" src="../../../../assets/img/temp/edit.png" @click="onEditRole(scope.row)" />
           <img title="配置权限" src="../../../../assets/img/temp/config.png" @click="onEditLimit(scope.row)" />
-          <img title="删除角色" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" />
+          <img title="删除角色" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -493,6 +497,8 @@ export default {
             this.isEditLoading = false;
           }
         })
+        .catch(() => {})
+      this.isEditLoading = false;
     },
     showAddDialog () { // 创建角色
       this.dialogFormVisible = true;
@@ -526,6 +532,7 @@ export default {
           }
         })
         .catch(() => {});
+      this.isAddLoading = false;
     },
     deleteList (obj) { // 删除角色
       this.deleteRoleDialog = true;
@@ -673,6 +680,7 @@ export default {
               this.isLimitLoading = false;
             }
           })
+        this.isLimitLoading = false;
       } else {
         this.editLimitDialogVisible = false;
         this.isLimitLoading = false;
@@ -830,9 +838,16 @@ export default {
       text-align: center;
     }
     .event-table {
-      img {
+      i {
         margin: 0 10px;
       }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>

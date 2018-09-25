@@ -80,9 +80,14 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="url + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank"><img title="查看" src="../../../../assets/img/temp/select.png" /></a>
-          <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
-          <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" />
+          <a :href="url + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank">
+            <i class="icon-chakan- icon-hover" title="查看"></i>
+            <!-- <img title="查看" src="../../../../assets/img/temp/select.png" /> -->
+          </a>
+          <i class="icon-tiaodu- icon-hover" @click="skipCtcDetail(scope)" title="调度"></i>
+          <i class="icon-jieshu- icon-hover" @click="skipCtcEnd(scope)" title="结束"></i>
+          <!-- <img title="调度" src="../../../../assets/img/temp/replan.png" @click="skipCtcDetail(scope)" />
+          <img title="结束" src="../../../../assets/img/temp/stop.png" @click="skipCtcEnd(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -266,9 +271,19 @@ export default {
       text-align: center;
     }
     .table-ctc {
-      img {
+      i {
         margin: 0 10px;
       }
+      a{
+        text-decoration: none;
+      }
+    }
+    .icon-hover {
+      font-size: 30px;
+      color: #BBBBBB;
+    }
+    .icon-hover:hover {
+      color: #0785FD;
     }
   }
 </style>
