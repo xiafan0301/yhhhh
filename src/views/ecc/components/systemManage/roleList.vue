@@ -151,7 +151,6 @@
             default-expand-all
             node-key="resourceName"
             ref="tree"
-            :default-checked-keys="defaultKeys"
             :props="defaultProps">
           </el-tree>
         </div>
@@ -201,6 +200,7 @@ export default {
         roleDesc: ''
       },
       errorMsg: '',
+      timer: null,
       isShowError: false,
       deleteId: '' // 要删除的角色id
     }
@@ -208,6 +208,9 @@ export default {
   mounted () {
     this.getAuthorityList();
     this.getRoleList();
+  },
+  destroyed () {
+    clearTimeout(this.timer);
   },
   methods: {
     getAuthorityList () { // 获取权限列表
@@ -566,7 +569,8 @@ export default {
     onEditLimit (obj) { // 配置权限
       let keysArr = [];
       this.limitRoleName = obj.roleName;
-      // this.defaultKeys = [];
+      this.editLimitDialogVisible = true;
+      this.defaultKeys = [];
       // if (!obj.roleAuthList) {
       //   obj.roleAuthList = [];
       // }
@@ -605,9 +609,11 @@ export default {
         })
       }
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
-      console.log(this.defaultKeys)
+      // console.log(this.defaultKeys)
       this.selectLimitItem = Object.assign({}, obj);
-      this.editLimitDialogVisible = true;
+      this.timer = setTimeout(() => {
+        this.$refs.tree.setCheckedKeys(this.defaultKeys);
+      }, 100)
     },
     onConfirmEditLimit () { // 配置权限确认
       this.isLimitLoading = true;

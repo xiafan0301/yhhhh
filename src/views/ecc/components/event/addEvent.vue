@@ -98,6 +98,9 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -178,10 +181,6 @@ export default {
         return;
       }
       this.currentNum = val.length;
-    },
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
     },
     skipCtcDetail (form) { // 跳到调度指挥方案制定页面
       this.$refs[form].validate((valid) => {
@@ -310,6 +309,10 @@ export default {
           }
         })
         .catch(() => {})
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {

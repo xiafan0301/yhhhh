@@ -37,7 +37,7 @@
               <span class='add-img-text'>添加图片</span>
             </el-upload>
             <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-              <img :src="dialogImageUrl" alt="">
+              <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
@@ -249,7 +249,6 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log('file', file)
       if (file && file.response) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {
@@ -294,7 +293,7 @@ export default {
                 this.isAddLoading = false;
               } else {
                 this.$message.error('添加消息失败');
-                this.isAddLoading = fasle;
+                this.isAddLoading = false;
               }
               // this.isAddLoading = false;
             })

@@ -30,6 +30,7 @@
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
+          :on-preview="handlePictureCardPreview"
           :before-upload='handleBeforeUpload'
           :on-success="handleSuccess"
           :show-file-list='false'
@@ -42,6 +43,7 @@
             :src='item.newFileName'
           />
           <div class='delete-img'>
+            <i class='el-icon-zoom-in' @click="deleteImg(item, index)"></i>
             <i class='el-icon-delete' @click="deleteImg(item, index)"></i>
           </div>
         </div>
@@ -70,6 +72,9 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -77,6 +82,8 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
       isEndLoading: false, // 结束加载中
       closeReturnVisiable: false,
       currentNum: 0, // 事件情况当前字数
@@ -116,6 +123,10 @@ export default {
     }, 1000);
   },
   methods: {
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
     calNumber (val) { // 计算事件情况字数
       if (val.length > this.totalNum) {
         return;
@@ -304,13 +315,21 @@ export default {
             border-radius: 3px;
             top:0;
             left:0;
-            i {
+            i:first-child {
               position: absolute;
               cursor: pointer;
               font-size: 20px;
               top: 40px;
               color: #fff;
-              left: 40px;
+              left: 30px;
+            }
+            i:last-child {
+              position: absolute;
+              cursor: pointer;
+              font-size: 20px;
+              top: 40px;
+              color: #fff;
+              left: 60px;
             }
           }
           &:hover {
@@ -393,6 +412,14 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
     }
   }
 </style>

@@ -136,7 +136,7 @@
       </span>
     </el-dialog>
     <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
+      <img width="100%;" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
