@@ -220,6 +220,9 @@ export default {
         devicePort: [
           { required: true, message: '请输入端口', trigger: 'blur' }
         ],
+        deviceAddress: [
+          { required: true, message: '请输入地址', trigger: 'blur' }
+        ],
         channelId: [
           { required: true, message: '请输入通道ID', trigger: 'blur' }
         ],
