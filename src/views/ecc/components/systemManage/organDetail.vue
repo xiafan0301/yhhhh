@@ -425,6 +425,8 @@ export default {
             this.getDetailData();
             this.newDepartdialogVisible = false;
             this.isAddLoading = false;
+          } else {
+            this.isAddLoading = false;
           }
         })
         .catch(() => {});
@@ -481,6 +483,8 @@ export default {
               this.selectAgree = false;
               this.isDeleteLoading = false;
               this.getDetailData();
+            } else {
+              this.isDeleteLoading = false;
             }
           })
           .catch(() => {});

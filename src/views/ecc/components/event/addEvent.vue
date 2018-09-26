@@ -283,14 +283,14 @@ export default {
                   type: 'success'
                 });
                 this.$router.push({name: 'event-list'});
+                this.isAddLoading = false;
               } else {
                 this.$message.error('添加事件失败');
+                this.isAddLoading = false;
               }
-              this.isAddLoading = false;
             })
             .catch(() => {})
         }
-        this.isAddLoading = false;
       });
     },
     getEventType () { // 获取事件类型

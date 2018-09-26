@@ -291,10 +291,12 @@ export default {
                   type: 'success'
                 });
                 this.$router.push({name: 'mutual-person'});
+                this.isAddLoading = false;
               } else {
                 this.$message.error('添加消息失败');
+                this.isAddLoading = fasle;
               }
-              this.isAddLoading = false;
+              // this.isAddLoading = false;
             })
             .catch(() => {})
         }
@@ -372,10 +374,12 @@ export default {
                   type: 'success'
                 });
                 this.$router.push({name: 'mutual-person'});
+                this.isEditLoading = false;
               } else {
                 this.$message.error('修改消息失败');
+                this.isEditLoading = false;
               }
-              this.isEditLoading = false;
+              // this.isEditLoading = false;
             })
             .catch(() => {})
         }

@@ -217,10 +217,12 @@ export default {
                   type: 'success'
                 });
                 this.$router.push({name: 'event-list'});
+                this.isEndLoading = false;
               } else {
                 this.$message.error('宣布事件结束失败');
+                this.isEndLoading = false;
               }
-              this.isEndLoading = false;
+              // this.isEndLoading = false;
             })
             .catch(() => {})
         }

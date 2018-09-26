@@ -420,9 +420,6 @@ export default {
                 this.previewPictures(this.imgList);
               }
             }
-            // if (res && res.data) {
-            //   this.eventDetailObj = res.data;
-            // }
           })
           .catch(() => {})
       }
@@ -523,10 +520,12 @@ export default {
                 type: 'success'
               });
               this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+              this.isTaskLoading = false;
             } else {
               this.$message.error('添加任务失败');
+              this.isTaskLoading = false;
             }
-            this.isTaskLoading = false;
+            // this.isTaskLoading = false;
           })
           .catch(() => {});
       } else {
@@ -545,10 +544,12 @@ export default {
                     type: 'success'
                   });
                   this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
+                  this.isTaskLoading = false;
                 } else {
                   this.$message.error('添加任务失败');
+                  this.isTaskLoading = false;
                 }
-                this.isTaskLoading = false;
+                // this.isTaskLoading = false;
               })
               .catch(() => {});
           }

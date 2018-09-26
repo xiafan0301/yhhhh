@@ -224,6 +224,8 @@ export default {
               this.getDepartmentList();
               this.deleteDepartmentDialog = false;
               this.isDeleteLoading = false;
+            } else {
+              this.isDeleteLoading = false;
             }
           })
           .catch(() => {});
@@ -239,6 +241,8 @@ export default {
               this.getDepartmentList();
               this.isDeleteChildLoading = false;
               this.deleteDepartmentChildDialog = false;
+            } else {
+              this.isDeleteChildLoading = false;
             }
           })
           .catch(() => {});
@@ -276,6 +280,8 @@ export default {
             this.dialogFormVisible = false;
             this.getDepartmentList();
             this.isAddLoading = false;
+          } else {
+            this.isAddLoading = false;
           }
         })
         .catch(() => {});
@@ -310,6 +316,8 @@ export default {
             this.$message.success('修改成功');
             this.editFormVisible = false;
             this.getDepartmentList();
+            this.isEditLoading = false;
+          } else {
             this.isEditLoading = false;
           }
         })

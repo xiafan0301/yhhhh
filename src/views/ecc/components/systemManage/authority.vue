@@ -155,6 +155,8 @@ export default {
               this.getAuthorityList();
               this.deleteLimitdialogVisible = false;
               this.isDeleteLoading = false;
+            } else {
+              this.isDeleteLoading = false;
             }
           })
           .catch(() => {});
@@ -179,6 +181,8 @@ export default {
             this.$message.success('修改成功');
             this.getAuthorityList();
             this.editLimitDialogVisible = false;
+            this.isEditLoading = false;
+          } else {
             this.isEditLoading = false;
           }
         })
@@ -209,10 +213,11 @@ export default {
             this.getAuthorityList();
             this.addLimitDialogVisible = false;
             this.isAddLoading = false;
+          } else {
+            this.isAddLoading = false;
           }
         })
         .catch(() => {})
-      this.addLimitDialogVisible = false;
     },
     onNewLimitChange () {},
     getAuthorityList () { // 获取权限列表
