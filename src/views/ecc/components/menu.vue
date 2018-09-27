@@ -40,12 +40,12 @@ export default {
             {
               id: '1-1',
               name: '事件管理',
-              url: '/event/eventList'
+              url: '/main/event/eventList'
             },
             {
               id: '1-2',
               name: 'APP端民众互助管理',
-              url: '/event/mutualPerson'
+              url: '/main/event/mutualPerson'
             }
           ]
         },
@@ -57,7 +57,7 @@ export default {
             {
               id: '2-1',
               name: '调度指挥',
-              url: '/ctc/ctcList'
+              url: '/main/ctc/ctcList'
             }
           ]
         },
@@ -69,12 +69,12 @@ export default {
             {
               id: '3-1',
               name: '预案管理',
-              url: '/emergency/planList'
+              url: '/main/emergency/planList'
             },
             {
               id: '3-2',
               name: '物资管理',
-              url: '/emergency/materialList'
+              url: '/main/emergency/materialList'
             }
           ]
         },
@@ -86,12 +86,12 @@ export default {
             {
               id: '4-1',
               name: '公告管理',
-              url: '/notice'
+              url: '/main/notice'
             },
             {
               id: '4-2',
               name: '系统消息',
-              url: '/system'
+              url: '/main/system'
             }
           ]
         },
@@ -115,22 +115,22 @@ export default {
             {
               id: '5-1',
               name: '组织架构',
-              url: '/systemManage/organList'
+              url: '/main/systemManage/organList'
             },
             {
               id: '5-2',
               name: '项目用户',
-              url: '/systemManage/user/user-list'
+              url: '/main/systemManage/user/user-list'
             },
             {
               id: '5-3',
               name: '角色管理',
-              url: '/systemManage/roleList'
+              url: '/main/systemManage/roleList'
             },
             {
               id: '5-4',
               name: '权限管理',
-              url: '/systemManage/authority'
+              url: '/main/systemManage/authority'
             }
           ]
         }
