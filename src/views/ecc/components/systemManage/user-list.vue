@@ -93,8 +93,8 @@
         align="center"
         :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span v-if="scope.row.force">启用</span>
-          <span v-else>禁用</span>
+          <span v-if="scope.row.isForce">禁用</span>
+          <span v-else>启用</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -105,11 +105,11 @@
         width="200px"
         class-name="operate">
         <template  slot-scope="scope" >
-          <i class="icon-xinzeng- icon-hover" @click="onEditGroups(scope.row)" title="编辑"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="onEdit(scope.row)" title="编辑"></i>
           <i class="icon-xiugaisuoshuzu- icon-hover" @click="onEditGroups(scope.row)" title="修改所属组"></i>
           <i class="icon-peizhijiaose- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
-          <i class="icon-jinyong- icon-hover" @click="onForBidUser(scope.row)" title="禁用"></i>
-          <i class="icon-qiyong- icon-hover" @click="onUpUser(scope.row)" title="启用"></i>
+          <i class="icon-jinyong- icon-hover" @click="onForBidUser(scope.row)" title="禁用" v-if="!scope.row.isForce"></i>
+          <i class="icon-qiyong- icon-hover" @click="onUpUser(scope.row)" title="启用" v-else></i>
           <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
           <!--<img :src="img2[scope.$index]" alt="" >-->
           <!-- <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" > -->
@@ -692,7 +692,7 @@ export default {
       let params = {
         uid: obj.uid,
         // proKey: this.$store.state.proKey,
-        force: true
+        isForce: false
       }
       this.axios.put('A2/authServices/user', params)
         .then(res => {
@@ -707,7 +707,7 @@ export default {
       let params = {
         uid: obj.uid,
         // proKey: this.$store.state.proKey,
-        force: false
+        isForce: true
       }
       console.log(params.uid)
       this.axios.put('A2/authServices/user', params)

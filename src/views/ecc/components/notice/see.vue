@@ -10,7 +10,7 @@
     </div>
     <div class="bg-release-cot">
       <ul class="listxf" v-if="this.$route.query.status === '查看公告'">
-      <li><span class="title">接收者</span><span class="content">{{messageInfo.emiMessage.terminal}}</span><span class="content" v-for="(item, index) in messageInfo.receiveRelations" :key="index" v-if="item.receiveUserName">{{item.receiveUserName}}</span></li>
+      <li><div style="display: flex"><div><span class="title">接收者</span></div><div style="width: 100%;" ><span class="content">{{messageInfo.emiMessage.terminal}}</span><span class="content" v-for="(item, index) in messageInfo.receiveRelations" :key="index" v-if="item.receiveUserName">{{item.receiveUserName}}</span></div></div></li>
       <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUserName}}</span></li>
       <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
       <li><span class="title">主题</span><span class="content">{{messageInfo.emiMessage.title}}</span></li>
@@ -53,8 +53,8 @@
       </ul>
     </div>
     <div style="margin-top: 21px" >
-      <el-button @click="onSubmit">取消</el-button>
-      <el-button type="primary" @click="onSubmit">确定</el-button>
+      <el-button @click="onSubmit" v-if="this.$route.query.publishState === 3">修改</el-button>
+      <el-button type="primary" @click="back">关闭</el-button>
     </div>
   </div>
 </template>
@@ -94,6 +94,13 @@ export default {
   methods: {
     onSubmit () {
       if (this.$route.query.status === '查看消息') {
+        this.$router.push({name: 'notice-modify', query: {status: 'modifysystem', messageId: this.$route.query.messageId}});
+      } else if (this.$route.query.status === '查看公告') {
+        this.$router.push({name: 'notice-modify', query: {status: 'modifyatgment', messageId: this.$route.query.messageId}});
+      }
+    },
+    back () {
+      if (this.$route.query.status === '查看消息') {
         this.$router.push({name: 'system'})
       } else if (this.$route.query.status === '查看公告') {
         this.$router.push({name: 'notice-atmanagementList'})
@@ -126,7 +133,9 @@ export default {
               this.messageInfo.emiAttachments.forEach(aa => {
                 this.data.push({fileFullPath: aa.url})
               })
-              this.previewPictures(this.data)
+              if (this.messageInfo.emiAttachments.length > 0) {
+                this.previewPictures(this.data)
+              }
             }
           })
           .catch(() => {})
@@ -201,7 +210,7 @@ export default {
         color: #777777;
         font-size: 14px;
         margin-left:2%;
-        text-align: left;
+        text-align: right;
         display: inline-block;
       }
     }
