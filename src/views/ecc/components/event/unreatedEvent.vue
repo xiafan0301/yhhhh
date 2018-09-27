@@ -136,7 +136,7 @@
       </span>
     </el-dialog>
     <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
+      <img width="100%;" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
@@ -371,10 +371,12 @@ export default {
                 });
                 this.dialogFormVisible = false;
                 this.$router.push({name: 'event-list'});
+                this.isCloseLoading = false;
               } else {
                 this.$message.error('关闭事件失败');
+                this.isCloseLoading = false;
               }
-              this.isCloseLoading = false;
+              // this.isCloseLoading = false;
             })
             .catch(() => {})
         }
@@ -413,10 +415,12 @@ export default {
                 type: 'success'
               });
               this.$router.push({name: 'event-list'});
+              this.isSaveLoading = false;
             } else {
               this.$message.error('修改事件失败');
+              this.isSaveLoading = false;
             }
-            this.isSaveLoading = false;
+            // this.isSaveLoading = false;
           })
           .catch(() => {})
       });

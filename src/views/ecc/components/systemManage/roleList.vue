@@ -22,7 +22,7 @@
     <el-table style="width: 100%" :data='roleList' class='event-table'>
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
       <el-table-column label="角色名称" prop='roleName' align='center'></el-table-column>
-      <el-table-column label="描述" prop='roleDesc' align='center'></el-table-column>
+      <el-table-column label="描述" prop='roleDesc' align='center' show-overflow-tooltip></el-table-column>
       <el-table-column label="创建时间" prop='createTime' align='center'>
         <template slot-scope="scope">
           <span>{{scope.row.createTime | moment}}</span>
@@ -151,7 +151,6 @@
             default-expand-all
             node-key="resourceName"
             ref="tree"
-            :default-checked-keys="defaultKeys"
             :props="defaultProps">
           </el-tree>
         </div>
@@ -201,6 +200,7 @@ export default {
         roleDesc: ''
       },
       errorMsg: '',
+      timer: null,
       isShowError: false,
       deleteId: '' // 要删除的角色id
     }
@@ -208,6 +208,9 @@ export default {
   mounted () {
     this.getAuthorityList();
     this.getRoleList();
+  },
+  destroyed () {
+    clearTimeout(this.timer);
   },
   methods: {
     getAuthorityList () { // 获取权限列表
@@ -495,6 +498,8 @@ export default {
             this.getRoleList();
             this.editFormVisible = false;
             this.isEditLoading = false;
+          } else {
+            this.isEditLoading = false;
           }
         })
         .catch(() => {})
@@ -529,6 +534,8 @@ export default {
             this.dialogFormVisible = false;
             this.isAddLoading = false;
             this.getRoleList();
+          } else {
+            this.isAddLoading = false;
           }
         })
         .catch(() => {});
@@ -562,7 +569,8 @@ export default {
     onEditLimit (obj) { // 配置权限
       let keysArr = [];
       this.limitRoleName = obj.roleName;
-      // this.defaultKeys = [];
+      this.editLimitDialogVisible = true;
+      this.defaultKeys = [];
       // if (!obj.roleAuthList) {
       //   obj.roleAuthList = [];
       // }
@@ -601,9 +609,11 @@ export default {
         })
       }
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
-      console.log(this.defaultKeys)
+      // console.log(this.defaultKeys)
       this.selectLimitItem = Object.assign({}, obj);
-      this.editLimitDialogVisible = true;
+      this.timer = setTimeout(() => {
+        this.$refs.tree.setCheckedKeys(this.defaultKeys);
+      }, 100)
     },
     onConfirmEditLimit () { // 配置权限确认
       this.isLimitLoading = true;
@@ -678,9 +688,10 @@ export default {
               this.editLimitDialogVisible = false;
               this.getRoleList();
               this.isLimitLoading = false;
+            } else {
+              this.isLimitLoading = false;
             }
           })
-        this.isLimitLoading = false;
       } else {
         this.editLimitDialogVisible = false;
         this.isLimitLoading = false;

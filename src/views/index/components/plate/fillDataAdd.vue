@@ -1690,43 +1690,47 @@ export default {
           valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
           percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
         });
-        for (let i in itemNameObj) {
+        console.log(itemNameObj)
+        console.log(valueContentObj)
+        console.log(valueUnitObj)
+        console.log(percentValueOneObj)
+        for (let i in this.itemName) {
           const str = i.split('_');
           let str1;
-          for (let j in this.itemName) {
+          for (let j in itemNameObj) {
             str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.itemName, j);
+            if (str[0] !== str1[0] && str[1] === str1[1] && this.itemName[i] !== undefined) {
+              this.$delete(this.itemName, i);
             }
           }
         }
-        for (let i in valueContentObj) {
+        for (let i in this.valueContent) {
           const str = i.split('_');
           let str1;
-          for (let j in this.valueContent) {
+          for (let j in valueContentObj) {
             str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.valueContent, j);
+            if (str[0] !== str1[0] && str[1] === str1[1] && this.valueContent[i] !== undefined) {
+              this.$delete(this.valueContent, i);
             }
           }
         }
-        for (let i in valueUnitObj) {
+        for (let i in this.valueUnit) {
           const str = i.split('_');
           let str1;
-          for (let j in this.valueUnit) {
+          for (let j in valueUnitObj) {
             str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.valueUnit, j);
+            if (str[0] !== str1[0] && str[1] === str1[1] && this.valueUnit[i] !== undefined) {
+              this.$delete(this.valueUnit, i);
             }
           }
         }
-        for (let i in percentValueOneObj) {
+        for (let i in this.percentValueOne) {
           const str = i.split('_');
           let str1;
-          for (let j in this.percentValueOne) {
+          for (let j in percentValueOneObj) {
             str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.percentValueOne, j);
+            if (str[0] !== str1[0] && str[1] === str1[1] && this.percentValueOne[i] !== undefined) {
+              this.$delete(this.percentValueOne, i);
             }
           }
         }

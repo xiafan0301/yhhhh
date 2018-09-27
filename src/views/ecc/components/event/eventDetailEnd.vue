@@ -409,10 +409,12 @@ export default {
                 type: 'success'
               });
               this.$router.push({name: 'event-list'});
+              this.isSaveLoading = false;
             } else {
               this.$message.error('保存失败');
+              this.isSaveLoading = false;
             }
-            this.isSaveLoading = false;
+            // this.isSaveLoading = false;
           })
           .catch(() => {})
       }

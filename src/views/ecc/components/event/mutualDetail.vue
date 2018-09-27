@@ -273,11 +273,13 @@ export default {
             });
             this.mutualEndVisiable = false;
             this.$router.push({name: 'mutual-person'});
+            this.isEndLoading = false;
           } else {
             this.$message.error('宣布事件结束失败');
             this.mutualEndVisiable = false;
+            this.isEndLoading = false;
           }
-          this.isEndLoading = false;
+          // this.isEndLoading = false;
         })
         .catch(() => {})
     },

@@ -112,7 +112,7 @@ export default {
     changeRemember (val) {
       this.isRemember = val;
       if (val === false) {
-        // setCookie('cookieUserName', '', 24, '/');
+        setCookie('cookieUserName', '', -1, '/');
         setCookie('cookieStatus', '', -1, '/');
       }
     },

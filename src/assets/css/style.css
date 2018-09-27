@@ -143,8 +143,5 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   padding-top: 20px;
 }
 .el-table .cell {
-  line-height: 28px;
-}
- .el-tooltip__popper{
-  max-width: 500px!important;
+  line-height: 26px;
 }
