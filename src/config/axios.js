@@ -44,12 +44,16 @@ axios.interceptors.response.use(function (response) {
     } else if (_data.code === '10060002') {
       // 未登录
       msg = '登录已过期，请重新登录！';
-      console.log(response.config.url)
-      if (response.config.url.indexOf('emi') !== -1 || response.config.url.indexOf('auth') !== -1) {
+      let _su = window.location.href;
+      // console.log('登录已过期 window.location.href：', _su)
+      if (_su.indexOf('ecc.html') > -1) {
         window.location.href = './ecc.html#/login';
       } else {
         window.location.href = './index.html#/login';
       }
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 100)
       // window.location.reload();
     } else {
       msg = '访问出错';

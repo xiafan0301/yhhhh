@@ -79,6 +79,10 @@ export default new Router({
     },
     {
       path: '/',
+      redirect: {name: 'event-list'}
+    },
+    {
+      path: '/main',
       component: main,
       children: [
         {path: '', redirect: {name: 'event-list'}},
