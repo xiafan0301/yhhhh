@@ -32,14 +32,13 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.messageType" style="width: 140px;" placeholder="消息类型">
-            <el-option label="全部消息类型" value="39728bba-9b6f-11e8-8a14-3f814d634dc1,39728bba-9b6f-11e8-8a14-3f814d634dc3,39728bba-9b6f-11e8-8a14-3f814d634dc4" ></el-option>
+            <el-option label="全部消息类型" value="39728bba-9b6f-11e8-8a14-3f814d634dc3,39728bba-9b6f-11e8-8a14-3f814d634dc4" ></el-option>
             <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
             <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
-            <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.deviceStatus" style="width: 140px;" placeholder="发布单位">
+          <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
               <el-option
                 v-for="item in DepartmentList"
                 :key="item.uid"
@@ -63,7 +62,6 @@
         <template slot-scope="scope">
           <span  v-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc3'">APP应用升级</span>
           <span  v-else-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc4'">应急小秘书</span>
-          <span  v-else >民众互助</span>
         </template>
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="内容" min-width="180" :show-overflow-tooltip="true"></el-table-column>
@@ -86,7 +84,7 @@
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifysystem',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
           <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px;"></i>
           <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifysystem', scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)"   v-if="scope.row.emiMessage.publishState === 3"/>
@@ -116,13 +114,12 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      msgList: [{'39728bba-9b6f-11e8-8a14-3f814d634dc1,39728bba-9b6f-11e8-8a14-3f814d634dc3,39728bba-9b6f-11e8-8a14-3f814d634dc4': '全部'}],
       searchForm: {
         beginTime: null,
         endTime: null,
         publishState: '',
-        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc1' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4',
-        publishUnitId: '',
+        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4',
+        publishUnitId: null,
         receiverId: '',
         isReceive: '',
         publishTime: []
@@ -210,6 +207,9 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
+      if (this.searchForm.publishUnitId) {
+        params['where.publishUnitId'] = this.searchForm.publishUnitId
+      }
       this.axios.get('A2/messageService/page?' + $.param(params))
         .then((res) => {
           console.log(res);
@@ -220,7 +220,10 @@ export default {
         });
     },
     getDepartmentList () {
-      this.axios.get('A3/authServices/organInfos')
+      let params = {
+        pageSize: 999999
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data.list) {
             this.DepartmentList = res.data.list
@@ -239,7 +242,8 @@ export default {
     searchFormReset () {
       this.searchForm.publishTime = '';
       this.searchForm.publishState = '';
-      this.searchForm.messageType = '39728bba-9b6f-11e8-8a14-3f814d634dc1' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4';
+      this.searchForm.publishUnitId = '';
+      this.searchForm.messageType = '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4';
       this.getTableData();
     },
     // 分页
@@ -259,13 +263,9 @@ export default {
     modify (status, scope) {
       this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
-    modifyxt () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
-    },
     see (scope) {
       const status = '查看消息';
-      this.$router.push({name: 'notice-see', query: {status: status, messageId: scope.messageId}, params: {plateId: '0'}});
+      this.$router.push({name: 'notice-see', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
     }
   }
 }

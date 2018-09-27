@@ -57,14 +57,16 @@ export default {
       tableDatack: [],
       rules: {
         materialsName: [
-          { required: true, message: '请输入资源名称', trigger: 'blur' }
+          { required: true, message: '请输入资源名称', trigger: 'blur' },
+          { max: 50, message: '最多可以输入50个字' }
         ],
         amount: [
           { required: true, message: '请输入资源数量', trigger: 'blur' },
-          {pattern: /^-?\d*\.?\d*$/, message: '必须为数字值'}
+          {pattern: /^[1-9]\d*$/, message: '必须为正整数'}
         ],
         measurementUnit: [
-          { required: true, message: '请输入单位', trigger: 'blur' }
+          { required: true, message: '请输入单位', trigger: 'blur' },
+          { max: 5, message: '最多可以输入5个字' }
         ],
         warehouseId: [
           {required: true, message: '请选择仓库'}
@@ -83,7 +85,9 @@ export default {
   mounted () {
     if (this.$route.query.status === 'add') {
       this.status = '添加物资'
-      this.form.warehouseId = this.$route.query.warehouseId
+      if (this.$route.query.warehouseId) {
+        this.form.warehouseId = this.$route.query.warehouseId
+      }
     } else if (this.$route.query.status === 'modify') {
       this.status = '修改物资'
     }

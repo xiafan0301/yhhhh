@@ -80,12 +80,12 @@ export default {
         ],
         newPwd: [
           {required: true, message: '新密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 12, message: '密码长度6-20位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 12, message: '密码长度6-12位', trigger: 'blur'},
           {validator: validatePass, trigger: 'blur'}
         ],
         newPwdCheck: [
           {required: true, message: '确认密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 12, message: '密码长度6-20位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 12, message: '密码长度6-12位', trigger: 'blur'},
           {validator: validatePassCheck, trigger: 'blur'}
         ]
       }
@@ -145,15 +145,18 @@ export default {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              window.location.href = './index.html#/login';
+              // window.location.href = './index.html#/login';
               // window.location.reload();
-              // _this.$router.push({name: 'login'});
+              setTimeout(() => {
+                _this.$router.push({name: 'login'});
+              }, 200);
             }).catch(function () {
               instance.confirmButtonText = '确定';
               instance.confirmButtonLoading = false;
               done();
-              window.location.href = './index.html#/login';
-              // _this.$router.push({name: 'login'});
+              setTimeout(() => {
+                _this.$router.push({name: 'login'});
+              }, 200);
             });
           } else {
             done();

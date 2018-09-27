@@ -212,10 +212,6 @@ export default {
     modify (status, scope) {
       this.$router.push({name: 'emergency-addPlan', query: {status: status, planId: scope.planId}});
     },
-    modifyxt () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
-    },
     see (scope) {
       this.$router.push({name: 'emergency-seePlan', query: {planId: scope.planId}});
     }
