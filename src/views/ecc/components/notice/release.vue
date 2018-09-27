@@ -19,7 +19,7 @@
               </el-checkbox-group>
              </div>
             <div style="display: inline-block; margin-left: 20px;" >
-              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2')"  multiple collapse-tags>
+              <el-select v-model="value" placeholder="请选择" size="medium" :disabled= "!(form.checkList[0] === '2'|| form.checkList[1] === '2')"  multiple collapse-tags style="width: 300px">
                 <el-option
                   v-for="item in DepartmentList"
                   :key="item.uid"
@@ -64,6 +64,7 @@
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form.publishTime"
                 :disabled = "!(form.time === 2)"
@@ -82,7 +83,6 @@
           <el-select v-model="form1.type" placeholder="系统消息"  style="width: 500px" >
             <el-option label="APP应用升级" value="39728bba-9b6f-11e8-8a14-3f814d634dc3"></el-option>
             <el-option label="应急小秘书" value="39728bba-9b6f-11e8-8a14-3f814d634dc4"></el-option>
-            <el-option label="民众互助" value="39728bba-9b6f-11e8-8a14-3f814d634dc1"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="内容" prop="desc">
@@ -99,6 +99,7 @@
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form1.publishTime"
                 :disabled = "!(form1.time === 2)"
@@ -113,7 +114,7 @@
     </div>
     <div style="margin-top: 21px" >
       <el-button @click="back">取消</el-button>
-      <el-button type="primary" @click="onSubmit('form', 'form1')" >确定</el-button>
+      <el-button type="primary" @click="onSubmit('form', 'form1')" :loading="addPageLoading">确定</el-button>
     </div>
   </div>
 </template>
@@ -122,6 +123,12 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      pickerOptions0: {
+        disabledDate (time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        }
+      },
+      addPageLoading: false,
       dialogImageUrl: '',
       dialogVisible: false,
       status: '',
@@ -201,9 +208,13 @@ export default {
               params.emiMessage.description = 1;
               params.emiMessage.publishState = 1
             }
+            this.addPageLoading = true
             this.axios.post('A2/messageService', params)
               .then((res) => {
-                this.$router.push({name: 'system'})
+                if (res) {
+                  this.$router.push({name: 'system'})
+                  this.addPageLoading = false
+                }
               })
           } else {
             return false;
@@ -248,9 +259,15 @@ export default {
             if (this.form.description === 1) {
               params.emiMessage.publishState = 1
             }
+            this.addPageLoading = true
             this.axios.post('A2/messageService', params)
               .then((res) => {
-                this.$router.push({name: 'notice-atmanagementList'})
+                if (res) {
+                  this.$router.push({name: 'notice-atmanagementList'})
+                  this.addPageLoading = false
+                } else {
+                  return false
+                }
               })
           } else {
             return false;
@@ -259,7 +276,10 @@ export default {
       }
     },
     getDepartmentList () {
-      this.axios.get('A3/authServices/organInfos')
+      let params = {
+        pageSize: 0
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data.list) {
             this.DepartmentList = res.data.list

@@ -31,7 +31,7 @@
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.receiverId" style="width: 140px;" placeholder="发布单位">
+          <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
             <el-option
               v-for="item in DepartmentList"
               :key="item.uid"
@@ -62,10 +62,10 @@
           <!--&lt;!&ndash;<div>{{scope.row.emiMessage.details.length > 20 ? (scope.row.emiMessage.details).slice(0,20) + '....': scope.row.emiMessage.details }}</div>&ndash;&gt;-->
         <!--</template>-->
       </el-table-column>
-      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center">
+      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <div  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</div>
-          <div v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}</div>
+          <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端/</span>
+          <span v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}/</span>
         </template>
       </el-table-column>
       <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
@@ -119,7 +119,7 @@ export default {
       searchForm: {
         publishState: '',
         messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
-        publishUnitId: '',
+        publishUnitId: null,
         receiverId: null,
         isReceive: '',
         publishTime: ''
@@ -155,8 +155,8 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
-      if (this.searchForm.receiverId) {
-        params['where.receiverId'] = this.searchForm.receiverId
+      if (this.searchForm.publishUnitId) {
+        params['where.publishUnitId'] = this.searchForm.publishUnitId
       }
       this.axios.get('A2/messageService/page?' + $.param(params))
         .then((res) => {
@@ -168,7 +168,10 @@ export default {
         });
     },
     getDepartmentList () {
-      this.axios.get('A3/authServices/organInfos')
+      let params = {
+        pageSize: 99999
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data.list) {
             console.log(res)
@@ -201,7 +204,7 @@ export default {
     searchFormReset () {
       this.searchForm.publishTime = '';
       this.searchForm.publishState = '';
-      this.searchForm.receiverId = '';
+      this.searchForm.publishUnitId = '';
       this.getTableData();
     },
     del (scope) {
@@ -252,13 +255,9 @@ export default {
     modify (status, scope) {
       this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
-    modifyxt () {
-      this.visible2 = false;
-      this.$router.push({name: 'notice-modify', query: {modify: false}, params: {plateId: '0'}});
-    },
     see (scope) {
       const status = '查看公告';
-      this.$router.push({name: 'notice-see', query: {status: status, messageId: scope.messageId}});
+      this.$router.push({name: 'notice-see', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
     }
   }
 }
