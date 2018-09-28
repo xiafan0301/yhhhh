@@ -19,29 +19,47 @@
           <el-form-item label="上报人手机号" label-width='150px'>
             <div class="phone-number">
               <span style='color:#333333; font-size: 13px'>{{detailForm.reporterPhone}}</span>
-              <img src="../../../../assets/img/temp/voice.png" />
-              <img src="../../../../assets/img/temp/video.png" />
+              <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
             </div>
           </el-form-item>
           <el-form-item label="上报时间" label-width='150px'>
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
-            <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
+            <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
             <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" @click='showMap' style='cursor:pointer' /></div>
           </el-form-item>
-          <el-form-item label="事件情况" label-width='150px' prop='eventDetail'>
-            <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7'></el-input>
+          <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
+            <el-input type="textarea" v-model='detailForm.eventDetail' style='width: 500px' placeholder='请选择事件详细情况...' rows='7' @input="calNumber(detailForm.eventDetail)"></el-input>
+            <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
-          <el-form-item style='margin-left: 150px'>
+          <el-form-item style='margin-left: 150px;display:flex;' class="img-form-item">
+            <div class='video-list' v-show="imgList && videoList.length > 0" style="margin-right:10px;height:100px">
+              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                <source :src="item.url" type="video/mp4">
+                <source :src="item.url" type="video/webm">
+                <source :src="item.url" type="video/ogg">
+                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+              </video>
+            </div>
             <el-upload
-              action=""
+              action="http://10.16.4.50:8001/api/network/upload/new"
               list-type="picture-card"
+              :data="imgParam"
               accept=".png,.jpg,.bmp"
               :on-preview="handlePictureCardPreview"
-              :file-list="attachmentList"
+              :file-list="imgList"
+              :before-upload='handleBeforeUpload'
+              :on-remove="handleRemove"
+              :on-success='handleSuccess'
+              :on-exceed="handleImgNumber"
+              :limit='9'
             >
+              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+              <span class='add-img-text'>添加图片</span>
             </el-upload>
+            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model='detailForm.eventType'>
@@ -143,19 +161,30 @@
 <script>
 import {dictType} from '@/config/data.js';
 import {valiPhone} from '@/utils/validator.js';
+import {ajaxCtx3} from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 export default {
   components: {mapPoint},
   data () {
     return {
+      currentNum: 0,
+      totalNum: 140,
+      isImgNumber: false,
+      urlDetail: '',
       isCloseLoading: false, // 关闭事件加载中
       isSaveLoading: false, // 保存加载中
       open: false,
       oConfig: {},
       dialogImageUrl: '',
+      imgParam: {
+        projectType: 3
+      },
       dialogVisible: false,
       dialogFormVisible: false,
       closeReturnVisiable: false,
+      videoList: [],
+      imgList: [],
       eventDetail: {}, // 事件详情
       detailForm: { // 详情表单
         eventId: '',
@@ -212,13 +241,85 @@ export default {
     this.getEventType();
     this.getEventLevel();
     this.getCloseReason();
+    this.urlDetail = ajaxCtx3;
   },
   mounted () {
     setTimeout(() => {
       this.dataStr = JSON.stringify(this.detailForm); // 将初始数据转成字符串
     }, 1000);
+    this.initMap();
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      // if (val.length > this.totalNum) {
+      //   return;
+      // }
+      this.currentNum = val.length;
+    },
+    initMap () {
+      // 地图加载
+      const map = new AMap.Map('container', {
+        resizeEnable: true
+      });
+      // 输入提示
+      const autoOptions = {
+        input: 'tipinput'
+      };
+      const auto = new AMap.Autocomplete(autoOptions);
+      const placeSearch = new AMap.PlaceSearch({
+        map: map
+      }); // 构造地点查询类
+      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+    },
+    userInfoParam () {
+      let ln = getCookie('cookieUserName');
+      if (!ln) { ln = ''; }
+      return $.param({ln: ln});
+    },
+    handleSuccess (res, file) { // 图片上传成功
+      if (res && res.data) {
+        const data = {
+          attachmentType: dictType.imgId,
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
+        }
+        this.attachmentList.push(data);
+      }
+    },
+    handleRemove (file, fileList) { // 删除图片
+      if (file) {
+        if (this.attachmentList.length > 0) {
+          this.attachmentList.map((item, index) => {
+            if (item.attachmentId === file.attachmentId || item.url === file.response.data.newFileName) {
+              this.attachmentList.splice(index, 1);
+            }
+          });
+        }
+      }
+      if (fileList.length < 9) {
+        this.isImgNumber = false;
+      }
+    },
+    handleBeforeUpload (file) { // 图片上传之前
+      const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
+      const isLtTenM = file.size / 1024 / 1024 < 10;
+      if (!isImg) {
+        this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+      }
+      if (!isLtTenM) {
+        this.$message.error('上传的图片大小不能超过10M');
+      }
+      return isImg && isLtTenM;
+    },
+    handleImgNumber (files, fileList) { // 图片超出最大个数限制
+      this.isImgNumber = true;
+    },
     handlePictureCardPreview (file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
@@ -305,6 +406,7 @@ export default {
               this.detailForm.eventType = res.data.eventType;
               this.detailForm.longitude = res.data.longitude;
               this.detailForm.latitude = res.data.latitude;
+              this.currentNum = res.data.eventDetail.length;
               if (res.data.casualties === -1) {
                 this.detailForm.casualties = '不确定';
               } else if (res.data.casualties === 0) {
@@ -319,6 +421,13 @@ export default {
               if (res.data.mutualFlag === true) {
                 this.detailForm.flagType.push('民众互助');
               }
+              res.data.attachmentList && res.data.attachmentList.map((item, index) => {
+                if (item.attachmentType === dictType.videoId) { // 视频
+                  this.videoList.push(item);
+                } else {
+                  this.imgList.push(item);
+                }
+              });
             }
           })
           .catch(() => {})
@@ -376,7 +485,6 @@ export default {
                 this.$message.error('关闭事件失败');
                 this.isCloseLoading = false;
               }
-              // this.isCloseLoading = false;
             })
             .catch(() => {})
         }
@@ -420,7 +528,6 @@ export default {
               this.$message.error('修改事件失败');
               this.isSaveLoading = false;
             }
-            // this.isSaveLoading = false;
           })
           .catch(() => {})
       });
@@ -434,6 +541,9 @@ export default {
     .untreated-body {
       background: #fff;
       margin-bottom: 2%;
+      a {
+        text-decoration: none;
+      }
       .untreated-header {
         width: 100%;
         display: flex;
@@ -458,7 +568,6 @@ export default {
       }
       .event-status-untreated {
         color: #fff;
-        // background: #1ABC9C;
         width: 100px;
         height: 40px;
         border-radius: 2px;
@@ -483,11 +592,20 @@ export default {
             span {
               margin-right: 20px;
             }
-            img {
-              width: 34px;
-              height: 34px;
-              margin-right: 10px;
+            .relation-person {
               cursor: pointer;
+              border: 1px solid #EAEAEA;
+              width: 110px;
+              color: #0785FD;
+              height: 30px;
+              line-height: 30px;
+              font-size: 14px;
+              text-align: center;
+              font-weight: 500;
+              i {
+                margin-right: 5px;
+                font-size: 18px;
+              }
             }
           }
           .flag-type-item {
@@ -497,6 +615,34 @@ export default {
             }
             /deep/ .el-form-item__error {
               margin-top: -10px;
+            }
+          }
+          .event-detail {
+            position: relative;
+            .number-tip {
+              position: absolute;
+              bottom: 0;
+              left: 450px;
+              color: #999999;
+              font-size: 13px;
+            }
+          }
+        }
+        .img-form-item /deep/ .el-form-item__content{
+          display: flex;
+          .img-list {
+            // width: 100px;
+            height: 100px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            .error-item {
+              position: absolute;
+              top: -10px;
+              right: -8px;
+              font-size: 18px;
+              color: #666;
+              z-index: 1;
             }
           }
         }
@@ -576,20 +722,31 @@ export default {
         color:#666666;
       }
     }
-    /deep/ .el-upload--picture-card {
+     /deep/ .el-upload--picture-card {
       width: 100px;
       height: 100px;
       line-height: 100px;
       background-color: #EAEAEA;
       border: 1px solid #EAEAEA;
       position: relative;
+      i {
+        margin: 0 auto;
+        font-weight: bold;
+      }
+      .add-img-text {
+        color: #C4C2C2;
+        font-size: 13px;
+        display: block;
+        width: 54px;
+        height: 13px;
+        position: absolute;
+        top: 25%;
+        left: 25%;
+      }
     }
     /deep/ .el-upload-list--picture-card .el-upload-list__item {
       width: 100px !important;
       height: 100px !important;
-    }
-    /deep/ .el-upload--picture-card {
-      display: none;
     }
     .img-dialog {
       /deep/ .el-dialog__header {
@@ -598,9 +755,6 @@ export default {
        /deep/  .el-dialog__body {
         text-align: center !important;
       }
-    }
-    /deep/ .el-upload-list__item-delete {
-      display: none !important;
     }
   }
 </style>

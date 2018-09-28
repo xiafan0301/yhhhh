@@ -71,15 +71,17 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <div class='img-list' id="imgs" v-show="imgList && imgList.length > 0"></div>
-            <div class='video-list' v-show="imgList && videoList.length > 0">
-              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
-                <source :src="item.url" type="video/mp4">
-                <source :src="item.url" type="video/webm">
-                <source :src="item.url" type="video/ogg">
-                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
-              </video>
+            <div style="width:100%">
+              <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
+              <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
+                <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+                poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                  <source :src="item.url" type="video/mp4">
+                  <source :src="item.url" type="video/webm">
+                  <source :src="item.url" type="video/ogg">
+                  <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+                </video>
+              </div>
             </div>
           </div>
         </div>
@@ -140,7 +142,7 @@
                     </template>
                     <div class='content-right'>
                       <div class='time'>{{item.createTime}}</div>
-                      <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
+                      <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
                     </div>
                   </li>
                 </ul>
