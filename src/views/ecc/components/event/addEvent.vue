@@ -38,8 +38,8 @@
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
+              <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
             </el-upload>
-            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model="addForm.eventType">
@@ -355,8 +355,15 @@ export default {
       if (file && file.response) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
-            if (item.attachmentId === file.attachmentId || item.url === file.response.data.newFileName) {
-              this.addForm.attachmentList.splice(index, 1);
+            if (file.response) {
+              if (item.url === file.response.data.newFileName) {
+                this.addForm.attachmentList.splice(index, 1);
+              }
+            }
+            if (file.attachmentId) {
+              if (item.attachmentId === file.attachmentId) {
+                this.addForm.attachmentList.splice(index, 1);
+              }
             }
           });
         }
@@ -444,12 +451,15 @@ export default {
             line-height: 35px;
             background-color: #FEE6E0;
             border-radius: 2px;
-            position: relative;
+            position: absolute;
             color: #FA796C;
             padding-top: 0;
             padding: 0 13px 0 26px;
+            -ms-flex-item-align: center;
             align-self: center;
-            margin-left: 10px;
+            width: 160px;
+            left: 105px;
+            top: 50px;
           }
           .imgTips:before {
             content: '!';

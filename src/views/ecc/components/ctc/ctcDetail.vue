@@ -252,7 +252,7 @@ export default {
         ],
         taskName: [
           { required: true, message: '请填写任务名称', trigger: 'blur' },
-          { max: 50, message: '最多可以输入500个字' }
+          { max: 50, message: '最多可以输入50个字' }
         ],
         taskContent: [
           { required: true, message: '请填写任务内容', trigger: 'blur' },
@@ -474,7 +474,10 @@ export default {
         .catch(() => {})
     },
     getDepartmentList () { // 获取部门列表
-      this.axios.get('A3/authServices/organInfos')
+      const params = {
+        pageSize: 0
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data) {
             this.departmentList = res.data.list;
