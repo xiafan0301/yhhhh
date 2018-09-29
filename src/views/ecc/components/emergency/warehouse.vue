@@ -67,7 +67,7 @@ export default {
         warehouseId: '',
         warehouseName: ''
       },
-      DepartmentList: [{uid: 'f6a2a5d4-8d0b-47c3-ad31-78bd1b4a6ed7'}],
+      DepartmentList: [],
       rule: {
         warehouseName: [
           { required: true, message: '请输入仓库名称', trigger: 'blur' },

@@ -45,7 +45,7 @@ export default {
       } else {
         let reg = /^[a-zA-Z0-9]{6,32}$/
         if (!reg.test(value)) {
-          return callback(new Error('密码长度必须是6位到32位'));
+          return callback(new Error('密码为6-32个数字或英文字母组合'));
         }
         if (this.pwdForm.confirmPwd !== '') {
           // 对第二个密码框单独验证
@@ -77,7 +77,7 @@ export default {
         ],
         newPwd: [
           {required: true, message: '新密码不能为空', trigger: 'blur'},
-          {type: 'string', min: 6, max: 32, message: '密码长度6-32位', trigger: 'blur'},
+          {type: 'string', min: 6, max: 32, message: '密码为6-32个数字或英文字母组合', trigger: 'blur'},
           {validator: validatePass, trigger: 'blur'}
         ],
         confirmPwd: [
