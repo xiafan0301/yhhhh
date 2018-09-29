@@ -7,8 +7,8 @@
       </el-breadcrumb>
     </div>
     <div style="display: flex;">
-    <div style=" width: 21%;background-color: #FAFAFA" class="warehouse">
-      <div style="padding:20px 10px; box-sizing: border-box" class="clearfix">
+    <div style=" width: 21%;" class="warehouse">
+      <div style="padding:20px 10px; box-sizing: border-box; background-color: #FAFAFA;" class="clearfix">
         <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
         <!--<div @click="registrationChoice(0)"  style="padding:20px 20px 20px 15px; background-color: #fff; border-bottom: 1px solid #EAEAEA"> 所有仓库</div>-->
@@ -30,11 +30,12 @@
             <!--</li>-->
           <!--</ul>-->
           <el-table
-            :highlight-current-row ="true"
-            :row-class-name="bb"
+            height="650"
+            ref="singleTable"
+            highlight-current-row
+            @current-change="handleCurrentChange"
             @row-click="rowclick"
             :show-header = 'false'
-            :cell-style = "cellStyle"
             :data="tableDatack"
             empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
@@ -131,6 +132,7 @@ var list = [];
 export default {
   data () {
     return {
+      statusindex: 0,
       visible2: false,
       visitType: 0,
       searchForm: {
@@ -151,14 +153,19 @@ export default {
     this.getTableDatack();
   },
   mounted () {
+    if (this.$route.params.statusindex) {
+      this.statusindex = this.$route.params.statusindex
+    }
   },
   methods: {
-    bb (row, rowindex) {
+    setCurrent (row) {
+      this.$refs.singleTable.setCurrentRow(row);
     },
-    cellStyle (row, column, rowindex) {
+    handleCurrentChange (row) {
+      this.searchForm.warehouseId = row.warehouseId;
+      this.getTableData();
     },
     rowclick (row, event, column) {
-      console.log(row);
       this.searchForm.warehouseId = row.warehouseId;
       this.getTableData();
     },
@@ -190,18 +197,9 @@ export default {
       };
       this.axios.get('A2/warehouseService/page', {params})
         .then((res) => {
-          this.tableDatack.push({warehouseName: '所有仓库'})
-          res.data.list.forEach(aa => {
-            this.tableDatack.push(aa)
-          });
-          // this.tableDatack && this.tableDatack.map((item, index) => {
-          //   this.tableData && this.tableData.map((ite, inde) => {
-          //     if (item.warehouseId === ite.warehouseId) {
-          //       this.tableData[inde].warehouseName = item.warehouseName;
-          //       console.log(this.tableData)
-          //     }
-          //   });
-          // });
+          this.tableDatack = res.data.list;
+          this.tableDatack.unshift({warehouseName: '所有仓库'})
+          this.setCurrent(this.tableDatack[this.statusindex])
         })
         .catch(() => {
         });
@@ -224,6 +222,7 @@ export default {
     },
     del (status, scope) {
       let messageStatus = ''
+      let isconfirmButtonText = true
       if (status === 'material') {
         messageStatus = '确认删除吗'
       } else {
@@ -231,13 +230,16 @@ export default {
           messageStatus = '删除后不可恢复，是否确认删除'
         } else {
           messageStatus = '不可删除，请先删除该仓库下的物资'
+          isconfirmButtonText = false
         }
       }
+      console.log(isconfirmButtonText)
       // 不可删除，请先删除该仓库下的物资
       this.$confirm(messageStatus, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
-        type: 'warning'
+        type: 'warning',
+        showConfirmButton: isconfirmButtonText
       })
         .then(() => {
           if (scope) {
@@ -262,11 +264,11 @@ export default {
               this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
                 .then((res) => {
                   if (res) {
-                    this.getTableDatack();
                     this.$message({
                       type: 'success',
                       message: '删除成功!'
                     });
+                    this.getTableDatack();
                   } else {
                     this.$message.error('删除失败');
                   }
