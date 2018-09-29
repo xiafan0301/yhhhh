@@ -16,7 +16,7 @@
             <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
-            <el-input style='width: 500px' placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
+            <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='addForm.eventAddress'></el-input>
             <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
@@ -33,11 +33,13 @@
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
               :on-success='handleSuccess'
+              :on-exceed="handleImgNumber"
               :limit='9'
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
             </el-upload>
+            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model="addForm.eventType">
@@ -119,6 +121,7 @@ export default {
       isAddLoading: false, // 保存加载中图标
       isDieError: false,
       dieTip: '',
+      isImgNumber: false,
       imgParam: {
         projectType: 3
       },
@@ -174,12 +177,28 @@ export default {
     this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串
     this.getEventType();
     this.getEventLevel();
+    this.initMap();
   },
   methods: {
+    initMap () {
+      // 地图加载
+      const map = new AMap.Map('container', {
+        resizeEnable: true
+      });
+      // 输入提示
+      const autoOptions = {
+        input: 'tipinput'
+      };
+      const auto = new AMap.Autocomplete(autoOptions);
+      const placeSearch = new AMap.PlaceSearch({
+        map: map
+      }); // 构造地点查询类
+      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+    },
     calNumber (val) { // 计算事件情况字数
-      if (val.length > this.totalNum) {
-        return;
-      }
+      // if (val.length > this.totalNum) {
+      //   return;
+      // }
       this.currentNum = val.length;
     },
     skipCtcDetail (form) { // 跳到调度指挥方案制定页面
@@ -198,12 +217,13 @@ export default {
           }
           this.axios.post('A2/eventServices/event', param.emiEvent)
             .then((res) => {
-              if (res) {
+              if (res && res.data) {
+                console.log(res)
                 this.$message({
                   message: '添加事件成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'ctc-detail', query: {addForm: this.addForm}});
+                this.$router.push({name: 'ctc-detail', query: {eventId: res.data}});
               } else {
                 this.$message.error('添加事件失败');
               }
@@ -335,11 +355,14 @@ export default {
       if (file && file.response) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
-            if (item.url === file.response.data.newFileName) {
+            if (item.attachmentId === file.attachmentId || item.url === file.response.data.newFileName) {
               this.addForm.attachmentList.splice(index, 1);
             }
           });
         }
+      }
+      if (fileList.length < 9) {
+        this.isImgNumber = false;
       }
     },
     deleteImg (url) {
@@ -362,6 +385,9 @@ export default {
         this.$message.error('上传的图片大小不能超过10M');
       }
       return isImg && isLtTenM;
+    },
+    handleImgNumber (files, fileList) { // 图片超出最大个数限制
+      this.isImgNumber = true;
     }
   }
 }
@@ -402,6 +428,34 @@ export default {
             content: '!';
             position: absolute;
             left: 5px;
+            top: 9px;
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            line-height: 16px;
+            color: #FFF;
+            font-weight: bold;
+            background-color: #FA796C;
+            border-radius: 50%;
+          }
+          .imgTips {
+            border: 1px solid #FA796C;
+            height: 35px;
+            line-height: 35px;
+            background-color: #FEE6E0;
+            border-radius: 2px;
+            position: relative;
+            color: #FA796C;
+            padding-top: 0;
+            padding: 0 13px 0 26px;
+            align-self: center;
+            margin-left: 10px;
+          }
+          .imgTips:before {
+            content: '!';
+            position: absolute;
+            left: 5px;
+            right: 0px;
             top: 9px;
             width: 15px;
             height: 15px;

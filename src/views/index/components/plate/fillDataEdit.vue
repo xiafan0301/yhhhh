@@ -84,12 +84,12 @@
                   <template v-if='info.configCount !== 0'>
                     <tbody v-for='(item, index) in info.configCount' :key='index'>
                       <tr>
-                        <td><input type="text" v-model="itemName[index + '_' + info.serialNumber]" placeholder='请填写'></td>
-                        <td><input type="text" @blur="regValueSixNumber(valueContent[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContent[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" v-model="itemNameSix[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" @blur="regValueSixNumbers(valueContentSix[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="valueContentSix[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                         <td>
-                          <input type="text" v-model="valueUnit[index + '_' + info.serialNumber]" placeholder='请填写'>
+                          <input type="text" v-model="valueUnitSix[index + '_' + info.serialNumber]" placeholder='请填写'>
                         </td>
-                        <td><input type="text" @blur="regPercentSixNumber(percentValueOne[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="percentValueOne[index + '_' + info.serialNumber]" placeholder='请填写'></td>
+                        <td><input type="text" @blur="regPercentSixNumbers(percentValueSix[index + '_' + info.serialNumber], index, info.serialNumber)" v-model="percentValueSix[index + '_' + info.serialNumber]" placeholder='请填写'></td>
                       </tr>
                     </tbody>
                   </template>
@@ -724,7 +724,12 @@ export default {
       configCountFour: 1,
       plateAreaId: {},
       indexValue: 0,
+      indexValueSix: 0,
       indexValueFour: 0,
+      itemNameSix: {},
+      valueContentSix: {},
+      valueUnitSix: {},
+      percentValueSix: {},
       itemName: {},
       valueUnit: {},
       valueContent: {},
@@ -1134,6 +1139,22 @@ export default {
       }
       this.numberObjThree = valueObj;
     },
+    regValueSixNumbers (value, index, number) { // 类型六-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.valueContentSix));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.valueContentSix = valueObj;
+    },
+    regPercentSixNumbers (value, index, number) { // 类型六-校验输入框的值是否为数字
+      const reg = /^(-)?\d+(\.\d+)?$/;
+      let valueObj = JSON.parse(JSON.stringify(this.percentValueSix));
+      if (!reg.test(value)) {
+        valueObj[index + '_' + number] = '';
+      }
+      this.percentValueSix = valueObj;
+    },
     regLayerThreeNumber (value, index, idx) { // 类型三-校验输入框的值是否为数字
       const reg = /^(-)?\d+(\.\d+)?$/;
       let valueObj = JSON.parse(JSON.stringify(this.numberLayerObjThree));
@@ -1263,7 +1284,7 @@ export default {
           }
         }
       });
-      let data = {};
+      let data = {}, dataSix = {};
       for (let i in this.itemName) {
         let str = i.split('_');
         if (this.percentValueOne[i] !== undefined) {
@@ -1303,6 +1324,55 @@ export default {
               contentName: this.itemName[i],
               valueContent: this.valueContent[i] ? this.valueContent[i] : '',
               valueUnit: this.valueUnit[i] ? this.valueUnit[i] : '',
+              graphicFieldFlag: false,
+              supernatantFieldFlag: false,
+              sumFlag: false,
+              serialNumber: 1,
+              contnetSubItemExtendList: []
+            }]
+          }
+        }
+        this.contentItemListOne.push(data);
+      }
+      for (let i in this.itemNameSix) {
+        let str = i.split('_');
+        if (this.percentValueSix[i] !== undefined) {
+          data = {
+            itemName: this.itemNameSix[i],
+            serialNumber: ++this.indexValueSix,
+            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            contentSubItemList: [
+              {
+                contentName: this.itemNameSix[i],
+                valueContent: this.valueContentSix[i] ? this.valueContentSix[i] : '',
+                valueUnit: this.valueUnitSix[i] ? this.valueUnitSix[i] : '',
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                serialNumber: 1,
+                contnetSubItemExtendList: []
+              },
+              {
+                contentName: '',
+                valueContent: this.percentValueSix[i] ? this.percentValueSix[i] : '',
+                valueUnit: '%',
+                graphicFieldFlag: false,
+                supernatantFieldFlag: false,
+                sumFlag: false,
+                serialNumber: 2,
+                contnetSubItemExtendList: []
+              }
+            ]
+          }
+        } else {
+          data = {
+            itemName: this.itemNameSix[i],
+            serialNumber: ++this.indexValueSix,
+            plateAreaId: this.plateAreaId[parseInt(str[1])],
+            contentSubItemList: [{
+              contentName: this.itemNameSix[i],
+              valueContent: this.valueContentSix[i] ? this.valueContentSix[i] : '',
+              valueUnit: this.valueUnitSix[i] ? this.valueUnitSix[i] : '',
               graphicFieldFlag: false,
               supernatantFieldFlag: false,
               sumFlag: false,
@@ -1687,51 +1757,15 @@ export default {
       if (this.value !== '不关联') {
         const i = 2;
         this.parentDataListTwo.map((item, index) => {
-          itemNameObj[index + '_' + i] = this.itemName[index + '_' + i];
-          valueContentObj[index + '_' + i] = this.valueContent[index + '_' + i];
-          valueUnitObj[index + '_' + i] = this.valueUnit[index + '_' + i];
-          percentValueOneObj[index + '_' + i] = this.percentValueOne[index + '_' + i];
+          itemNameObj[index + '_' + i] = this.itemNameSix[index + '_' + i];
+          valueContentObj[index + '_' + i] = this.valueContentSix[index + '_' + i];
+          valueUnitObj[index + '_' + i] = this.valueUnitSix[index + '_' + i];
+          percentValueOneObj[index + '_' + i] = this.percentValueSix[index + '_' + i];
         });
-        for (let i in itemNameObj) {
-          const str = i.split('_');
-          let str1;
-          for (let j in this.itemName) {
-            str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.itemName, j);
-            }
-          }
-        }
-        for (let i in valueContentObj) {
-          const str = i.split('_');
-          let str1;
-          for (let j in this.valueContent) {
-            str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.valueContent, j);
-            }
-          }
-        }
-        for (let i in valueUnitObj) {
-          const str = i.split('_');
-          let str1;
-          for (let j in this.valueUnit) {
-            str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.valueUnit, j);
-            }
-          }
-        }
-        for (let i in percentValueOneObj) {
-          const str = i.split('_');
-          let str1;
-          for (let j in this.percentValueOne) {
-            str1 = j.split('_');
-            if (str[0] !== str1[0] && str[1] === str1[1]) {
-              this.$delete(this.percentValueOne, j);
-            }
-          }
-        }
+        this.itemNameSix = JSON.parse(JSON.stringify(itemNameObj));
+        this.valueContentSix = JSON.parse(JSON.stringify(valueContentObj));
+        this.valueUnitSix = JSON.parse(JSON.stringify(valueUnitObj));
+        this.percentValueSix = JSON.parse(JSON.stringify(percentValueOneObj));
       }
     },
     deleteParentDataThree (name, idx) { // 类型三的删除主项
@@ -2582,17 +2616,16 @@ export default {
                         this.isActiveParent = 0;
                       }
                     } else if (items.areaDataType === 6) {
-                      console.log('66666')
                       if (items.contentItemList.length > 0) {
                         items.contentItemList.map((item, index) => {
-                          this.itemName[index + '_' + items.serialNumber] = item.itemName;
+                          this.itemNameSix[index + '_' + items.serialNumber] = item.itemName;
                           if (item.contentSubItemList.length > 0) {
                             item.contentSubItemList.map((value, idx) => {
                               if (value.serialNumber === 1) {
-                                this.valueContent[index + '_' + items.serialNumber] = value.valueContent;
-                                this.valueUnit[index + '_' + items.serialNumber] = value.valueUnit;
+                                this.valueContentSix[index + '_' + items.serialNumber] = value.valueContent;
+                                this.valueUnitSix[index + '_' + items.serialNumber] = value.valueUnit;
                               } else {
-                                this.percentValueOne[index + '_' + items.serialNumber] = value.valueContent;
+                                this.percentValueSix[index + '_' + items.serialNumber] = value.valueContent;
                               }
                             });
                           }
