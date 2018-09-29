@@ -32,7 +32,7 @@
             <!--</ul >-->
           <!--</div>-->
       </li>
-        <li><span class="title">发布用户</span><span class="content">{{seeplanList.createRealName && seeplanList.createRealName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
+        <li><span class="title">发布用户</span><span class="content">{{seeplanList.createUserName && seeplanList.createUserName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px; position: relative" >
