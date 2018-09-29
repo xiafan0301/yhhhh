@@ -19,7 +19,7 @@
             <el-option label="推荐坐标" :value="1"></el-option>
           </el-select>
           <el-button icon="el-icon-search" @click.native="searchFormSubmit" type="primary" >查询</el-button>
-          <el-button  @click.native="searchreFormSubmit" class="selectBtn">重置</el-button>
+          <el-button  @click.native="searchreFormSubmit">重置</el-button>
         </el-form-item>
       </el-form>
       <!--贫困村添加-->
@@ -1517,7 +1517,6 @@ export default {
             if (res && res.data) {
               this.plateList = res.data.list;
               this.total = res.data.total;
-              console.log(res)
             }
           })
       }
@@ -1562,7 +1561,6 @@ export default {
         locationTag: scope.row.locationTag,
         longitude: scope.row.longitude
       };
-      console.log(scope);
       this.form.name = this.obj.locationName;
       this.form.households = this.obj.dataExtendList[1].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
@@ -1702,7 +1700,6 @@ export default {
         locationTag: scope.row.locationTag,
         longitude: scope.row.longitude
       };
-      console.log(scope);
       this.form.name = this.obj.locationName;
       this.form.households = this.obj.dataExtendList[0].valueContent;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
@@ -1902,7 +1899,6 @@ export default {
         locationTag: scope.row.locationTag,
         longitude: scope.row.longitude
       };
-      console.log(this.obj);
       this.form.name = this.obj.locationName;
       this.form.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form.addrs = this.obj.dataExtendList[0].valueContent
@@ -1952,7 +1948,6 @@ export default {
         locationTag: scope.row.locationTag,
         longitude: scope.row.longitude
       };
-      console.log(this.obj);
       this.form2.name = this.obj.locationName;
       this.form2.coordinate = this.obj.longitude + ',' + this.obj.latitude;
       this.form2.addrs = this.obj.dataExtendList[0].valueContent
@@ -1986,7 +1981,6 @@ export default {
     // 删除数据
     shchu (scope) {
       this.dialogVisible = true;
-      console.log(scope.row.dataId);
       this.shchuId = scope.row.dataId
     },
     qued () {
@@ -2284,10 +2278,8 @@ export default {
     },
     // 导入数据
     handleRemove (file, fileList) {
-      console.log(file, fileList);
     },
     handlePreview (response, file, fileList) {
-      console.log(response);
       if (response.code === '00000000') {
         let _this = this;
         _this.$msgbox({
