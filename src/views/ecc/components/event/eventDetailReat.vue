@@ -32,8 +32,7 @@
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
               <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
-              <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
-              <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
+              <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
             </div>
             <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
@@ -55,15 +54,17 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <div class='img-list' id="imgs" v-show="imgList && imgList.length > 0"></div>
-            <div class='video-list' v-show="imgList && videoList.length > 0">
-              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
-                <source :src="item.url" type="video/mp4">
-                <source :src="item.url" type="video/webm">
-                <source :src="item.url" type="video/ogg">
-                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
-              </video>
+            <div style="width:100%;">
+              <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
+              <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
+                <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+                poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                  <source :src="item.url" type="video/mp4">
+                  <source :src="item.url" type="video/webm">
+                  <source :src="item.url" type="video/ogg">
+                  <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+                </video>
+              </div>
             </div>
           </div>
         </div>
@@ -118,7 +119,7 @@
                 </template>
                 <div class='content-right'>
                   <div class='time'>{{item.createTime}}</div>
-                  <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
+                  <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
                 </div>
               </li>
             </ul>
@@ -189,11 +190,14 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {ajaxCtx3} from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
       isDeleteLoading: false, // 删除评论加载中
       closeCommentVisiable: false,
+      urlDetail: '',
       delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
       dialogImageUrl: '',
@@ -213,8 +217,14 @@ export default {
   mounted () {
     this.getEventDetail();
     this.getCommentList();
+    this.urlDetail = ajaxCtx3;
   },
   methods: {
+    userInfoParam () {
+      let ln = getCookie('cookieUserName');
+      if (!ln) { ln = ''; }
+      return $.param({ln: ln});
+    },
     // 预览图片公共方法
     previewPictures (data) {
       setTimeout(() => {
@@ -350,6 +360,9 @@ export default {
     }
     .event-detail-body {
       width: 100%;
+      a {
+        text-decoration: none;
+      }
       .basic, .ctc,.event-progress,.event-summary,.close-reason {
         background: #fff;
         margin-bottom: 2%;
@@ -422,12 +435,12 @@ export default {
           .img-content {
             width: 100%;
             padding-left: 80px;
-            img {
-              width: 100px;
-              height: 75px;
-              margin-right: 1%;
-              margin-top: 1%;
-            }
+            // img {
+            //   width: 100px;
+            //   height: 75px;
+            //   margin-right: 1%;
+            //   margin-top: 1%;
+            // }
           }
         }
         .ctc-content {
@@ -579,6 +592,21 @@ export default {
         height:1px;
         margin: 1% 0;
         background: #EAEAEA;
+      }
+      .relation-person {
+        cursor: pointer;
+        border: 1px solid #EAEAEA;
+        width: 110px !important;
+        color: #0785FD;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 500;
+        i {
+          margin-right: 5px;
+          font-size: 18px;
+        }
       }
     }
     .operation-btn-event {
