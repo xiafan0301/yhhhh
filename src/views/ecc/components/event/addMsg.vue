@@ -45,8 +45,8 @@
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加图片</span>
+              <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
             </el-upload>
-            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>
@@ -245,8 +245,15 @@ export default {
       if (file) {
         if (this.operationForm.attachmentList.length > 0) {
           this.operationForm.attachmentList.map((item, index) => {
-            if (item.attachmentId === file.attachmentId || item.url === file.response.data.newFileName) {
-              this.operationForm.attachmentList.splice(index, 1);
+            if (file.response) {
+              if (item.url === file.response.data.newFileName) {
+                this.operationForm.attachmentList.splice(index, 1);
+              }
+            }
+            if (file.attachmentId) {
+              if (item.attachmentId === file.attachmentId) {
+                this.operationForm.attachmentList.splice(index, 1);
+              }
             }
           });
         }
@@ -453,12 +460,15 @@ export default {
             line-height: 35px;
             background-color: #FEE6E0;
             border-radius: 2px;
-            position: relative;
+            position: absolute;
             color: #FA796C;
             padding-top: 0;
             padding: 0 13px 0 26px;
+            -ms-flex-item-align: center;
             align-self: center;
-            margin-left: 10px;
+            width: 160px;
+            left: 105px;
+            top: 50px;
           }
           .imgTips:before {
             content: '!';

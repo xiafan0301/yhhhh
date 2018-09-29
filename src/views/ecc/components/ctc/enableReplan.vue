@@ -320,7 +320,10 @@ export default {
       }
     },
     getDepartmentList () { // 获取部门列表
-      this.axios.get('A3/authServices/organInfos')
+      const params = {
+        pageSize: 0
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
           if (res && res.data) {
             this.departmentList = res.data.list;

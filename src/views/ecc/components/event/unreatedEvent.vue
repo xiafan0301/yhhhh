@@ -296,8 +296,15 @@ export default {
       if (file) {
         if (this.attachmentList.length > 0) {
           this.attachmentList.map((item, index) => {
-            if (item.attachmentId === file.attachmentId || item.url === file.response.data.newFileName) {
-              this.attachmentList.splice(index, 1);
+            if (file.response) {
+              if (item.url === file.response.data.newFileName) {
+                this.attachmentList.splice(index, 1);
+              }
+            }
+            if (file.attachmentId) {
+              if (item.attachmentId === file.attachmentId) {
+                this.attachmentList.splice(index, 1);
+              }
             }
           });
         }
@@ -626,6 +633,30 @@ export default {
               color: #999999;
               font-size: 13px;
             }
+          }
+          /deep/ .el-form-item__error {
+            border: 1px solid #FA796C;
+            height: 35px;
+            line-height: 35px;
+            background-color: #FEE6E0;
+            border-radius: 2px;
+            color: #FA796C;
+            padding-top: 0;
+            padding: 0 13px 0 26px;
+          }
+          /deep/ .el-form-item__error:before {
+            content: '!';
+            position: absolute;
+            left: 5px;
+            top: 9px;
+            width: 15px;
+            height: 15px;
+            text-align: center;
+            line-height: 16px;
+            color: #FFF;
+            font-weight: bold;
+            background-color: #FA796C;
+            border-radius: 50%;
           }
         }
         .img-form-item /deep/ .el-form-item__content{
