@@ -30,7 +30,7 @@
           <el-form-item label="邮箱" prop="userEmail">
             <el-input v-model="createUserData.userEmail" placeholder="请输入用户邮箱"/>
           </el-form-item>
-          <el-form-item label="居住地">
+          <el-form-item label="居住地" prop="city">
             <el-select
               v-model="createUserData.province"
               style="width: 246px;"
@@ -46,14 +46,14 @@
               clearable
               placeholder="请选择城市">
               <el-option v-for="item in cityData" :key="item.adcode" :label="item.name" :value="item.name"/>
-              <el-option v-if="!createUserData.province">请先选择省份</el-option>
+              <el-option v-if="!createUserData.province" value="item.name">请先选择省份</el-option>
             </el-select>
           </el-form-item>
         </el-form>
       </div>
       <div class="bottom-btn">
         <span @click="goBack">返 回</span>
-        <span @click="onCreateSinger">创 建</span>
+        <span @click="onCreateSinger('form')">创 建</span>
       </div>
       <!--<div class="box-multi-create">-->
         <!--<div class="title"><span>批量创建</span></div>-->
@@ -158,10 +158,16 @@ export default {
       })
     },
     onSelectPhoto () {},
-    onCreateSinger () {
-      this.$refs['form'].validate(valid => {
+    onCreateSinger (form) {
+      this.$refs[form].validate(valid => {
         if (valid) {
           // this.createUserData.province = this.createUserData.province.cname;
+          if (this.createUserData.userEmail === '') {
+            this.createUserData.userEmail = null
+          }
+          if (this.createUserData.userIdcard === '') {
+            this.createUserData.userIdcard = null
+          }
           this.axios.post('A2/authServices/user', this.createUserData)
             .then(res => {
               if (res) {
