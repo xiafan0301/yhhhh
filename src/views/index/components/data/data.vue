@@ -13,7 +13,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="坐标状态" v-if="o[searchForm.dataTypeId]">
-          <el-select v-model="searchForm.coordinateStatus" placeholder="选择坐标状态" style="width: 160px;" >
+          <el-select v-model="searchForm.coordinateStatus" placeholder="选择坐标状态" style="width: 160px;" @change="getStatusValue">
             <el-option label="无坐标" :value="-1"></el-option>
             <el-option label="精确坐标" :value="0"></el-option>
             <el-option label="推荐坐标" :value="1"></el-option>
@@ -1371,7 +1371,8 @@ export default {
         '61894e2c-7738-41af-b797-b8d735a44428': '注册资金(万元)',
         '1bfa2f78-2174-4e9d-8f2f-58264a00ce83': '注册资金(万元)',
         '9487e07e-6b2f-49c6-b464-2216a680cc3e': '注册资金(万元)'
-      }
+      },
+      time: ''
     }
   },
   computed: {
@@ -1398,18 +1399,17 @@ export default {
       this.status = '加载坐标中';
       this.calcCoordinateLoading = true;
       setTimeout(() => {
-        this.axios.get('/mapServices/data/calcCoordinate')
-          .then(res => {
-            this.calcCoordinateLoading = false;
-            this.status = '加载完成！';
-            this.staclass = '';
-            this.getPlateList();
-          })
-          .catch(() => {});
-      }, 2000);
-      // if (this.calcCoordinateLoading === false) {
-      //   this.status = '获取坐标'
-      // }
+        this.calcCoordinateLoading = false;
+        this.status = '加载完成！';
+        this.staclass = '';
+      }, 3000);
+      this.axios.get('/mapServices/data/calcCoordinate')
+        .then(res => {
+        })
+        .catch(() => {});
+      this.time = setInterval(() => {
+        this.getPlateList();
+      }, 1000)
     },
     searchFormSubmit () {
       this.getPlateList();
@@ -1476,8 +1476,12 @@ export default {
     // 下拉框事件
     getValue: function (scope) {
       this.searchForm.dataTypeId = scope;
+      clearInterval(this.time)
       this.getPlateList();
       this.status = ''
+    },
+    getStatusValue () {
+      clearInterval(this.time)
     },
     // 点击事件
     query: function (val) {
@@ -2318,6 +2322,9 @@ export default {
     },
     beforeRemove (file, fileList) {
     }
+  },
+  destroyed () {
+    clearInterval(this.time)
   }
 }
 </script>

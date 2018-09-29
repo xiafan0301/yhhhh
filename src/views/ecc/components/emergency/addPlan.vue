@@ -235,12 +235,10 @@ export default {
               .then((res) => {
                 if (res) {
                   this.$message({
-                    message: '添加消息成功',
+                    message: '添加预案成功',
                     type: 'success'
                   });
                   this.$router.push({name: 'emergency-planList'})
-                } else {
-                  this.$message.error('已存在同名预案记录!');
                 }
               })
           } else {
@@ -287,8 +285,6 @@ export default {
                     type: 'success'
                   });
                   this.$router.push({name: 'emergency-planList'})
-                } else {
-                  this.$message.error('修改预案失败');
                 }
               })
           }

@@ -87,7 +87,7 @@
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
           <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
           <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
           <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"/>
           <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
@@ -127,9 +127,7 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
-      tableData: [
-        {emiMessage: []}
-      ],
+      tableData: [],
       DepartmentList: []
     }
   },

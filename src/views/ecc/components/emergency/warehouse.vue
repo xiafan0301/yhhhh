@@ -1,5 +1,5 @@
 <template>
-  <div class="add-plan-person">
+  <div class="addwarehouse-plan-person">
     <div class='add-msg-header'>
       <el-breadcrumb separator="/">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
@@ -67,7 +67,7 @@ export default {
         warehouseId: '',
         warehouseName: ''
       },
-      DepartmentList: [],
+      DepartmentList: [{uid: 'f6a2a5d4-8d0b-47c3-ad31-78bd1b4a6ed7'}],
       rule: {
         warehouseName: [
           { required: true, message: '请输入仓库名称', trigger: 'blur' },
@@ -151,7 +151,7 @@ export default {
             this.axios.post('A2/warehouseService', params)
               .then((res) => {
                 this.addLoading = false
-                this.$router.push({name: 'emergency-materialList'});
+                this.$router.push({name: 'emergency-materialList', params: {statusindex: 1}});
               })
           } else {
             let params = this.form;
@@ -182,8 +182,8 @@ export default {
   }
 }
 </script>
-<style lang="scss">
-  .add-plan-person {
+<style lang="scss" scoped>
+  .addwarehouse-plan-person {
     padding: 20px;
     .add-msg-header {
       margin-bottom: 20px;

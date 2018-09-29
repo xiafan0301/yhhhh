@@ -79,7 +79,7 @@
         </el-form-item>
         <el-form-item label="上级部门" label-width='100px'>
           <el-select placeholder="请选择上级部门" style='width: 98%' v-model='addForm.organPid'>
-            <el-option v-for="item in departmentList" :key="item.uid" :label="item.organName" :value="item.uid"></el-option>
+            <el-option v-for="item in departmentList1" :key="item.uid" :label="item.organName" :value="item.uid"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="部门负责人" label-width='100px' class="depart-charge">
@@ -136,6 +136,7 @@ export default {
       },
       pagination: { total: 0, pageSize: 10, pageNum: 1 },
       departmentList: [],
+      departmentList1: [],
       addForm: {
         organName: null,
         organPid: null,
@@ -154,6 +155,7 @@ export default {
   },
   mounted () {
     this.getDepartmentList();
+    this.getDepartmentList1();
   },
   methods: {
     goDetail (row) {
@@ -186,6 +188,21 @@ export default {
           if (res && res.data.list) {
             this.departmentList = res.data.list;
             this.pagination.total = res.data.total;
+          }
+        })
+        .catch(() => {})
+    },
+    getDepartmentList1 () {
+      if (!this.selectForm.organName) {
+        this.selectForm.organName = null;
+      }
+      const params = {
+        pageSize: 0
+      }
+      this.axios.get('A3/authServices/organInfos', {params})
+        .then((res) => {
+          if (res && res.data.list) {
+            this.departmentList1 = res.data.list;
           }
         })
         .catch(() => {})
