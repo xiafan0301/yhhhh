@@ -15,8 +15,8 @@
           <el-form-item label="岗位角色" prop="userIdentity">
             <el-input v-model="createUserData.userIdentity" placeholder="请输入岗位角色"/>
           </el-form-item>
-          <el-form-item label="姓名" prop="userName">
-            <el-input v-model="createUserData.userName" placeholder="请输入用户姓名"/>
+          <el-form-item label="姓名" prop="userRealName">
+            <el-input v-model="createUserData.userRealName" placeholder="请输入用户姓名"/>
           </el-form-item>
           <el-form-item label="身份号码" prop="userIdcard">
             <el-input v-model="createUserData.userIdcard" placeholder="请输入用户身份证号码"/>
@@ -96,6 +96,7 @@ export default {
       createUserData: {
         userMobile: null,
         userName: null,
+        userRealName: null,
         // proKey: this.$store.state.proKey,
         userIdcard: null,
         userSex: null,
@@ -110,7 +111,7 @@ export default {
           { validator: checkTel, trigger: 'blur' }
         ],
         userIdentity: [{ required: true, message: '该项内容不可为空' }],
-        userName: [{ required: true, message: '该项内容不可为空' }],
+        userRealName: [{ required: true, message: '该项内容不可为空' }],
         userEmail: [{ validator: checkEmail, trigger: 'blur' }],
         userIdcard: [{ validator: checkIdCard, trigger: 'blur' }]
       }
@@ -168,6 +169,7 @@ export default {
           if (this.createUserData.userIdcard === '') {
             this.createUserData.userIdcard = null
           }
+          this.createUserData.userName = this.createUserData.userRealName
           this.axios.post('A2/authServices/user', this.createUserData)
             .then(res => {
               if (res) {

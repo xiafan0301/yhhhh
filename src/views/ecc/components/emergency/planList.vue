@@ -1,9 +1,9 @@
 <template>
   <div class="ba-not">
     <div style="padding-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
-        <el-breadcrumb-item>预案管理</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>预案管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
         <el-button type="primary" size="small"  @click.native="showEditDialog('add')" icon="el-icon-plus">添加预案</el-button>

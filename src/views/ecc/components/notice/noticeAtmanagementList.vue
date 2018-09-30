@@ -1,9 +1,9 @@
 <template>
   <div class="ba-not">
     <div style="padding-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
-        <el-breadcrumb-item>公告管理</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>公告管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
         <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" icon="el-icon-plus">发布</el-button>
@@ -25,6 +25,7 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
+            <el-option label="全部状态" value=''></el-option>
             <el-option label="待发送" :value="1"></el-option>
             <el-option label="发送成功" :value="2"></el-option>
             <el-option label="已撤销" :value="3"></el-option>
@@ -32,6 +33,7 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
+            <el-option label="全部发布单位" :value='null'></el-option>
             <el-option
               v-for="item in DepartmentList"
               :key="item.uid"
@@ -64,7 +66,8 @@
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端/</span>
+          <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</span>
+          <span v-if="scope.row.receiveRelations.length > 0" >/</span>
           <span v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}/</span>
         </template>
       </el-table-column>
@@ -113,6 +116,7 @@
   </div>
 </template>
 <script>
+import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
@@ -122,7 +126,7 @@ export default {
         publishUnitId: null,
         receiverId: null,
         isReceive: '',
-        publishTime: ''
+        publishTime: []
       },
       pageNum: 1,
       pageSize: 10,
@@ -134,10 +138,11 @@ export default {
   computed: {
   },
   created () {
-    this.getTableData();
     this.getDepartmentList();
   },
   mounted () {
+    this.getOneMonth();
+    this.getTableData();
   },
   methods: {
     getTableData () {
@@ -200,9 +205,10 @@ export default {
         .catch(() => {})
     },
     searchFormReset () {
-      this.searchForm.publishTime = '';
+      this.searchForm.publishTime = [];
       this.searchForm.publishState = '';
-      this.searchForm.publishUnitId = '';
+      this.searchForm.publishUnitId = null;
+      this.getOneMonth();
       this.getTableData();
     },
     del (scope) {
@@ -235,6 +241,15 @@ export default {
           message: '已取消删除'
         });
       });
+    },
+    getOneMonth () { // 设置默认一个月
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+      const startDate = formatDate(start, 'yyyy-MM-dd');
+      const endDate = formatDate(end, 'yyyy-MM-dd');
+      this.searchForm.publishTime.push(startDate);
+      this.searchForm.publishTime.push(endDate);
     },
     // 分页
     pagerSizeChange (val) {
