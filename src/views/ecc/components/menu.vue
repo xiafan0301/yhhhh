@@ -11,12 +11,12 @@
           class="el-menu-vertical-demo">
           <el-submenu :index="item.resourceId" :class="[(index + 1) == isActive ? 'el-submenu-active' : '']" v-for="(item, index) in menuList" :key="'ml' + index">
             <template slot="title">
-              <i :class="item.icon" ></i>
+              <i :class="item.style" ></i>
               <span style='margin-left:3%'>{{item.resourceName}}</span>
             </template>
             <template v-if="item.children && item.children.length > 0">
               <el-menu-item v-for="(sitem, sindex) in item.children" :key="'sml' + sindex"
-                :index="'smenu_' + sindex">{{sitem.resourceName}}</el-menu-item>
+                :index="sitem.path ? sitem.path : ''">{{sitem.resourceName}}</el-menu-item>
             </template>
           </el-submenu>
         </el-menu>

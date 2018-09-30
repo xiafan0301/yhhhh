@@ -6,6 +6,7 @@ import login from '@/views/ecc/components/login.vue'
 import forget from '@/views/ecc/components/forget.vue'
 // 主要
 import main from '@/views/ecc/components/main.vue'
+import eccDefault from '@/views/ecc/components/default.vue'
 // 消息管理
 import notice from '@/views/ecc/components/notice/notice.vue'
 import system from '@/views/ecc/components/notice/system.vue'
@@ -81,13 +82,14 @@ export default new Router({
     },
     {
       path: '/',
-      redirect: {name: 'event-list'}
+      redirect: {name: 'default'}
     },
     {
       path: '/main',
       component: main,
       children: [
-        {path: '', redirect: {name: 'event-list'}},
+        {path: '', redirect: {name: 'default'}},
+        {path: 'default', name: 'default', component: eccDefault},
         {
           path: 'notice',
           component: notice,

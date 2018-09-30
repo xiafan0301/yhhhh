@@ -53,7 +53,7 @@
           <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="createRealName" label="创建用户"  :show-overflow-tooltip="true">
+      <el-table-column prop="createUserName" label="创建用户"  :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="createTime" label="创建时间" :show-overflow-tooltip="true">
         <template slot-scope="scope">

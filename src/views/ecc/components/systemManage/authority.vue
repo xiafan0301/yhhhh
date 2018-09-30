@@ -54,6 +54,12 @@
             <el-option label="按钮" :value="2"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item class="add-depart-form-normal" label="访问路径" label-width='85px'>
+          <el-input type="text" v-model="addForm.path" placeholder='请输入访问路径' style='width: 98%'></el-input>
+        </el-form-item>
+        <el-form-item class="add-depart-form-normal" label="样式" label-width='85px'>
+          <el-input type="text" v-model="addForm.style" placeholder='请输入样式' style='width: 98%'></el-input>
+        </el-form-item>
         <el-form-item label-width='85px' v-show="isShowError">
           <div class="error-msg">
             <i class="el-icon-error"></i>
@@ -82,6 +88,12 @@
             <el-option label="菜单" :value="1"></el-option>
             <el-option label="按钮" :value="2"></el-option>
           </el-select>
+        </el-form-item>
+        <el-form-item class="add-depart-form-normal" label="访问路径" label-width='85px'>
+          <el-input type="text" v-model="editLimitItem.path" placeholder='请输入访问路径' style='width: 98%'></el-input>
+        </el-form-item>
+        <el-form-item class="add-depart-form-normal" label="样式" label-width='85px'>
+          <el-input type="text" v-model="editLimitItem.style" placeholder='请输入样式' style='width: 98%'></el-input>
         </el-form-item>
         <el-form-item label-width='85px' v-show="isShowError">
           <div class="error-msg">
@@ -124,6 +136,8 @@ export default {
       addForm: {
         resourceName: null,
         resourceType: null,
+        path: '',
+        style: '',
         parentUid: null
       },
       isShowError: false,
@@ -173,6 +187,8 @@ export default {
         parentUid: this.editLimitItem.parentUid,
         resourceName: this.editLimitItem.resourceName,
         resourceType: this.editLimitItem.resourceType,
+        path: this.editLimitItem.path,
+        style: this.editLimitItem.style,
         uid: this.editLimitItem.uid
       }
       this.axios.put('A2/authServices/authResource', params)
@@ -236,6 +252,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  path: item.path,
+                  style: item.style,
                   isShow: true,
                   children: []
                 });
@@ -246,6 +264,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  path: item.path,
+                  style: item.style,
                   isShow: true,
                   children: []
                 });
@@ -256,6 +276,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  path: item.path,
+                  style: item.style,
                   isShow: true,
                   children: []
                 });
@@ -266,6 +288,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  path: item.path,
+                  style: item.style,
                   isShow: true,
                   children: []
                 });
@@ -275,7 +299,9 @@ export default {
                   uid: item.uid,
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
-                  resourceType: item.resourceType
+                  resourceType: item.resourceType,
+                  path: item.path,
+                  style: item.style
                 });
               }
             });
@@ -483,7 +509,7 @@ export default {
       .add-depart-form {
         width: 100%;
         /deep/ .el-form-item__label {
-          text-align: left;
+          text-align: right;
           line-height: 32px;
         }
         /deep/ .el-input__inner {
@@ -495,6 +521,11 @@ export default {
         }
         /deep/ .el-form-item label:after {
           content: '*';
+          color: #f56c6c;
+          margin-left: 4px;
+        }
+        /deep/ .add-depart-form-normal.el-form-item label:after {
+          content: '';
           color: #f56c6c;
           margin-left: 4px;
         }
