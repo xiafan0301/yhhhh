@@ -43,7 +43,7 @@
             :src='item.newFileName'
           />
           <div class='delete-img'>
-            <i class='el-icon-zoom-in' @click="deleteImg(item, index)"></i>
+            <i class='el-icon-zoom-in' @click="enlarge(item, index)"></i>
             <i class='el-icon-delete' @click="deleteImg(item, index)"></i>
           </div>
         </div>
@@ -73,7 +73,7 @@
       </span>
     </el-dialog>
     <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img width="100%" :src="dialogImageUrl" alt="">
+      <img width="50%" :src="dialogImageUrl" alt="">
     </el-dialog>
   </div>
 </template>
@@ -128,9 +128,9 @@ export default {
       this.dialogVisible = true;
     },
     calNumber (val) { // 计算事件情况字数
-      if (val.length > this.totalNum) {
-        return;
-      }
+      // if (val.length > this.totalNum) {
+      //   return;
+      // }
       this.currentNum = val.length;
     },
     back (form) {
@@ -152,6 +152,10 @@ export default {
           this.endForm.attachmentList.splice(idx, 1);
         }
       });
+    },
+    enlarge (obj, index) {
+      this.dialogVisible = true
+      this.dialogImageUrl = obj.newFileName
     },
     deleteFile (obj, index) { // 删除文件
       this.fileList.splice(index, 1);

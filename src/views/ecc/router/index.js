@@ -63,6 +63,8 @@ import userMultiCreate from '@/views/ecc/components/systemManage/user-multi-crea
 import roleList from '@/views/ecc/components/systemManage/roleList.vue';
 // 系统管理--权限管理
 import authority from '@/views/ecc/components/systemManage/authority.vue';
+// 系统管理--版本管理
+import sysVersion from '@/views/ecc/components/systemManage/version.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -154,6 +156,7 @@ export default new Router({
           path: 'systemManage',
           component: systemManage,
           children: [
+            {path: 'version', name: 'version', component: sysVersion},
             {path: 'organList', name: 'organ-list', component: organList},
             {
               path: 'user',

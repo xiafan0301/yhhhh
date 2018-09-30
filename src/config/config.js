@@ -16,7 +16,7 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://10.16.3.40:8080',
+    dev: 'http://10.16.4.18:8080',
     // dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
@@ -24,7 +24,7 @@ const oDomains = {
   // ajax开发地址
   domain2: {
     // 本地配置 localhost:8902
-    dev: 'http://10.16.3.43:8080',
+    dev: 'http://10.16.4.24:8080',
     // dev: 'http://10.16.4.24:8080',
     test: 'http://10.16.4.24:8080',
     prod: 'http://10.16.4.24:8080'
@@ -34,6 +34,12 @@ const oDomains = {
     dev: 'http://10.16.4.37:8071',
     test: 'http://10.16.4.37:8071',
     prod: 'http://10.16.4.37:8071'
+  },
+  // 智慧城市公共服务（用于APP版本管理服务、）
+  commonDomain: {
+    dev: 'http://10.16.4.41:8083',
+    test: 'http://10.16.4.41:8083',
+    prod: 'http://10.16.4.41:8083'
   },
   // 文件/图片/CDN地址
   fileDomain: {
@@ -68,6 +74,8 @@ export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
 // 用户权限
 export const ajaxCtx4 = oDomains.domain2[sENV] + '/api/auth';
 export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#';
+// 智慧城市公共服务（用于APP版本管理服务、）
+export const ajaxCtxCommon = oDomains.commonDomain[sENV] + '/api';
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址

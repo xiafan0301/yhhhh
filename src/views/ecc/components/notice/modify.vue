@@ -64,6 +64,7 @@
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form.publishTime"
                 :disabled = "!(form.time === 2)"
@@ -98,6 +99,7 @@
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form1.publishTime"
                 :disabled = "!(form1.time === 2)"
@@ -120,6 +122,11 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      pickerOptions0: {
+        disabledDate (time) {
+          return time.getTime() < Date.now() - 8.64e7;
+        }
+      },
       addPageLoading: false,
       dialogImageUrl: '',
       dialogVisible: false,
@@ -285,6 +292,8 @@ export default {
                 if (res) {
                   this.$router.push({name: 'notice-atmanagementList'})
                   this.addPageLoading = false
+                } else {
+                  this.addPageLoading = false
                 }
               })
               .catch(() => {
@@ -314,6 +323,8 @@ export default {
               .then((res) => {
                 if (res) {
                   this.$router.push({name: 'system'})
+                  this.addPageLoading = false
+                } else {
                   this.addPageLoading = false
                 }
               })

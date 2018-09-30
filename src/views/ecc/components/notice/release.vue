@@ -214,6 +214,8 @@ export default {
                 if (res) {
                   this.$router.push({name: 'system'})
                   this.addPageLoading = false
+                } else {
+                  this.addPageLoading = false
                 }
               })
           } else {
@@ -266,9 +268,12 @@ export default {
                   this.$router.push({name: 'notice-atmanagementList'})
                   this.addPageLoading = false
                 } else {
-                  return false
+                  this.addPageLoading = false
                 }
               })
+              .catch(() => {
+                this.addPageLoading = false
+              });
           } else {
             return false;
           }

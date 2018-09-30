@@ -18,6 +18,9 @@
           <el-input placeholder='请输入用户名/姓名搜索' style="width: 250px;" v-model="filter['where.keyWord']"></el-input>
         </el-form-item>
         <el-form-item>
+          <el-input placeholder='请输入手机号' style="width: 250px;" v-model="filter['where.userMobile']"></el-input>
+        </el-form-item>
+        <el-form-item>
           <el-button type="primary" class='selectBtn btnClass' @click="onSearch()">查询</el-button>
         </el-form-item>
       </el-form>
@@ -301,7 +304,8 @@ export default {
       newRoledialogVisible: false, // 配置角色弹框
       filter: {
         'where.groupId': null,
-        'where.keyWord': null
+        'where.keyWord': null,
+        'where.userMobile': null
       },
       pagination: {
         pageNum: 1,
@@ -340,6 +344,7 @@ export default {
     getList () {
       if (!this.filter['where.groupId']) { this.filter['where.groupId'] = null }
       let params = Object.assign({}, this.filter, this.pagination);
+      console.log(params)
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {
@@ -748,12 +753,16 @@ export default {
     },
     // 输入框查询
     onSearch () {
+      if (this.filter['where.userMobile'] === '') {
+        this.filter['where.userMobile'] = null
+      }
       this.closeShow = true;
       this.getList();
     },
     // 清除输入框
     onClear () {
       this.filter['where.keyWord'] = '';
+      this.filter['where.userMobile'] = '';
       this.getList();
       this.closeShow = false;
     },

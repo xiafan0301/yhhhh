@@ -54,7 +54,7 @@
       <div class="content">
       <div class="one">您需要下载模板文件并按要求填写相关信息，上传成功后，点击创建批量创建用户账号。</div>
       <div class="two">下载模板</div>
-      <el-input class="three" placeholder="未选择任何文件">
+      <el-input class="three" placeholder="未选择任何文件" v-model="value">
       <el-upload
       slot="append"
       class="singe-upload"
@@ -81,6 +81,7 @@ import {checkTel, checkEmail, checkIdCard} from '../../../../utils/validator';
 export default {
   data () {
     return {
+      value: '',
       plateName: getCookie('plateName'),
       selectList: [],
       provinceData: [], // 省份列表

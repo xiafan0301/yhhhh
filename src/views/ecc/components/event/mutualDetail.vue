@@ -34,8 +34,7 @@
               <template v-if="eventDetailObj.reporterPhone">
                 <template v-if="this.$route.query.eventStatus === '处理中'">
                   <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
-                  <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
-                  <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" />
+                  <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
                 </template>
                 <template v-else>
                   <span class='content'>{{eventDetailObj.reporterPhone}}</span>
@@ -62,15 +61,17 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <div class='img-list' id="imgs" v-show="imgList && imgList.length > 0"></div>
-            <div class='video-list' v-show="imgList && videoList.length > 0">
-              <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
-                <source :src="item.url" type="video/mp4">
-                <source :src="item.url" type="video/webm">
-                <source :src="item.url" type="video/ogg">
-                <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
-              </video>
+            <div style="width:100%">
+              <div class='img-list' style="auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
+              <div class='video-list' style="auto" v-show="imgList && videoList.length > 0">
+                <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+                poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                  <source :src="item.url" type="video/mp4">
+                  <source :src="item.url" type="video/webm">
+                  <source :src="item.url" type="video/ogg">
+                  <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+                </video>
+              </div>
             </div>
           </div>
         </div>
@@ -146,6 +147,8 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {ajaxCtx3} from '@/config/config.js';
+import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -155,6 +158,7 @@ export default {
       mutualEndVisiable: false,
       dialogImageUrl: '',
       dialogVisible: false,
+      urlDetail: '',
       imgUrl: '',
       videoList: [], // 视频数据列表
       imgList: [], // 图片数据列表
@@ -171,6 +175,7 @@ export default {
   mounted () {
     this.getEventDetail();
     this.getCommentList();
+    this.urlDetail = ajaxCtx3;
     if (this.$route.query.eventStatus === '处理中') {
       this.imgUrl = require('../../../../assets/img/temp/treating.png');
     } else {
@@ -178,6 +183,11 @@ export default {
     }
   },
   methods: {
+    userInfoParam () {
+      let ln = getCookie('cookieUserName');
+      if (!ln) { ln = ''; }
+      return $.param({ln: ln});
+    },
     // 预览图片公共方法
     previewPictures (data) {
       setTimeout(() => {
@@ -334,6 +344,9 @@ export default {
     }
     .mutual-detail-body {
       width: 100%;
+      a {
+        text-decoration: none;
+      }
       .basic-mutual,.mutual-progress{
         background: #fff;
         margin-bottom: 1%;
@@ -451,6 +464,21 @@ export default {
               }
             }
           }
+        }
+      }
+      .relation-person {
+        cursor: pointer;
+        border: 1px solid #EAEAEA;
+        width: 110px !important;
+        color: #0785FD;
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        text-align: center;
+        font-weight: 500;
+        i {
+          margin-right: 5px;
+          font-size: 18px;
         }
       }
     }

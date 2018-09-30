@@ -5,7 +5,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import ElementUI from 'element-ui';
 // import store from '@/store/store.js';
-import { ajaxCtx, ajaxCtx2, ajaxCtx4 } from '@/config/config.js';
+import { ajaxCtx, ajaxCtx2, ajaxCtx4, ajaxCtxCommon } from '@/config/config.js';
 // axios支持跨域cookie
 axios.defaults.withCredentials = true;
 // axios添加一个请求拦截器u
@@ -15,8 +15,9 @@ axios.interceptors.request.use((config) => {
     if (config.url.indexOf('A2') === 0) {
       config.url = ajaxCtx2 + config.url.substring(2);
     } else if (config.url.indexOf('A3') === 0) {
-      console.log(config.url)
       config.url = ajaxCtx4 + config.url.substring(2);
+    } else if (config.url.indexOf('COMMON') === 0) {
+      config.url = ajaxCtxCommon + config.url.substring(2);
     } else {
       config.url = ajaxCtx + config.url;
     }
