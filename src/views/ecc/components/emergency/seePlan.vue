@@ -1,10 +1,10 @@
 <template>
   <div class="bg-release">
     <div style=" margin-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-planList'}">预案管理</el-breadcrumb-item>
-        <el-breadcrumb-item>查看预案</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>查看预案</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">
@@ -13,9 +13,9 @@
         <li><span class="title">预案类型</span><span class="content">{{seeplanList.eventTypeName}}</span></li>
         <li><span class="title">适用事件等级</span><span class="content" v-for="(item, index) in seeplanList.levelNameList" :key=" 'fawe' +index"> {{item}}</span></li>
         <li><span class="title" style="vertical-align: top">预案正文</span>
-          <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
+          <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeplanList.planDetail" style="display: inline-block; width: 500px"  :autosize="{ minRows: 8, maxRows: 11}" rows="7" disabled></el-input></span>
         </li>
-        <li><span class="title">附件</span><a class="content" :href="seeplanList.url" style="color:#0785FD;text-decoration:none;"> {{seeplanList.attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium">下载</el-button></a></li>
+        <li><span class="title">附件</span><span class="content" v-if="!seeplanList.attachmentName">无</span><a class="content" :href="seeplanList.url" style="color:#0785FD;text-decoration:none;"> {{seeplanList.attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium" v-if="seeplanList.attachmentName">下载</el-button></a></li>
         <li><span class="title">响应处置</span>
         <div style="margin-left: 118px; padding-bottom: 20px" v-for="(item, index) in seeplanList.taskList" :key="'faw'+index">
           <ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">
@@ -126,5 +126,10 @@ export default {
     display: inline-block;
     width: 26px;
     height: 28px;
+  }
+  /deep/.el-textarea.is-disabled .el-textarea__inner{
+    background-color: #fff!important;
+    color: #6f7180!important;
+    line-height: 20px;
   }
 </style>

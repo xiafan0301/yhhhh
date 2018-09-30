@@ -1,10 +1,10 @@
 <template>
   <div class="bg-release">
     <div style=" margin-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-materialList'}">物资管理</el-breadcrumb-item>
-        <el-breadcrumb-item >查看物资</el-breadcrumb-item>
+        <el-breadcrumb-item ><span style='color: #0785FD'>查看物资</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">

@@ -258,6 +258,7 @@ export default {
       this.$refs[form].resetFields();
       this.getOneMonth();
       this.getEventList();
+      console.log(this.selectForm.reportTime)
     }
   }
 }

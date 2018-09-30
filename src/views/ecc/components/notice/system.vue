@@ -1,16 +1,16 @@
 <template>
   <div class="ba-not">
     <div style="padding-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
-        <el-breadcrumb-item>系统消息</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>系统消息</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
         <el-button type="primary" size="small"  @click.native="showEditDialog('system')" icon="el-icon-plus">发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
-      <el-form style="float: left; margin-left: 20px; padding-top: 20px"  :inline="true" :model="searchForm" class="demo-form-inline" size="small">
+      <el-form style="float: left; margin-left: 20px; padding-top: 20px"  :inline="true" :model="searchForm" class="demo-form-inline" size="small" ref="searchForm">
         <el-form-item style="width: 220px;" prop='reportTime'>
           <el-date-picker
             v-model='searchForm.publishTime'
@@ -25,6 +25,7 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
+            <el-option label="全部状态" value=''></el-option>
             <el-option label="待发送" :value="1"></el-option>
             <el-option label="发送成功" :value="2"></el-option>
             <el-option label="已撤销" :value="3"></el-option>
@@ -39,6 +40,7 @@
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
+            <el-option label="全部发布单位" :value='null'></el-option>
               <el-option
                 v-for="item in DepartmentList"
                 :key="item.uid"
@@ -111,6 +113,7 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
@@ -135,10 +138,11 @@ export default {
   computed: {
   },
   mounted () {
+    this.getOneMonth();
+    this.getTableData();
   },
   created () {
     this.getMessageType();
-    this.getTableData();
     this.getDepartmentList();
   },
   methods: {
@@ -240,21 +244,32 @@ export default {
       console.log(this.searchForm.publishTime)
     },
     searchFormReset () {
-      this.searchForm.publishTime = '';
+      this.searchForm.publishTime = []
       this.searchForm.publishState = '';
-      this.searchForm.publishUnitId = '';
+      this.searchForm.publishUnitId = null;
       this.searchForm.messageType = '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4';
+      // this.$refs['searchForm'].resetFields();
+      this.getOneMonth();
       this.getTableData();
     },
     // 分页
     pagerSizeChange (val) {
-      this.pageSize = val;
       this.pageNum = 1;
+      this.pageSize = val;
       this.getTableData();
     },
     pagerCurrChange (val) {
       this.pageNum = val;
       this.getTableData();
+    },
+    getOneMonth () { // 设置默认一个月
+      const end = new Date();
+      const start = new Date();
+      start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+      const startDate = formatDate(start, 'yyyy-MM-dd');
+      const endDate = formatDate(end, 'yyyy-MM-dd');
+      this.searchForm.publishTime.push(startDate);
+      this.searchForm.publishTime.push(endDate);
     },
     showEditDialog (status) {
       // this.editDialogVisible = flag;

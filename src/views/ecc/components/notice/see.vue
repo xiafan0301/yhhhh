@@ -1,11 +1,11 @@
 <template>
   <div class="bg-release">
     <div style=" margin-bottom: 20px; position: relative">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>消息管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'notice-atmanagementList'}" v-if="this.$route.query.status === '查看公告'">公告管理</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'system' }"  v-else-if="this.$route.query.status === '查看消息'">系统消息</el-breadcrumb-item>
-        <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
+        <el-breadcrumb-item ><span style='color: #0785FD'>{{status}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-release-cot">

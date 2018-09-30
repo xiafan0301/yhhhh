@@ -1,9 +1,9 @@
 <template>
   <div class="ba-xf">
     <div style="padding-bottom: 20px;">
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
-        <el-breadcrumb-item>物资管理</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>物资管理</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div style="display: flex;">

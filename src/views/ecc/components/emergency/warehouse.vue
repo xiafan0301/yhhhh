@@ -1,10 +1,10 @@
 <template>
   <div class="addwarehouse-plan-person">
     <div class='add-msg-header'>
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-materialList'}" >物资管理</el-breadcrumb-item>
-        <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
+        <el-breadcrumb-item ><span style='color: #0785FD'>{{status}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='add-msg-body'>
@@ -15,7 +15,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="仓库地点" label-width='150px' class="address" prop="warehouseAddress">
-            <el-input  placeholder="请输入仓库地点" style='width: 500px' v-model="form.warehouseAddress">
+            <el-input  placeholder="请输入仓库地点" style='width: 500px' v-model="form.warehouseAddress"  id="tipinput">
             </el-input>
             <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
@@ -102,8 +102,24 @@ export default {
     } else if (this.$route.query.status === 'modify') {
       this.status = '修改仓库'
     }
+    this.initMap();
   },
   methods: {
+    initMap () {
+      // 地图加载
+      const map = new AMap.Map('container', {
+        resizeEnable: true
+      });
+      // 输入提示
+      const autoOptions = {
+        input: 'tipinput'
+      };
+      const auto = new AMap.Autocomplete(autoOptions);
+      const placeSearch = new AMap.PlaceSearch({
+        map: map
+      }); // 构造地点查询类
+      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+    },
     showMap () {
       // 编辑状态
       if (this.$route.query.status === 'modify') {
@@ -214,6 +230,30 @@ export default {
     }
     /deep/.el-form-item__error{
       padding-top: 12px;
+    }
+    /deep/ .el-form-item__error {
+      border: 1px solid #FA796C;
+      height: 35px;
+      line-height: 35px;
+      background-color: #FEE6E0;
+      border-radius: 2px;
+      color: #FA796C;
+      padding-top: 0;
+      padding: 0 13px 0 26px;
+    }
+    /deep/ .el-form-item__error:before {
+      content: '!';
+      position: absolute;
+      left: 5px;
+      top: 9px;
+      width: 15px;
+      height: 15px;
+      text-align: center;
+      line-height: 16px;
+      color: #FFF;
+      font-weight: bold;
+      background-color: #FA796C;
+      border-radius: 50%;
     }
   }
 </style>

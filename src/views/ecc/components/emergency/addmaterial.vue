@@ -1,10 +1,10 @@
 <template>
   <div class="add-plan-person">
     <div class='add-msg-header'>
-      <el-breadcrumb separator="/">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
         <el-breadcrumb-item :to="{name: 'emergency-materialList'}" >物资管理</el-breadcrumb-item>
-        <el-breadcrumb-item >{{status}}</el-breadcrumb-item>
+        <el-breadcrumb-item ><span style='color: #0785FD'>{{status}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='add-msg-body'>
@@ -192,6 +192,30 @@ export default {
         top: 25%;
         left: 25%;
       }
+    }
+    /deep/ .el-form-item__error {
+      border: 1px solid #FA796C;
+      height: 35px;
+      line-height: 35px;
+      background-color: #FEE6E0;
+      border-radius: 2px;
+      color: #FA796C;
+      padding-top: 0;
+      padding: 0 13px 0 26px;
+    }
+    /deep/ .el-form-item__error:before {
+      content: '!';
+      position: absolute;
+      left: 5px;
+      top: 9px;
+      width: 15px;
+      height: 15px;
+      text-align: center;
+      line-height: 16px;
+      color: #FFF;
+      font-weight: bold;
+      background-color: #FA796C;
+      border-radius: 50%;
     }
   }
 </style>
