@@ -34,7 +34,7 @@
 </template>
 <script>
 import { cookieTime, ajaxCtx2 } from '@/config/config.js';
-import { setCookie, getCookie, delCookie } from '@/utils/util.js';
+import { setCookie, getCookie, delCookie, setLocalStore } from '@/utils/util.js';
 import {valiPhone, checkPwd} from '@/utils/validator.js';
 export default {
   data () {
@@ -98,6 +98,35 @@ export default {
                 userId: oUser.authUserId,
                 userName: oUser.userName
               }});
+              // 用户权限
+              let resList = oUser.resourceList;
+              let aList = [];
+              let aList2 = {};
+              let oPoints = {};
+              for (let i = 0; i < resList.length; i++) {
+                let _o = resList[i];
+                if (_o.resourceType === 1 && _o.resourceLayer === 2) {
+                  aList.push(Object.assign({}, _o));
+                }
+                if (_o.resourceType === 1 && _o.resourceLayer === 3) {
+                  if (!aList2[_o.parentId]) {
+                    aList2[_o.parentId] = [];
+                  }
+                  aList2[_o.parentId].push(Object.assign({}, _o));
+                }
+                /* if (_o.resourceType === 2) {
+                  if (!oPoints[_o.parentId]) {
+                    oPoints[_o.parentId] = [];
+                  }
+                  oPoints[_o.parentId].push(Object.assign({}, _o));
+                } */
+              }
+              for (let j = 0; j < aList.length; j++) {
+                if (aList2[aList[j].resourceId]) {
+                  aList[j].children = aList2[aList[j].resourceId];
+                }
+              }
+              setLocalStore('userMenuPermission', JSON.stringify(aList));
               _this.$router.push({name: 'event-list'});
             }
             _this.loginBtnLoading = false;

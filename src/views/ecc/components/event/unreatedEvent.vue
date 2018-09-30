@@ -26,7 +26,7 @@
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
-            <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
+            <el-input style='width: 500px' @change="onPositionChange" id="tipinput" placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
             <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" @click='showMap' style='cursor:pointer' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
@@ -270,6 +270,20 @@ export default {
         map: map
       }); // 构造地点查询类
       // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+    },
+    onPositionChange (val) { // 事件地点输入框值改变
+      AMap.service('AMap.Geocoder', () => {
+        var geocoder = new AMap.Geocoder({});
+        geocoder.getLocation(val, (status, result) => {
+          console.log(status)
+          console.log(result);
+          if (status === 'complete' && result.info === 'OK') {
+            console.log(result.geocodes[0]);
+            this.detailForm.longitude = result.geocodes[0].location.lng;
+            this.detailForm.latitude = result.geocodes[0].location.lat;
+          }
+        });
+      })
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');
