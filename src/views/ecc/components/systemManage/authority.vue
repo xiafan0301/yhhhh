@@ -184,7 +184,7 @@ export default {
       }
       this.isEditLoading = true;
       let params = {
-        parentUid: this.editLimitItem.parentUid,
+        // parentUid: this.editLimitItem.parentUid,
         resourceName: this.editLimitItem.resourceName,
         resourceType: this.editLimitItem.resourceType,
         path: this.editLimitItem.path,
