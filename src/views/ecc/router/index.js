@@ -6,6 +6,7 @@ import login from '@/views/ecc/components/login.vue'
 import forget from '@/views/ecc/components/forget.vue'
 // 主要
 import main from '@/views/ecc/components/main.vue'
+import eccDefault from '@/views/ecc/components/default.vue'
 // 消息管理
 import notice from '@/views/ecc/components/notice/notice.vue'
 import system from '@/views/ecc/components/notice/system.vue'
@@ -63,6 +64,8 @@ import userMultiCreate from '@/views/ecc/components/systemManage/user-multi-crea
 import roleList from '@/views/ecc/components/systemManage/roleList.vue';
 // 系统管理--权限管理
 import authority from '@/views/ecc/components/systemManage/authority.vue';
+// 系统管理--版本管理
+import sysVersion from '@/views/ecc/components/systemManage/version.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -79,13 +82,14 @@ export default new Router({
     },
     {
       path: '/',
-      redirect: {name: 'event-list'}
+      redirect: {name: 'default'}
     },
     {
       path: '/main',
       component: main,
       children: [
-        {path: '', redirect: {name: 'event-list'}},
+        {path: '', redirect: {name: 'default'}},
+        {path: 'default', name: 'default', component: eccDefault},
         {
           path: 'notice',
           component: notice,
@@ -154,6 +158,7 @@ export default new Router({
           path: 'systemManage',
           component: systemManage,
           children: [
+            {path: 'version', name: 'version', component: sysVersion},
             {path: 'organList', name: 'organ-list', component: organList},
             {
               path: 'user',
