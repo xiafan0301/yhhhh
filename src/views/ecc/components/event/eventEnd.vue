@@ -128,9 +128,6 @@ export default {
       this.dialogVisible = true;
     },
     calNumber (val) { // 计算事件情况字数
-      // if (val.length > this.totalNum) {
-      //   return;
-      // }
       this.currentNum = val.length;
     },
     back (form) {
