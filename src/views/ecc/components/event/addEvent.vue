@@ -16,7 +16,7 @@
             <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
-            <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='addForm.eventAddress' @change="onPositionChange"></el-input>
+            <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='addForm.eventAddress' @change="onPositionChange" ></el-input>
             <div class='map-ecc'><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">
@@ -194,6 +194,7 @@ export default {
         map: map
       }); // 构造地点查询类
       // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+      // console.log('tipinput', document.getElementById('tipinput').value)
     },
     onPositionChange (val) { // 事件地点输入框值改变
       AMap.service('AMap.Geocoder', () => {

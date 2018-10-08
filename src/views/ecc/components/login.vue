@@ -96,7 +96,8 @@ export default {
               }
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
-                userName: oUser.userName
+                userName: oUser.userName,
+                departmentId: oUser.departmentId
               }});
               // 用户权限
               let resList = oUser.resourceList;

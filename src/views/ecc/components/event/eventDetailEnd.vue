@@ -253,9 +253,6 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -268,8 +265,6 @@ export default {
       dialogFormVisible: false,
       closeCommentVisiable: false,
       closeReturnVisiable: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       isSave: false, // 是否显示保存按钮
       imgSrc: '', // 事件状态图片
       videoList: [], // 视频数据列表
@@ -380,10 +375,6 @@ export default {
           }(i))
         }
       }, 100)
-    },
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
     },
     back (form) {
       const data = JSON.stringify(this.modifyForm);
@@ -519,7 +510,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
-            this.closeCommentVisiable = true;
+            this.closeCommentVisiable = false;
             this.isDeleteLoading = false;
           })
           .catch(() => {})

@@ -435,12 +435,6 @@ export default {
           .img-content {
             width: 100%;
             padding-left: 80px;
-            // img {
-            //   width: 100px;
-            //   height: 75px;
-            //   margin-right: 1%;
-            //   margin-top: 1%;
-            // }
           }
         }
         .ctc-content {
