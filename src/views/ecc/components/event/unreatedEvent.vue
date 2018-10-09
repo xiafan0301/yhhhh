@@ -34,32 +34,34 @@
             <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item style='margin-left: 150px;display:flex;' class="img-form-item">
-            <div class='video-list' v-show="imgList && videoList.length > 0" style="margin-right:10px;height:100px">
+            <div class='video-list' v-show="videoList && videoList.length > 0" style="margin-right:10px;height:100px">
               <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item' + index">
                 <source :src="item.url" type="video/mp4">
                 <source :src="item.url" type="video/webm">
                 <source :src="item.url" type="video/ogg">
                 <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
               </video>
             </div>
-            <el-upload
-              action="http://10.16.4.50:8001/api/network/upload/new"
-              list-type="picture-card"
-              :data="imgParam"
-              accept=".png,.jpg,.bmp"
-              :on-preview="handlePictureCardPreview"
-              :file-list="imgList"
-              :before-upload='handleBeforeUpload'
-              :on-remove="handleRemove"
-              :on-success='handleSuccess'
-              :on-exceed="handleImgNumber"
-              :limit='9'
-            >
-              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-              <span class='add-img-text'>添加图片</span>
-            </el-upload>
-            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
+            <template v-if="videoList && videoList.length === 0">
+              <el-upload
+                action="http://10.16.4.50:8001/api/network/upload/new"
+                list-type="picture-card"
+                :data="imgParam"
+                accept=".png,.jpg,.bmp"
+                :on-preview="handlePictureCardPreview"
+                :file-list="imgList"
+                :before-upload='handleBeforeUpload'
+                :on-remove="handleRemove"
+                :on-success='handleSuccess'
+                :on-exceed="handleImgNumber"
+                :limit='9'
+              >
+                <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+                <span class='add-img-text'>添加图片</span>
+                <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
+              </el-upload>
+            </template>
           </el-form-item>
           <el-form-item label="事件类型" label-width='150px' prop='eventType'>
             <el-select  placeholder="请选择事件类型" style='width: 500px' v-model='detailForm.eventType'>
@@ -195,6 +197,7 @@ export default {
         eventDetail: '',
         eventType: '',
         eventLevel: '',
+        attachmentList: [],
         eventFlag: false,
         mutualFlag: false,
         casualties: '',
@@ -215,7 +218,7 @@ export default {
           { required: true, message: '请勾选事件性质', trigger: 'blur' }
         ]
       },
-      attachmentList: [], // 附件列表
+      // attachmentList: [], // 附件列表
       eventLevelList: [],
       eventTypeList: [],
       closeReasonList: [], // 关闭原因类型
@@ -247,16 +250,14 @@ export default {
     setTimeout(() => {
       this.dataStr = JSON.stringify(this.detailForm); // 将初始数据转成字符串
     }, 1000);
-    this.initMap();
   },
   methods: {
     calNumber (val) { // 计算事件情况字数
-      // if (val.length > this.totalNum) {
-      //   return;
-      // }
       this.currentNum = val.length;
     },
-    initMap () {
+    onPositionChange (val) { // 事件地点输入框值改变
+      let value = val;
+      let _this = this;
       // 地图加载
       const map = new AMap.Map('container', {
         resizeEnable: true
@@ -269,16 +270,14 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
-    },
-    onPositionChange (val) { // 事件地点输入框值改变
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.operationForm.eventAddress = e.poi.name;
+      }); // 注册监听，当选中某条记录时会触发
       AMap.service('AMap.Geocoder', () => {
         var geocoder = new AMap.Geocoder({});
-        geocoder.getLocation(val, (status, result) => {
-          console.log(status)
-          console.log(result);
+        geocoder.getLocation(value, (status, result) => {
           if (status === 'complete' && result.info === 'OK') {
-            console.log(result.geocodes[0]);
             this.detailForm.longitude = result.geocodes[0].location.lng;
             this.detailForm.latitude = result.geocodes[0].location.lat;
           }
@@ -303,21 +302,21 @@ export default {
           thumbnailWidth: res.data.thumbImageWidth,
           thumbnailHeight: res.data.thumbImageHeight
         }
-        this.attachmentList.push(data);
+        this.imgList.push(data);
       }
     },
     handleRemove (file, fileList) { // 删除图片
       if (file) {
-        if (this.attachmentList.length > 0) {
-          this.attachmentList.map((item, index) => {
+        if (this.imgList.length > 0) {
+          this.imgList.map((item, index) => {
             if (file.response) {
               if (item.url === file.response.data.newFileName) {
-                this.attachmentList.splice(index, 1);
+                this.imgList.splice(index, 1);
               }
             }
             if (file.attachmentId) {
               if (item.attachmentId === file.attachmentId) {
-                this.attachmentList.splice(index, 1);
+                this.imgList.splice(index, 1);
               }
             }
           });
@@ -416,7 +415,7 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res) {
-              this.attachmentList = res.data.attachmentList;
+              // this.attachmentList = res.data.attachmentList;
               this.detailForm.eventId = eventId;
               this.detailForm.eventCode = res.data.eventCode;
               this.detailForm.reporterPhone = res.data.reporterPhone;
@@ -532,25 +531,35 @@ export default {
           } else if (this.detailForm.casualties === '有') {
             this.detailForm.casualties = this.dieNumber;
           }
+          if (this.videoList.length > 0) {
+            this.videoList.map(item => {
+              this.detailForm.attachmentList.push(item);
+            });
+          }
+          if (this.imgList.length > 0 && this.videoList.length === 0) {
+            this.imgList.map(item => {
+              this.detailForm.attachmentList.push(item);
+            });
+          }
+          const params = {
+            emiEvent: this.detailForm
+          }
+          this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$message({
+                  message: '修改事件成功',
+                  type: 'success'
+                });
+                this.$router.push({name: 'event-list'});
+                this.isSaveLoading = false;
+              } else {
+                this.$message.error('修改事件失败');
+                this.isSaveLoading = false;
+              }
+            })
+            .catch(() => {})
         }
-        const params = {
-          emiEvent: this.detailForm
-        }
-        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
-          .then((res) => {
-            if (res) {
-              this.$message({
-                message: '修改事件成功',
-                type: 'success'
-              });
-              this.$router.push({name: 'event-list'});
-              this.isSaveLoading = false;
-            } else {
-              this.$message.error('修改事件失败');
-              this.isSaveLoading = false;
-            }
-          })
-          .catch(() => {})
       });
     }
   }
@@ -672,6 +681,37 @@ export default {
             background-color: #FA796C;
             border-radius: 50%;
           }
+        }
+        .imgTips {
+          border: 1px solid #FA796C;
+          height: 35px;
+          line-height: 35px;
+          background-color: #FEE6E0;
+          border-radius: 2px;
+          position: absolute;
+          color: #FA796C;
+          padding-top: 0;
+          padding: 0 13px 0 26px;
+          -ms-flex-item-align: center;
+          align-self: center;
+          width: 160px;
+          left: 105px;
+          top: 50px;
+        }
+        .imgTips:before {
+          content: '!';
+          position: absolute;
+          left: 5px;
+          right: 0px;
+          top: 9px;
+          width: 15px;
+          height: 15px;
+          text-align: center;
+          line-height: 16px;
+          color: #FFF;
+          font-weight: bold;
+          background-color: #FA796C;
+          border-radius: 50%;
         }
         .img-form-item /deep/ .el-form-item__content{
           display: flex;

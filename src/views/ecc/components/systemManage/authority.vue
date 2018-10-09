@@ -162,8 +162,9 @@ export default {
   },
   methods: {
     aaa (data1, data2, data3, event) {
+      const data = $(event).prev();
+      console.log($(data)[0])
       console.log(event)
-      console.log($(event).prev())
     },
     allowDrag (node) { // 判断该节点是否允许拖动
       // console.log(node)

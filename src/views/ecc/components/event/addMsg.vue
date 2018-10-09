@@ -21,7 +21,7 @@
             <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
           </el-form-item>
           <el-form-item class="img-form-item" style='margin-left: 150px;display: flex;'>
-            <div class='video-list' v-show="imgList && videoList.length > 0" style="margin-right:10px;height:100px">
+            <div class='video-list' v-show="videoList && videoList.length > 0" style="margin-right:10px;height:100px">
               <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
               poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
                 <source :src="item.url" type="video/mp4">
@@ -30,23 +30,25 @@
                 <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
               </video>
             </div>
-            <el-upload
-              action="http://10.16.4.50:8001/api/network/upload/new"
-              list-type="picture-card"
-              :data="imgParam"
-              accept=".png,.jpg,.bmp"
-              :on-preview="handlePictureCardPreview"
-              :file-list="imgList"
-              :before-upload='handleBeforeUpload'
-              :on-remove="handleRemove"
-              :on-success='handleSuccess'
-              :on-exceed="handleImgNumber"
-              :limit='9'
-            >
-              <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
-              <span class='add-img-text'>添加图片</span>
-              <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
-            </el-upload>
+            <template v-if="videoList && videoList.length === 0">
+              <el-upload
+                action="http://10.16.4.50:8001/api/network/upload/new"
+                list-type="picture-card"
+                :data="imgParam"
+                accept=".png,.jpg,.bmp"
+                :on-preview="handlePictureCardPreview"
+                :file-list="imgList"
+                :before-upload='handleBeforeUpload'
+                :on-remove="handleRemove"
+                :on-success='handleSuccess'
+                :on-exceed="handleImgNumber"
+                :limit='9'
+              >
+                <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
+                <span class='add-img-text'>添加图片</span>
+                <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
+              </el-upload>
+            </template>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
             <el-radio-group style='width: 330px' v-model='operationForm.radius'>
@@ -245,24 +247,21 @@ export default {
           thumbnailWidth: res.data.thumbImageWidth,
           thumbnailHeight: res.data.thumbImageHeight
         }
-        this.operationForm.attachmentList.push(data);
+        this.imgList.push(data);
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log(this.operationForm.attachmentList)
-
-      console.log(file)
       if (file) {
-        if (this.operationForm.attachmentList.length > 0) {
-          this.operationForm.attachmentList.map((item, index) => {
+        if (this.imgList.length > 0) {
+          this.imgList.map((item, index) => {
             if (file.response) {
               if (item.url === file.response.data.newFileName) {
-                this.operationForm.attachmentList.splice(index, 1);
+                this.imgList.splice(index, 1);
               }
             }
             if (file.attachmentId) {
               if (item.attachmentId === file.attachmentId) {
-                this.operationForm.attachmentList.splice(index, 1);
+                this.imgList.splice(index, 1);
               }
             }
           });
@@ -342,7 +341,7 @@ export default {
               this.operationForm.longitude = res.data.longitude;
               this.operationForm.latitude = res.data.latitude;
               this.operationForm.eventDetail = res.data.eventDetail;
-              this.operationForm.attachmentList = res.data.attachmentList;
+              // this.operationForm.attachmentList = res.data.attachmentList;
               this.currentNum = res.data.eventDetail.length;
               res.data.attachmentList && res.data.attachmentList.map((item, index) => {
                 if (item.attachmentType === dictType.videoId) { // 视频
@@ -351,7 +350,6 @@ export default {
                   this.imgList.push(item);
                 }
               });
-              console.log('111', this.imgList)
               if (res.data.radius) {
                 if (res.data.radius > 0) {
                   this.operationForm.radius = '推送';
@@ -376,16 +374,16 @@ export default {
           } else {
             this.operationForm.radius = parseInt(this.operationForm.radiusNumber);
           }
-          // if (this.videoList.length > 0) {
-          //   this.videoList.map(item => {
-          //     this.operationForm.attachmentList.push(item);
-          //   });
-          // }
-          // if (this.imgList.length > 0) {
-          //   this.imgList.map(item => {
-          //     this.operationForm.attachmentList.push(item);
-          //   });
-          // }
+          if (this.videoList.length > 0) {
+            this.videoList.map(item => {
+              this.operationForm.attachmentList.push(item);
+            });
+          }
+          if (this.imgList.length > 0 && this.videoList.length === 0) {
+            this.imgList.map(item => {
+              this.operationForm.attachmentList.push(item);
+            });
+          }
           const param = {
             emiEvent: this.operationForm
           }
