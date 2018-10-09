@@ -22,7 +22,7 @@
     <el-table style="width: 100%;" :data='departmentList' class='event-table' @row-click="goDetail">
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
       <el-table-column label="名称" prop='organName' align='center'></el-table-column>
-      <el-table-column label="上报部门" prop='parentOrganName' align='center'></el-table-column>
+      <el-table-column label="上级部门" prop='parentOrganName' align='center'></el-table-column>
       <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
       <el-table-column label="操作" align='center' class="operation" width="150px">
         <template slot-scope="scope">
@@ -238,6 +238,7 @@ export default {
           .then(res => {
             if (res) {
               this.$message.success('删除成功');
+              this.getDepartmentList1();
               this.getDepartmentList();
               this.deleteDepartmentDialog = false;
               this.isDeleteLoading = false;
