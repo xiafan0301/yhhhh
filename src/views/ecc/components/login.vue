@@ -89,7 +89,9 @@ export default {
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
               let oUser = response.data;
+              console.log(oUser)
               // 保存用户手机号到cookie
+              setCookie('cookieName', oUser.userName, 24, '/');
               if (_this.isRemember === true) {
                 setCookie('cookieUserName', oUser.userMobile, 24, '/');
                 setCookie('cookieStatus', _this.isRemember, 24, '/');

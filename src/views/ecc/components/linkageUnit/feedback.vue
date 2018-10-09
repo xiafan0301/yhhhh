@@ -9,8 +9,8 @@
     </div>
     <div class='event-end-body'>
       <el-form class='event-end-form' :model='feedbackForm' ref='feedbackForm' :rules='rules'>
-        <el-form-item label="请输入事件反馈" label-width='150px' prop='eventSummary' class="event-summary">
-          <el-input type='textarea' v-model='feedbackForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...' @input="calNumber(feedbackForm.eventSummary)"></el-input>
+        <el-form-item label="请输入事件反馈" label-width='150px' prop='processContent' class="event-summary">
+          <el-input type='textarea' v-model='feedbackForm.processContent' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...' @input="calNumber(feedbackForm.processContent)"></el-input>
           <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
         </el-form-item>
         <el-form-item style='margin-left: 150px' class="img-form-item">
@@ -72,7 +72,7 @@ export default {
       totalNum: 10000, // 可输入的总字数
       feedbackForm: {
         processType: '',
-        eventSummary: '', // 事件总结
+        processContent: '', // 事件总结
         taskStatus: '否',
         attachmentList: [] // 附件列表
       },
@@ -80,7 +80,7 @@ export default {
         projectType: 3
       },
       rules: {
-        eventSummary: [
+        processContent: [
           { max: 10000, message: '最多可以输入10000个字' },
           { required: true, message: '请输入事件反馈情况', trigger: 'blur' }
         ]
