@@ -160,7 +160,7 @@ export default {
   methods: {
     goDetail (row) {
       // e.preventDefault();
-      this.$router.push({path: 'organDetail/' + row.uid});
+      this.$router.push({path: 'organDetail', query: {id: row.uid}});
     },
     selectDepart () { // 查询
       this.getDepartmentList();
