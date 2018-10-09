@@ -571,9 +571,6 @@ export default {
       this.limitRoleName = obj.roleName;
       this.editLimitDialogVisible = true;
       this.defaultKeys = [];
-      // if (!obj.roleAuthList) {
-      //   obj.roleAuthList = [];
-      // }
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
           this.allLimitObj.A.forEach(a => {
@@ -609,7 +606,6 @@ export default {
         })
       }
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
-      // console.log(this.defaultKeys)
       this.selectLimitItem = Object.assign({}, obj);
       this.timer = setTimeout(() => {
         this.$refs.tree.setCheckedKeys(this.defaultKeys);
