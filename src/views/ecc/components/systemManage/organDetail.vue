@@ -171,7 +171,7 @@
           <el-input v-model="newDepartData.organName" @change="onNewDepartChange" size="small" placeholder="请输入部门名称"/>
         </div>
         <div class="line">
-          <span class="line-title">上级部门</span>
+          <span class="line-title red-color-star">上级部门</span>
           <el-select
             size="small"
             v-model="newDepartData.organPid"
@@ -417,6 +417,13 @@ export default {
         this.errorShow = true;
         this.errorMsg = '部门名称不可为空';
         return false;
+      }
+      if (this.addDepartList.length > 0) {
+        if (!this.newDepartData.organPid) {
+          this.errorShow = true;
+          this.errorMsg = '上级部门不可为空';
+          return false;
+        }
       }
       if (!this.newDepartData.chargeUserName) {
         this.errorShow = true;

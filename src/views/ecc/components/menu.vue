@@ -9,7 +9,7 @@
           :default-active="menuActive"
           @open='selectIndex'
           class="el-menu-vertical-demo">
-          <el-submenu :index="item.resourceId" :class="[(index + 1) == isActive ? 'el-submenu-active' : '']" v-for="(item, index) in menuList" :key="'ml' + index">
+          <el-submenu :index="(index + 1).toString()" :class="[(index + 1) == isActive ? 'el-submenu-active' : '']" v-for="(item, index) in menuList" :key="'ml' + index">
             <template slot="title">
               <i :class="item.style" ></i>
               <span style='margin-left:3%'>{{item.resourceName}}</span>
@@ -64,9 +64,10 @@ export default {
     selectIndex (index) {
       this.menuActive = index;
       this.menuList.map((item) => {
-        if (index === item.id) {
-          this.isActive = index;
-        }
+        // if (index === item.resourceId) {
+        //   console.log('999999')
+        this.isActive = index;
+        // }
       });
     }
   }
@@ -89,20 +90,18 @@ export default {
         overflow: auto;
       }
     }
-    .router-link-active, .bg-mu-u > li > a:hover{
-    }
     .el-submenu-active {
-      background: #E6F7FF;
+      background: #E6F7FF !important;
       .el-submenu__title {
         color: #0785FD !important;
       }
       .el-menu {
-        background: #E6F7FF;
+        background: #E6F7FF !important;
         .el-menu-item {
           color: #0785FD !important;
         }
         .is-active {
-          background: #0785FD;
+          background: #0785FD !important;
           color: #fff !important;
         }
       }

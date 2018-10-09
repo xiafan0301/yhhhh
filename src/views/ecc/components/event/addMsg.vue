@@ -167,10 +167,11 @@ export default {
     setTimeout(() => {
       this.dataStr = JSON.stringify(this.operationForm); // 将初始数据转成字符串
     }, 1000);
-    this.initMap();
   },
   methods: {
-    initMap () {
+    onPositionChange (val) { // 事件地点输入框值改变
+      let value = val;
+      let _this = this;
       // 地图加载
       const map = new AMap.Map('container', {
         resizeEnable: true
@@ -183,16 +184,14 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
-    },
-    onPositionChange (val) { // 事件地点输入框值改变
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.operationForm.eventAddress = e.poi.name;
+      }); // 注册监听，当选中某条记录时会触发
       AMap.service('AMap.Geocoder', () => {
         var geocoder = new AMap.Geocoder({});
-        geocoder.getLocation(val, (status, result) => {
-          console.log(status)
-          console.log(result);
+        geocoder.getLocation(value, (status, result) => {
           if (status === 'complete' && result.info === 'OK') {
-            console.log(result.geocodes[0]);
             this.operationForm.longitude = result.geocodes[0].location.lng;
             this.operationForm.latitude = result.geocodes[0].location.lat;
           }
@@ -200,9 +199,6 @@ export default {
       })
     },
     calNumber (val) { // 计算事件情况字数
-      // if (val.length > this.totalNum) {
-      //   return;
-      // }
       this.currentNum = val.length;
     },
     back () {

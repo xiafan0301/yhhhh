@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="urlDetail + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank">
+          <a :href="urlDetail + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank" @click="handleLook(scope.row.eventId)">
             <i class="icon-chakan- icon-hover" title="查看"></i>
           </a>
           <i class="icon-tiaodu- icon-hover" @click="skipCtcDetail(scope)" title="调度"></i>
@@ -122,8 +122,8 @@ export default {
       eventLevelList: [],
       eventTypeList: [],
       ctcDataList: [],
-      url: '',
-      urlDetail: '',
+      url: null,
+      urlDetail: null,
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
@@ -138,6 +138,17 @@ export default {
     this.urlDetail = ajaxCtx3;
   },
   methods: {
+    handleLook (id) { // 点击查看详情
+      if (id) {
+        const params = {
+          'read_flag': true
+        };
+        this.axios.put('A2/taskServices/task/process/' + id, params)
+          .then(res => {
+          })
+          .catch(() => {});
+      }
+    },
     userInfoParam () {
       let ln = getCookie('cookieUserName');
       if (!ln) { ln = ''; }
