@@ -238,10 +238,8 @@ export default {
     edit () {
     },
     doSearch () {
+      this.pageNum = 1;
       this.getTableData();
-      if (this.searchForm.publishTime) {
-      }
-      console.log(this.searchForm.publishTime)
     },
     searchFormReset () {
       this.searchForm.publishTime = []
@@ -250,6 +248,7 @@ export default {
       this.searchForm.messageType = '39728bba-9b6f-11e8-8a14-3f814d634dc3' + ',' + '39728bba-9b6f-11e8-8a14-3f814d634dc4';
       // this.$refs['searchForm'].resetFields();
       this.getOneMonth();
+      this.pageNum = 1;
       this.getTableData();
     },
     // 分页

@@ -186,6 +186,7 @@ export default {
     edit () {
     },
     doSearch () {
+      this.pageNum = 1;
       this.getTableData();
     },
     Revoke (scope) {
@@ -209,6 +210,7 @@ export default {
       this.searchForm.publishState = '';
       this.searchForm.publishUnitId = null;
       this.getOneMonth();
+      this.pageNum = 1;
       this.getTableData();
     },
     del (scope) {

@@ -13,7 +13,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="doSearch">查询</el-button>
-          <el-button type="" @click="doSearch">重置</el-button>
+          <el-button type="" @click="doSearch1">重置</el-button>
         </el-form-item>
       </el-form>
       <div style="position: absolute; top: 20px; right: 10px;">
@@ -24,12 +24,9 @@
       <el-table
         :data="tableData"
         style="width: 100%">
-        <el-table-column prop="deviceName" label="序号" width="80">
-          <template slot-scope="scope">
-            {{ scope.$index + 1 + (pagination.pageNum - 1) * pagination.pageSize }}
-          </template>
+        <el-table-column type="index" label="序号" width="80">
         </el-table-column>
-        <el-table-column prop="softName" label="版本号" width="200" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="softPubversion" label="版本号" width="200" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="updateTime" label="更新上传时间" width="200" :show-overflow-tooltip="true">
           <template slot-scope="scope">
            {{scope.row.updateTime | moment}}
@@ -67,29 +64,34 @@
         <el-form-item label="版本名称" prop="softName">
           <el-input v-model="editForm.softName" placeholder="请输入版本名称"></el-input>
         </el-form-item>
-        <el-form-item label="应用文件" prop="savePath">
+        <el-form-item label="应用文件" style="position: relative" prop="savePath">
           <el-upload
             class="upload-demo"
+            v-model = "editForm.savePath"
             :show-file-list ="false"
-            action="https://jsonplaceholder.typicode.com/posts/"
+            action="http://10.16.4.50:8001/api/network/upload/new"
             :on-preview="handlePreview"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
-            :limit="3"
+            :on-success="handleSuccess"
+             :on-change ="handleChange"
+            :before-upload="beforeUpload"
             :file-list="fileList">
-            <el-button size="small" style="border: 1px solid #0785FD"><span style="color:#0785FD; font-size: 14px; font-weight: 400; ">上传文件</span></el-button>
-            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333">应急指挥V1.1.13 .apk</span>
-            <span style="display: inline-block; margin-left: 10px; color: #0785FD">删</span>
+            <el-button size="small" style="border: 1px solid #0785FD" :loading="loadingstatu"><span style="color:#0785FD; font-size: 14px; font-weight: 400;">{{fileStatus}}</span></el-button>
             <div slot="tip" style="padding-top: 0; margin-top: 10px; font-weight: 400; font-size: 12px; color: #999999">只能上传APK格式文件，文件不能超过100MB</div>
           </el-upload>
+          <div style="position: absolute; top: 0; left: 27%">
+            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333">{{fileName}}</span>
+            <span style="display: inline-block; margin-left: 10px; color: #0785FD; cursor: pointer" @click="delfile" v-if="fileName">删</span>
+          </div>
         </el-form-item>
         <el-form-item label="版本描述" prop="softContent">
           <el-input type="textarea" :rows="4" v-model="editForm.softContent" placeholder="请输入版本描述"></el-input>
         </el-form-item>
         <el-form-item label="提示更新" prop="softFlag">
           <el-radio-group v-model="editForm.softFlag">
-            <el-radio label="是" :value="0"></el-radio>
-            <el-radio label="否" :value="1"></el-radio>
+            <el-radio :label="0">是</el-radio>
+            <el-radio :label="1">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <!--<el-form-item label="强制更新" prop="forceUpdate">-->
@@ -103,8 +105,15 @@
           <span style="display: inline-block; margin-left: 6px">需要过旧版本强制更新时请勾引选</span>
         </el-form-item>
         <el-form-item v-if="checked">
-          <el-select  v-model="value" placeholder="请选择" style="width: 330px"></el-select>
-          <div style="font-size: 14px; font-weight: 400; color: #FF0000; margin-left: 5px">单个版本强制更新，请前去历史版本编辑。</div>
+          <el-select  v-model="editForm.minVersion" placeholder="请选择" style="width: 330px">
+            <el-option
+              v-for="item in tableDataSp"
+              :key="item.uid"
+              :label="item.softPubversion"
+              :value="item.softPubversion">
+            </el-option>
+          </el-select>
+          <!--<div style="font-size: 14px; font-weight: 400; color: #FF0000; margin-left: 5px">单个版本强制更新，请前去历史版本编辑。</div>-->
         </el-form-item>
       </el-form>
       <div style="text-align: center;">
@@ -115,18 +124,35 @@
       </div>
       <div style="height: 50px"></div>
     </el-dialog>
+    <div style="text-align: center; padding-top: 10px;">
+      <template v-if="pagination.total > 0">
+        <el-pagination
+          background
+          :page-sizes="[5, 10, 20, 50, 100]"
+          @size-change="onSizeChange"
+          @current-change="onPageChange"
+          :current-page.sync="pagination.pageNum"
+          :page-size="pagination.pageSize"
+          layout="total, prev, pager, next,sizes, jumper"
+          :total="pagination.total">
+        </el-pagination>
+      </template>
+    </div>
   </div>
 </template>
 <script>
 export default {
   data () {
     return {
-      value: '',
+      loadingstatu: false,
+      fileStatus: '上传文件',
+      fileName: '',
       checked: false,
       searchForm: {
         softPubversion: ''
       },
       tableData: [],
+      tableDataSp: [],
       pagination: {
         pageNum: 1,
         pageSize: 10,
@@ -136,11 +162,16 @@ export default {
       initEditForm: {
         softName: '',
         softContent: '',
-        softFlag: 0,
-        forceUpdate: '',
-        savePath: ''
+        softFlag: '',
+        forceUpdate: 0,
+        savePath: '',
+        saveFile: '',
+        softType: 0,
+        softCurversion: '',
+        projectType: 0,
+        minVersion: ''
       },
-      editForm: {softFlag: 0},
+      editForm: {},
       editFormRules: {
         softName: [
           { required: true, message: '请输入版本名称', trigger: 'blur' },
@@ -167,9 +198,17 @@ export default {
   },
   created () {
     this.getTableData()
+    this.getSoftPubversion()
   },
   methods: {
     doSearch () {
+      this.pagination.pageNum = 1;
+      this.getTableData();
+    },
+    doSearch1 () {
+      this.searchForm.softPubversion = ''
+      this.pagination.pageNum = 1;
+      this.getTableData();
     },
     getTableData () {
       let params = {
@@ -190,21 +229,68 @@ export default {
         .catch(() => {
         });
     },
+    getSoftPubversion () {
+      this.axios.get('A4/appUpdate/softwaredVersion')
+        .then((res) => {
+          if (res && res.data) {
+            this.tableDataSp = res.data.list;
+          }
+        })
+        .catch(() => {
+        });
+    },
     edit (item) {
+      this.checked = false;
+      this.resetEditForm('editForm');
       if (item) {
         this.editObj = true;
         this.editForm = Object.assign({}, item);
+        if (item.minVersion) {
+          this.checked = true
+        }
+        this.fileName = item.saveFile
+        console.log(item)
       } else {
         this.editFormClear();
         this.editObj = false;
+        this.fileName = ''
+        this.fileStatus = '上传文件'
       }
       this.dialogVisible = true;
+    },
+    resetEditForm (formRef) {
+      if (this.$refs[formRef]) {
+        this.$refs[formRef].resetFields();
+      }
     },
     editSubmit (formRef) {
       this.$refs[formRef].validate((valid) => {
         if (valid) {
           let params = Object.assign({}, this.editForm);
           this.editSubmitLoading = true;
+          if (this.editObj) {
+            this.axios.put('A4/appUpdate/softwaredVersion/modify', params)
+              .then((res) => {
+                if (res && res.data) {
+                  this.editSubmitLoading = false;
+                  this.dialogVisible = false;
+                  this.editObj = false;
+                  this.doSearch();
+                }
+              })
+              .catch(() => {
+              });
+          } else {
+            this.axios.post('A4/appUpdate/softwaredVersion', params)
+              .then((res) => {
+                this.editSubmitLoading = false;
+                this.dialogVisible = false;
+                this.editObj = false;
+                this.doSearch();
+              })
+              .catch(() => {
+              });
+          }
         } else {
           return false;
         }
@@ -212,6 +298,15 @@ export default {
     },
     editFormClear () {
       this.editForm = Object.assign({}, this.initEditForm)
+    },
+    onPageChange (page) {
+      this.pagination.pageNum = page;
+      this.getTableData();
+    },
+    onSizeChange (val) {
+      this.pagination.pageNum = 1;
+      this.pagination.pageSize = val;
+      this.getTableData();
     },
 
     /* 应用上传函数 */
@@ -226,6 +321,35 @@ export default {
     },
     beforeRemove (file, fileList) {
       // return this.$confirm(`确定移除 ${ file.name }？`);
+    },
+    handleSuccess (response, file, fileList) {
+      console.log(response)
+      this.loadingstatu = false
+      this.fileName = file.name
+      this.editForm.saveFile = file.name
+      this.loadingstatu = false
+      this.fileStatus = '上传成功'
+      this.editForm.savePath = response.data.newFileName
+    },
+    handleChange () {
+    },
+    beforeUpload (file) {
+      this.loadingstatu = true
+      this.fileStatus = '上传中'
+      const isJPG = file.type === 'application/vnd.android.package-archive';
+      const isLt2M = file.size / 1024 / 1024 < 100;
+
+      if (!isJPG) {
+        this.$message.error('上传文件只能是 APK 格式!');
+      }
+      if (!isLt2M) {
+        this.$message.error('上传文件大小不能超过 100MB!');
+      }
+      return isJPG && isLt2M;
+    },
+    delfile () {
+      this.fileName = ''
+      this.editForm.savePath = ''
     }
   }
 }
