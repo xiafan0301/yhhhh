@@ -16,7 +16,7 @@ axios.interceptors.request.use((config) => {
       config.url = ajaxCtx2 + config.url.substring(2);
     } else if (config.url.indexOf('A3') === 0) {
       config.url = ajaxCtx4 + config.url.substring(2);
-    } else if (config.url.indexOf('COMMON') === 0) {
+    } else if (config.url.indexOf('A4') === 0) {
       config.url = ajaxCtxCommon + config.url.substring(2);
     } else {
       config.url = ajaxCtx + config.url;

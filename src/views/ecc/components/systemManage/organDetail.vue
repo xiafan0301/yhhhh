@@ -242,6 +242,7 @@ export default {
       isDeleteLoading: false,
       tabState: 1,
       listData: {},
+      listData1: {},
       deleteArr: [], // 要删除的部门uid
       isShowDelete: false, // 是否显示确认删除等按钮
       newNumberdialogVisible: false,
@@ -299,6 +300,7 @@ export default {
   mounted () {
     this.getDetailData();
     this.getList();
+    this.getList1();
   },
   methods: {
     onChange (val) {
@@ -326,6 +328,21 @@ export default {
           if (res) {
             this.listData = res.data;
             this.pagination.total = res.data.total;
+            console.log(res)
+          }
+        })
+        .catch(() => {});
+    },
+    getList1 () {
+      let pagination = { total: 0, pageSize: 0, pageNum: 1 }
+      let params = Object.assign({}, this.filter, pagination, {
+        'where.uid': this.$route.params.id
+      })
+      this.axios.get('A3/authServices/organ/user', {params})
+        .then(res => {
+          if (res) {
+            this.listData1 = res.data;
+            console.log(res)
           }
         })
         .catch(() => {});
@@ -531,7 +548,7 @@ export default {
       this.checkOutNumbers = [];
       this.allNumbers = [];
       this.checkInNumbers = [];
-      this.listData.list.forEach(item => {
+      this.listData1.list && this.listData1.list.forEach(item => {
         this.selectNumbers.push({
           uid: item.uid,
           userName: item.userName
@@ -609,23 +626,26 @@ export default {
         params.userIds.push(item.uid);
       })
       params.userIds = params.userIds.join(',');
-      this.axios.post('A3/authServices/organ/user', params)
-        .then(res => {
-          if (res) {
-            this.checkInNumbers.forEach((aa, i) => {
-              this.allNumbers.forEach((bb, index) => {
-                if (aa.userName === bb.userName) {
-                  this.allNumbers.splice(index, 1);
-                }
+      if (params.userIds) {
+        this.axios.post('A3/authServices/organ/user', params)
+          .then(res => {
+            if (res) {
+              this.checkInNumbers.forEach((aa, i) => {
+                this.allNumbers.forEach((bb, index) => {
+                  if (aa.userName === bb.userName) {
+                    this.allNumbers.splice(index, 1);
+                  }
+                })
               })
-            })
-            this.selectNumbers.splice(this.selectNumbers.length, 0, ...this.checkInNumbers);
-            this.checkInNumbers = [];
-            this.getList();
-            this.newNumberdialogVisible = false;
-          }
-        })
-        .catch(() => {});
+              this.selectNumbers.splice(this.selectNumbers.length, 0, ...this.checkInNumbers);
+              this.checkInNumbers = [];
+              this.getList();
+              this.getList1();
+              this.newNumberdialogVisible = false;
+            }
+          })
+          .catch(() => {});
+      }
     },
     // 删除所选成员
     onOutSelectNumber () {
@@ -637,23 +657,26 @@ export default {
         params.userIds.push(item.uid);
       })
       params.userIds = params.userIds.join(',');
-      this.axios.delete('A3/authServices/organ/user', {params})
-        .then(res => {
-          if (res) {
-            this.checkOutNumbers.forEach((aa, i) => {
-              this.selectNumbers.forEach((bb, index) => {
-                if (aa.userName === bb.userName) {
-                  this.selectNumbers.splice(index, 1);
-                }
+      if (params.userIds) {
+        this.axios.delete('A3/authServices/organ/user', {params})
+          .then(res => {
+            if (res) {
+              this.checkOutNumbers.forEach((aa, i) => {
+                this.selectNumbers.forEach((bb, index) => {
+                  if (aa.userName === bb.userName) {
+                    this.selectNumbers.splice(index, 1);
+                  }
+                })
               })
-            })
-            this.allNumbers.splice(this.allNumbers.length, 0, ...this.checkOutNumbers);
-            this.checkOutNumbers = [];
-            this.getList();
-            this.newNumberdialogVisible = false;
-          }
-        })
-        .catch(() => {});
+              this.allNumbers.splice(this.allNumbers.length, 0, ...this.checkOutNumbers);
+              this.checkOutNumbers = [];
+              this.getList();
+              this.getList1();
+              this.newNumberdialogVisible = false;
+            }
+          })
+          .catch(() => {});
+      }
     },
     // 输入框查询
     onSearch () {
