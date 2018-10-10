@@ -19,12 +19,16 @@
             :data="allLimitObj.A"
             node-key="uid"
             default-expand-all
+            draggable
             :props="defaultProps"
+            :allow-drag="allowDrag"
+            @node-drop="aaa"
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.resourceName }}</span>
               <span class="operation">
                 <!-- <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(data)" /> -->
+                <i class="icon-tuodong- icon-hover" @click="canDragNode(data)" title="拖动变换顺序"></i>
                 <i class="icon-xinzeng- icon-hover" @click="onAddLimit(data)" title="添加"></i>
                 <i class="icon-xiugai-1 icon-hover" @click="onEditRole(data)" title="编辑"></i>
                 <i class="icon-shanchu- icon-hover" @click="onDeleteLimit(data)" title="删除"></i>
@@ -144,16 +148,35 @@ export default {
       errorMsg: '',
       editLimitItem: {},
       deleteItem: {},
+      limitDataList: [], // 所有的权限数据
       defaultProps: {
         children: 'children',
         label: 'resourceName'
-      }
+      },
+      isDrag: false,
+      checkedResource: null // 可以拖动的节点名称
     }
   },
   mounted () {
     this.getAuthorityList();
   },
   methods: {
+    aaa (data1, data2, data3, event) {
+      const data = $(event).prev();
+      console.log($(data)[0])
+      console.log(event)
+    },
+    allowDrag (node) { // 判断该节点是否允许拖动
+      // console.log(node)
+      if (this.checkedResource) {
+        if (node.data.resourceName === this.checkedResource) {
+          return true;
+        }
+      }
+    },
+    canDragNode (data) { // 拖动节点
+      this.checkedResource = data.resourceName;
+    },
     createFirstLimit () {
       this.addForm.resourceName = null;
       this.addForm.resourceType = null;
@@ -184,7 +207,6 @@ export default {
       }
       this.isEditLoading = true;
       let params = {
-        parentUid: this.editLimitItem.parentUid,
         resourceName: this.editLimitItem.resourceName,
         resourceType: this.editLimitItem.resourceType,
         path: this.editLimitItem.path,
@@ -235,7 +257,6 @@ export default {
         })
         .catch(() => {})
     },
-    onNewLimitChange () {},
     getAuthorityList () { // 获取权限列表
       this.allLimitObj.A = [];
       this.allLimitObj.B = [];
@@ -245,6 +266,7 @@ export default {
       this.axios.get('A2/authServices/authResources')
         .then(res => {
           if (res) {
+            this.limitDataList = res.data;
             res.data.forEach(item => {
               if (item.resourceLayer === 1) {
                 this.allLimitObj.A.push({

@@ -53,11 +53,18 @@
             <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{eventDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
-            <img
-              v-for='item in eventDetailObj.attachmentList'
-              :src='item.url'
-              :key='item.attachmentId'
-            />
+            <div style="width:100%;">
+              <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
+              <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
+                <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+                poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                  <source :src="item.url" type="video/mp4">
+                  <source :src="item.url" type="video/webm">
+                  <source :src="item.url" type="video/ogg">
+                  <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+                </video>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,7 +122,7 @@
                   </template>
                   <div class='content-right'>
                     <div class='time'>{{item.createTime}}</div>
-                    <div class='content'>{{item.processContent}}（操作人：{{item.handleUserName}}）</div>
+                    <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
                   </div>
                 </li>
               </ul>
@@ -129,11 +136,11 @@
               <ul>
                 <li v-for='(item, index) in commentList' :key="'item'+index">
                   <div class='info-top'>
-                    <p class='phone'>{{item.commentUserId}}</p>
+                    <p class='phone'>{{item.commentUserMobile}}({{item.commentUserIdentity}})</p>
                     <p class='time'>{{item.createTime}}</p>
                   </div>
                   <div class='info-detail'>{{item.content}}</div>
-                  <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+                  <!-- <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i> -->
                 </li>
               </ul>
               <template v-if='this.pagination.total > 5'>
@@ -161,6 +168,19 @@
         <div class='summary-content'>
           {{eventDetailObj.eventSummary}}
         </div>
+        <div style="display: flex">
+              <div id="imgs1" class="img-list" style="margin-left: 20px"></div>
+          </div>
+          <div class='show-file-div'>
+            <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
+              <img src='../../../../assets/img/temp/file.png' />
+              <a :href="item.url" style="text-decoration: none">
+                <span>{{item.attachmentName}}</span>
+                <el-button type="primary" size="mini" style="margin-left: 5px">下载</el-button>
+              </a>
+            </div>
+          </div>
+          <div style="height:  37px; background-color: #fff"></div>
       </div>
     </div>
     <div class='operation-btn-event'>
@@ -174,7 +194,7 @@
       center>
       <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='deleteComment'>确定删除</el-button>
+        <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
@@ -187,11 +207,16 @@ export default {
     return {
       imgSrc: '', // 事件状态图片
       closeCommentVisiable: false,
+      isDeleteLoading: false, // 删除评论加载中
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 5
       },
+      videoList: [], // 视频数据列表
+      imgList: [], // 图片数据列表
+      imgList1: [],
+      fileList: [],
       eventDetailObj: {}, // 事件详情
       eventTypeList: [], // 事件类型列表
       eventLevelList: [], // 事件等级列表
@@ -205,6 +230,82 @@ export default {
     this.getCommentList();
   },
   methods: {
+    // 预览图片公共方法
+    previewPictures (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
+    // 预览图片公共方法
+    previewPictures1 (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs1');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
     back () { // 返回上一页
       this.$router.back(-1);
     },
@@ -225,7 +326,25 @@ export default {
           .then((res) => {
             console.log(res)
             if (res && res.data) {
+              res.data.attachmentList && res.data.attachmentList.map((item, index) => {
+                if (item.attachmentType === dictType.videoId) { // 视频
+                  this.videoList.push(item);
+                } else {
+                  this.imgList.push(item);
+                }
+              });
+              if (this.imgList.length > 0) {
+                this.previewPictures(this.imgList);
+              }
               this.eventDetailObj = res.data;
+              this.eventDetailObj.closeAttachmentList.forEach(aa => {
+                if (aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.png' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.jpg' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.bmp') {
+                  this.imgList1.push(aa);
+                  this.previewPictures1(this.imgList1)
+                } else {
+                  this.fileList.push(aa)
+                }
+              })
             }
           })
           .catch(() => {})
@@ -273,6 +392,7 @@ export default {
     },
     deleteComment () { // 删除评论
       if (this.delCommentId) {
+        this.isDeleteLoading = true;
         this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
           .then((res) => {
             if (res) {
@@ -284,6 +404,8 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
+            this.closeCommentVisiable = false;
+            this.isDeleteLoading = false;
           })
           .catch(() => {})
       }
@@ -548,6 +670,25 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    .show-file-div {
+      width: 500px;
+      margin-left: 22px;
+      .show-file-div-list {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        span {
+          color: #0785FD;
+          font-size: 14px;
+          margin: 0 5px;
+        }
+        i {
+          font-size: 18px;
+          color: #5D5D5D;
+          cursor: pointer;
+        }
+      }
     }
   }
 </style>

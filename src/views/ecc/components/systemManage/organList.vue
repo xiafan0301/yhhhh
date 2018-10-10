@@ -77,7 +77,7 @@
         <el-form-item label="部门名称" label-width='100px' prop='organName'>
           <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='addForm.organName'></el-input>
         </el-form-item>
-        <el-form-item label="上级部门" label-width='100px'>
+        <el-form-item label="上级部门" label-width='100px' :class="[isAddStyle === true ? 'follow-depart' : '']">
           <el-select placeholder="请选择上级部门" style='width: 98%' v-model='addForm.organPid'>
             <el-option v-for="item in departmentList1" :key="item.uid" :label="item.organName" :value="item.uid"></el-option>
           </el-select>
@@ -123,6 +123,7 @@
 export default {
   data () {
     return {
+      isAddStyle: false,
       isAddLoading: false,
       isDeleteLoading: false,
       isEditLoading: false,
@@ -160,7 +161,7 @@ export default {
   methods: {
     goDetail (row) {
       // e.preventDefault();
-      this.$router.push({path: 'organDetail/' + row.uid});
+      this.$router.push({path: 'organDetail', query: {id: row.uid}});
     },
     selectDepart () { // 查询
       this.getDepartmentList();
@@ -203,6 +204,9 @@ export default {
         .then((res) => {
           if (res && res.data.list) {
             this.departmentList1 = res.data.list;
+            if (res.data.list.length > 0) {
+              this.isAddStyle = true;
+            }
           }
         })
         .catch(() => {})
@@ -289,6 +293,13 @@ export default {
         this.isShowError = true;
         this.errorMsg = '部门负责人不可为空';
         return;
+      }
+      if (this.departmentList1.length > 0) {
+        if (!this.addForm.organPid) {
+          this.isShowError = true;
+          this.errorMsg = '上级部门不可为空';
+          return;
+        }
       }
       this.isAddLoading = true;
       this.axios.post('A3/authServices/organInfo', this.addForm)
@@ -430,6 +441,11 @@ export default {
           margin-left: 4px;
         }
         .depart-charge /deep/ .el-form-item__label:after {
+          content: '*';
+          color: #f56c6c;
+          margin-left: 4px;
+        }
+        .follow-depart /deep/ .el-form-item__label:after {
           content: '*';
           color: #f56c6c;
           margin-left: 4px;

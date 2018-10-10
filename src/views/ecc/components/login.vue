@@ -89,14 +89,17 @@ export default {
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
               let oUser = response.data;
+              console.log(oUser)
               // 保存用户手机号到cookie
+              setCookie('cookieName', oUser.userName, 24, '/');
               if (_this.isRemember === true) {
                 setCookie('cookieUserName', oUser.userMobile, 24, '/');
                 setCookie('cookieStatus', _this.isRemember, 24, '/');
               }
               _this.$store.commit('setLoginUser', {loginUser: {
                 userId: oUser.authUserId,
-                userName: oUser.userName
+                userName: oUser.userName,
+                departmentId: oUser.departmentId
               }});
               // 用户权限
               let resList = oUser.resourceList;

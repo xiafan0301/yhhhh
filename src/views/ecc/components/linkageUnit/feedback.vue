@@ -9,20 +9,26 @@
     </div>
     <div class='event-end-body'>
       <el-form class='event-end-form' :model='feedbackForm' ref='feedbackForm' :rules='rules'>
-        <el-form-item label="请输入事件反馈" label-width='150px' prop='eventSummary'>
-          <el-input type='textarea' v-model='feedbackForm.eventSummary' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...'></el-input>
+        <el-form-item label="请输入事件反馈" label-width='150px' prop='processContent' class="event-summary">
+          <el-input type='textarea' v-model='feedbackForm.processContent' style="width: 500px;" rows='9' placeholder='请输入事件反馈情况...' @input="calNumber(feedbackForm.processContent)"></el-input>
+          <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
         </el-form-item>
-        <el-form-item style='margin-left: 150px'>
+        <el-form-item style='margin-left: 150px' class="img-form-item">
           <el-upload
             action="http://10.16.4.50:8001/api/network/upload/new"
             list-type="picture-card"
+            :data="imgParam"
             accept=".png,.jpg,.bmp"
+            :on-preview="handlePictureCardPreview"
+            :on-exceed="handleImgNumber"
             :before-upload='handleBeforeUpload'
             :on-remove="handleRemove"
             :on-success='handleSuccess'
+            :limit='9'
           >
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
             <span class='add-img-text'>添加图片</span>
+            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-upload>
         </el-form-item>
         <el-form-item label="任务是否完成" label-width='150px' prop='taskStatus'>
@@ -50,6 +56,9 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -57,19 +66,27 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      dialogImageUrl: null,
+      dialogVisible: false,
+      currentNum: 0, // 事件反馈当前字数
+      totalNum: 10000, // 可输入的总字数
       feedbackForm: {
         processType: '',
-        eventSummary: '', // 事件总结
+        processContent: '', // 事件总结
         taskStatus: '否',
         attachmentList: [] // 附件列表
       },
+      imgParam: {
+        projectType: 3
+      },
       rules: {
-        eventSummary: [
+        processContent: [
           { max: 10000, message: '最多可以输入10000个字' },
           { required: true, message: '请输入事件反馈情况', trigger: 'blur' }
         ]
       },
       closeReturnVisiable: false,
+      isImgNumber: false,
       taskTypeId: '' // 任务状态id
     }
   },
@@ -83,6 +100,9 @@ export default {
     }, 1000);
   },
   methods: {
+    calNumber (val) { // 计算事件情况字数
+      this.currentNum = val.length;
+    },
     back () {
       const data = JSON.stringify(this.feedbackForm);
       if (this.dataStr === data) {
@@ -95,16 +115,33 @@ export default {
       this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
+    handleImgNumber (files, fileList) { // 图片超出最大个数限制
+      this.isImgNumber = true;
+    },
     handleRemove (file, fileList) { // 删除图片
       if (file && file.response) {
         if (this.feedbackForm.attachmentList.length > 0) {
           this.feedbackForm.attachmentList.map((item, index) => {
-            if (item.url === file.response.data.newFileName) {
-              this.feedbackForm.attachmentList.splice(index, 1);
+            if (file.response) {
+              if (item.url === file.response.data.newFileName) {
+                this.feedbackForm.attachmentList.splice(index, 1);
+              }
+            }
+            if (file.attachmentId) {
+              if (item.attachmentId === file.attachmentId) {
+                this.feedbackForm.attachmentList.splice(index, 1);
+              }
             }
           });
         }
       }
+      if (fileList.length < 9) {
+        this.isImgNumber = false;
+      }
+    },
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
@@ -173,7 +210,7 @@ export default {
                   message: '反馈成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'linkage-detail-reat', query: {eventId: eventId}});
+                this.$router.push({name: 'linkage-detail-reat', query: {eventId: eventId, taskId: taskId}});
               } else {
                 this.$message.error('反馈失败');
               }
@@ -198,6 +235,65 @@ export default {
       background: #fff;
       .event-end-form {
         padding-top: 2%;
+        .event-summary {
+          position: relative;
+          .number-tip {
+            position: absolute;
+            bottom: 0;
+            left: 440px;
+            color: #999999;
+            font-size: 13px;
+          }
+        }
+        .img-form-item /deep/ .el-form-item__content{
+          display: flex;
+          .img-list {
+            // width: 100px;
+            height: 100px;
+            margin-left: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            .error-item {
+              position: absolute;
+              top: -10px;
+              right: -8px;
+              font-size: 18px;
+              color: #666;
+              z-index: 1;
+            }
+          }
+        }
+        .imgTips {
+          border: 1px solid #FA796C;
+          height: 35px;
+          line-height: 35px;
+          background-color: #FEE6E0;
+          border-radius: 2px;
+          position: absolute;
+          color: #FA796C;
+          padding-top: 0;
+          padding: 0 13px 0 26px;
+          -ms-flex-item-align: center;
+          align-self: center;
+          width: 160px;
+          left: 105px;
+          top: 50px;
+        }
+        .imgTips:before {
+          content: '!';
+          position: absolute;
+          left: 5px;
+          right: 0px;
+          top: 9px;
+          width: 15px;
+          height: 15px;
+          text-align: center;
+          line-height: 16px;
+          color: #FFF;
+          font-weight: bold;
+          background-color: #FA796C;
+          border-radius: 50%;
+        }
       }
       .show-img-div {
         width: 500px;
