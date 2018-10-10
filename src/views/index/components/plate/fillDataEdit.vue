@@ -708,7 +708,6 @@ export default {
       addImg: require('../../../../assets/img/temp/add.png'),
       reduceImg: require('../../../../assets/img/temp/reduce.png'),
       unactiveImg: require('../../../../assets/img/temp/unactiveAdd.png'),
-      markUrl: require('../../../../assets/img/temp/1.jpg'),
       rules: {
         plateName: [{
           required: true,
