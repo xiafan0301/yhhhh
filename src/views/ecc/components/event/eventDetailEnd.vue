@@ -143,6 +143,18 @@
                     <div class='content-right'>
                       <div class='time'>{{item.createTime}}</div>
                       <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
+                      <div style="width:100%;margin-top:10px;">
+                        <div class='img-list' style="width:auto" id="'proImgs'+ index" v-show="item.proImgList && item.proImgList.length > 0"></div>
+                        <div class='video-list' style="width:auto" v-show="item.proVideoList && item.proVideoList.length > 0">
+                          <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
+                          poster="m.jpg" data-setup="{}" v-for="(item, index) in item.proVideoList" :key="'item'+index">
+                            <source :src="item.url" type="video/mp4">
+                            <source :src="item.url" type="video/webm">
+                            <source :src="item.url" type="video/ogg">
+                            <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
+                          </video>
+                        </div>
+                      </div>
                     </div>
                   </li>
                 </ul>
@@ -253,9 +265,6 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -268,8 +277,6 @@ export default {
       dialogFormVisible: false,
       closeCommentVisiable: false,
       closeReturnVisiable: false,
-      dialogImageUrl: '',
-      dialogVisible: false,
       isSave: false, // 是否显示保存按钮
       imgSrc: '', // 事件状态图片
       videoList: [], // 视频数据列表
@@ -381,9 +388,42 @@ export default {
         }
       }, 100)
     },
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url;
-      this.dialogVisible = true;
+    previewPicturesTwo (index, data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('proImgs' + index);
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
     },
     back (form) {
       const data = JSON.stringify(this.modifyForm);
@@ -436,6 +476,20 @@ export default {
                   this.fileList.push(aa)
                 }
               })
+              if (res.data.processingList.length > 0) {
+                res.data.processingList.map((items, index) => {
+                  if (items.attachmentList.length > 0) {
+                    items.attachmentList.map((item, idx) => {
+                      if (item.attachmentType === dictType.videoId) { // 视频
+                        this.eventDetailObj.processingList[index].proImgList.push(item);
+                      } else {
+                        this.eventDetailObj.processingList[index].proVideoList.push(item);
+                      }
+                    });
+                    this.previewPicturesTwo(index, this.eventDetailObj.processingList[index].proImgList);
+                  }
+                });
+              }
             }
           })
           .catch(() => {})
@@ -519,7 +573,7 @@ export default {
             } else {
               this.$message.error('评论删除失败');
             }
-            this.closeCommentVisiable = true;
+            this.closeCommentVisiable = false;
             this.isDeleteLoading = false;
           })
           .catch(() => {})

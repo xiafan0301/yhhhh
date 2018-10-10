@@ -182,7 +182,7 @@ export default new Router({
             },
             {path: 'roleList', name: 'role-list', component: roleList},
             {path: 'authority', name: 'authority', component: authority},
-            {path: 'organDetail/:id', name: 'organ-detail', component: organDetail}
+            {path: 'organDetail', name: 'organ-detail', component: organDetail}
           ]
         }
       ]

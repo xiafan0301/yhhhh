@@ -7,7 +7,7 @@
         <i>&nbsp;</i>退出登录
       </li>
       <li>
-        <span>HI,{{$store.state.loginUser.userName}}</span>
+        <span>HI,{{userName}}</span>
         <img src="../../assets/img/temp/title.png" alt="">
         <ul class="oa-header-uul">
           <li @click="pwdModal = true">
@@ -36,6 +36,7 @@
   </div>
 </template>
 <script>
+import {getCookie} from '@/utils/util.js';
 export default {
   props: ['title'],
   data () {
@@ -85,8 +86,12 @@ export default {
           {type: 'string', min: 6, max: 32, message: '密码为6-32个数字或英文字母组合', trigger: 'blur'},
           {validator: validatePassCheck, trigger: 'blur'}
         ]
-      }
+      },
+      userName: null
     }
+  },
+  created () {
+    this.userName = getCookie('cookieName');
   },
   methods: {
     pwdSubmit (name) {

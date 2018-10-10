@@ -171,7 +171,7 @@
           <el-input v-model="newDepartData.organName" @change="onNewDepartChange" size="small" placeholder="请输入部门名称"/>
         </div>
         <div class="line">
-          <span class="line-title">上级部门</span>
+          <span class="line-title red-color-star">上级部门</span>
           <el-select
             size="small"
             v-model="newDepartData.organPid"
@@ -180,7 +180,7 @@
           </el-select>
         </div>
         <div class="line">
-          <span class="line-title">部门负责人</span>
+          <span class="line-title red-color-star">部门负责人</span>
           <el-input v-model="newDepartData.chargeUserName" size="small" placeholder="请输入部门负责人姓名"/>
         </div>
         <div v-if="errorShow" class="error-msg">
@@ -321,7 +321,7 @@ export default {
     // 部门成员列表
     getList () {
       let params = Object.assign({}, this.filter, this.pagination, {
-        'where.uid': this.$route.params.id
+        'where.uid': this.$route.query.id
       })
       this.axios.get('A3/authServices/organ/user', {params})
         .then(res => {
@@ -350,8 +350,9 @@ export default {
     // 部门详情
     getDetailData () {
       let params = {
-        uid: this.$route.params.id
+        uid: this.$route.query.id
       }
+      console.log('params', params)
       this.axios.get('A3/authServices/organInfo', {params})
         .then(res => {
           if (res) {
@@ -366,7 +367,7 @@ export default {
       this.departData = [];
       this.addDepartList = [];
       let params = {
-        'where.organPid': this.$route.params.id
+        'where.organPid': this.$route.query.id
       }
       this.axios.get('A3/authServices/organInfos', {params})
         .then(res => {
@@ -410,7 +411,7 @@ export default {
     },
     // 部门传送门
     goDepartDetail (obj) {
-      this.$router.push('/systemManage/organDetail/' + obj.uid);
+      this.$router.push({path: 'organDetail', query: {id: obj.uid}});
       this.getDetailData();
     },
     // 删除按钮事件
@@ -431,7 +432,19 @@ export default {
     onConfirmNewDepart () {
       if (!this.newDepartData.organName) {
         this.errorShow = true;
-        this.errorMsg = '此项内容不可为空';
+        this.errorMsg = '部门名称不可为空';
+        return false;
+      }
+      if (this.addDepartList.length > 0) {
+        if (!this.newDepartData.organPid) {
+          this.errorShow = true;
+          this.errorMsg = '上级部门不可为空';
+          return false;
+        }
+      }
+      if (!this.newDepartData.chargeUserName) {
+        this.errorShow = true;
+        this.errorMsg = '部门负责人不可为空';
         return false;
       }
       this.isAddLoading = true;
@@ -606,7 +619,7 @@ export default {
     // 添加所选成员
     onAddSelectNumber () {
       let params = {
-        organId: this.$route.params.id,
+        organId: this.$route.query.id,
         userIds: []
       }
       this.checkInNumbers.forEach(item => {
@@ -637,7 +650,7 @@ export default {
     // 删除所选成员
     onOutSelectNumber () {
       let params = {
-        organId: this.$route.params.id,
+        organId: this.$route.query.id,
         userIds: []
       }
       this.checkOutNumbers.forEach(item => {

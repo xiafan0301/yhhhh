@@ -165,9 +165,6 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
-    <!-- <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
-    </el-dialog> -->
   </div>
 </template>
 <script>
