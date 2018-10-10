@@ -2,7 +2,9 @@
   <div class="vis-bg-login">
     <div class="bg-forget">
       <h2 class="find-title">找回密码</h2>
-      <p class="find-tip">已有账号,&nbsp;&nbsp;<a href="/views/ecc.html#/login">马上登录</a></p>
+      <p class="find-tip">已有账号,&nbsp;&nbsp;
+        <router-link :to="{name: 'login'}">马上登录</router-link>
+      </p>
       <el-form style="padding: 0 80px 80px 80px;" :inline="false" ref="loginForm" :model="loginForm" :rules="loginFormRules" class="xs-lg-form">
         <el-form-item prop="userMobile" class="login-form-item">
           <el-input v-model="loginForm.userMobile" placeholder="请输入手机号" @keyup.enter.native="loginSubmit('loginForm')"></el-input>

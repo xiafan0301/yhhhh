@@ -7,7 +7,7 @@
         <i>&nbsp;</i>退出登录
       </li>
       <li>
-        <span>HI,{{$store.state.loginUser.userName}}</span>
+        <span>HI,{{userName}}</span>
         <img src="../../assets/img/temp/photo.png" alt="">
         <ul class="oa-header-uul">
           <li @click="pwdModal = true">
@@ -36,6 +36,8 @@
   </div>
 </template>
 <script>
+import { cookieUserName } from '@/config/config.js';
+import { getCookie } from '@/utils/util.js';
 export default {
   props: ['title'],
   data () {
@@ -64,6 +66,7 @@ export default {
       }
     };
     return {
+      userName: '',
       passwordTypeOld: 'password',
       passwordTypeNew: 'password',
       passwordTypeQurey: 'password',
@@ -90,6 +93,9 @@ export default {
         ]
       }
     }
+  },
+  created () {
+    this.userName = getCookie(cookieUserName);
   },
   computed: {
   },
