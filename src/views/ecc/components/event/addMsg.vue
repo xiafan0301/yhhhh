@@ -23,7 +23,7 @@
           <el-form-item class="img-form-item" style='margin-left: 150px;display: flex;'>
             <div class='video-list' v-show="videoList && videoList.length > 0" style="margin-right:10px;height:100px">
               <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+              data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
                 <source :src="item.url" type="video/mp4">
                 <source :src="item.url" type="video/webm">
                 <source :src="item.url" type="video/ogg">
@@ -186,10 +186,6 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      AMap.event.addListener(auto, 'select', function (e) {
-        value = e.poi.name;
-        _this.operationForm.eventAddress = e.poi.name;
-      }); // 注册监听，当选中某条记录时会触发
       AMap.service('AMap.Geocoder', () => {
         var geocoder = new AMap.Geocoder({});
         geocoder.getLocation(value, (status, result) => {
@@ -199,6 +195,32 @@ export default {
           }
         });
       })
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.operationForm.eventAddress = e.poi.name;
+        AMap.service('AMap.Geocoder', () => {
+          var geocoder = new AMap.Geocoder({});
+          geocoder.getLocation(e.poi.name, (status, result) => {
+            if (status === 'complete' && result.info === 'OK') {
+              _this.operationForm.longitude = result.geocodes[0].location.lng;
+              _this.operationForm.latitude = result.geocodes[0].location.lat;
+            }
+          });
+        })
+      }); // 注册监听，当选中某条记录时会触发
+      // AMap.event.addListener(auto, 'select', function (e) {
+      //   value = e.poi.name;
+      //   _this.operationForm.eventAddress = e.poi.name;
+      // }); // 注册监听，当选中某条记录时会触发
+      // AMap.service('AMap.Geocoder', () => {
+      //   var geocoder = new AMap.Geocoder({});
+      //   geocoder.getLocation(value, (status, result) => {
+      //     if (status === 'complete' && result.info === 'OK') {
+      //       this.operationForm.longitude = result.geocodes[0].location.lng;
+      //       this.operationForm.latitude = result.geocodes[0].location.lat;
+      //     }
+      //   });
+      // })
     },
     calNumber (val) { // 计算事件情况字数
       this.currentNum = val.length;
@@ -254,16 +276,14 @@ export default {
       if (file) {
         if (this.imgList.length > 0) {
           this.imgList.map((item, index) => {
-            if (file.response) {
-              if (item.url === file.response.data.newFileName) {
-                this.imgList.splice(index, 1);
-              }
+            if (item.url === file.url) {
+              this.imgList.splice(index, 1);
             }
-            if (file.attachmentId) {
-              if (item.attachmentId === file.attachmentId) {
-                this.imgList.splice(index, 1);
-              }
-            }
+            // if (file.attachmentId) {
+            //   if (item.attachmentId === file.attachmentId) {
+            //     this.imgList.splice(index, 1);
+            //   }
+            // }
           });
         }
       }

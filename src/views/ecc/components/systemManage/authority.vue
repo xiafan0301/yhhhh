@@ -21,20 +21,16 @@
             default-expand-all
             draggable
             :props="defaultProps"
-            :allow-drag="allowDrag"
-            @node-drop="aaa"
+            @node-drag-start="handleDragStart"
+            @node-drop="handleDrop"
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.resourceName }}</span>
               <span class="operation">
-                <!-- <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(data)" /> -->
                 <i class="icon-tuodong- icon-hover" @click="canDragNode(data)" title="拖动变换顺序"></i>
                 <i class="icon-xinzeng- icon-hover" @click="onAddLimit(data)" title="添加"></i>
                 <i class="icon-xiugai-1 icon-hover" @click="onEditRole(data)" title="编辑"></i>
                 <i class="icon-shanchu- icon-hover" @click="onDeleteLimit(data)" title="删除"></i>
-                <!-- <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onAddLimit(data)" />
-                <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditRole(data)" />
-                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onDeleteLimit(data)" /> -->
               </span>
             </span>
           </el-tree>
@@ -154,6 +150,7 @@ export default {
         label: 'resourceName'
       },
       isDrag: false,
+      params: {},
       checkedResource: null // 可以拖动的节点名称
     }
   },
@@ -161,10 +158,59 @@ export default {
     this.getAuthorityList();
   },
   methods: {
-    aaa (data1, data2, data3, event) {
-      const data = $(event).prev();
-      console.log($(data)[0])
-      console.log(event)
+    handleDragStart (node, ev) {
+      console.log('拖动的节点', node.data);
+      this.params.uid = node.data.uid;
+    },
+    handleDrop (draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成', dropNode.data, dropType);
+      this.params.parentUid = dropNode.data.parentUid;
+      if (dropType === 'before') {
+        this.params.resourceNumber = dropNode.data.resourceLeft - 1;
+        if (dropNode.data.resourceLayer === 1) {
+          if (this.params.resourceNumber === 1) {
+            this.params.resourceNumber = null;
+          }
+        }
+        if (dropNode.data.resourceLayer === 2) {
+          this.allLimitObj.A.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 3) {
+          this.allLimitObj.B.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 4) {
+          this.allLimitObj.C.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 5) {
+          this.allLimitObj.D.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+      } else if (dropType === 'after') {
+        this.params.resourceNumber = dropNode.data.resourceRight;
+      }
+      console.log(this.params);
+      this.axios.put('A2/authServices/authResource', this.params)
+        .then(res => {
+          if (res) {
+            this.getAuthorityList();
+          }
+        })
+        .catch(() => {});
     },
     allowDrag (node) { // 判断该节点是否允许拖动
       // console.log(node)
@@ -267,6 +313,7 @@ export default {
         .then(res => {
           if (res) {
             this.limitDataList = res.data;
+            console.log('data', res.data)
             res.data.forEach(item => {
               if (item.resourceLayer === 1) {
                 this.allLimitObj.A.push({
@@ -274,6 +321,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -286,6 +335,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -298,6 +349,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -310,6 +363,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -322,12 +377,14 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style
                 });
               }
             });
-            // console.log(this.allLimitObj);
+            console.log(this.allLimitObj);
             // 2
             this.allLimitObj.A.forEach(a => {
               this.allLimitObj.B.forEach(b => {
@@ -384,13 +441,17 @@ export default {
                 })
               }
             })
+            console.log(this.allLimitObj.A)
           }
         })
         .catch(() => {})
+        // console.log('A', this.allLimitObj.A)
     },
     onAddLimit (obj) { // 添加权限
       this.addForm.resourceName = null;
       this.addForm.resourceType = null;
+      this.addForm.path = null;
+      this.addForm.style = null;
       this.addLimitDialogVisible = true;
       this.isShowError = false;
       this.errorMsg = '';
@@ -427,7 +488,6 @@ export default {
       position: relative;
       overflow: auto;
       .nothing {
-        display: none;
         position: absolute;
         text-align: center;
         left: 45%;
