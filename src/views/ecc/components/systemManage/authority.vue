@@ -151,6 +151,7 @@ export default {
       },
       isDrag: false,
       params: {},
+      startNodeLayer: null,
       checkedResource: null // 可以拖动的节点名称
     }
   },
@@ -159,12 +160,17 @@ export default {
   },
   methods: {
     handleDragStart (node, ev) {
-      console.log('拖动的节点', node.data);
+      console.log('拖动的节点', node);
       this.params.uid = node.data.uid;
+      this.startNodeLayer = node.data.resourceLayer;
     },
     handleDrop (draggingNode, dropNode, dropType, ev) {
       console.log('拖拽成功完成', dropNode.data, dropType);
       this.params.parentUid = dropNode.data.parentUid;
+      if (dropNode.data.resourceLayer !== this.startNodeLayer || dropType === 'inner') {
+        this.getAuthorityList();
+        return;
+      }
       if (dropType === 'before') {
         this.params.resourceNumber = dropNode.data.resourceLeft - 1;
         if (dropNode.data.resourceLayer === 1) {
@@ -323,6 +329,7 @@ export default {
                   resourceType: item.resourceType,
                   resourceLeft: item.resourceLeft,
                   resourceRight: item.resourceRight,
+                  resourceLayer: item.resourceLayer,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -337,6 +344,7 @@ export default {
                   resourceType: item.resourceType,
                   resourceLeft: item.resourceLeft,
                   resourceRight: item.resourceRight,
+                  resourceLayer: item.resourceLayer,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -351,6 +359,7 @@ export default {
                   resourceType: item.resourceType,
                   resourceLeft: item.resourceLeft,
                   resourceRight: item.resourceRight,
+                  resourceLayer: item.resourceLayer,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -365,6 +374,7 @@ export default {
                   resourceType: item.resourceType,
                   resourceLeft: item.resourceLeft,
                   resourceRight: item.resourceRight,
+                  resourceLayer: item.resourceLayer,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -379,6 +389,7 @@ export default {
                   resourceType: item.resourceType,
                   resourceLeft: item.resourceLeft,
                   resourceRight: item.resourceRight,
+                  resourceLayer: item.resourceLayer,
                   path: item.path,
                   style: item.style
                 });
@@ -441,7 +452,7 @@ export default {
                 })
               }
             })
-            console.log(this.allLimitObj.A)
+            // console.log(this.allLimitObj.A)
           }
         })
         .catch(() => {})

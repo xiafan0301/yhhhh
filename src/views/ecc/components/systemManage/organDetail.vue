@@ -242,7 +242,6 @@ export default {
       isDeleteLoading: false,
       tabState: 1,
       listData: {},
-      listData1: {},
       deleteArr: [], // 要删除的部门uid
       isShowDelete: false, // 是否显示确认删除等按钮
       newNumberdialogVisible: false,
@@ -328,20 +327,6 @@ export default {
           if (res) {
             this.listData = res.data;
             this.pagination.total = res.data.total;
-            console.log(res)
-          }
-        })
-        .catch(() => {});
-    },
-    getList1 () {
-      let pagination = { total: 0, pageSize: 0, pageNum: 1 }
-      let params = Object.assign({}, this.filter, pagination, {
-        'where.uid': this.$route.params.id
-      })
-      this.axios.get('A3/authServices/organ/user', {params})
-        .then(res => {
-          if (res) {
-            this.listData1 = res.data;
             console.log(res)
           }
         })
