@@ -58,7 +58,7 @@
               <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
               <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
                 <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-                poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
+                data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
                   <source :src="item.url" type="video/mp4">
                   <source :src="item.url" type="video/webm">
                   <source :src="item.url" type="video/ogg">
@@ -121,16 +121,7 @@
                   <div class='time'>{{item.createTime}}</div>
                   <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
                   <div style="width:100%;margin-top:10px;">
-                    <div class='img-list' style="width:auto" id="'proImgs'+ index" v-show="item.proImgList && item.proImgList.length > 0"></div>
-                    <div class='video-list' style="width:auto" v-show="item.proVideoList && item.proVideoList.length > 0">
-                      <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-                      poster="m.jpg" data-setup="{}" v-for="(item, index) in item.proVideoList" :key="'item'+index">
-                        <source :src="item.url" type="video/mp4">
-                        <source :src="item.url" type="video/webm">
-                        <source :src="item.url" type="video/ogg">
-                        <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
-                      </video>
-                    </div>
+                    <div class='img-list' style="width:auto" :id="'proImgs'+ index"></div>
                   </div>
                 </div>
               </li>
@@ -360,14 +351,7 @@ export default {
               if (res.data.processingList.length > 0) {
                 res.data.processingList.map((items, index) => {
                   if (items.attachmentList.length > 0) {
-                    items.attachmentList.map((item, idx) => {
-                      if (item.attachmentType === dictType.videoId) { // 视频
-                        this.eventDetailObj.processingList[index].proImgList.push(item);
-                      } else {
-                        this.eventDetailObj.processingList[index].proVideoList.push(item);
-                      }
-                    });
-                    this.previewPicturesOne(index, this.eventDetailObj.processingList[index].proImgList);
+                    this.previewPicturesOne(index, items.attachmentList);
                   }
                 });
               }
@@ -554,8 +538,10 @@ export default {
               padding: 20px 0;
               li {
                 display: flex;
-                height: 82px;
+                // height: 82px;
+                height: 100%;
                 position: relative;
+                margin-bottom: 10px;
                 .circle-left {
                   margin-top: 3px;
                   .big-circle {
@@ -574,7 +560,8 @@ export default {
                 }
                 .line {
                   width: 1px;
-                  height: 70px;
+                  // height: 70px;
+                  height: 100%;
                   position: absolute;
                   left: 6px;
                   top: 15px;

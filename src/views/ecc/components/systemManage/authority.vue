@@ -21,8 +21,8 @@
             default-expand-all
             draggable
             :props="defaultProps"
-            :allow-drag="allowDrag"
-            @node-drop="aaa"
+            @node-drag-start="handleDragStart"
+            @node-drop="handleDrop"
             :expand-on-click-node="false">
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.resourceName }}</span>
@@ -154,6 +154,7 @@ export default {
         label: 'resourceName'
       },
       isDrag: false,
+      params: {},
       checkedResource: null // 可以拖动的节点名称
     }
   },
@@ -161,10 +162,59 @@ export default {
     this.getAuthorityList();
   },
   methods: {
-    aaa (data1, data2, data3, event) {
-      const data = $(event).prev();
-      console.log($(data)[0])
-      console.log(event)
+    handleDragStart (node, ev) {
+      console.log('拖动的节点', node.data);
+      this.params.uid = node.data.uid;
+    },
+    handleDrop (draggingNode, dropNode, dropType, ev) {
+      console.log('拖拽成功完成', dropNode.data, dropType);
+      this.params.parentUid = dropNode.data.parentUid;
+      if (dropType === 'before') {
+        this.params.resourceNumber = dropNode.data.resourceLeft - 1;
+        if (dropNode.data.resourceLayer === 1) {
+          if (this.params.resourceNumber === 1) {
+            this.params.resourceNumber = null;
+          }
+        }
+        if (dropNode.data.resourceLayer === 2) {
+          this.allLimitObj.A.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 3) {
+          this.allLimitObj.B.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 4) {
+          this.allLimitObj.C.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+        if (dropNode.data.resourceLayer === 5) {
+          this.allLimitObj.D.forEach(item => {
+            if (this.params.resourceNumber === item.resourceLeft) {
+              this.params.resourceNumber = null;
+            }
+          })
+        }
+      } else if (dropType === 'after') {
+        this.params.resourceNumber = dropNode.data.resourceRight;
+      }
+      console.log(this.params);
+      this.axios.put('A2/authServices/authResource', this.params)
+        .then(res => {
+          if (res) {
+            this.getAuthorityList();
+          }
+        })
+        .catch(() => {});
     },
     allowDrag (node) { // 判断该节点是否允许拖动
       // console.log(node)
@@ -274,6 +324,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -286,6 +338,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -298,6 +352,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -310,6 +366,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style,
                   isShow: true,
@@ -322,6 +380,8 @@ export default {
                   parentUid: item.parentUid,
                   resourceName: item.resourceName,
                   resourceType: item.resourceType,
+                  resourceLeft: item.resourceLeft,
+                  resourceRight: item.resourceRight,
                   path: item.path,
                   style: item.style
                 });

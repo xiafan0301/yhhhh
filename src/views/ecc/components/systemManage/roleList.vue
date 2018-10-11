@@ -34,10 +34,6 @@
           <i class="icon-xiugai-1 icon-hover" @click="onEditRole(scope.row)" title="编辑角色"></i>
           <i class="icon-peizhiquanxian- icon-hover" @click="onEditLimit(scope.row)" title="配置权限"></i>
           <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除角色"></i>
-          <!-- <img title="查看权限" src="../../../../assets/img/temp/select.png" @click="onSeeLimit(scope.row)" />
-          <img title="编辑角色" src="../../../../assets/img/temp/edit.png" @click="onEditRole(scope.row)" />
-          <img title="配置权限" src="../../../../assets/img/temp/config.png" @click="onEditLimit(scope.row)" />
-          <img title="删除角色" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -571,38 +567,42 @@ export default {
       this.limitRoleName = obj.roleName;
       this.editLimitDialogVisible = true;
       this.defaultKeys = [];
+      console.log('roleAuthList', obj.roleAuthList)
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
-          this.allLimitObj.A.forEach(a => {
-            if (a.children && a.children.length > 0) {
-              a.children.forEach(b => {
-                if (item.resourceName === b.resourceName) {
-                  keysArr.push(b.resourceName);
-                }
-                if (b.children && b.children.length > 0) {
-                  b.children.forEach(c => {
-                    if (item.resourceName === c.resourceName) {
-                      keysArr.push(c.resourceName);
-                    }
-                    if (c.children && c.children.length > 0) {
-                      c.children.forEach(d => {
-                        if (item.resourceName === d.resourceName) {
-                          keysArr.push(d.resourceName);
-                        }
-                        if (d.children && d.children.length > 0) {
-                          d.children.forEach(f => {
-                            if (item.resourceName === f.resourceName) {
-                              keysArr.push(f.resourceName);
-                            }
-                          })
-                        }
-                      })
-                    }
-                  })
-                }
-              })
-            }
-          })
+          if (item.resourceLayer !== 1) {
+            keysArr.push(item.resourceName)
+          }
+          // this.allLimitObj.A.forEach(a => {
+          //   if (a.children && a.children.length > 0) {
+          //     a.children.forEach(b => {
+          //       if (item.resourceName === b.resourceName) {
+          //         keysArr.push(b.resourceName);
+          //       }
+          //       if (b.children && b.children.length > 0) {
+          //         b.children.forEach(c => {
+          //           if (item.resourceName === c.resourceName) {
+          //             keysArr.push(c.resourceName);
+          //           }
+          //           if (c.children && c.children.length > 0) {
+          //             c.children.forEach(d => {
+          //               if (item.resourceName === d.resourceName) {
+          //                 keysArr.push(d.resourceName);
+          //               }
+          //               if (d.children && d.children.length > 0) {
+          //                 d.children.forEach(f => {
+          //                   if (item.resourceName === f.resourceName) {
+          //                     keysArr.push(f.resourceName);
+          //                   }
+          //                 })
+          //               }
+          //             })
+          //           }
+          //         })
+          //       }
+          //     })
+          //   }
+          // })
         })
       }
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));
