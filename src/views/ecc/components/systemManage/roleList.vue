@@ -570,9 +570,68 @@ export default {
       console.log('roleAuthList', obj.roleAuthList)
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
-          if (item.resourceLayer !== 1) {
-            keysArr.push(item.resourceName)
-          }
+          this.allLimitObj.A.forEach(a => {
+            if (a.resourceName === item.resourceName) {
+              if (a.children && a.children.length === 0) {
+                keysArr.push(item.resourceName);
+              }
+            }
+          })
+          this.allLimitObj.B.forEach(b => {
+            if (b.resourceName === item.resourceName) {
+              if (b.children && b.children.length > 0) {
+                b.children.forEach(child => {
+                  if (child.resourceName === item.resourceName) {
+                    keysArr.push(item.resourceName);
+                  }
+                })
+              } else {
+                keysArr.push(item.resourceName);
+              }
+            }
+          })
+          this.allLimitObj.C.forEach(c => {
+            if (c.resourceName === item.resourceName) {
+              if (c.children && c.children.length > 0) {
+                c.children.forEach(child => {
+                  if (child.resourceName === item.resourceName) {
+                    keysArr.push(item.resourceName);
+                  }
+                })
+              } else {
+                keysArr.push(item.resourceName);
+              }
+            }
+          })
+          this.allLimitObj.D.forEach(d => {
+            if (d.resourceName === item.resourceName) {
+              if (d.children && d.children.length > 0) {
+                d.children.forEach(child => {
+                  if (child.resourceName === item.resourceName) {
+                    keysArr.push(item.resourceName);
+                  }
+                })
+              } else {
+                keysArr.push(item.resourceName);
+              }
+            }
+          })
+          this.allLimitObj.E.forEach(e => {
+            if (e.resourceName === item.resourceName) {
+              if (e.children && e.children.length > 0) {
+                e.children.forEach(child => {
+                  if (child.resourceName === item.resourceName) {
+                    keysArr.push(item.resourceName);
+                  }
+                })
+              } else {
+                keysArr.push(item.resourceName);
+              }
+            }
+          })
+          // if (item.resourceLayer !== 1) {
+          //   keysArr.push(item.resourceName)
+          // }
           // this.allLimitObj.A.forEach(a => {
           //   if (a.children && a.children.length > 0) {
           //     a.children.forEach(b => {

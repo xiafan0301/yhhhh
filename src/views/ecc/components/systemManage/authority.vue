@@ -441,6 +441,7 @@ export default {
                 })
               }
             })
+            console.log(this.allLimitObj.A)
           }
         })
         .catch(() => {})
@@ -449,6 +450,8 @@ export default {
     onAddLimit (obj) { // 添加权限
       this.addForm.resourceName = null;
       this.addForm.resourceType = null;
+      this.addForm.path = null;
+      this.addForm.style = null;
       this.addLimitDialogVisible = true;
       this.isShowError = false;
       this.errorMsg = '';
