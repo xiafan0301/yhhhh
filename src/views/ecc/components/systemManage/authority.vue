@@ -27,14 +27,10 @@
             <span class="custom-tree-node" slot-scope="{ node, data }">
               <span>{{ data.resourceName }}</span>
               <span class="operation">
-                <!-- <img title="拖动变换顺序" src="../../../../assets/img/temp/drag.png" @click="onEditRole(data)" /> -->
                 <i class="icon-tuodong- icon-hover" @click="canDragNode(data)" title="拖动变换顺序"></i>
                 <i class="icon-xinzeng- icon-hover" @click="onAddLimit(data)" title="添加"></i>
                 <i class="icon-xiugai-1 icon-hover" @click="onEditRole(data)" title="编辑"></i>
                 <i class="icon-shanchu- icon-hover" @click="onDeleteLimit(data)" title="删除"></i>
-                <!-- <img title="添加" src="../../../../assets/img/temp/ecc-add.png" @click="onAddLimit(data)" />
-                <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditRole(data)" />
-                <img title="删除" src="../../../../assets/img/temp/delete.png" @click="onDeleteLimit(data)" /> -->
               </span>
             </span>
           </el-tree>
@@ -317,6 +313,7 @@ export default {
         .then(res => {
           if (res) {
             this.limitDataList = res.data;
+            console.log('data', res.data)
             res.data.forEach(item => {
               if (item.resourceLayer === 1) {
                 this.allLimitObj.A.push({
@@ -387,7 +384,7 @@ export default {
                 });
               }
             });
-            // console.log(this.allLimitObj);
+            console.log(this.allLimitObj);
             // 2
             this.allLimitObj.A.forEach(a => {
               this.allLimitObj.B.forEach(b => {
@@ -447,6 +444,7 @@ export default {
           }
         })
         .catch(() => {})
+        // console.log('A', this.allLimitObj.A)
     },
     onAddLimit (obj) { // 添加权限
       this.addForm.resourceName = null;
@@ -487,7 +485,6 @@ export default {
       position: relative;
       overflow: auto;
       .nothing {
-        display: none;
         position: absolute;
         text-align: center;
         left: 45%;
