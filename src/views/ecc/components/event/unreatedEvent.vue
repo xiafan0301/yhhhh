@@ -36,7 +36,7 @@
           <el-form-item style='margin-left: 150px;display:flex;' class="img-form-item">
             <div class='video-list' v-show="videoList && videoList.length > 0" style="margin-right:10px;height:100px">
               <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
-              poster="m.jpg" data-setup="{}" v-for="(item, index) in videoList" :key="'item' + index">
+              data-setup="{}" v-for="(item, index) in videoList" :key="'item' + index">
                 <source :src="item.url" type="video/mp4">
                 <source :src="item.url" type="video/webm">
                 <source :src="item.url" type="video/ogg">
@@ -270,10 +270,6 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      AMap.event.addListener(auto, 'select', function (e) {
-        value = e.poi.name;
-        _this.operationForm.eventAddress = e.poi.name;
-      }); // 注册监听，当选中某条记录时会触发
       AMap.service('AMap.Geocoder', () => {
         var geocoder = new AMap.Geocoder({});
         geocoder.getLocation(value, (status, result) => {
@@ -283,6 +279,32 @@ export default {
           }
         });
       })
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.detailForm.eventAddress = e.poi.name;
+        AMap.service('AMap.Geocoder', () => {
+          var geocoder = new AMap.Geocoder({});
+          geocoder.getLocation(e.poi.name, (status, result) => {
+            if (status === 'complete' && result.info === 'OK') {
+              _this.detailForm.longitude = result.geocodes[0].location.lng;
+              _this.detailForm.latitude = result.geocodes[0].location.lat;
+            }
+          });
+        })
+      }); // 注册监听，当选中某条记录时会触发
+      // AMap.event.addListener(auto, 'select', function (e) {
+      //   value = e.poi.name;
+      //   _this.operationForm.eventAddress = e.poi.name;
+      // }); // 注册监听，当选中某条记录时会触发
+      // AMap.service('AMap.Geocoder', () => {
+      //   var geocoder = new AMap.Geocoder({});
+      //   geocoder.getLocation(value, (status, result) => {
+      //     if (status === 'complete' && result.info === 'OK') {
+      //       this.detailForm.longitude = result.geocodes[0].location.lng;
+      //       this.detailForm.latitude = result.geocodes[0].location.lat;
+      //     }
+      //   });
+      // })
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');
@@ -303,23 +325,26 @@ export default {
           thumbnailHeight: res.data.thumbImageHeight
         }
         this.imgList.push(data);
+        console.log(this.imgList)
       }
     },
     handleRemove (file, fileList) { // 删除图片
+      console.log(file)
       if (file) {
         if (this.imgList.length > 0) {
           this.imgList.map((item, index) => {
-            if (file.response) {
-              if (item.url === file.response.data.newFileName) {
-                this.imgList.splice(index, 1);
-              }
+            if (item.url === file.url) {
+              console.log('111111')
+              this.imgList.splice(index, 1);
             }
-            if (file.attachmentId) {
-              if (item.attachmentId === file.attachmentId) {
-                this.imgList.splice(index, 1);
-              }
-            }
+            // if (file.attachmentId) {
+            //   if (item.attachmentId === file.attachmentId) {
+            //     console.log('22222')
+            //     this.imgList.splice(index, 1);
+            //   }
+            // }
           });
+          console.log(this.imgList)
         }
       }
       if (fileList.length < 9) {
@@ -395,17 +420,27 @@ export default {
           } else if (this.detailForm.casualties === '有') {
             this.detailForm.casualties = this.dieNumber;
           }
+          if (this.videoList.length > 0) {
+            this.videoList.map(item => {
+              this.detailForm.attachmentList.push(item);
+            });
+          }
+          if (this.imgList.length > 0 && this.videoList.length === 0) {
+            this.imgList.map(item => {
+              this.detailForm.attachmentList.push(item);
+            });
+          }
+          const params = {
+            emiEvent: this.detailForm
+          }
+          this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
+            .then((res) => {
+              if (res) {
+                this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.detailForm.eventType}});
+              }
+            })
+            .catch(() => {})
         }
-        const params = {
-          emiEvent: this.detailForm
-        }
-        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, params.emiEvent)
-          .then((res) => {
-            if (res) {
-              this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.detailForm.eventType}});
-            }
-          })
-          .catch(() => {})
       });
     },
     getEventDetail () { // 获取事件详情

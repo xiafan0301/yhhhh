@@ -193,10 +193,6 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      AMap.event.addListener(auto, 'select', function (e) {
-        value = e.poi.name;
-        _this.addForm.eventAddress = e.poi.name;
-      }); // 注册监听，当选中某条记录时会触发
       AMap.service('AMap.Geocoder', () => {
         var geocoder = new AMap.Geocoder({});
         geocoder.getLocation(value, (status, result) => {
@@ -206,6 +202,19 @@ export default {
           }
         });
       })
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.addForm.eventAddress = e.poi.name;
+        AMap.service('AMap.Geocoder', () => {
+          var geocoder = new AMap.Geocoder({});
+          geocoder.getLocation(e.poi.name, (status, result) => {
+            if (status === 'complete' && result.info === 'OK') {
+              _this.addForm.longitude = result.geocodes[0].location.lng;
+              _this.addForm.latitude = result.geocodes[0].location.lat;
+            }
+          });
+        })
+      }); // 注册监听，当选中某条记录时会触发
     },
     calNumber (val) { // 计算事件情况字数
       this.currentNum = val.length;
@@ -366,19 +375,11 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log(file)
-      if (file && file.response) {
+      if (file) {
         if (this.addForm.attachmentList.length > 0) {
           this.addForm.attachmentList.map((item, index) => {
-            if (file.response) {
-              if (item.url === file.response.data.newFileName) {
-                this.addForm.attachmentList.splice(index, 1);
-              }
-            }
-            if (file.attachmentId) {
-              if (item.attachmentId === file.attachmentId) {
-                this.addForm.attachmentList.splice(index, 1);
-              }
+            if (item.url === file.url) {
+              this.addForm.attachmentList.splice(index, 1);
             }
           });
         }
@@ -388,7 +389,6 @@ export default {
       }
     },
     deleteImg (url) {
-      console.log(url)
       if (url) {
         this.addForm.attachmentList && this.addForm.attachmentList.map((item, index) => {
           if (item.url === url) {

@@ -242,7 +242,6 @@ export default {
       isDeleteLoading: false,
       tabState: 1,
       listData: {},
-      listData1: {},
       deleteArr: [], // 要删除的部门uid
       isShowDelete: false, // 是否显示确认删除等按钮
       newNumberdialogVisible: false,
@@ -328,20 +327,6 @@ export default {
           if (res) {
             this.listData = res.data;
             this.pagination.total = res.data.total;
-            console.log(res)
-          }
-        })
-        .catch(() => {});
-    },
-    getList1 () {
-      let pagination = { total: 0, pageSize: 0, pageNum: 1 }
-      let params = Object.assign({}, this.filter, pagination, {
-        'where.uid': this.$route.params.id
-      })
-      this.axios.get('A3/authServices/organ/user', {params})
-        .then(res => {
-          if (res) {
-            this.listData1 = res.data;
             console.log(res)
           }
         })
@@ -548,27 +533,28 @@ export default {
       this.checkOutNumbers = [];
       this.allNumbers = [];
       this.checkInNumbers = [];
-      this.listData1.list && this.listData1.list.forEach(item => {
-        this.selectNumbers.push({
-          uid: item.uid,
-          userName: item.userName
-        })
-      })
       let params = {
         pageSize: 0
       }
+      let data = {
+        'where.uid': this.$route.query.id,
+        pageSize: 0
+      }
+      this.axios.get('A3/authServices/organ/user', {params: data})
+        .then(res => {
+          if (res && res.data.list) {
+            res.data.list.forEach(zz => {
+              this.selectNumbers.push({
+                uid: zz.uid,
+                userName: zz.userName
+              })
+            })
+          }
+        })
+        .catch(() => {});
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {
-            if (this.selectNumbers && this.selectNumbers.length > 0) {
-              this.selectNumbers.forEach(aa => {
-                res.data.list.forEach((bb, index) => {
-                  if (aa.userName === bb.userName) {
-                    res.data.list.splice(index, 1);
-                  }
-                })
-              })
-            }
             res.data.list.forEach(zz => {
               this.allNumbers.push({
                 uid: zz.uid,
@@ -592,19 +578,11 @@ export default {
       if (val === '') {
         this.allNumbers = []
         let params = {
-          pageSize: 999999
+          pageSize: 0
         };
         this.axios.get('A2/authServices/users', {params})
           .then(res => {
             if (res) {
-              this.selectNumbers.forEach(aa => {
-                res.data.list.forEach((bb, index) => {
-                  if (aa.userName === bb.userName) {
-                    res.data.list.splice(index, 1);
-                  }
-                })
-              })
-              console.log(res.data.list);
               res.data.list.forEach(zz => {
                 this.allNumbers.push({
                   uid: zz.uid,
