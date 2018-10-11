@@ -15,7 +15,7 @@
           <el-date-picker
             v-model='searchForm.publishTime'
             range-separator="至"
-            type="daterange"
+            type="datetimerange"
             format="yyyy/MM/dd"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
@@ -139,6 +139,7 @@ export default {
   },
   created () {
     this.getDepartmentList();
+    console.log(this.searchForm.publishTime)
   },
   mounted () {
     this.getOneMonth();
@@ -146,6 +147,7 @@ export default {
   },
   methods: {
     getTableData () {
+      // var aa = this.searchForm.publishTime[1] + 'aa' + '23:59:59'
       let params = {
         'where.beginTime': this.searchForm.publishTime[0],
         'where.endTime': this.searchForm.publishTime[1],
@@ -186,6 +188,8 @@ export default {
     edit () {
     },
     doSearch () {
+      this.searchForm.publishTime[0] = this.searchForm.publishTime[0].concat(' ').concat('00:00:00')
+      this.searchForm.publishTime[1] = this.searchForm.publishTime[1].concat(' ').concat('23:59:59')
       this.pageNum = 1;
       this.getTableData();
     },
@@ -250,6 +254,8 @@ export default {
       const endDate = formatDate(end, 'yyyy-MM-dd');
       this.searchForm.publishTime.push(startDate);
       this.searchForm.publishTime.push(endDate);
+      this.searchForm.publishTime[0] = this.searchForm.publishTime[0].concat(' ').concat('00:00:00')
+      this.searchForm.publishTime[1] = this.searchForm.publishTime[1].concat(' ').concat('23:59:59')
     },
     // 分页
     pagerSizeChange (val) {

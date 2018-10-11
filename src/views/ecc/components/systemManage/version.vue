@@ -230,7 +230,10 @@ export default {
         });
     },
     getSoftPubversion () {
-      this.axios.get('A4/appUpdate/softwaredVersion')
+      let params = {
+        pageSize: 99999999
+      }
+      this.axios.get('A4/appUpdate/softwaredVersion', {params})
         .then((res) => {
           if (res && res.data) {
             this.tableDataSp = res.data.list;
@@ -369,13 +372,13 @@ export default {
     .icon-hover:hover {
       color: #0785FD !important;
     }
-  }
-  /deep/ .el-dialog__header {
-    background: #F0F0F0 !important;
-    text-align: left !important;
-    color: #333333;
-    font-weight: 400;
-    font-size: 16px;
-    margin-bottom: 15px;
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #333333;
+      font-weight: 400;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
   }
 </style>
