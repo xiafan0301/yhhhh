@@ -237,7 +237,7 @@ export default {
             if (this.form.attachmentList.length === 0) {
               this.form.attachmentList = null;
             }
-            if (this.form.publishTime) {
+            if (this.form.publishTime && this.form.time === 1) {
               this.form.description = 1
             }
             this.value && this.value.map((item, index) => {

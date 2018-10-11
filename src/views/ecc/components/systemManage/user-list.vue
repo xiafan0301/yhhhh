@@ -94,6 +94,7 @@
         prop="force"
         label="状态"
         align="center"
+        width="80"
         :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span v-if="scope.row.isForce">禁用</span>
@@ -105,7 +106,7 @@
         type="index"
         label="操作"
         align="center"
-        width="200px"
+        width="250px"
         class-name="operate">
         <template  slot-scope="scope" >
           <i class="icon-xiugai-1 icon-hover" @click="onEdit(scope.row)" title="编辑"></i>
@@ -125,7 +126,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <div v-if="listData.list && listData.list.length > 0" class="pagination-box" style="text-align: right; padding-top: 10px;">
+    <div v-if="listData.list && listData.list.length > 0" class="pagination-box" style="text-align: center; padding-top: 10px;">
       <el-pagination
         background
         @current-change="onPageChange"
@@ -532,7 +533,6 @@ export default {
     // 加入所选组
     onAddSelectGroup () {
       let params = {
-        proKey: this.$store.state.proKey,
         uid: this.groupUserId,
         uids: []
       }
@@ -559,7 +559,6 @@ export default {
     // 移出所选组
     onOutSelectGroup () {
       let params = {
-        proKey: this.$store.state.proKey,
         uid: this.groupUserId,
         uids: []
       }
@@ -585,7 +584,6 @@ export default {
     // 加入配置角色
     onAddSelectRole () {
       let params = {
-        proKey: this.$store.state.proKey,
         userId: this.roleUserId,
         roleIdList: []
       }
@@ -611,7 +609,6 @@ export default {
     // 移出配置角色
     onOutSelectRole () {
       let params = {
-        proKey: this.$store.state.proKey,
         userId: this.roleUserId,
         roleIdList: []
       }
@@ -869,9 +866,9 @@ export default {
     }
     /deep/ .operate {
       .cell {
-        width: 185px;
+        width: 250px;
         i {
-          margin-left: 10px;
+          margin-left: 5px;
           color: #666;
           font-size: 20px;
           cursor: pointer;

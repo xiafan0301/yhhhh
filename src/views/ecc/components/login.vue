@@ -130,7 +130,7 @@ export default {
                 }
               }
               setLocalStore('userMenuPermission', JSON.stringify(aList));
-              _this.$router.push({name: 'event-list'});
+              _this.$router.push({name: 'default'});
             }
             _this.loginBtnLoading = false;
           }).catch(function () {
@@ -166,8 +166,6 @@ export default {
     width: 100%; height: 100%;
     position: relative;
     background: url(../../../assets/img/login/ecc-bg.png) center center no-repeat #000;
-    -webkit-animation: bgScale 60s ease-out both infinite;
-    animation: bgScale 60s ease-out both infinite;
   }
   .bg-login {
     position: absolute; top: 50%; left: 50%;
