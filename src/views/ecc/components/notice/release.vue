@@ -204,7 +204,7 @@ export default {
                 publishTime: this.form1.publishTime
               }
             };
-            if (this.form1.publishTime) {
+            if (this.form1.publishTime && this.form1.time === 2) {
               params.emiMessage.description = 1;
               params.emiMessage.publishState = 1
             }
@@ -237,7 +237,7 @@ export default {
             if (this.form.attachmentList.length === 0) {
               this.form.attachmentList = null;
             }
-            if (this.form.publishTime && this.form.time === 1) {
+            if (this.form.publishTime && this.form.time === 2) {
               this.form.description = 1
             }
             this.value && this.value.map((item, index) => {
