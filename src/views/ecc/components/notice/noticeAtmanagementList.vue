@@ -67,7 +67,7 @@
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</span>
-          <span v-if="scope.row.receiveRelations.length > 0" >/</span>
+          <span v-if="scope.row.emiMessage.terminal == 3" >/</span>
           <span v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}/</span>
         </template>
       </el-table-column>

@@ -240,9 +240,11 @@ export default {
             if (this.form.publishTime && this.form.time === 2) {
               this.form.description = 1
             }
-            this.value && this.value.map((item, index) => {
-              this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
-            });
+            if (this.form.terminal === 3 || this.form.terminal === 2) {
+              this.value && this.value.map((item, index) => {
+                this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
+              });
+            }
             if (this.form.receiveRelations.length === 0) {
               this.form.receiveRelations = null;
             }
