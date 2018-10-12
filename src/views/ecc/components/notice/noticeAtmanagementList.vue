@@ -67,7 +67,7 @@
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</span>
-          <span v-if="scope.row.receiveRelations.length > 0" >/</span>
+          <span v-if="scope.row.emiMessage.terminal == 3" >/</span>
           <span v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}/</span>
         </template>
       </el-table-column>
@@ -147,7 +147,6 @@ export default {
   },
   methods: {
     getTableData () {
-      // var aa = this.searchForm.publishTime[1] + 'aa' + '23:59:59'
       let params = {
         'where.beginTime': this.searchForm.publishTime[0],
         'where.endTime': this.searchForm.publishTime[1],
@@ -190,6 +189,10 @@ export default {
     doSearch () {
       this.searchForm.publishTime[0] = this.searchForm.publishTime[0].concat(' ').concat('00:00:00')
       this.searchForm.publishTime[1] = this.searchForm.publishTime[1].concat(' ').concat('23:59:59')
+      if (this.searchForm.publishTime[0].length > 19) {
+        this.searchForm.publishTime[0] = this.searchForm.publishTime[0].slice(0, 19)
+        this.searchForm.publishTime[1] = this.searchForm.publishTime[1].slice(0, 19)
+      }
       this.pageNum = 1;
       this.getTableData();
     },

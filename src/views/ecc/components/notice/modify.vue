@@ -262,9 +262,11 @@ export default {
             if (this.form.time === 1) {
               this.form.publishTime = null;
             }
-            this.value && this.value.map((item, index) => {
-              this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
-            });
+            if (this.form.terminal === 2 || this.form.terminal === 3) {
+              this.value && this.value.map((item, index) => {
+                this.form.receiveRelations.push({receiveUser: item, receiverType: 2});
+              });
+            }
             if (this.form.attachmentList.length === 0) {
               this.form.attachmentList = [];
             }

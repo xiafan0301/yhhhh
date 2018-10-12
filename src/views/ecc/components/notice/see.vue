@@ -38,7 +38,7 @@
         <li><span class="title">接收者</span><span class="content">{{messageInfo.emiMessage.terminal}}</span></li>
         <li><span class="title">类型</span><span class="content">{{messageInfo.emiMessage.messageType}}</span></li>
         <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
-        <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.title}}</span></li>
+        <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUserName}}</span></li>
         <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
         <li>
