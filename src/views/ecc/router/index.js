@@ -1,54 +1,54 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
 // 登陆
-import login from '@/views/ecc/components/login.vue'
-import forget from '@/views/ecc/components/forget.vue'
+import login from '@/views/ecc/components/login.vue';
+import forget from '@/views/ecc/components/forget.vue';
 // 主要
-import main from '@/views/ecc/components/main.vue'
-import eccDefault from '@/views/ecc/components/default.vue'
+import main from '@/views/ecc/components/main.vue';
+import eccDefault from '@/views/ecc/components/default.vue';
 // 消息管理
-import notice from '@/views/ecc/components/notice/notice.vue'
-import system from '@/views/ecc/components/notice/system.vue'
-import noticeRelease from '@/views/ecc/components/notice/release.vue'
-import noticeSee from '@/views/ecc/components/notice/see.vue'
-import noticeAtmanagementList from '@/views/ecc/components/notice/noticeAtmanagementList.vue'
-import noticeModify from '@/views/ecc/components/notice/modify.vue'
+import notice from '@/views/ecc/components/notice/notice.vue';
+import system from '@/views/ecc/components/notice/system.vue';
+import noticeRelease from '@/views/ecc/components/notice/release.vue';
+import noticeSee from '@/views/ecc/components/notice/see.vue';
+import noticeAtmanagementList from '@/views/ecc/components/notice/noticeAtmanagementList.vue';
+import noticeModify from '@/views/ecc/components/notice/modify.vue';
 // 事件管理
-import event from '@/views/ecc/components/event/event.vue'
-import eventList from '@/views/ecc/components/event/eventList.vue'
-import addEvent from '@/views/ecc/components/event/addEvent.vue'
-import addMsg from '@/views/ecc/components/event/addMsg.vue'
-import eventDetailEnd from '@/views/ecc/components/event/eventDetailEnd.vue'
-import eventEnd from '@/views/ecc/components/event/eventEnd.vue'
-import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue'
-import eventDetailReat from '@/views/ecc/components/event/eventDetailReat.vue'
-import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue'
-import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue'
+import event from '@/views/ecc/components/event/event.vue';
+import eventList from '@/views/ecc/components/event/eventList.vue';
+import addEvent from '@/views/ecc/components/event/addEvent.vue';
+import addMsg from '@/views/ecc/components/event/addMsg.vue';
+import eventDetailEnd from '@/views/ecc/components/event/eventDetailEnd.vue';
+import eventEnd from '@/views/ecc/components/event/eventEnd.vue';
+import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue';
+import eventDetailReat from '@/views/ecc/components/event/eventDetailReat.vue';
+import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue';
+import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue';
 // 调度指挥
-import ctc from '@/views/ecc/components/ctc/ctc.vue'
-import ctcList from '@/views/ecc/components/ctc/ctcList.vue'
-import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue'
+import ctc from '@/views/ecc/components/ctc/ctc.vue';
+import ctcList from '@/views/ecc/components/ctc/ctcList.vue';
+import ctcDetail from '@/views/ecc/components/ctc/ctcDetail.vue';
 // 应急库
-import emergency from '@/views/ecc/components/emergency/emergency.vue'
-import emergencyPlanList from '@/views/ecc/components/emergency/planList.vue'
-import emergencyAddPlan from '@/views/ecc/components/emergency/addPlan.vue'
-import emergencyMaterialList from '@/views/ecc/components/emergency/materialList.vue'
-import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue'
-import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue'
-import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue'
-import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue'
-import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue'
+import emergency from '@/views/ecc/components/emergency/emergency.vue';
+import emergencyPlanList from '@/views/ecc/components/emergency/planList.vue';
+import emergencyAddPlan from '@/views/ecc/components/emergency/addPlan.vue';
+import emergencyMaterialList from '@/views/ecc/components/emergency/materialList.vue';
+import emergencyAddWarehouse from '@/views/ecc/components/emergency/warehouse.vue';
+import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue';
+import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue';
+import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue';
+import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue';
 // 预案
-import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue'
-import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue'
-import enableReplan from '@/views/ecc/components/ctc/enableReplan.vue'
+import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue';
+import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue';
+import enableReplan from '@/views/ecc/components/ctc/enableReplan.vue';
 // 联动单位的调度指挥
-import linkage from '@/views/ecc/components/linkageUnit/linkage.vue'
-import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue'
-import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue'
-import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue'
-import feedback from '@/views/ecc/components/linkageUnit/feedback.vue'
+import linkage from '@/views/ecc/components/linkageUnit/linkage.vue';
+import linkageList from '@/views/ecc/components/linkageUnit/linkageList.vue';
+import linkageDetailEnd from '@/views/ecc/components/linkageUnit/linkageDetailEnd.vue';
+import linkageDetailReat from '@/views/ecc/components/linkageUnit/linkageDetailReat.vue';
+import feedback from '@/views/ecc/components/linkageUnit/feedback.vue';
 // 系统管理--组织架构
 import systemManage from '@/views/ecc/components/systemManage/systemManage.vue';
 import organList from '@/views/ecc/components/systemManage/organList.vue';

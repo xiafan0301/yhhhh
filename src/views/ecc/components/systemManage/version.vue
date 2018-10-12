@@ -12,27 +12,29 @@
           <el-input v-model="searchForm.softPubversion" style="width: 180px;" placeholder="请输入版本号"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch">查询</el-button>
+          <el-button type="primary" @click="doSearch" class='selectBtn'>查询</el-button>
           <el-button type="" @click="doSearch1">重置</el-button>
         </el-form-item>
       </el-form>
       <div style="position: absolute; top: 20px; right: 10px;">
-        <el-button type="primary" size="small" @click="edit(null)" icon="el-icon-plus">新增</el-button>
+        <el-button type="primary" size="small" @click="edit(null)" class='selectBtn btnClass'>新增</el-button>
       </div>
     </div>
     <div>
       <el-table
         :data="tableData"
-        style="width: 100%">
-        <el-table-column type="index" label="序号" width="80">
+        style="width: 100%"
+        class="version-table"
+        >
+        <el-table-column type="index" label="序号" width="80" fixed align="center">
         </el-table-column>
-        <el-table-column prop="softPubversion" label="版本号" width="200" :show-overflow-tooltip="true"></el-table-column>
-        <el-table-column prop="updateTime" label="更新上传时间" width="200" :show-overflow-tooltip="true">
+        <el-table-column prop="softPubversion" label="版本号" width="200" :show-overflow-tooltip="true" align="center"></el-table-column>
+        <el-table-column prop="updateTime" label="更新上传时间" width="200" :show-overflow-tooltip="true" align="center">
           <template slot-scope="scope">
            {{scope.row.updateTime | moment}}
           </template>
         </el-table-column>
-        <el-table-column prop="softContent" label="新功能" min-width="200" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="softContent" label="新功能" min-width="200" :show-overflow-tooltip="true" align="center"></el-table-column>
         <!-- force_update 是否需要强制更新, 1强制更新 0不强制更新 -->
         <el-table-column prop="forceUpdate" label="强制更新" align="center" width="100" :show-overflow-tooltip="true">
           <template slot-scope="scope">
@@ -366,6 +368,28 @@ export default {
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
+    }
+    .btnClass {
+      width: 100px;
+    }
+    .selectBtn {
+      background-color: #0785FD;
+    }
+    .el-table {
+      >thead th {
+        color: #555555 !important;
+      }
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
+    .version-table {
+      i {
+        margin: 0 10px;
+      }
     }
     .icon-hover {
       font-size: 30px !important;

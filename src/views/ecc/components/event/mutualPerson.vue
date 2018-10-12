@@ -53,9 +53,6 @@
           <i class="icon-chakan- icon-hover" @click="skipPersonDetail(scope)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover" @click="skipAddMsg('modify', scope)" title="编辑"></i>
           <i class="icon-shanchu- icon-hover" @click="showDelete(scope)" title="删除"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipPersonDetail(scope)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="skipAddMsg('modify', scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="showDelete(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>

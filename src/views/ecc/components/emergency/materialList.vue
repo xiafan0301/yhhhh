@@ -9,26 +9,10 @@
     <div style="display: flex;">
     <div style=" width: 21%;" class="warehouse">
       <div style="padding:20px 10px; box-sizing: border-box; background-color: #FAFAFA;" class="clearfix">
-        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span><el-button style="float: right;" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
+        <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span>
+        <el-button style="float: right;" class="add-material" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
       </div>
-        <!--<div @click="registrationChoice(0)"  style="padding:20px 20px 20px 15px; background-color: #fff; border-bottom: 1px solid #EAEAEA"> 所有仓库</div>-->
         <div>
-          <!--<ul style="width: 100%">-->
-            <!--<li v-for="(item, index) in tableDatack" :key="index"  @click="registrationChoice(index + 1)" :class="{active: visitType === index + 1}"><span>{{item.warehouseName}}</span>-->
-              <!--<el-popover trigger="click" width="50" style="padding: 0" class="tanchu">-->
-              <!--<div style="text-align: center; margin: 0">-->
-              <!--<div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">-->
-              <!--<el-button type="text" @click.native="showEditDialog('modify', scope.row)">修改</el-button>-->
-              <!--</div>-->
-              <!--<div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">-->
-              <!--<el-button type="text" @click="seeck(scope.row)">查看</el-button>-->
-              <!--</div>-->
-              <!--<el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>-->
-              <!--</div>-->
-              <!--<i class="icon iconfont" style="color: #0785FD; cursor: pointer;" slot="reference">&#xe6f4;</i>-->
-              <!--</el-popover>-->
-            <!--</li>-->
-          <!--</ul>-->
           <el-table
             height="650"
             ref="singleTable"
@@ -40,7 +24,7 @@
             empty-text ="还没有可用仓库,请先添加仓库"
             style="width: 100%;" width="60%">
             <el-table-column
-              prop="warehouseName" >
+              prop="warehouseName" fixed>
             </el-table-column>
             <el-table-column width="40%" prop="warehouseId">
               <template slot-scope="scope">
@@ -68,24 +52,25 @@
           <el-input v-model="searchForm.materialsName" placeholder="搜索物资名称..." style="width: 220px" ></el-input>
         </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="doSearch">查询</el-button>
+            <el-button type="primary" class='selectBtn' @click="doSearch">查询</el-button>
             <el-button @click.native="searchFormReset">重置</el-button>
           </el-form-item>
         </el-form>
         <div style="position: absolute; right: 20px; top: 20px">
-          <el-button type="primary" size="small" @click.native="addmodify('add')" >添加物资</el-button>
+          <el-button type="primary" size="small" class='selectBtn btnClass' @click.native="addmodify('add')" >添加物资</el-button>
         </div>
       </div>
     <el-table
       :data="tableData"
-      style="width: 100%;">
-      <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" type="index" width="80"></el-table-column>
-      <el-table-column prop="materialsName" label="物资名称" >
+      style="width: 100%;"
+      class="mater-table"
+      >
+      <el-table-column fixed  label="序号" type="index" width="80"></el-table-column>
+      <el-table-column prop="materialsName" label="物资名称" align="center">
       </el-table-column>
-      <el-table-column prop="amount" label="数量" ></el-table-column>
-      <el-table-column prop="measurementUnit" label="单位" ></el-table-column>
-      <el-table-column prop="warehouseName" label="所属仓库" >
+      <el-table-column prop="amount" label="数量" align="center"></el-table-column>
+      <el-table-column prop="measurementUnit" label="单位" align="center"></el-table-column>
+      <el-table-column prop="warehouseName" label="所属仓库" align="center">
         <template slot-scope="scope">
           <el-popover placement="bottom" v-for="(item, index) in tableDatack" :key="index" effect="light"  trigger="hover">
             <div>
@@ -97,17 +82,13 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="操作">
+        label="操作"
+        align="center"
+      >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover" @click="addmodify('modify',scope.row)" title="编辑"></i>
           <i class="icon-shanchu- icon-hover" @click="del('material',scope.row)" title="删除"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png"   @click="see(scope.row)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="addmodify('modify',scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del('material',scope.row)" /> -->
-          <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
-          <!--<el-button type="text"  @click="addmodify('modify',scope.row)">修改</el-button>-->
-          <!--<el-button @click="del('material',scope.row)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -119,7 +100,7 @@
           :current-page="pageNum"
           :page-sizes="[10, 20, 50, 100]"
           :page-size="pageSize"
-          layout="total, prev, pager, next, sizes, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="total">
         </el-pagination>
       </div>
@@ -341,15 +322,21 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .btnClass {
+      width: 100px;
+    }
+    .selectBtn {
+      background-color: #0785FD;
+    }
     .warehouse{
       margin-right: 2%;
-        /deep/ .el-table__row:nth-child(1) {
-           /deep/ .cell {
-             .tanchu{
-               display: none;
-             }
+      /deep/ .el-table__row:nth-child(1) {
+          /deep/ .cell {
+            .tanchu{
+              display: none;
             }
-        }
+          }
+      }
       .active{
         color: #ffffff;
         background: #0785FD;
@@ -375,6 +362,13 @@ export default {
           color: #0785FD;
         }
       }
+      .add-material {
+        width: 80px;
+        border: 1px solid #0785FD;
+        border-radius: 2px;
+        color: #0785FD;
+        font-size: 14px;
+      }
     }
     ul {
       li {
@@ -389,6 +383,22 @@ export default {
           top: 40%;
           right: 10px;
         }
+      }
+    }
+    .el-table {
+      >thead th {
+        color: #555555 !important;
+      }
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
+    .mater-table {
+      i {
+        margin: 0 10px;
       }
     }
     .icon-hover {

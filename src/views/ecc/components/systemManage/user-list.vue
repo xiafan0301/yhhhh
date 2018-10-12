@@ -33,6 +33,7 @@
       :data="listData.list"
       header-row-class-name="table-header">
       <el-table-column
+        fixed
         type="index"
         width="50px"
         label="序号"
@@ -106,7 +107,7 @@
         type="index"
         label="操作"
         align="center"
-        width="250px"
+        width="270px"
         class-name="operate">
         <template  slot-scope="scope" >
           <i class="icon-xiugai-1 icon-hover" @click="onEdit(scope.row)" title="编辑"></i>
@@ -115,14 +116,6 @@
           <i class="icon-jinyong- icon-hover" @click="onForBidUser(scope.row)" title="禁用" v-if="!scope.row.isForce"></i>
           <i class="icon-qiyong- icon-hover" @click="onUpUser(scope.row)" title="启用" v-else></i>
           <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
-          <!--<img :src="img2[scope.$index]" alt="" >-->
-          <!-- <img title="编辑" :src="img1" @click="onEdit(scope.row)" @mouseenter ="qq(scope)" @mouseleave= "bb" > -->
-          <!--<img title="重置密码" src="../../../../assets/img/temp/password.png" @click="resetPwdList(scope.row)" />-->
-          <!-- <img title="修改所属组" src="../../../../assets/img/temp/update-group.png" @click="onEditGroups(scope.row)" />
-          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
-          <img title="禁用" src="../../../../assets/img/temp/disable.png" @click="onForBidUser(scope.row)" >
-          <img title="启用" src="../../../../assets/img/temp/open.png"  @click="onUpUser(scope.row)"/>
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -132,7 +125,7 @@
         @current-change="onPageChange"
         :current-page.sync="currentPage"
         :page-size="pagination.pageSize"
-        layout="prev, pager, next, jumper"
+        layout="total, prev, pager, next, jumper"
         :total="listData.total"/>
     </div>
     <!-- 修改所属组弹框 -->
@@ -189,7 +182,7 @@
     <el-dialog
       title="编辑信息"
       :visible.sync="editdialogVisible"
-      width="400px"
+      width="480px"
       center>
        <div class="content">
         <div class="line">
@@ -198,11 +191,11 @@
         </div>
         <div class="line">
           <span class="line-title">姓名</span>
-          <el-input v-model="editItem.userName" size="small" placeholder="请输入姓名"/>
+          <el-input v-model="editItem.userName" style="width: 278px" size="small" placeholder="请输入姓名"/>
         </div>
         <div class="line">
           <span class="line-title">身份号码</span>
-          <el-input v-model="editItem.userIdcard" size="small" placeholder="请输入用户身份证号码"/>
+          <el-input v-model="editItem.userIdcard" style="width: 278px" size="small" placeholder="请输入用户身份证号码"/>
         </div>
         <div class="line">
           <span class="line-title">性别</span>
@@ -213,13 +206,13 @@
         </div>
         <div class="line">
           <span class="line-title">邮箱</span>
-          <el-input v-model="editItem.userEmail" size="small" placeholder="请输入邮箱"/>
+          <el-input v-model="editItem.userEmail" style="width: 278px" size="small" placeholder="请输入邮箱"/>
         </div>
         <div class="line">
           <span class="line-title">居住地</span>
           <el-select
             v-model="editItem.province"
-            style="width: 120px;"
+            style="width: 150px;"
             clearable
             size="small"
             placeholder="请选择省份"
@@ -819,7 +812,7 @@ export default {
       line-height: 36px;
       text-align: center;
       border-radius: 3px;
-      background: #1AB394;
+      background: #0785FD;
       color: #FFF;
       cursor: pointer;
       i {
@@ -830,6 +823,9 @@ export default {
   }
   .ar-table {
     margin-top: 20px;
+    i {
+      margin: 0 10px;
+    }
     .expand {
       width:86px; height:26px;
       background:#FFF;
@@ -847,11 +843,11 @@ export default {
         margin-left: 3px;
       }
       &:hover {
-        color: #1AB394;
-        border: 1px solid #1AB394;
+        color: #0785FD;
+        border: 1px solid #0785FD;
         background:#F4FFFE;
         .row-insert-i {
-          color: #1AB394;
+          color: #0785FD;
         }
       }
     }
@@ -866,7 +862,7 @@ export default {
     }
     /deep/ .operate {
       .cell {
-        width: 250px;
+        // width: 250px;
         i {
           margin-left: 5px;
           color: #666;
@@ -874,7 +870,7 @@ export default {
           cursor: pointer;
         }
         i:hover {
-          color: #1AB394;
+          color: #0785FD;
         }
         i:last-child:hover {
           color: #FF5722;
@@ -947,14 +943,14 @@ export default {
   .retire-page-radio {
     margin-left: 15px;
     /deep/ .el-radio__input.is-checked .el-radio__inner {
-      border-color: #009688;
-      background: #009688;
+      border-color: #0785FD;
+      background: #0785FD;
     }
     /deep/ .el-radio__input.is-checked+.el-radio__label {
       color: #606266;
     }
     /deep/ .el-radio__inner:hover {
-      border-color: #009688;
+      border-color: #0785FD;
     }
   }
 }
@@ -996,11 +992,11 @@ export default {
         }
         /deep/ .el-checkbox__input.is-checked .el-checkbox__inner,
         /deep/ .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-          background-color: #1AB394;
-          border-color: #1AB394;
+          background-color: #0785FD;
+          border-color: #0785FD;
         }
         /deep/ .el-checkbox__input.is-checked+.el-checkbox__label { color: #606266; }
-        /deep/ .el-checkbox__inner:hover { border-color: #1AB394; }
+        /deep/ .el-checkbox__inner:hover { border-color: #0785FD; }
       }
       .bottom-btn {
         width: 120px; height: 32px;
@@ -1043,11 +1039,11 @@ export default {
         }
         /deep/ .el-checkbox__input.is-checked .el-checkbox__inner,
         /deep/ .el-checkbox__input.is-indeterminate .el-checkbox__inner {
-          background-color: #1AB394;
-          border-color: #1AB394;
+          background-color: #0785FD;
+          border-color: #0785FD;
         }
         /deep/ .el-checkbox__input.is-checked+.el-checkbox__label { color: #606266; }
-        /deep/ .el-checkbox__inner:hover { border-color: #1AB394; }
+        /deep/ .el-checkbox__inner:hover { border-color: #0785FD; }
       }
       .bottom-btn {
         width: 110px; height: 32px;

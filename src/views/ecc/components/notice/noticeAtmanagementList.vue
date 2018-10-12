@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>公告管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" icon="el-icon-plus">发布</el-button>
+        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -14,9 +14,7 @@
         <el-form-item style="width: 220px;">
           <el-date-picker
             v-model='searchForm.publishTime'
-            range-separator="至"
             type="datetimerange"
-            format="yyyy/MM/dd"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -43,26 +41,20 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch">查询</el-button>
+          <el-button type="primary" @click="doSearch" class='selectBtn'>查询</el-button>
           <el-button @click.native="searchFormReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <el-table
       :data="tableData"
-      style="width: 100%">
-      <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" width="60"  type="index"></el-table-column>
+      style="width: 100%"
+      class="notice-table"
+      >
+      <el-table-column fixed label="序号" width="60"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center"  :show-overflow-tooltip="true">
-        <!--<template slot-scope="scope">-->
-          <!--&lt;!&ndash;{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length}}&ndash;&gt;-->
-          <!--<div>{{ scope.row.emiMessage.title && scope.row.emiMessage.title.length > 20 ? (scope.row.emiMessage.title).slice(0,20) + '....': scope.row.emiMessage.title }}</div>-->
-        <!--</template>-->
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="摘要"  min-width="150" align="center"  :show-overflow-tooltip="true">
-        <!--<template slot-scope="scope">-->
-          <!--&lt;!&ndash;<div>{{scope.row.emiMessage.details.length > 20 ? (scope.row.emiMessage.details).slice(0,20) + '....': scope.row.emiMessage.details }}</div>&ndash;&gt;-->
-        <!--</template>-->
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -85,19 +77,12 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="150" align="center">
+        width="200" align="center">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
           <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
           <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="see(scope.row.emiMessage)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"/>
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3" />
-          <img title="撤消" src="../../../../assets/img/temp/revoek.png" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" width="26px" height="28"/> -->
-          <!--<el-button size="mini" type="text" @click="see(scope.row.emiMessage)">查看</el-button>-->
-          <!--<el-button type="text"  @click="modify('modifyatgment',scope.row.emiMessage)">修改</el-button>-->
-          <!--<el-button @click="del(scope.row.emiMessage)" type="text" size="small">删除</el-button>-->
           </template>
       </el-table-column>
     </el-table>
@@ -109,7 +94,7 @@
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
-        layout="total, prev, pager, next, sizes, jumper"
+        layout="total, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
     </div>
@@ -289,12 +274,34 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .btnClass {
+      width: 100px;
+    }
+    .selectBtn {
+      background-color: #0785FD;
+    }
     .bg-plan-tbp{
       padding: 20px 0;
       text-align: center;
     }
     .el-date-editor /deep/.el-range-separator{
       width: 15%!important;
+    }
+    .el-table {
+      >thead th {
+        color: #555555 !important;
+      }
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
+    .notice-table {
+      i {
+        margin: 0 10px;
+      }
     }
     .icon-hover {
       font-size: 30px;
