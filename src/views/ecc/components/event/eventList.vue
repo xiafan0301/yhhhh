@@ -100,7 +100,6 @@
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="skipEventDetail(scope)" title="查看"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="skipEventDetail(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>

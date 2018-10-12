@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>预案管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog('add')" icon="el-icon-plus">添加预案</el-button>
+        <el-button type="primary" size="small"  class='selectBtn btnClass'  @click.native="showEditDialog('add')">添加预案</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -35,46 +35,41 @@
           <el-input v-model="searchForm.planName" placeholder="搜索预案名称..." style="width: 220px" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="doSearch">查询</el-button>
+          <el-button type="primary" class='selectBtn' @click="doSearch">查询</el-button>
           <el-button @click.native="searchFormReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
     <el-table
       :data="tableData"
-      style="width: 100%">
-      <!--<el-table-column prop="cameraId" label="摄像头ID" width="150"></el-table-column>-->
-      <el-table-column  label="序号" width="80"  type="index"></el-table-column>
-      <el-table-column prop="planName" label="预案名称"  :show-overflow-tooltip="true">
+      style="width: 100%"
+      class="plan-table"
+      >
+      <el-table-column fixed label="序号" width="80"  type="index" align="center"></el-table-column>
+      <el-table-column prop="planName" label="预案名称"  :show-overflow-tooltip="true" align="center">
       </el-table-column>
-      <el-table-column prop="eventTypeName" label="预案类型"  :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="levelNameList" label="适用事件等级"  :show-overflow-tooltip="true">
+      <el-table-column prop="eventTypeName" label="预案类型"  :show-overflow-tooltip="true" align="center"></el-table-column>
+      <el-table-column prop="levelNameList" label="适用事件等级"  :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
         </template>
       </el-table-column>
-      <el-table-column prop="createUserName" label="创建用户"  :show-overflow-tooltip="true">
+      <el-table-column prop="createUserName" label="创建用户"  :show-overflow-tooltip="true" align="center">
       </el-table-column>
-      <el-table-column prop="createTime" label="创建时间" :show-overflow-tooltip="true">
+      <el-table-column prop="createTime" label="创建时间" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
           <span>{{(scope.row.createTime).slice(0,16)}}</span>
         </template>
       </el-table-column>
       <el-table-column
         label="操作"
-        width="130"
-        class="ctc-class"
+        width="200"
+        align="center"
       >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover" @click="modify('modify', scope.row)" title="编辑"></i>
           <i class="icon-shanchu- icon-hover" @click="del(scope.row)" title="删除"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png"  @click="see(scope.row)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="modify('modify', scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="del(scope.row)" /> -->
-          <!--<el-button size="mini" type="text" @click="see(scope.row)">查看</el-button>-->
-          <!--<el-button type="text"  @click="modify('modify', scope.row)">修改</el-button>-->
-          <!--<el-button @click="del(scope.row)" type="text" size="small">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -86,7 +81,7 @@
         :current-page="pageNum"
         :page-sizes="[10, 20, 50, 100]"
         :page-size="pageSize"
-        layout="total, prev, pager, next, sizes, jumper"
+        layout="total, prev, pager, next, jumper"
         :total="total">
       </el-pagination>
     </div>
@@ -223,11 +218,28 @@ export default {
     padding: 20px;
     background-color: #F0F3F4;
     height: 100%;
+    .btnClass {
+      width: 100px;
+    }
+    .selectBtn {
+      background-color: #0785FD;
+    }
+    .el-table {
+      >thead th {
+        color: #555555 !important;
+      }
+    }
+    /deep/ .el-table thead th {
+      background-color: #FAFAFA !important;
+    }
+    /deep/ .hover-row>td {
+      background-color: #E6F7FF !important;
+    }
     .bg-plan-tbp{
       padding: 20px 0;
       text-align: center;
     }
-    .ctc-class {
+    .plan-table {
       i {
         margin: 0 10px;
       }
