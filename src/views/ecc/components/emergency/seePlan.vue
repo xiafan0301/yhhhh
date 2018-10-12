@@ -25,11 +25,11 @@
           </ul >
         </div>
       </li>
-        <li><span class="title">发布用户</span><span class="content">{{seeplanList.createUserName && seeplanList.createUserName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
+        <li><span class="title">创建用户</span><span class="content">{{seeplanList.createUserName && seeplanList.createUserName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
     </div>
     <div style="margin-top: 21px; position: relative" >
-      <el-button @click="back" >取消</el-button>
+      <el-button @click="back" >返回</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
       <a target="_blank" :href="ajaxCtx2 + '/planServices/plans/preview/' + this.$route.query.planId">
         <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff" icon="icon-yulan-"> 预览</el-button>

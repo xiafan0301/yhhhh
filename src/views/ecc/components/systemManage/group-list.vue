@@ -254,7 +254,13 @@ export default {
       filter: {
         'where.groupName': null
       },
-      pagination: { total: 0, pageSize: 10, pageNum: 1 },
+      pagination: {
+        total: 0,
+        pageSize: 10,
+        pageNum: 1,
+        order: 'desc',
+        orderBy: 'create_time'
+      },
       currentPage: 1,
       closeShow: false
     }

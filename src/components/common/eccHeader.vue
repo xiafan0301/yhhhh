@@ -232,9 +232,6 @@ export default {
           .oa-header-uul {
             display: block;
           }
-          > img {
-            // animation: circle 4s linear 0s infinite;
-          }
         }
         > span {
           float: left;

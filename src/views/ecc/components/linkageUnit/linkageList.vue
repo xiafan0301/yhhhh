@@ -15,7 +15,7 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 100%;"
+            style="width: 250px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 130px;" prop='eventType'>

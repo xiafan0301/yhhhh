@@ -16,7 +16,7 @@
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 100%;"
+            style="width: 250px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 110px;" prop='eventStatus'>
@@ -53,7 +53,7 @@
           </el-select>
         </el-form-item>
         <el-form-item style="width: 220px;" prop='phoneOrNumber'>
-          <el-input placeholder='请输入提交者手机号或事件编号' style='width:110%' v-model='selectForm.phoneOrNumber'></el-input>
+          <el-input placeholder='请输入提交者手机号或事件编号' style='width:220px' v-model='selectForm.phoneOrNumber'></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn btnClass' @click='selectEventList'>查询</el-button>
