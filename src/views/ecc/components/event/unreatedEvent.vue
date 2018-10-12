@@ -26,7 +26,7 @@
             <span style='color:#333333;font-size:13px'>{{detailForm.reportTime}}</span>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class='address'>
-            <el-input style='width: 500px' @change="onPositionChange" id="tipinput" placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
+            <el-input style='width: 500px' @input="onPositionChange" id="tipinput" placeholder='请选择事发地点...' v-model='detailForm.eventAddress'></el-input>
             <div class='map-ecc'><img src="../../../../assets/img/temp/map-ecc.png" @click='showMap' style='cursor:pointer' /></div>
           </el-form-item>
           <el-form-item label="事件情况" label-width='150px' prop='eventDetail' class="event-detail">

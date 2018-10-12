@@ -66,9 +66,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="内容" min-width="180" :show-overflow-tooltip="true" align="center"></el-table-column>
-      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
+      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="120" :show-overflow-tooltip="true" align="center"></el-table-column>
       <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="120" align="center">
@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="250"
+        width="200"
         align="center"
         >
         <template slot-scope="scope">

@@ -68,7 +68,7 @@
         prop=""
         label="操作"
         align="center"
-        width="200px"
+        width="300px"
         class-name="operate">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="onWatchNumber(scope.row)" title="查看组成员"></i>
@@ -76,11 +76,6 @@
           <i class="icon-guanlichengyuan- icon-hover" @click="onAdminNumer(scope.row)" title="管理成员"></i>
           <i class="icon-peizhiquanxian- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
           <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
-          <!-- <img title="查看组成员" src="../../../../assets/img/temp/select.png" @click="onWatchNumber(scope.row)" />
-          <img title="编辑" src="../../../../assets/img/temp/edit.png" @click="onEditInfo(scope.row)" />
-          <img title="管理成员" src="../../../../assets/img/temp/managementMembers.png" @click="onAdminNumer(scope.row)" />
-          <img title="配置角色" src="../../../../assets/img/temp/config.png" @click="onEditRoles(scope.row)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click="deleteList(scope.row)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -710,6 +705,9 @@ export default {
   }
   .ar-table {
     margin-top: 20px;
+    i {
+      margin: 0 10px;
+    }
     .expand {
       width:86px; height:26px;
       background:#FFF;
@@ -744,23 +742,22 @@ export default {
     /deep/ .el-table__row {
       height: 54px;
     }
-    /deep/ .operate {
-      .cell {
-        width: 185px;
-        i {
-          margin-left: 10px;
-          color: #666;
-          font-size: 20px;
-          cursor: pointer;
-        }
-        i:hover {
-          color: #0785FD;
-        }
-        i:last-child:hover {
-          color: #FF5722;
-        }
-      }
-    }
+    // /deep/ .operate {
+    //   .cell {
+    //     i {
+    //       margin-left: 10px;
+    //       color: #666;
+    //       font-size: 20px;
+    //       cursor: pointer;
+    //     }
+    //     i:hover {
+    //       color: #0785FD;
+    //     }
+    //     i:last-child:hover {
+    //       color: #FF5722;
+    //     }
+    //   }
+    // }
   }
   /deep/ .el-dialog__header {
     background: #F0F0F0 !important;
