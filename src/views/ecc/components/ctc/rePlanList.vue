@@ -58,10 +58,6 @@
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="selectReplanDetail(scope)" title="查看"></i>
           <i class="icon-qiyong- icon-hover" @click="openReplan(scope)" title="启用"></i>
-          <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
-          <img title="启用" src="../../../../assets/img/temp/open.png" @click="openReplan(scope)" /> -->
-          <!-- <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='selectReplanDetail(scope)'>查看</el-button>
-          <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='openReplan(scope)'>启用</el-button> -->
         </template>
       </el-table-column>
     </el-table>

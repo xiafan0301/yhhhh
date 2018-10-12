@@ -157,7 +157,9 @@ export default {
     getAdviceList () {
       let params = {
         pageSize: this.pagesize,
-        pageNum: this.pageNum
+        pageNum: this.pageNum,
+        order: 'asc',
+        orderBy: 'create_time'
       };
       this.axios.get('/pageServices/pages', {params})
         .then(res => {

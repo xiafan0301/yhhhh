@@ -249,19 +249,6 @@
         <el-button class='noSureBtn' @click="deletedialogVisible = false">取消</el-button>
       </span>
     </el-dialog>
-    <!-- 重置密码提示弹框 -->
-    <el-dialog
-      title="重置密码"
-      :visible.sync="resetPwddialogVisible"
-      width="340px"
-      center>
-      <span style='text-align:center;color:#333333;font-size:14px'>是否重置密码?</span>
-      <p style='text-align:center;color:#999999;font-size:12px;margin-top:10px'>重置后，新密码将以短信形式发送给用户</p>
-      <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click='onConfirmResetPwd'>确认</el-button>
-        <el-button class='noSureBtn' @click="deletedialogVisible = false">取消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
@@ -289,7 +276,6 @@ export default {
       dropDownGroupList: [], // 筛选列表
       deletedialogVisible: false, // 删除提示
       deleteItem: {},
-      resetPwddialogVisible: false, // 重置密码提示
       editdialogVisible: false, // 编辑信息提示
       editItem: {},
       provinceData: [], // 省份列表
@@ -304,8 +290,8 @@ export default {
       pagination: {
         pageNum: 1,
         pageSize: 10,
-        orderBy: null,
-        order: null
+        order: 'desc',
+        orderBy: 'create_time'
       },
       currentPage: 1,
       closeShow: false,
@@ -727,14 +713,6 @@ export default {
             this.getList();
           }
         })
-    },
-    // 重置密码提示
-    resetPwdList (obj) {
-      this.resetPwddialogVisible = true;
-    },
-    // 重置密码确认提示
-    onConfirmResetPwd () {
-      this.resetPwddialogVisible = false;
     },
     // 过滤实时查询
     onSelectChange (val) {

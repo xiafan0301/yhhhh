@@ -9,14 +9,14 @@
     </div>
     <div class="clearfix search-person">
       <el-form style="float: left;width:100%" :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
-        <el-form-item style="width: 280px;" prop='reportTime'>
+        <el-form-item style="width: 250px;" prop='reportTime'>
           <el-date-picker
             v-model='selectForm.reportTime'
             type="daterange"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 100%;"
+            style="width: 250px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 150px;" prop='eventStatus'>
