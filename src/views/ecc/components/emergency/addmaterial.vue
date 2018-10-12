@@ -154,7 +154,7 @@ export default {
     .add-msg-body {
       .add-form-person {
         background-color: #fff;
-        padding-bottom: 5%;
+        padding-bottom: 2%;
         .form-content-person {
           padding-top: 2%;
           .el-form-item {

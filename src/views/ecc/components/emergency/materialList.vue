@@ -84,6 +84,7 @@
       <el-table-column
         label="操作"
         align="center"
+        width="200"
       >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>

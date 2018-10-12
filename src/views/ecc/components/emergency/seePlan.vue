@@ -24,13 +24,6 @@
             <li><span > 任务内容</span ><span class="content">{{seeplanList.taskList&&seeplanList.taskList[index].taskContent}}</span></li>
           </ul >
         </div>
-          <!--<div style="margin-left: 118px; padding-top: 20px">-->
-            <!--<ul style="background-color: #FAFAFA; width: 500px; padding: 20px ">-->
-              <!--<li><span > 协同部门</span ><span class="content">联动单位B</span></li>-->
-              <!--<li><span > 协同部门</span ><span class="content">联动单位B</span></li>-->
-              <!--<li><span > 协同部门</span ><span class="content">联动单位B</span></li>-->
-            <!--</ul >-->
-          <!--</div>-->
       </li>
         <li><span class="title">发布用户</span><span class="content">{{seeplanList.createUserName && seeplanList.createUserName}}</span><span class="title">发送时间</span> <span class="content">{{seeplanList.createTime}}</span></li>
       </ul>
@@ -38,9 +31,8 @@
     <div style="margin-top: 21px; position: relative" >
       <el-button @click="back" >取消</el-button>
       <el-button type="primary" @click="onSubmit" >修改</el-button>
-      <!--<el-button type="primary" @click="preview" >预览</el-button>-->
       <a target="_blank" :href="ajaxCtx2 + '/planServices/plans/preview/' + this.$route.query.planId">
-        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff"> 预览</el-button>
+        <el-button style="margin-left: 10px; background-color: #FB796C; color: #fff" icon="icon-yulan-"> 预览</el-button>
       </a>
     </div>
   </div>
@@ -97,10 +89,10 @@ export default {
   }
   .bg-release-cot {
     background-color: #FFFFFF;
-    padding-top: 55px;
+    padding-top: 40px;
     box-sizing: border-box;
     padding-left: 100px;
-    padding-bottom: 86px;
+    padding-bottom: 30px;
   }
   .listxf{
     li{

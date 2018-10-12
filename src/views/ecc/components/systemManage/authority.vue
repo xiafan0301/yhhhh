@@ -152,6 +152,7 @@ export default {
       isDrag: false,
       params: {},
       startNodeLayer: null,
+      startParentId: null,
       checkedResource: null // 可以拖动的节点名称
     }
   },
@@ -163,11 +164,12 @@ export default {
       console.log('拖动的节点', node);
       this.params.uid = node.data.uid;
       this.startNodeLayer = node.data.resourceLayer;
+      this.startParentId = node.data.parentUid;
     },
     handleDrop (draggingNode, dropNode, dropType, ev) {
       console.log('拖拽成功完成', dropNode.data, dropType);
       this.params.parentUid = dropNode.data.parentUid;
-      if (dropNode.data.resourceLayer !== this.startNodeLayer || dropType === 'inner') {
+      if (dropNode.data.resourceLayer !== this.startNodeLayer || dropType === 'inner' || this.startParentId !== dropNode.data.parentUid) {
         this.getAuthorityList();
         return;
       }
@@ -217,14 +219,6 @@ export default {
           }
         })
         .catch(() => {});
-    },
-    allowDrag (node) { // 判断该节点是否允许拖动
-      // console.log(node)
-      if (this.checkedResource) {
-        if (node.data.resourceName === this.checkedResource) {
-          return true;
-        }
-      }
     },
     canDragNode (data) { // 拖动节点
       this.checkedResource = data.resourceName;
