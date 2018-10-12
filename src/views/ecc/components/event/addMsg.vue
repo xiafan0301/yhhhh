@@ -301,6 +301,11 @@ export default {
           } else {
             this.operationForm.radius = parseInt(this.operationForm.radiusNumber);
           }
+          if (this.imgList.length > 0 && this.videoList.length === 0) {
+            this.imgList.map(item => {
+              this.operationForm.attachmentList.push(item);
+            });
+          }
           const param = {
             emiEvent: this.operationForm
           }
