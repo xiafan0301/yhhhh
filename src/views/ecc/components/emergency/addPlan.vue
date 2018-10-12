@@ -65,7 +65,7 @@
               <!--</ul>-->
             <!--</div>-->
           <el-form-item label="响应处置" label-width='150px'>
-            <div style="width: 570px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" :value="item.departmentName">
+            <div style="width: 630px;background-color:#FAFAFA; padding: 20px; margin-bottom: 15px" v-for="(item, index) in form.taskList" :key="'fawe' + index" :value="item.departmentName">
             <el-form-item label="协同部门" label-position="left" :prop="'taskList.'+ index + '.departmentId'" :rules ="[{ required: true, message: '请选择协同部门', trigger: 'change' }]">
               <el-select style="width: 358px" placeholder='选择协同部门' v-model="form.taskList[index].departmentId" @change="change" >
                 <el-option
@@ -82,7 +82,7 @@
                 <el-input style="width: 358px" placeholder='请输入任务名称' v-model="form.taskList[index].taskName" ></el-input>
               </el-form-item>
               </div>
-              <el-form-item label="任务内容" label-position="left" :prop="'taskList.'+ index + '.taskContent'" :rules ="[{ required: true, message: '请输入任务名称', trigger: 'blur' }]">
+              <el-form-item label="任务内容" label-position="left" :prop="'taskList.'+ index + '.taskContent'" :rules ="[{ required: true, message: '请输入任务内容', trigger: 'blur' }]">
                 <el-input type="textarea" style='width: 358px' placeholder='请输入任务内容' rows='5' v-model="form.taskList[index].taskContent"></el-input>
               </el-form-item>
               <el-button type='text' @click="del(index)" :disabled="form.taskList.length === 1">删除</el-button>
