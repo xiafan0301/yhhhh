@@ -83,7 +83,7 @@
             <div slot="tip" style="padding-top: 0; margin-top: 10px; font-weight: 400; font-size: 12px; color: #999999">只能上传APK格式文件，文件不能超过100MB</div>
           </el-upload>
           <div style="position: absolute; top: 0; left: 27%">
-            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333">{{fileName}}</span>
+            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333; word-wrap: break-word;">{{fileName.slice(0,19)}}<span v-if="fileName.length > 19">....</span></span>
             <span style="display: inline-block; margin-left: 10px; color: #0785FD; cursor: pointer" @click="delfile" v-if="fileName">删</span>
           </div>
         </el-form-item>
@@ -168,9 +168,9 @@ export default {
         forceUpdate: 0,
         savePath: '',
         saveFile: '',
-        softType: 0,
+        softType: 1,
         softCurversion: '',
-        projectType: 0,
+        projectType: 4,
         minVersion: ''
       },
       editForm: {},
@@ -339,8 +339,10 @@ export default {
     handleChange () {
     },
     beforeUpload (file) {
-      this.loadingstatu = true
-      this.fileStatus = '上传中'
+      if (file.type === 'application/vnd.android.package-archive') {
+        this.fileStatus = '上传中'
+        this.loadingstatu = true
+      }
       const isJPG = file.type === 'application/vnd.android.package-archive';
       const isLt2M = file.size / 1024 / 1024 < 100;
 
