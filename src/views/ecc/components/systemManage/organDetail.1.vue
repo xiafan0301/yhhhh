@@ -26,7 +26,7 @@
             </td>
             <td>
               <div>负责人：</div>
-              <div>{{detailData.chargeUserNameStr}}</div>
+              <div>{{detailData.chargeUserName}}</div>
             </td>
             <td>
               <div>创建时间：</div>
@@ -181,9 +181,7 @@
         </div>
         <div class="line">
           <span class="line-title red-color-star">部门负责人</span>
-          <el-select filterable clearable placeholder="请输入部门负责人姓名" style='width: 250px;' size="small" v-model='newDepartData.chargeUserName'>
-            <el-option v-for="item in userList" :key="item.uid" :label="item.userRealName" :value="item.uid"></el-option>
-          </el-select>
+          <el-input v-model="newDepartData.chargeUserName" size="small" placeholder="请输入部门负责人姓名"/>
         </div>
         <div v-if="errorShow" class="error-msg">
           <i class="el-icon-error"></i>
@@ -270,8 +268,7 @@ export default {
       deleteDepartdialogVisible: false, // 删除弹框提示
       errorShow: false, // 错误信息显示
       errorMsg: null, // 错误信息提示语
-      pagination: { total: 0, pageSize: 10, pageNum: 1 },
-      userList: []
+      pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
   watch: {
@@ -302,7 +299,6 @@ export default {
   mounted () {
     this.getDetailData();
     this.getList();
-    this.getUserList();
   },
   methods: {
     onChange (val) {
@@ -319,20 +315,6 @@ export default {
       this.pagination.pageNum = 1;
       this.pagination.pageSize = val;
       this.getList();
-    },
-    getUserList () {
-      const pagination = {
-        pageSize: 0
-      };
-      let params = Object.assign({}, pagination);
-      console.log(params);
-      this.axios.get('A2/authServices/users', {params})
-        .then(res => {
-          if (res && res.data.list) {
-            this.userList = res.data.list;
-          }
-        })
-        .catch(() => {})
     },
     // 部门成员列表
     getList () {
@@ -359,7 +341,6 @@ export default {
         .then(res => {
           if (res) {
             this.detailData = res.data;
-            console.log('detailData', res.data)
             this.getDepartData();
           }
         })
@@ -375,7 +356,6 @@ export default {
       this.axios.get('A3/authServices/organInfos', {params})
         .then(res => {
           if (res) {
-            console.log(res.data.list)
             this.addDepartList.push({
               uid: this.detailData.uid,
               organName: this.detailData.organName
@@ -387,8 +367,6 @@ export default {
                 organName: item.organName
               })
               if (item.organLayer === this.detailData.organLayer + 1) {
-                console.log(item.organName)
-                console.log(item.uid)
                 this.departData.push({
                   uid: item.uid,
                   name: item.organName,
@@ -400,7 +378,6 @@ export default {
                 restArr.push(item);
               }
             })
-            console.log('this', this.departData)
             restArr.forEach(a => {
               this.departData.forEach(b => {
                 if (a.parentOrganName === b.name) {
@@ -413,7 +390,6 @@ export default {
               })
             })
           }
-          console.log('1111', this.departData)
         })
         .catch(() => {});
     },
@@ -486,7 +462,6 @@ export default {
     // 删除
     onDeleteDepart () {
       let arr = [];
-      console.log('departData', this.departData)
       this.departData.forEach(item => {
         if (item.isSelect) {
           arr.push(item.uid);
@@ -499,7 +474,6 @@ export default {
           })
         }
       })
-      console.log('arr', arr)
       arr = arr.join(',');
       if (!arr) {
         this.$message.error('请先勾选要删除的部门');
@@ -511,7 +485,6 @@ export default {
     // 确认删除
     onConfirmDeleteDepart () {
       if (this.deleteArr.length > 0) {
-        console.log('deleteArr', this.deleteArr)
         this.isDeleteLoading = true;
         let params = {
           uids: this.deleteArr

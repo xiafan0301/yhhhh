@@ -34,8 +34,13 @@
         <li>
           <p class='title'>附件</p>
           <p class='content'>
-            <a :href='replanDetail.url' style='color: #0785FD;text-decoration:underline'>{{replanDetail.attachmentName}}</a>
-            <span class='download' @click='downloadFile(replanDetail.url)'>下载</span>
+            <template v-if="replanDetail.attachmentName">
+              <a :href='replanDetail.url' style='color: #0785FD;text-decoration:underline'>{{replanDetail.attachmentName}}</a>
+            </template>
+            <template v-else>
+              无
+            </template>
+            <span class='download' @click='downloadFile(replanDetail.url)' v-show="replanDetail.url">下载</span>
           </p>
         </li>
         <li>
