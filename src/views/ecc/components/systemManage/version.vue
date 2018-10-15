@@ -135,7 +135,7 @@
           @current-change="onPageChange"
           :current-page.sync="pagination.pageNum"
           :page-size="pagination.pageSize"
-          layout="total, prev, pager, next,sizes, jumper"
+          layout="total, prev, pager, next, jumper"
           :total="pagination.total">
         </el-pagination>
       </template>
@@ -339,11 +339,12 @@ export default {
     handleChange () {
     },
     beforeUpload (file) {
-      if (file.type === 'application/vnd.android.package-archive') {
+      console.log(file)
+      if (file.name.substring(file.name.lastIndexOf('.')) === '.apk' || file.name.substring(file.name.lastIndexOf('.')) === '.APK') {
         this.fileStatus = '上传中'
         this.loadingstatu = true
       }
-      const isJPG = file.type === 'application/vnd.android.package-archive';
+      const isJPG = file.name.substring(file.name.lastIndexOf('.')) === '.apk' || file.name.substring(file.name.lastIndexOf('.')) === '.APK';
       const isLt2M = file.size / 1024 / 1024 < 100;
 
       if (!isJPG) {
@@ -360,6 +361,12 @@ export default {
     }
   }
 }
+function makeAdder (x) {
+  return function (y) {
+    return x + y;
+  };
+}
+
 </script>
 <style lang="scss" scoped>
   .main {

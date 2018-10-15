@@ -85,6 +85,18 @@
         :total="total">
       </el-pagination>
     </div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="deleteVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>是否确认删除?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click="deletEvent">确定删除</el-button>
+        <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -102,7 +114,9 @@ export default {
       total: 0,
       tableData: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
-      eventTypeList: []
+      eventTypeList: [],
+      deleteVisiable: false,
+      planId: ''
     }
   },
   computed: {
@@ -149,36 +163,53 @@ export default {
           this.eventLevelList = res.data
         })
     },
-    del (scope) {
-      this.$confirm('确定删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (scope) {
-          const params = {
-            planId: scope.planId
-          };
-          this.axios.delete('A2/planServices/plans/' + scope.planId)
-            .then((res) => {
-              if (res) {
-                this.getTableData();
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-              } else {
-                this.$message.error('删除失败');
-              }
-            })
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+    deletEvent () {
+      this.axios.delete('A2/planServices/plans/' + this.planId)
+        .then((res) => {
+          if (res) {
+            this.getTableData();
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.deleteVisiable = false
+          }
+        })
     },
+    del (scope) {
+      this.planId = scope.planId
+      this.deleteVisiable = true
+    },
+    // del (scope) {
+    //   this.$confirm('确定删除吗?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     if (scope) {
+    //       const params = {
+    //         planId: scope.planId
+    //       };
+    //       this.axios.delete('A2/planServices/plans/' + scope.planId)
+    //         .then((res) => {
+    //           if (res) {
+    //             this.getTableData();
+    //             this.$message({
+    //               type: 'success',
+    //               message: '删除成功!'
+    //             });
+    //           } else {
+    //             this.$message.error('删除失败');
+    //           }
+    //         })
+    //     }
+    //   }).catch(() => {
+    //     this.$message({
+    //       type: 'info',
+    //       message: '已取消删除'
+    //     });
+    //   });
+    // },
     edit () {
     },
     doSearch () {
@@ -250,6 +281,28 @@ export default {
     }
     .icon-hover:hover {
       color: #0785FD;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>
