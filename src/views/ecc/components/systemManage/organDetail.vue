@@ -325,7 +325,6 @@ export default {
         pageSize: 0
       };
       let params = Object.assign({}, pagination);
-      console.log(params);
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res && res.data.list) {
@@ -344,7 +343,6 @@ export default {
           if (res) {
             this.listData = res.data;
             this.pagination.total = res.data.total;
-            console.log(res)
           }
         })
         .catch(() => {});
@@ -354,12 +352,10 @@ export default {
       let params = {
         uid: this.$route.query.id
       }
-      console.log('params', params)
       this.axios.get('A3/authServices/organInfo', {params})
         .then(res => {
           if (res) {
             this.detailData = res.data;
-            console.log('detailData', res.data)
             this.getDepartData();
           }
         })
@@ -375,7 +371,6 @@ export default {
       this.axios.get('A3/authServices/organInfos', {params})
         .then(res => {
           if (res) {
-            console.log(res.data.list)
             this.addDepartList.push({
               uid: this.detailData.uid,
               organName: this.detailData.organName
@@ -387,8 +382,6 @@ export default {
                 organName: item.organName
               })
               if (item.organLayer === this.detailData.organLayer + 1) {
-                console.log(item.organName)
-                console.log(item.uid)
                 this.departData.push({
                   uid: item.uid,
                   name: item.organName,
@@ -400,7 +393,6 @@ export default {
                 restArr.push(item);
               }
             })
-            console.log('this', this.departData)
             restArr.forEach(a => {
               this.departData.forEach(b => {
                 if (a.parentOrganName === b.name) {
@@ -413,7 +405,6 @@ export default {
               })
             })
           }
-          console.log('1111', this.departData)
         })
         .catch(() => {});
     },
@@ -486,7 +477,6 @@ export default {
     // 删除
     onDeleteDepart () {
       let arr = [];
-      console.log('departData', this.departData)
       this.departData.forEach(item => {
         if (item.isSelect) {
           arr.push(item.uid);
@@ -499,11 +489,21 @@ export default {
           })
         }
       })
-      console.log('arr', arr)
-      arr = arr.join(',');
       if (!arr) {
         this.$message.error('请先勾选要删除的部门');
       } else {
+        arr.forEach((items, index) => {
+          this.departData.forEach(item => {
+            if (item.sonList && item.sonList.length > 0) {
+              item.sonList.forEach(obj => {
+                if (item.isSelect && obj.uid === items) {
+                  arr.splice(index, 1);
+                }
+              });
+            }
+          });
+        });
+        arr = arr.join(',');
         this.deleteArr = arr;
         this.deleteDepartdialogVisible = true;
       }
@@ -511,7 +511,6 @@ export default {
     // 确认删除
     onConfirmDeleteDepart () {
       if (this.deleteArr.length > 0) {
-        console.log('deleteArr', this.deleteArr)
         this.isDeleteLoading = true;
         let params = {
           uids: this.deleteArr
