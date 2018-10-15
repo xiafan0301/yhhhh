@@ -346,7 +346,9 @@ export default {
       const params = {
         'where.roleName': this.selectForm.roleName,
         pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
+        order: 'desc',
+        orderBy: 'create_time'
       }
       this.axios.get('A2/authServices/userRoles', {params})
         .then((res) => {

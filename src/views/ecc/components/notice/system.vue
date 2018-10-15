@@ -11,14 +11,14 @@
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px"  :inline="true" :model="searchForm" class="demo-form-inline" size="small" ref="searchForm">
-        <el-form-item style="width: 220px;" prop='reportTime'>
+        <el-form-item style="width: 250px;" prop='reportTime'>
           <el-date-picker
             v-model='searchForm.publishTime'
             type="daterange"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 100%;"
+            style="width: 250px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item >
@@ -66,9 +66,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="内容" min-width="180" :show-overflow-tooltip="true" align="center"></el-table-column>
-      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
+      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center" show-overflow-tooltip>
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center" show-overflow-tooltip>
       </el-table-column>
       <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="120" :show-overflow-tooltip="true" align="center"></el-table-column>
       <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="120" align="center">
@@ -80,7 +80,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="250"
+        width="200"
         align="center"
         >
         <template slot-scope="scope">

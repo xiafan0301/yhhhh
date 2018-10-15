@@ -28,8 +28,6 @@
         <template slot-scope="scope">
           <i class="icon-xiugai-1 icon-hover" @click.stop="editDepart(scope)" title="编辑"></i>
           <i class="icon-shanchu- icon-hover" @click.stop="deleteDepart(scope)" title="删除"></i>
-          <!-- <img title="编辑" src="../../../../assets/img/temp/edit.png" @click.stop="editDepart(scope)" />
-          <img title="删除" src="../../../../assets/img/temp/delete.png" @click.stop="deleteDepart(scope)" /> -->
         </template>
       </el-table-column>
     </el-table>
@@ -198,7 +196,9 @@ export default {
         this.selectForm.organName = null;
       }
       const params = {
-        pageSize: 0
+        pageSize: 0,
+        order: 'desc',
+        orderBy: 'create_time'
       }
       this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {

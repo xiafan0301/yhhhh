@@ -11,14 +11,14 @@
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
-        <el-form-item style="width: 220px;">
+        <el-form-item style="width: 250px;">
           <el-date-picker
             v-model='searchForm.publishTime'
             type="datetimerange"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 100%;"
+            style="width: 250px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item >

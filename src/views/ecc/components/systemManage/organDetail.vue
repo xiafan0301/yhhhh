@@ -299,7 +299,6 @@ export default {
   mounted () {
     this.getDetailData();
     this.getList();
-    this.getList1();
   },
   methods: {
     onChange (val) {
@@ -618,7 +617,6 @@ export default {
               this.selectNumbers.splice(this.selectNumbers.length, 0, ...this.checkInNumbers);
               this.checkInNumbers = [];
               this.getList();
-              this.getList1();
               this.newNumberdialogVisible = false;
             }
           })
@@ -649,7 +647,6 @@ export default {
               this.allNumbers.splice(this.allNumbers.length, 0, ...this.checkOutNumbers);
               this.checkOutNumbers = [];
               this.getList();
-              this.getList1();
               this.newNumberdialogVisible = false;
             }
           })

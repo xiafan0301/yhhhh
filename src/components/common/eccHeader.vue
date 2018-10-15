@@ -33,6 +33,19 @@
         <el-button class="noSureBtn" size="small" type="primary" @click="pwdSubmit('pwdForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="exitVisiable"
+      :append-to-body="true"
+      width="400px"
+      height='285px'
+      center>
+      <span style='text-align:center'>确定要退出登录吗?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click="sureExitLogin">确定退出</el-button>
+        <el-button class='noSureBtn' @click="exitVisiable = false">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -67,6 +80,7 @@ export default {
     return {
       pwdModal: false,
       pwdModalLoading: false,
+      exitVisiable: false,
       pwdForm: {
         oldPwd: '',
         newPwd: '',
@@ -128,40 +142,53 @@ export default {
       });
     },
     loginOut () {
-      let _this = this;
-      _this.$msgbox({
-        title: '退出提示',
-        message: '确定退出登录吗？',
-        showCancelButton: true,
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        beforeClose: (action, instance, done) => {
-          if (action === 'confirm') {
-            instance.confirmButtonLoading = true;
-            instance.confirmButtonText = '正在退出...';
-            // ajax
-            _this.axios.get('A2/authServices/users/logout').then(function (res) {
-              if (res) {
-              }
-              instance.confirmButtonText = '确定';
-              instance.confirmButtonLoading = false;
-              done();
-              // window.location.href = './ecc.html#/login';
-              _this.$router.push({name: 'login'});
-            }).catch(function () {
-              instance.confirmButtonText = '确定';
-              instance.confirmButtonLoading = false;
-              done();
-              // window.location.href = './ecc.html#/login';
-              _this.$router.push({name: 'login'});
-            });
-          } else {
-            done();
-          }
-        }
-      }).then(action => {
-      });
+      this.exitVisiable = true;
+      // let _this = this;
+      // _this.$msgbox({
+      //   title: '退出提示',
+      //   message: '确定退出登录吗？',
+      //   showCancelButton: true,
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   beforeClose: (action, instance, done) => {
+      //     if (action === 'confirm') {
+      //       instance.confirmButtonLoading = true;
+      //       instance.confirmButtonText = '正在退出...';
+      //       // ajax
+      //       _this.axios.get('A2/authServices/users/logout').then(function (res) {
+      //         if (res) {
+      //         }
+      //         instance.confirmButtonText = '确定';
+      //         instance.confirmButtonLoading = false;
+      //         done();
+      //         // window.location.href = './ecc.html#/login';
+      //         _this.$router.push({name: 'login'});
+      //       }).catch(function () {
+      //         instance.confirmButtonText = '确定';
+      //         instance.confirmButtonLoading = false;
+      //         done();
+      //         // window.location.href = './ecc.html#/login';
+      //         _this.$router.push({name: 'login'});
+      //       });
+      //     } else {
+      //       done();
+      //     }
+      //   }
+      // }).then(action => {
+      // });
       // window.location.href = './index.html#/login';
+    },
+    sureExitLogin () { // 确定退出登录
+      this.axios.get('A2/authServices/users/logout')
+        .then(res => {
+          if (res) {
+            this.$router.push({name: 'login'});
+          } else {
+            this.$message.error('退出失败');
+          }
+        })
+        .catch(() => {
+        });
     }
   }
 }
@@ -204,9 +231,6 @@ export default {
         &:hover {
           .oa-header-uul {
             display: block;
-          }
-          > img {
-            // animation: circle 4s linear 0s infinite;
           }
         }
         > span {

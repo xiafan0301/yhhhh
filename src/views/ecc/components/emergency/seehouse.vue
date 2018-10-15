@@ -84,10 +84,10 @@ export default {
   }
   .bg-release-cot {
     background-color: #FFFFFF;
-    padding-top: 55px;
+    padding-top: 40px;
     box-sizing: border-box;
     padding-left: 100px;
-    padding-bottom: 86px;
+    padding-bottom: 30px;
   }
   .listxf{
     >li{

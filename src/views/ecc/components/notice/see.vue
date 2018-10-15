@@ -15,22 +15,10 @@
       <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
       <li><span class="title">主题</span><span class="content">{{messageInfo.emiMessage.title}}</span></li>
       <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span></li>
-      <li style="margin-left: 98px">
+      <li style="margin-left: 98px" v-show="messageInfo.emiAttachments.length > 0">
         <span class="content">
           <div id="imgs"></div>
-        <!--<el-upload-->
-          <!--action=""-->
-          <!--list-type="picture-card"-->
-          <!--accept=".png,.jpg,.bmp"-->
-          <!--:on-preview="handlePictureCardPreview"-->
-          <!--:file-list="messageInfo.emiAttachments"-->
-        <!--&gt;-->
-          <!--<span class='add-img-text'>添加图片</span>-->
-        <!--</el-upload>-->
-        <!--<el-dialog :visible.sync="dialogVisible" class="img-dialog">-->
-          <!--<img :src="dialogImageUrl" alt="">-->
-        <!--</el-dialog>-->
-          </span>
+        </span>
       </li>
       <li><span class="title">发送时间</span> <span class="content">{{messageInfo.emiMessage.publishTime}}</span></li>
     </ul>
@@ -41,7 +29,7 @@
         <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUserName}}</span></li>
         <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
         </li>
-        <li>
+        <li v-show="messageInfo.emiAttachments.length > 0">
           <span class="title"></span>
           <img
             v-for="item in messageInfo.emiAttachments"
@@ -191,10 +179,10 @@ export default {
   }
   .bg-release-cot {
     background-color: #FFFFFF;
-    padding-top: 55px;
+    padding-top: 40px;
     box-sizing: border-box;
     padding-left: 100px;
-    padding-bottom: 86px;
+    padding-bottom: 30px;
   }
   .listxf{
     >li{
