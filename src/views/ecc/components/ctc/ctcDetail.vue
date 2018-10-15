@@ -29,7 +29,6 @@
             <div>
               <span class='title'>报案人：</span>
               <span class='content'>{{eventDetailObj.reporterPhone}}</span>
-              <!-- <span style='color:#0785FD;font-weight:bold;text-decoration:underline'>1234567890</span> -->
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>

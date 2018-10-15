@@ -623,8 +623,8 @@ export default {
                 position: relative;
                 .number-tip {
                   position: absolute;
-                  bottom: 0;
-                  left: 420px;
+                  bottom: -8px;
+                  left: 404px;
                   color: #999999;
                   font-size: 13px;
                 }
