@@ -58,7 +58,7 @@
       style="width: 100%"
       class="system-table"
       >
-      <el-table-column fixed  label="序号" width="100"  type="index"></el-table-column>
+      <el-table-column fixed  label="序号" width="80"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.messageType" label="消息类型" min-width="140" align="center">
         <template slot-scope="scope">
           <span  v-if="scope.row.emiMessage.messageType == '39728bba-9b6f-11e8-8a14-3f814d634dc3'">APP应用升级</span>
@@ -103,6 +103,18 @@
         :total="total">
       </el-pagination>
     </div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="deleteVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>是否确认删除?</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click="deletEvent">确定删除</el-button>
+        <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -126,7 +138,9 @@ export default {
       total: 0,
       tableData: [],
       messageTypeList: [],
-      DepartmentList: []
+      DepartmentList: [],
+      deleteVisiable: false,
+      messageId: ''
     }
   },
   computed: {
@@ -146,34 +160,55 @@ export default {
           this.messageTypeList = res.data;
         })
     },
+    // del (scope) {
+    //   this.$confirm('确定删除吗?', '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning'
+    //   }).then(() => {
+    //     if (scope) {
+    //       console.log(scope.messageId);
+    //       const params = {
+    //         messageId: scope.messageId
+    //       };
+    //       this.axios.delete('A2/messageService/' + scope.messageId, {params})
+    //         .then((res) => {
+    //           if (res) {
+    //             this.getTableData();
+    //             this.$message({
+    //               type: 'success',
+    //               message: '删除成功!'
+    //             });
+    //           }
+    //         })
+    //     }
+    //   }).catch(() => {
+    //     this.$message({
+    //       type: 'info',
+    //       message: '已取消删除'
+    //     });
+    //   });
+    // },
+    deletEvent () {
+      const params = {
+        messageId: this.messageId
+      };
+      this.axios.delete('A2/messageService/' + this.messageId, {params})
+        .then((res) => {
+          if (res) {
+            this.getTableData();
+            this.$message({
+              type: 'success',
+              message: '删除成功!'
+            });
+            this.deleteVisiable = false
+          }
+        })
+    },
     del (scope) {
-      this.$confirm('确定删除吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (scope) {
-          console.log(scope.messageId);
-          const params = {
-            messageId: scope.messageId
-          };
-          this.axios.delete('A2/messageService/' + scope.messageId, {params})
-            .then((res) => {
-              if (res) {
-                this.getTableData();
-                this.$message({
-                  type: 'success',
-                  message: '删除成功!'
-                });
-              }
-            })
-        }
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
-      });
+      console.log(scope.messageId)
+      this.messageId = scope.messageId
+      this.deleteVisiable = true
     },
     Revoke (scope) {
       let params = {
@@ -324,6 +359,28 @@ export default {
     }
     .icon-hover:hover {
       color: #0785FD;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
 </style>

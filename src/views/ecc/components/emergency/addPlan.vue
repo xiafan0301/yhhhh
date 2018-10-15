@@ -44,6 +44,7 @@
                        action="http://10.16.4.50:8001/api/network/upload/new"
                        ref="upload"
                        :limit = "1"
+                       :data="imgParam"
                        :on-change = "aa"
                        accept=".pdf,.doc,.txt,.docx"
                        :on-success="handSuccess"
@@ -161,7 +162,10 @@ export default {
       },
       eventTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
-      DepartmentList: []
+      DepartmentList: [],
+      imgParam: {
+        projectType: 3
+      }
     }
   },
   computed: {

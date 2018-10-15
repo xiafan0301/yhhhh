@@ -15,7 +15,7 @@
             </el-input>
           </el-form-item>
           <el-form-item label="仓库地点" label-width='150px' class="address" prop="warehouseAddress">
-            <el-input  placeholder="请输入仓库地点" style='width: 500px' v-model="form.warehouseAddress"  id="tipinput">
+            <el-input  placeholder="请输入仓库地点" style='width: 500px' v-model="form.warehouseAddress"  id="tipinput" @input="onPositionChange">
             </el-input>
             <div class='map-ecc' ><img title="选择事发地点" src="../../../../assets/img/temp/map-ecc.png" style='cursor:pointer' @click='showMap' /></div>
           </el-form-item>
@@ -102,11 +102,12 @@ export default {
     } else if (this.$route.query.status === 'modify') {
       this.status = '修改仓库'
     }
-    this.initMap();
   },
   methods: {
-    initMap () {
+    onPositionChange (val) {
       // 地图加载
+      let value = val;
+      let _this = this;
       const map = new AMap.Map('container', {
         resizeEnable: true
       });
@@ -118,7 +119,26 @@ export default {
       const placeSearch = new AMap.PlaceSearch({
         map: map
       }); // 构造地点查询类
-      // AMap.event.addListener(auto, 'select', select); // 注册监听，当选中某条记录时会触发
+      AMap.service('AMap.Geocoder', () => {
+        var geocoder = new AMap.Geocoder({});
+        geocoder.getLocation(value, (status, result) => {
+          if (status === 'complete' && result.info === 'OK') {
+            this.form.coordinate = result.geocodes[0].location.lng + ',' + result.geocodes[0].location.lat
+          }
+        });
+      })
+      AMap.event.addListener(auto, 'select', function (e) {
+        value = e.poi.name;
+        _this.form.warehouseAddress = e.poi.name;
+        AMap.service('AMap.Geocoder', () => {
+          var geocoder = new AMap.Geocoder({});
+          geocoder.getLocation(e.poi.name, (status, result) => {
+            if (status === 'complete' && result.info === 'OK') {
+              _this.form.coordinate = result.geocodes[0].location.lng + ',' + result.geocodes[0].location.lat
+            }
+          });
+        })
+      }); // 注册监听，当选中某条记录时会触发
     },
     showMap () {
       // 编辑状态

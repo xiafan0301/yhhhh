@@ -107,6 +107,19 @@
       </div>
   </div>
     </div>
+    <el-dialog
+      title="操作提示"
+      :visible.sync="deleteVisiable"
+      width="480px"
+      height='285px'
+      center>
+      <span style='text-align:center'>{{messageStatus}}</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button class='sureBtn' @click="deletEvent('warehouse')" v-if="delstatus === 'warehouse'&& tableData.length === 0">确定删除</el-button>
+        <el-button class='sureBtn' @click="deletEvent('material')" v-if="delstatus === 'material'">确定删除</el-button>
+        <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -125,7 +138,12 @@ export default {
       pageSize: 10,
       total: 0,
       tableData: [],
-      tableDatack: []
+      tableDatack: [],
+      deleteVisiable: false,
+      materialsId: '',
+      warehouseId: '',
+      delstatus: 'material',
+      messageStatus: ''
     }
   },
   computed: {
@@ -202,67 +220,118 @@ export default {
     doSearch () {
       this.getTableData();
     },
+    // del (status, scope) {
+    //   let messageStatus = ''
+    //   let isconfirmButtonText = true
+    //   if (status === 'material') {
+    //     messageStatus = '确认删除吗'
+    //   } else {
+    //     if (status === 'warehouse' && this.tableData.length === 0) {
+    //       messageStatus = '删除后不可恢复，是否确认删除'
+    //     } else {
+    //       messageStatus = '不可删除，请先删除该仓库下的物资'
+    //       isconfirmButtonText = false
+    //     }
+    //   }
+    //   console.log(isconfirmButtonText)
+    //   // 不可删除，请先删除该仓库下的物资
+    //   this.$confirm(messageStatus, '提示', {
+    //     confirmButtonText: '确定',
+    //     cancelButtonText: '取消',
+    //     type: 'warning',
+    //     showConfirmButton: isconfirmButtonText
+    //   })
+    //     .then(() => {
+    //       if (scope) {
+    //         const params = {
+    //           materialsId: scope.materialsId,
+    //           warehouseId: scope.warehouseId
+    //         };
+    //         if (status === 'material') {
+    //           this.axios.delete('A2/materialService/' + scope.materialsId, {params})
+    //             .then((res) => {
+    //               if (res) {
+    //                 this.getTableData();
+    //                 this.$message({
+    //                   type: 'success',
+    //                   message: '删除成功!'
+    //                 });
+    //               } else {
+    //                 this.$message.error('删除失败');
+    //               }
+    //             })
+    //         } else {
+    //           this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
+    //             .then((res) => {
+    //               if (res) {
+    //                 this.$message({
+    //                   type: 'success',
+    //                   message: '删除成功!'
+    //                 });
+    //                 this.getTableDatack();
+    //               } else {
+    //                 this.$message.error('删除失败');
+    //               }
+    //             })
+    //         }
+    //       }
+    //     }).catch(() => {
+    //       this.$message({
+    //         type: 'info',
+    //         message: '已取消删除'
+    //       });
+    //     });
+    // },
+    deletEvent (sta) {
+      if (sta === 'material') {
+        const params = {
+          materialsId: this.materialsId
+        };
+        this.axios.delete('A2/materialService/' + this.materialsId, {params})
+          .then((res) => {
+            if (res) {
+              this.getTableData();
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.deleteVisiable = false
+            }
+          })
+      } else {
+        const params = {
+          warehouseId: this.warehouseId
+        };
+        this.axios.delete('A2/warehouseService/' + this.warehouseId, {params})
+          .then((res) => {
+            if (res) {
+              this.getTableDatack();
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+              this.deleteVisiable = false
+            }
+          })
+      }
+    },
     del (status, scope) {
-      let messageStatus = ''
-      let isconfirmButtonText = true
       if (status === 'material') {
-        messageStatus = '确认删除吗'
+        this.messageStatus = '确认删除吗'
       } else {
         if (status === 'warehouse' && this.tableData.length === 0) {
-          messageStatus = '删除后不可恢复，是否确认删除'
+          this.messageStatus = '删除后不可恢复，是否确认删除'
         } else {
-          messageStatus = '不可删除，请先删除该仓库下的物资'
-          isconfirmButtonText = false
+          this.messageStatus = '不可删除，请先删除该仓库下的物资'
         }
       }
-      console.log(isconfirmButtonText)
-      // 不可删除，请先删除该仓库下的物资
-      this.$confirm(messageStatus, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        showConfirmButton: isconfirmButtonText
-      })
-        .then(() => {
-          if (scope) {
-            const params = {
-              materialsId: scope.materialsId,
-              warehouseId: scope.warehouseId
-            };
-            if (status === 'material') {
-              this.axios.delete('A2/materialService/' + scope.materialsId, {params})
-                .then((res) => {
-                  if (res) {
-                    this.getTableData();
-                    this.$message({
-                      type: 'success',
-                      message: '删除成功!'
-                    });
-                  } else {
-                    this.$message.error('删除失败');
-                  }
-                })
-            } else {
-              this.axios.delete('A2/warehouseService/' + scope.warehouseId, {params})
-                .then((res) => {
-                  if (res) {
-                    this.$message({
-                      type: 'success',
-                      message: '删除成功!'
-                    });
-                    this.getTableDatack();
-                  } else {
-                    this.$message.error('删除失败');
-                  }
-                })
-            }
-          }
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });
-        });
+      this.delstatus = status
+      if (status === 'material') {
+        this.materialsId = scope.materialsId
+      } else {
+        this.warehouseId = scope.warehouseId
+      }
+      this.deleteVisiable = true
     },
     searchFormReset () {
       this.searchForm.materialsName = '';
@@ -408,6 +477,28 @@ export default {
     }
     .icon-hover:hover {
       color: #0785FD;
+    }
+    /deep/ .el-dialog__header {
+      background: #F0F0F0 !important;
+      text-align: left !important;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    /deep/  .el-dialog--center .el-dialog__body {
+      text-align: center !important;
+    }
+    .sureBtn {
+      background:#0785FD;
+      height:35px;
+      color: #fff;
+      line-height: 10px;
+    }
+    .noSureBtn {
+      border-color:#e5e5e5;
+      height:35px;
+      line-height: 10px;
+      color:#666666;
     }
   }
   .bg-plan-tbp{
