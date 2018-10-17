@@ -184,11 +184,14 @@ export default {
         pageSize: 0
       };
       let params = Object.assign({}, pagination);
-      console.log(params);
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res && res.data.list) {
-            this.userList = res.data.list;
+            res.data.list.map(item => {
+              if (item.userRealName) {
+                this.userList.push(item);
+              }
+            })
           }
         })
         .catch(() => {})
@@ -200,7 +203,9 @@ export default {
       const params = {
         'where.organName': this.selectForm.organName,
         pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
+        order: 'desc',
+        orderBy: 'create_time'
       }
       this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
@@ -328,6 +333,7 @@ export default {
             this.$message.success('创建成功');
             this.dialogFormVisible = false;
             this.getDepartmentList();
+            this.getDepartmentList1();
             this.isAddLoading = false;
           } else {
             this.isAddLoading = false;
@@ -365,6 +371,7 @@ export default {
             this.$message.success('修改成功');
             this.editFormVisible = false;
             this.getDepartmentList();
+            this.getDepartmentList1();
             this.isEditLoading = false;
           } else {
             this.isEditLoading = false;

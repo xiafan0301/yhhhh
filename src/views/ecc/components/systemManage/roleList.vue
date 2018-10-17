@@ -28,6 +28,10 @@
           <span>{{scope.row.createTime | moment}}</span>
         </template>
       </el-table-column>
+      <!-- <el-table-column label="是否为管理员" prop='isAdmin' align='center' show-overflow-tooltip>
+        <template v-if="scope.row.isAdmin === true">是</template>
+        <template v-else>否</template>
+      </el-table-column> -->
       <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限"></i>
@@ -65,15 +69,21 @@
       </span>
     </el-dialog>
     <!-- 创建角色弹框 -->
-    <el-dialog title="创建角色" :visible.sync="dialogFormVisible" center width='400px' class="new-department">
+    <el-dialog title="创建角色" :visible.sync="dialogFormVisible" center width='480px' class="new-department">
       <el-form class='add-depart-form' :model='addForm' ref="addForm">
-        <el-form-item label="角色名称" label-width='85px' prop='roleName'>
+        <el-form-item label="角色名称" label-width='100px' prop='roleName'>
           <el-input type="text" placeholder='请输入角色名称' style='width: 98%' v-model='addForm.roleName'></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" label-width='85px' prop="roleDesc">
+        <el-form-item label="角色描述" label-width='100px' prop="roleDesc">
           <el-input type="textarea" rows="5" placeholder='请简要描述角色' style='width: 98%' v-model='addForm.roleDesc'></el-input>
         </el-form-item>
-        <el-form-item label-width='85px' v-show="isShowError">
+        <el-form-item label="是否为管理员" label-width='100px' prop="isAdmin">
+          <el-radio-group v-model="addForm.isAdmin">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
             <i class="el-icon-error"></i>
             <span>{{errorMsg}}</span>
@@ -86,15 +96,21 @@
       </div>
     </el-dialog>
     <!-- 编辑角色弹框 -->
-    <el-dialog title="编辑角色" :visible.sync="editFormVisible" center width='400px' class="new-department">
+    <el-dialog title="编辑角色" :visible.sync="editFormVisible" center width='480px' class="new-department">
       <el-form class='add-depart-form' :model='editForm' ref="editForm">
-        <el-form-item label="角色名称" label-width='85px' prop="roleName">
+        <el-form-item label="角色名称" label-width='100px' prop="roleName">
           <el-input type="text" placeholder='请输入角色名称' style='width: 98%' v-model='editForm.roleName'></el-input>
         </el-form-item>
-        <el-form-item label="角色描述" label-width='85px' prop="roleDesc">
+        <el-form-item label="角色描述" label-width='100px' prop="roleDesc">
           <el-input type="textarea" rows="5" placeholder='请简要描述角色' style='width: 98%' v-model='editForm.roleDesc'></el-input>
         </el-form-item>
-        <el-form-item label-width='85px' v-show="isShowError">
+        <el-form-item label="是否为管理员" label-width='100px' prop="isAdmin">
+          <el-radio-group v-model="editForm.isAdmin">
+            <el-radio :label="true">是</el-radio>
+            <el-radio :label="false">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
             <i class="el-icon-error"></i>
             <span>{{errorMsg}}</span>
@@ -188,12 +204,14 @@ export default {
       selectLimitItem: {},
       addForm: {
         roleName: '',
-        roleDesc: ''
+        roleDesc: '',
+        isAdmin: false
       },
       editForm: {
         roleName: '',
         uid: '',
-        roleDesc: ''
+        roleDesc: '',
+        isAdmin: false
       },
       errorMsg: '',
       timer: null,
@@ -477,6 +495,7 @@ export default {
       this.editFormVisible = true;
       this.editForm.roleName = obj.roleName;
       this.editForm.roleDesc = obj.roleDesc;
+      this.editForm.roleDesc = obj.isAdmin;
       this.editForm.uid = obj.uid;
       this.isShowError = false;
       this.errorMsg = '';
@@ -505,6 +524,9 @@ export default {
     },
     showAddDialog () { // 创建角色
       this.dialogFormVisible = true;
+      this.addForm.roleName = null;
+      this.addForm.isAdmin = false;
+      this.addForm.roleDesc = null;
     },
     cancelAdd () { // 取消添加
       this.isShowError = false;
@@ -916,6 +938,9 @@ export default {
     }
     .icon-hover:hover {
       color: #0785FD;
+    }
+    /deep/ .el-radio-group {
+      margin-left: -220px;
     }
   }
 </style>

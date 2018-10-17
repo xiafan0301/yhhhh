@@ -359,6 +359,7 @@ export default {
       this.dialogVisible = true;
     },
     handleSuccess (res, file) { // 图片上传成功
+      console.log(res)
       if (res && res.data) {
         const data = {
           attachmentType: dictType.imgId,
