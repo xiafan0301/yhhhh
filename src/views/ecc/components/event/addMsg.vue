@@ -123,6 +123,7 @@ export default {
       closeReturnVisiable: false,
       videoList: [], // 视频数据列表
       imgList: [], // 图片数据列表
+      addImgList: [],
       currentNum: 0, // 事件情况当前字数
       totalNum: 140, // 可输入的总字数
       operationForm: {
@@ -244,6 +245,8 @@ export default {
       }
     },
     handleSuccess (res, file) { // 图片上传成功
+      console.log(res)
+      console.log(file)
       if (res && res.data) {
         const data = {
           attachmentType: dictType.imgId,
@@ -256,6 +259,7 @@ export default {
           thumbnailWidth: res.data.thumbImageWidth,
           thumbnailHeight: res.data.thumbImageHeight
         }
+        this.addImgList.push(data)
         this.imgList.push(data);
       }
     },
@@ -266,11 +270,6 @@ export default {
             if (item.url === file.url) {
               this.imgList.splice(index, 1);
             }
-            // if (file.attachmentId) {
-            //   if (item.attachmentId === file.attachmentId) {
-            //     this.imgList.splice(index, 1);
-            //   }
-            // }
           });
         }
       }

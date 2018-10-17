@@ -28,6 +28,10 @@
           <span>{{scope.row.createTime | moment}}</span>
         </template>
       </el-table-column>
+      <!-- <el-table-column label="是否为管理员" prop='isAdmin' align='center' show-overflow-tooltip>
+        <template v-if="scope.row.isAdmin === true">是</template>
+        <template v-else>否</template>
+      </el-table-column> -->
       <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限"></i>
@@ -520,6 +524,9 @@ export default {
     },
     showAddDialog () { // 创建角色
       this.dialogFormVisible = true;
+      this.addForm.roleName = null;
+      this.addForm.isAdmin = false;
+      this.addForm.roleDesc = null;
     },
     cancelAdd () { // 取消添加
       this.isShowError = false;
