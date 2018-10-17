@@ -186,8 +186,13 @@ export default {
             }
             this.axios.post('A2/warehouseService', params)
               .then((res) => {
-                this.addLoading = false
-                this.$router.push({name: 'emergency-materialList', params: {statusindex: 1}});
+                if (res) {
+                  this.addLoading = false
+                  this.$router.push({name: 'emergency-materialList', params: {statusindex: 1}});
+                  this.$message.success('添加仓库成功');
+                } else {
+                  this.addLoading = false
+                }
               })
           } else {
             let params = this.form;
@@ -198,6 +203,7 @@ export default {
               .then((res) => {
                 this.addLoading = false
                 this.$router.push({name: 'emergency-materialList'});
+                this.$message.success('修改仓库成功');
               })
           }
         } else {

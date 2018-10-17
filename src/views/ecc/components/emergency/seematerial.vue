@@ -70,7 +70,10 @@ export default {
         })
     },
     getTableDatack () {
-      this.axios.get('A2/warehouseService/page')
+      let params = {
+        pageSize: 0
+      }
+      this.axios.get('A2/warehouseService/page', {params})
         .then((res) => {
           this.tableDatack = res.data.list;
         })

@@ -14,7 +14,7 @@
         <el-form-item style="width: 250px;">
           <el-date-picker
             v-model='searchForm.publishTime'
-            type="datetimerange"
+            type="daterange"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"

@@ -453,7 +453,10 @@ export default {
           })
         }
       })
-      this.axios.get('A2/authServices/userRoles')
+      let params = {
+        pageSize: 0
+      }
+      this.axios.get('A2/authServices/userRoles', {params})
         .then(res => {
           if (res) {
             this.selectRoles.forEach(aa => {
@@ -488,7 +491,10 @@ export default {
       console.log(this.allRoles)
       if (val === '') {
         this.allRoles = []
-        this.axios.get('A2/authServices/userRoles')
+        let params = {
+          pageSize: 0
+        }
+        this.axios.get('A2/authServices/userRoles', {params})
           .then(res => {
             if (res) {
               this.selectRoles.forEach(aa => {

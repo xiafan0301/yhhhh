@@ -271,6 +271,8 @@ export default {
             //     this.imgList.splice(index, 1);
             //   }
             // }
+            // console.log(item)
+            // console.log(file)
           });
         }
       }

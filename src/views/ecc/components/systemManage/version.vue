@@ -66,10 +66,9 @@
         <el-form-item label="版本名称" prop="softName">
           <el-input v-model="editForm.softName" placeholder="请输入版本名称"></el-input>
         </el-form-item>
-        <el-form-item label="应用文件" style="position: relative" prop="savePath">
+        <el-form-item label="应用文件" style="position: relative" >
           <el-upload
             class="upload-demo"
-            v-model = "editForm.savePath"
             :show-file-list ="false"
             action="http://10.16.4.50:8001/api/network/upload/new"
             :on-preview="handlePreview"
@@ -219,7 +218,9 @@ export default {
         // 'where.deviceIp': this.searchForm.deviceIp,
         // 'where.deviceStatus': this.searchForm.deviceStatus,
         pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
+        orderBy: 'soft_pubversion',
+        order: 'asc'
       };
       this.axios.get('A4/appUpdate/softwaredVersion?' + $.param(params))
         .then((res) => {
