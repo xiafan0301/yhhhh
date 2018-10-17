@@ -33,6 +33,8 @@
           :on-preview="handlePictureCardPreview"
           :before-upload='handleBeforeUpload'
           :on-success="handleSuccess"
+          :disabled="isImgDisabled"
+          :title="[isImgDisabled === true ? '禁用' : '']"
           :show-file-list='false'
         >
           <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
@@ -88,6 +90,7 @@ export default {
       closeReturnVisiable: false,
       currentNum: 0, // 事件情况当前字数
       totalNum: 10000, // 可输入的总字数
+      isImgDisabled: false,
       imgParam: {
         projectType: 3
       },
@@ -194,13 +197,16 @@ export default {
             this.fileList.push(res.data);
           }
           this.endForm.attachmentList.push(data);
+          this.isImgDisabled = false;
         }
       }
     },
     handleBeforeUpload (file) { // 附件上传之前
+      this.isImgDisabled = true;
       const isLtTenM = file.size / 1024 / 1024 < 10;
       if (!isLtTenM) {
         this.$message.error('上传的附件大小不能超过10M');
+        this.isImgDisabled = false;
       }
       return isLtTenM;
     },

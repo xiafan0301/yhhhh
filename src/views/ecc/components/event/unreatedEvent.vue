@@ -55,6 +55,8 @@
                 :on-remove="handleRemove"
                 :on-success='handleSuccess'
                 :on-exceed="handleImgNumber"
+                :disabled="isImgDisabled"
+                :title="[isImgDisabled === true ? '禁用' : '']"
                 :limit='9'
               >
                 <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
@@ -173,6 +175,7 @@ export default {
       currentNum: 0,
       totalNum: 140,
       isImgNumber: false,
+      isImgDisabled: false,
       urlDetail: '',
       isCloseLoading: false, // 关闭事件加载中
       isSaveLoading: false, // 保存加载中
@@ -292,19 +295,6 @@ export default {
           });
         })
       }); // 注册监听，当选中某条记录时会触发
-      // AMap.event.addListener(auto, 'select', function (e) {
-      //   value = e.poi.name;
-      //   _this.operationForm.eventAddress = e.poi.name;
-      // }); // 注册监听，当选中某条记录时会触发
-      // AMap.service('AMap.Geocoder', () => {
-      //   var geocoder = new AMap.Geocoder({});
-      //   geocoder.getLocation(value, (status, result) => {
-      //     if (status === 'complete' && result.info === 'OK') {
-      //       this.detailForm.longitude = result.geocodes[0].location.lng;
-      //       this.detailForm.latitude = result.geocodes[0].location.lat;
-      //     }
-      //   });
-      // })
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');
@@ -325,26 +315,17 @@ export default {
           thumbnailHeight: res.data.thumbImageHeight
         }
         this.imgList.push(data);
-        console.log(this.imgList)
+        this.isImgDisabled = false;
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log(file)
       if (file) {
         if (this.imgList.length > 0) {
           this.imgList.map((item, index) => {
             if (item.url === file.url) {
-              console.log('111111')
               this.imgList.splice(index, 1);
             }
-            // if (file.attachmentId) {
-            //   if (item.attachmentId === file.attachmentId) {
-            //     console.log('22222')
-            //     this.imgList.splice(index, 1);
-            //   }
-            // }
           });
-          console.log(this.imgList)
         }
       }
       if (fileList.length < 9) {
@@ -352,13 +333,16 @@ export default {
       }
     },
     handleBeforeUpload (file) { // 图片上传之前
+      this.isImgDisabled = true;
       const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLtTenM = file.size / 1024 / 1024 < 10;
       if (!isImg) {
         this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+        this.isImgDisabled = false;
       }
       if (!isLtTenM) {
         this.$message.error('上传的图片大小不能超过10M');
+        this.isImgDisabled = false;
       }
       return isImg && isLtTenM;
     },

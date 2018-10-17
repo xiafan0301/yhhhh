@@ -23,7 +23,7 @@
       <el-table-column fixed label="序号" type="index" align='center'></el-table-column>
       <el-table-column label="名称" prop='organName' align='center'></el-table-column>
       <el-table-column label="上级部门" prop='parentOrganName' align='center'></el-table-column>
-      <el-table-column label="部门负责人" prop='chargeUserName' align='center'></el-table-column>
+      <el-table-column label="部门负责人" prop='chargeUserNameStr' align='center'></el-table-column>
       <el-table-column label="操作" align='center' class="operation" width="150px">
         <template slot-scope="scope">
           <i class="icon-xiugai-1 icon-hover" @click.stop="editDepart(scope)" title="编辑"></i>
@@ -81,7 +81,9 @@
           </el-select>
         </el-form-item>
         <el-form-item label="部门负责人" label-width='100px' class="depart-charge">
-          <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='addForm.chargeUserName'></el-input>
+          <el-select filterable clearable placeholder="请输入部门负责人姓名" style='width: 98%' v-model='addForm.chargeUserName'>
+            <el-option v-for="item in userList" :key="item.uid" :label="item.userRealName" :value="item.uid"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
@@ -101,7 +103,9 @@
           <el-input type="text" placeholder='请输入部门名称' @change="onNewDepartChange" style='width: 98%' v-model='editForm.organName'></el-input>
         </el-form-item>
         <el-form-item label="部门负责人" label-width='100px' class="depart-charge">
-          <el-input type="text" placeholder='请输入部门负责人姓名' style='width: 98%' v-model='editForm.chargeUserName'></el-input>
+          <el-select filterable clearable placeholder="请输入部门负责人姓名" style='width: 98%' v-model='editForm.chargeUserName'>
+            <el-option v-for="item in userList" :key="item.uid" :label="item.userRealName" :value="item.uid"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label-width='100px' v-show="isShowError">
           <div class="error-msg">
@@ -148,6 +152,7 @@ export default {
       },
       errorMsg: '',
       isShowError: false,
+      userList: [], // 已有用户数据
       deleteId: '', // 要删除的部门id
       editDepartment: {} // 要编辑的部门信息
     }
@@ -155,6 +160,7 @@ export default {
   mounted () {
     this.getDepartmentList();
     this.getDepartmentList1();
+    this.getUserList();
   },
   methods: {
     goDetail (row) {
@@ -173,6 +179,23 @@ export default {
       this.pagination.pageSize = val;
       this.getDepartmentList();
     },
+    getUserList () {
+      const pagination = {
+        pageSize: 0
+      };
+      let params = Object.assign({}, pagination);
+      this.axios.get('A2/authServices/users', {params})
+        .then(res => {
+          if (res && res.data.list) {
+            res.data.list.map(item => {
+              if (item.userRealName) {
+                this.userList.push(item);
+              }
+            })
+          }
+        })
+        .catch(() => {})
+    },
     getDepartmentList () {
       if (!this.selectForm.organName) {
         this.selectForm.organName = null;
@@ -180,7 +203,9 @@ export default {
       const params = {
         'where.organName': this.selectForm.organName,
         pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
+        order: 'desc',
+        orderBy: 'create_time'
       }
       this.axios.get('A3/authServices/organInfos', {params})
         .then((res) => {
@@ -308,6 +333,7 @@ export default {
             this.$message.success('创建成功');
             this.dialogFormVisible = false;
             this.getDepartmentList();
+            this.getDepartmentList1();
             this.isAddLoading = false;
           } else {
             this.isAddLoading = false;
@@ -345,6 +371,7 @@ export default {
             this.$message.success('修改成功');
             this.editFormVisible = false;
             this.getDepartmentList();
+            this.getDepartmentList1();
             this.isEditLoading = false;
           } else {
             this.isEditLoading = false;

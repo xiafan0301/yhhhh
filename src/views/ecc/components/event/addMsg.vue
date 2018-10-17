@@ -42,6 +42,8 @@
                 :on-remove="handleRemove"
                 :on-success='handleSuccess'
                 :on-exceed="handleImgNumber"
+                :disabled="isImgDisabled"
+                :title="[isImgDisabled === true ? '禁用' : '']"
                 :limit='9'
               >
                 <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
@@ -108,6 +110,7 @@ export default {
       isEditLoading: false,
       status: '', // 添加或修改消息
       open: false,
+      isImgDisabled: false,
       oConfig: {},
       isImgNumber: false,
       imgParam: {
@@ -244,6 +247,8 @@ export default {
       }
     },
     handleSuccess (res, file) { // 图片上传成功
+      console.log(res)
+      console.log(file)
       if (res && res.data) {
         const data = {
           attachmentType: dictType.imgId,
@@ -256,6 +261,7 @@ export default {
           thumbnailWidth: res.data.thumbImageWidth,
           thumbnailHeight: res.data.thumbImageHeight
         }
+        this.isImgDisabled = false;
         this.imgList.push(data);
       }
     },
@@ -266,13 +272,6 @@ export default {
             if (item.url === file.url) {
               this.imgList.splice(index, 1);
             }
-            // if (file.attachmentId) {
-            //   if (item.attachmentId === file.attachmentId) {
-            //     this.imgList.splice(index, 1);
-            //   }
-            // }
-            // console.log(item)
-            // console.log(file)
           });
         }
       }
@@ -281,13 +280,16 @@ export default {
       }
     },
     handleBeforeUpload (file) { // 图片上传之前
+      this.isImgDisabled = true;
       const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLtTenM = file.size / 1024 / 1024 < 10;
       if (!isImg) {
         this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+        this.isImgDisabled = false;
       }
       if (!isLtTenM) {
         this.$message.error('上传的图片大小不能超过10M');
+        this.isImgDisabled = false;
       }
       return isImg && isLtTenM;
     },
