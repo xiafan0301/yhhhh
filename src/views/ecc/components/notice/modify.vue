@@ -42,15 +42,18 @@
             action="http://10.16.4.50:8001/api/network/upload/new"
             list-type="picture-card"
             accept=".png,.jpg,.bmp"
-            :file-list="form.attachmentList"
+            :data="imgParam"
             :before-upload='handleBeforeUpload'
             :on-preview="handlePictureCardPreview"
+            :file-list="form.attachmentList"
             :on-remove="handleRemove"
             :on-success='handleSuccess'
+            :on-exceed="handleImgNumber"
             :limit='9'
           >
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
             <span class='add-img-text'>添加图片</span>
+            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible" class="img-dialog">
             <img  :src="dialogImageUrl" alt="">
@@ -130,6 +133,7 @@ export default {
       addPageLoading: false,
       dialogImageUrl: '',
       dialogVisible: false,
+      isImgNumber: false,
       status: '',
       form: {
         publishTime: '',
@@ -141,6 +145,9 @@ export default {
         messageType: '',
         attachmentList: [],
         receiveRelations: []
+      },
+      imgParam: {
+        projectType: 3
       },
       form1: {
         time: '',
@@ -218,7 +225,7 @@ export default {
               this.form.publishTime = res.data.emiMessage.publishTime;
             }
             this.form.messageType = res.data.emiMessage.messageType;
-            this.form.attachmentList = res.data.emiAttachments;
+            this.form.attachmentList = res.data.emiAttachments
             res.data.receiveRelations && res.data.receiveRelations.map((item, index) => {
               this.value.push(item.receiveUser);
             });
@@ -294,6 +301,7 @@ export default {
                 if (res) {
                   this.$router.push({name: 'notice-atmanagementList'})
                   this.addPageLoading = false
+                  this.$message.success('修改公告成功');
                 } else {
                   this.addPageLoading = false
                 }
@@ -326,6 +334,7 @@ export default {
                 if (res) {
                   this.$router.push({name: 'system'})
                   this.addPageLoading = false
+                  this.$message.success('修改消息成功');
                 } else {
                   this.addPageLoading = false
                 }
@@ -347,6 +356,7 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
+        console.log(res.data.newFileName)
         const data = {
           attachmentType: dictType.imgId,
           url: res.data.newFileName,
@@ -362,14 +372,17 @@ export default {
       }
     },
     handleRemove (file, fileList) { // 删除图片
-      console.log(file)
-      if (this.form.attachmentList.length > 0) {
-        this.form.attachmentList.map((item, index) => {
-          if (item.url === file.url) {
-            this.form.attachmentList.splice(index, 1);
-          }
-        });
+      this.form.attachmentList.map((aa, index) => {
+        if (aa.url === file.url) {
+          this.form.attachmentList.splice(index, 1)
+        }
+      });
+      if (fileList.length < 9) {
+        this.isImgNumber = false;
       }
+    },
+    handleImgNumber (files, fileList) { // 图片超出最大个数限制
+      this.isImgNumber = true;
     },
     handleBeforeUpload (file) { // 图片上传之前
       const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -463,6 +476,37 @@ export default {
     content: '!';
     position: absolute;
     left: 5px;
+    top: 9px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    line-height: 16px;
+    color: #FFF;
+    font-weight: bold;
+    background-color: #FA796C;
+    border-radius: 50%;
+  }
+  .imgTips {
+    border: 1px solid #FA796C;
+    height: 35px;
+    line-height: 35px;
+    background-color: #FEE6E0;
+    border-radius: 2px;
+    position: absolute;
+    color: #FA796C;
+    padding-top: 0;
+    padding: 0 13px 0 26px;
+    -ms-flex-item-align: center;
+    align-self: center;
+    width: 160px;
+    left: 105px;
+    top: 50px;
+  }
+  .imgTips:before {
+    content: '!';
+    position: absolute;
+    left: 5px;
+    right: 0px;
     top: 9px;
     width: 15px;
     height: 15px;

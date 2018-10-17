@@ -38,7 +38,7 @@
                     </div>
                     <el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>
                   </div>
-                <i class="icon iconfont anbutton" style="cursor: pointer;" slot="reference">&#xe6f4;</i>
+                <i class="icon iconfont anbutton" style="cursor: pointer;" slot="reference" @click="ii(scope)" v-if="scope.$index > 0">&#xe6f4;</i>
                 </el-popover>
               </template>
             </el-table-column>
@@ -158,6 +158,9 @@ export default {
     }
   },
   methods: {
+    ii (scope) {
+      console.log(scope)
+    },
     setCurrent (row) {
       this.$refs.singleTable.setCurrentRow(row);
     },
@@ -218,6 +221,7 @@ export default {
     edit () {
     },
     doSearch () {
+      this.pageNum = 1;
       this.getTableData();
     },
     // del (status, scope) {
@@ -335,6 +339,7 @@ export default {
     },
     searchFormReset () {
       this.searchForm.materialsName = '';
+      this.pageNum = 1;
       this.getTableData()
     },
     showEditDialog (status, scope) {
@@ -400,13 +405,13 @@ export default {
     }
     .warehouse{
       margin-right: 2%;
-      /deep/ .el-table__row:nth-child(1) {
-          /deep/ .cell {
-            .tanchu{
-              display: none;
-            }
-          }
-      }
+      /*/deep/ .el-table__row:nth-child(1) {*/
+          /*/deep/ .cell {*/
+             /*i {*/
+              /*display: none!important;*/
+            /*}*/
+          /*}*/
+      /*}*/
       .active{
         color: #ffffff;
         background: #0785FD;
@@ -504,8 +509,5 @@ export default {
   .bg-plan-tbp{
     padding: 20px 0;
     text-align: center;
-  }
-  /deep/ .el-popover {
-    min-width: 130px!important;
   }
 </style>

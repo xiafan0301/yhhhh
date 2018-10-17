@@ -123,8 +123,8 @@ export default {
                   this.$message.error('已存在同名记录');
                 }
                 if (res && res.data) {
-                  console.log(res)
                   this.$router.push({name: 'emergency-materialList'});
+                  this.$message.success('添加物资成功');
                 }
               })
           } else {
@@ -132,6 +132,7 @@ export default {
             this.axios.put('A2/materialService/updateOne', params)
               .then((res) => {
                 this.$router.push({name: 'emergency-materialList'});
+                this.$message.success('修改物资成功');
               })
           }
         } else {

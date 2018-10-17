@@ -15,7 +15,7 @@
       <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
       <li><span class="title">主题</span><span class="content">{{messageInfo.emiMessage.title}}</span></li>
       <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span></li>
-      <li style="margin-left: 98px" v-show="messageInfo.emiAttachments.length > 0">
+      <li style="margin-left: 98px" v-if="messageInfo.emiAttachments">
         <span class="content">
           <div id="imgs"></div>
         </span>
@@ -28,14 +28,6 @@
         <li><span class="title">发布单位</span><span class="content">{{messageInfo.emiMessage.publishUnitName}}</span></li>
         <li><span class="title">发布用户</span><span class="content">{{messageInfo.emiMessage.publishUserName}}</span></li>
         <li><span class="title" style="vertical-align: top">内容</span><span class="content"><el-input type="textarea" v-model="messageInfo.emiMessage.details" style="display: inline-block; width: 500px"  :autosize="{ minRows: 7, maxRows: 7}" rows="7"></el-input></span>
-        </li>
-        <li v-show="messageInfo.emiAttachments.length > 0">
-          <span class="title"></span>
-          <img
-            v-for="item in messageInfo.emiAttachments"
-            :key='item.attachmentId'
-            :src="item.url"
-          />
         </li>
         <li><span class="title">发送时间</span> <span class="content">{{messageInfo.emiMessage.publishTime}}</span></li>
       </ul>
@@ -101,7 +93,10 @@ export default {
           .then((res) => {
             if (res) {
               this.messageInfo = res.data;
-              console.log(res);
+              if (this.messageInfo.emiAttachments.length === 0) {
+                this.messageInfo.emiAttachments = false
+              }
+              console.log(this.messageInfo.emiAttachments)
               if (res.data.emiMessage.terminal === 1) {
                 this.messageInfo.emiMessage.terminal = 'App端';
               } else if (res.data.emiMessage.terminal === 2) {
