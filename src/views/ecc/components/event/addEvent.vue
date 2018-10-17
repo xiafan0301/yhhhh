@@ -34,6 +34,8 @@
               :on-remove="handleRemove"
               :on-success='handleSuccess'
               :on-exceed="handleImgNumber"
+              :disabled="isImgDisabled"
+              :title="[isImgDisabled === true ? '禁用' : '']"
               :limit='9'
             >
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
@@ -117,6 +119,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       closeReturnVisiable: false,
+      isImgDisabled: false,
       oConfig: {},
       isAddLoading: false, // 保存加载中图标
       isDieError: false,
@@ -373,6 +376,7 @@ export default {
           thumbnailHeight: res.data.thumbImageHeight
         }
         this.addForm.attachmentList.push(data);
+        this.isImgDisabled = false;
       }
     },
     handleRemove (file, fileList) { // 删除图片
@@ -399,13 +403,16 @@ export default {
       }
     },
     handleBeforeUpload (file) { // 图片上传之前
+      this.isImgDisabled = true;
       const isImg = file.type === 'image/jpeg' || file.type === 'image/png';
       const isLtTenM = file.size / 1024 / 1024 < 10;
       if (!isImg) {
         this.$message.error('上传的图片只能是bmp、jpg、png格式!');
+        this.isImgDisabled = false;
       }
       if (!isLtTenM) {
         this.$message.error('上传的图片大小不能超过10M');
+        this.isImgDisabled = false;
       }
       return isImg && isLtTenM;
     },

@@ -28,10 +28,12 @@
           <span>{{scope.row.createTime | moment}}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="是否为管理员" prop='isAdmin' align='center' show-overflow-tooltip>
-        <template v-if="scope.row.isAdmin === true">是</template>
-        <template v-else>否</template>
-      </el-table-column> -->
+      <el-table-column label="是否为管理员" prop='isAdmin' align='center' show-overflow-tooltip>
+        <template slot-scope="scope" >
+          <span style='color: rgb(251, 121, 108)' v-show="scope.row.isAdmin === true">是</span>
+          <span v-show="scope.row.isAdmin === false">否</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限"></i>
