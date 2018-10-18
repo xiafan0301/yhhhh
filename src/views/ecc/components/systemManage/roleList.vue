@@ -497,7 +497,7 @@ export default {
       this.editFormVisible = true;
       this.editForm.roleName = obj.roleName;
       this.editForm.roleDesc = obj.roleDesc;
-      this.editForm.roleDesc = obj.isAdmin;
+      this.editForm.isAdmin = obj.isAdmin;
       this.editForm.uid = obj.uid;
       this.isShowError = false;
       this.errorMsg = '';

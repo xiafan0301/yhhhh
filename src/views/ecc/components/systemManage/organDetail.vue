@@ -328,7 +328,11 @@ export default {
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res && res.data.list) {
-            this.userList = res.data.list;
+            res.data.list.map(item => {
+              if (item.userRealName) {
+                this.userList.push(item);
+              }
+            })
           }
         })
         .catch(() => {})
@@ -580,6 +584,15 @@ export default {
       this.axios.get('A2/authServices/users', {params})
         .then(res => {
           if (res) {
+            if (this.selectNumbers && this.selectNumbers.length > 0) {
+              this.selectNumbers.forEach(aa => {
+                res.data.list.forEach((bb, index) => {
+                  if (aa.userName === bb.userName) {
+                    res.data.list.splice(index, 1);
+                  }
+                })
+              })
+            }
             res.data.list.forEach(zz => {
               this.allNumbers.push({
                 uid: zz.uid,
