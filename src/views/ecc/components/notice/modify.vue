@@ -356,7 +356,6 @@ export default {
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
-        console.log(res.data.newFileName)
         const data = {
           attachmentType: dictType.imgId,
           url: res.data.newFileName,
