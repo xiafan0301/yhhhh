@@ -201,9 +201,13 @@ export default {
             this.addLoading = true
             this.axios.put('A2/warehouseService/updateOne', params)
               .then((res) => {
-                this.addLoading = false
-                this.$router.push({name: 'emergency-materialList'});
-                this.$message.success('修改仓库成功');
+                if (res) {
+                  this.addLoading = false
+                  this.$router.push({name: 'emergency-materialList'});
+                  this.$message.success('修改仓库成功');
+                } else {
+                  this.addLoading = false
+                }
               })
           }
         } else {

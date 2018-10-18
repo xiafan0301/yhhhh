@@ -247,8 +247,6 @@ export default {
       }
     },
     handleSuccess (res, file) { // 图片上传成功
-      console.log(res)
-      console.log(file)
       if (res && res.data) {
         const data = {
           attachmentType: dictType.imgId,

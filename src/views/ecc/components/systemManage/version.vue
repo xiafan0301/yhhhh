@@ -273,6 +273,10 @@ export default {
       this.$refs[formRef].validate((valid) => {
         if (valid) {
           let params = Object.assign({}, this.editForm);
+          console.log(params)
+          if (this.checked === false) {
+            params.minVersion = ''
+          }
           this.editSubmitLoading = true;
           if (this.editObj) {
             this.axios.put('A4/appUpdate/softwaredVersion/modify', params)

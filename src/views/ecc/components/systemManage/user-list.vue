@@ -388,7 +388,10 @@ export default {
           })
         }
       })
-      this.axios.get('A2/authServices/userGroups')
+      let params = {
+        pageSize: 0
+      }
+      this.axios.get('A2/authServices/userGroups', {params})
         .then(res => {
           if (res) {
             this.selectGroups.forEach(aa => {
@@ -419,7 +422,10 @@ export default {
       });
       if (val === '') {
         this.allGroups = []
-        this.axios.get('A2/authServices/userGroups')
+        let params = {
+          pageSize: 0
+        }
+        this.axios.get('A2/authServices/userGroups', {params})
           .then(res => {
             if (res) {
               this.selectGroups.forEach(aa => {
