@@ -383,7 +383,7 @@ export default {
                 if (res.data.radius !== -1) {
                   // this.operationForm.radius = '推送';
                   this.radiusNumber = res.data.radius;
-                  this.operationForm.radiusNumber = res.data.radius;
+                  this.operationForm.radiusNumber = (res.data.radius).toString();
                 }
               }
             }
