@@ -45,7 +45,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                action="http://10.16.4.50:8001/api/network/upload/new"
+                :action="uploadUrl + '/upload/new'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"
@@ -165,13 +165,14 @@
 <script>
 import {dictType} from '@/config/data.js';
 import {valiPhone} from '@/utils/validator.js';
-import {ajaxCtx3} from '@/config/config.js';
+import {ajaxCtx3, imgBaseUrl2} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 export default {
   components: {mapPoint},
   data () {
     return {
+      uploadUrl: null,
       currentNum: 0,
       totalNum: 140,
       isImgNumber: false,
@@ -248,6 +249,7 @@ export default {
     this.getEventLevel();
     this.getCloseReason();
     this.urlDetail = ajaxCtx3;
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     setTimeout(() => {

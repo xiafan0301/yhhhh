@@ -26,7 +26,7 @@
       </el-form>
       <div class='show-img-div'>
         <el-upload
-          action="http://10.16.4.50:8001/api/network/upload/new"
+          :action="uploadUrl + '/upload/new'"
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
@@ -81,9 +81,11 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      uploadUrl: null,
       dialogImageUrl: '',
       dialogVisible: false,
       isEndLoading: false, // 结束加载中
@@ -119,6 +121,7 @@ export default {
       this.endForm.eventLevel = this.$route.query.eventLevel;
     }
     this.getEventLevel();
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     setTimeout(() => {
