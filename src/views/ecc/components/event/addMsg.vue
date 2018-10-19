@@ -32,7 +32,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                action="http://10.16.4.50:8001/api/network/upload/new"
+                :action="uploadUrl + '/upload/new'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"
@@ -104,11 +104,13 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {imgBaseUrl2} from '@/config/config.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 export default {
   components: {mapPoint},
   data () {
     return {
+      uploadUrl: null,
       isAddLoading: false,
       isEditLoading: false,
       isShowRadius: false,
@@ -172,6 +174,7 @@ export default {
     }
     this.getDistance();
     this.getAppEventDetail();
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     setTimeout(() => {

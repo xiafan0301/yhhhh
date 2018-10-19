@@ -48,6 +48,12 @@ const oDomains = {
     test: 'http://10.16.4.18:8080',
     prod: 'http://10.16.4.18:8080'
   },
+  // 文件/图片/CDN地址
+  fileDomain2: {
+    dev: 'http://10.16.3.26:8084',
+    test: 'http://10.16.3.26:8084',
+    prod: 'http://10.16.3.26:8084'
+  },
   // 上传地址
   uploadDomain: {
     dev: 'http://10.16.3.40:8080',
@@ -81,6 +87,7 @@ export const ajaxCtxCommon = oDomains.commonDomain[sENV] + '/api';
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址
 export const imgBaseUrl = oDomains.fileDomain[sENV] + '/';
+export const imgBaseUrl2 = oDomains.fileDomain2[sENV] + '/api/network';
 // 文件所在域名地址
 export const fileBaseUrl = oDomains.fileDomain[sENV] + '/';
 
