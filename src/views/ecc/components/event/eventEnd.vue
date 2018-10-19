@@ -26,7 +26,7 @@
       </el-form>
       <div class='show-img-div'>
         <el-upload
-          :action="uploadUrl + '/upload/new'"
+          :action="uploadUrl + '/upload'"
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'

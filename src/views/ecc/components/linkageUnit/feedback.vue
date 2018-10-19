@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item style='margin-left: 150px' class="img-form-item">
           <el-upload
-            :action="uploadUrl + '/upload/new'"
+            :action="uploadUrl + '/upload'"
             list-type="picture-card"
             :data="imgParam"
             accept=".png,.jpg,.bmp"

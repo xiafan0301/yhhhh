@@ -50,9 +50,9 @@ const oDomains = {
   },
   // 文件/图片/CDN地址
   fileDomain2: {
-    dev: 'http://10.16.3.26:8084',
-    test: 'http://10.16.3.26:8084',
-    prod: 'http://10.16.3.26:8084'
+    dev: 'http://10.16.4.50:8084',
+    test: 'http://10.16.4.50:8084',
+    prod: 'http://10.16.4.50:8084'
   },
   // 上传地址
   uploadDomain: {
