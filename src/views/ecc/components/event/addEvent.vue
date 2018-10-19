@@ -365,18 +365,17 @@ export default {
       this.dialogVisible = true;
     },
     handleSuccess (res, file) { // 图片上传成功
-      console.log(res)
-      if (res && res.data) {
+      if (res) {
         const data = {
           attachmentType: dictType.imgId,
-          url: res.data.newFileName,
-          attachmentName: res.data.fileName,
-          attachmentSize: res.data.fileSize,
-          attachmentWidth: res.data.imageWidth,
-          attachmentHeight: res.data.imageHeight,
-          thumbnailUrl: res.data.thumbnailUrl,
-          thumbnailWidth: res.data.thumbImageWidth,
-          thumbnailHeight: res.data.thumbImageHeight
+          url: res.newFileName,
+          attachmentName: res.fileName,
+          attachmentSize: res.fileSize,
+          attachmentWidth: res.imageWidth,
+          attachmentHeight: res.imageHeight,
+          thumbnailUrl: res.thumbnailUrl,
+          thumbnailWidth: res.thumbImageWidth,
+          thumbnailHeight: res.thumbImageHeight
         }
         this.addForm.attachmentList.push(data);
         this.isImgDisabled = false;

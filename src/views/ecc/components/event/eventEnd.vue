@@ -169,35 +169,34 @@ export default {
       });
     },
     handleSuccess (res, file) {
-      if (res && res.data) {
-        const fileName = res.data.fileName;
+      if (res) {
+        const fileName = res.fileName;
         let type;
-        console.log(fileName)
         if (fileName) {
           type = fileName.substring(fileName.lastIndexOf('.'));
           let data;
-          res.data.fileName = file.name;
+          res.fileName = file.name;
           if (type === '.png' || type === '.jpg' || type === '.bmp') {
             data = {
               attachmentType: dictType.imgId,
-              url: res.data.newFileName,
-              attachmentName: res.data.fileName,
-              attachmentSize: res.data.fileSize,
-              attachmentWidth: res.data.imageWidth,
-              attachmentHeight: res.data.imageHeight,
-              thumbnailUrl: res.data.thumbnailUrl,
-              thumbnailWidth: res.data.thumbImageWidth,
-              thumbnailHeight: res.data.thumbImageHeight
+              url: res.newFileName,
+              attachmentName: res.fileName,
+              attachmentSize: res.fileSize,
+              attachmentWidth: res.imageWidth,
+              attachmentHeight: res.imageHeight,
+              thumbnailUrl: res.thumbnailUrl,
+              thumbnailWidth: res.thumbImageWidth,
+              thumbnailHeight: res.thumbImageHeight
             }
-            this.imgList.push(res.data);
+            this.imgList.push(res);
           } else {
             data = {
               attachmentType: dictType.fileId,
-              url: res.data.newFileName,
-              attachmentName: res.data.fileName,
-              attachmentSize: res.data.fileSize
+              url: res.newFileName,
+              attachmentName: res.fileName,
+              attachmentSize: res.fileSize
             }
-            this.fileList.push(res.data);
+            this.fileList.push(res);
           }
           this.endForm.attachmentList.push(data);
           this.isImgDisabled = false;
