@@ -184,7 +184,7 @@ export default {
       oConfig: {},
       dialogImageUrl: '',
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       dialogVisible: false,
       dialogFormVisible: false,

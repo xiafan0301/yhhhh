@@ -128,7 +128,7 @@ export default {
       dieTip: '',
       isImgNumber: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       pickerOptions0: {
         disabledDate (time) {

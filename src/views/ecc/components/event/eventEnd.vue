@@ -94,7 +94,7 @@ export default {
       totalNum: 10000, // 可输入的总字数
       isImgDisabled: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       endForm: {
         eventId: '',
