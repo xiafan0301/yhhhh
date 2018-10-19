@@ -298,7 +298,7 @@ export default {
     editDepart (scope) { // 显示编辑部门弹出框
       this.editForm.uid = scope.row.uid;
       this.editForm.organName = scope.row.organName;
-      this.editForm.chargeUserName = scope.row.chargeUserName;
+      this.editForm.chargeUserName = scope.row.chargeUserNameStr;
       this.editFormVisible = true;
     },
     showAddDialog () { // 显示添加部门弹出框

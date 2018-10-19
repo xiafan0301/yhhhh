@@ -36,7 +36,8 @@ axios.interceptors.request.use((config) => {
 });
 // axios添加一个响应拦截器
 axios.interceptors.response.use(function (response) {
-  // console.log('response', response)
+  console.log('response', response)
+  // debugger;
   if (response && response.data) {
     let _data = response.data;
     let msg = '';
@@ -53,7 +54,7 @@ axios.interceptors.response.use(function (response) {
         window.location.href = './index.html#/login';
       }
       window.setTimeout(() => {
-        window.location.reload();
+        // window.location.reload();
       }, 100)
       // window.location.reload();
     } else {
