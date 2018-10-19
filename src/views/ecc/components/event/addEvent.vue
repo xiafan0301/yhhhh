@@ -25,7 +25,7 @@
           </el-form-item>
           <el-form-item style='margin-left: 150px' class="img-form-item">
             <el-upload
-              :action="uploadUrl + '/upload/new'"
+              :action="uploadUrl + '/upload'"
               list-type="picture-card"
               :data="imgParam"
               accept=".png,.jpg,.bmp"
@@ -128,7 +128,7 @@ export default {
       dieTip: '',
       isImgNumber: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       pickerOptions0: {
         disabledDate (time) {

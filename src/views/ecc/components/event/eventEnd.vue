@@ -26,7 +26,7 @@
       </el-form>
       <div class='show-img-div'>
         <el-upload
-          :action="uploadUrl + '/upload/new'"
+          :action="uploadUrl + '/upload'"
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
@@ -94,7 +94,7 @@ export default {
       totalNum: 10000, // 可输入的总字数
       isImgDisabled: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       endForm: {
         eventId: '',

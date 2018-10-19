@@ -32,7 +32,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                :action="uploadUrl + '/upload/new'"
+                :action="uploadUrl + '/upload'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"
@@ -120,7 +120,7 @@ export default {
       oConfig: {},
       isImgNumber: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       pickerOptions0: {
         disabledDate (time) {

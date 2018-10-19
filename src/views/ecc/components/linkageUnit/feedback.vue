@@ -15,7 +15,7 @@
         </el-form-item>
         <el-form-item style='margin-left: 150px' class="img-form-item">
           <el-upload
-            action="http://10.16.4.50:8001/api/network/upload/new"
+            :action="uploadUrl + '/upload'"
             list-type="picture-card"
             :data="imgParam"
             accept=".png,.jpg,.bmp"
@@ -63,9 +63,11 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      uploadUrl: null,
       dialogImageUrl: null,
       dialogVisible: false,
       currentNum: 0, // 事件反馈当前字数
@@ -77,7 +79,7 @@ export default {
         attachmentList: [] // 附件列表
       },
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       rules: {
         processContent: [
@@ -93,6 +95,7 @@ export default {
   created () {
     this.getProcessTypeList();
     this.getTaskTypeList();
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     setTimeout(() => {
