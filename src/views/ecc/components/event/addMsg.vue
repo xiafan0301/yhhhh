@@ -32,7 +32,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                action="http://10.16.4.50:8001/api/network/upload/new"
+                :action="uploadUrl + '/upload'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"
@@ -53,7 +53,7 @@
             </template>
           </el-form-item>
           <el-form-item label="是否推送消息" label-width='150px'>
-            <el-radio-group style='width: 330px' v-model='operationForm.radius'>
+            <el-radio-group style='width: 330px' v-model='operationForm.radius' @change="changeRadius">
               <el-radio label="不推送"></el-radio>
               <el-radio label="推送" style='margin-left:22%'></el-radio>
             </el-radio-group>
@@ -68,6 +68,9 @@
               >
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item label="" label-width='150px' v-show="isShowRadius === true">
+            <p class="radius-tip">此消息已推送过一次，选择"推送"将会再次推送消息到APP</p>
           </el-form-item>
         </el-form>
       </div>
@@ -101,20 +104,23 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {imgBaseUrl2} from '@/config/config.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 export default {
   components: {mapPoint},
   data () {
     return {
+      uploadUrl: null,
       isAddLoading: false,
       isEditLoading: false,
+      isShowRadius: false,
       status: '', // 添加或修改消息
       open: false,
       isImgDisabled: false,
       oConfig: {},
       isImgNumber: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       pickerOptions0: {
         disabledDate (time) {
@@ -156,7 +162,8 @@ export default {
           { required: true, message: '请选择推送距离', trigger: 'blur' }
         ]
       },
-      distanceList: [] // 距离列表
+      distanceList: [], // 距离列表
+      radiusNumber: null
     }
   },
   created () {
@@ -167,6 +174,7 @@ export default {
     }
     this.getDistance();
     this.getAppEventDetail();
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     setTimeout(() => {
@@ -324,7 +332,6 @@ export default {
                 this.$message.error('添加消息失败');
                 this.isAddLoading = false;
               }
-              // this.isAddLoading = false;
             })
             .catch(() => {})
         }
@@ -344,6 +351,18 @@ export default {
         })
         .catch(() => {})
     },
+    changeRadius (val) { // 当raduis改变时
+      console.log(val);
+      if (val === '推送') {
+        if (this.radiusNumber) {
+          this.isShowRadius = true;
+        } else {
+          this.isShowRadius = false;
+        }
+      } else {
+        this.isShowRadius = false;
+      }
+    },
     getAppEventDetail () {
       const eventId = this.$route.query.eventId;
       if (eventId) {
@@ -355,7 +374,6 @@ export default {
               this.operationForm.longitude = res.data.longitude;
               this.operationForm.latitude = res.data.latitude;
               this.operationForm.eventDetail = res.data.eventDetail;
-              // this.operationForm.attachmentList = res.data.attachmentList;
               this.currentNum = res.data.eventDetail.length;
               res.data.attachmentList && res.data.attachmentList.map((item, index) => {
                 if (item.attachmentType === dictType.videoId) { // 视频
@@ -365,9 +383,10 @@ export default {
                 }
               });
               if (res.data.radius) {
-                if (res.data.radius > 0) {
-                  this.operationForm.radius = '推送';
+                if (res.data.radius !== -1) {
+                  // this.operationForm.radius = '推送';
                   this.radiusNumber = res.data.radius;
+                  this.operationForm.radiusNumber = (res.data.radius).toString();
                 }
               }
             }
@@ -452,7 +471,10 @@ export default {
               font-size: 13px;
             }
           }
-          /deep/ .el-form-item__error {
+          .radius-tip {
+            width: 420px;
+          }
+          /deep/ .el-form-item__error, .radius-tip {
             border: 1px solid #FA796C;
             height: 35px;
             line-height: 35px;
@@ -462,7 +484,7 @@ export default {
             padding-top: 0;
             padding: 0 13px 0 26px;
           }
-          /deep/ .el-form-item__error:before {
+          /deep/ .el-form-item__error:before, .radius-tip:before {
             content: '!';
             position: absolute;
             left: 5px;

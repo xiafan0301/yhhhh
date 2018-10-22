@@ -25,7 +25,7 @@
           </el-form-item>
           <el-form-item style='margin-left: 150px' class="img-form-item">
             <el-upload
-              action="http://10.16.4.50:8001/api/network/upload/new"
+              :action="uploadUrl + '/upload'"
               list-type="picture-card"
               :data="imgParam"
               accept=".png,.jpg,.bmp"
@@ -111,10 +111,12 @@
 import {valiPhone} from '@/utils/validator.js';
 import {dictType} from '@/config/data.js';
 import mapPoint from '@/components/common/mapPoint.vue';
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   components: {mapPoint},
   data () {
     return {
+      uploadUrl: null,
       open: false,
       dialogImageUrl: '',
       dialogVisible: false,
@@ -126,7 +128,7 @@ export default {
       dieTip: '',
       isImgNumber: false,
       imgParam: {
-        projectType: 3
+        projectType: 4
       },
       pickerOptions0: {
         disabledDate (time) {
@@ -180,6 +182,7 @@ export default {
     this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串
     this.getEventType();
     this.getEventLevel();
+    this.uploadUrl = imgBaseUrl2;
   },
   methods: {
     onPositionChange (val) { // 事件地点输入框值改变

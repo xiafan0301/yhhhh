@@ -67,7 +67,9 @@ export default {
   mounted () {
     let _this = this;
     $(window).on('keyup', function (event) {
+      console.log('00000')
       if (event && event.keyCode === 13) {
+        console.log('111111')
         _this.loginSubmit('loginForm');
       }
     });
