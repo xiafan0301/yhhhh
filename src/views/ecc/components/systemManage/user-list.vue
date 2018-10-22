@@ -671,6 +671,7 @@ export default {
         province: this.editItem.province,
         city: this.editItem.city
       };
+      obj.userRealName = this.editItem.userName
       console.log(obj);
       this.axios.put('A2/authServices/user', obj)
         .then(res => {

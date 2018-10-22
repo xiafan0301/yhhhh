@@ -66,12 +66,14 @@
         <el-form-item label="版本名称" prop="softName">
           <el-input v-model="editForm.softName" placeholder="请输入版本名称"></el-input>
         </el-form-item>
-        <el-form-item label="应用文件" style="position: relative" >
+        <el-form-item label="应用文件" style="position: relative" prop="savePath">
           <el-upload
             class="upload-demo"
+            v-model="editForm.savePath"
             :show-file-list ="false"
-            action="http://10.16.4.50:8001/api/network/upload/new"
+            action="http://10.16.4.50:8084/api/network/upload"
             :on-preview="handlePreview"
+            :data="imgParam"
             :on-remove="handleRemove"
             :before-remove="beforeRemove"
             :on-success="handleSuccess"
@@ -120,7 +122,7 @@
       <div style="text-align: center;">
          <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="medium">取 消</el-button>
-        <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')" size="medium">提交</el-button>
+        <el-button type="primary" :loading="editSubmitLoading" @click="editSubmit('editForm')" size="medium" :disabled="fileStatus === '上传失败'">提交</el-button>
       </span>
       </div>
       <div style="height: 50px"></div>
@@ -159,12 +161,15 @@ export default {
         pageSize: 10,
         total: 0
       },
+      imgParam: {
+        projectType: 4
+      },
       dialogVisible: false,
       initEditForm: {
         softName: '',
         softContent: '',
         softFlag: '',
-        forceUpdate: 0,
+        forceUpdate: '',
         savePath: '',
         saveFile: '',
         softType: 1,
@@ -207,7 +212,7 @@ export default {
       this.getTableData();
     },
     doSearch1 () {
-      this.searchForm.softPubversion = ''
+      this.searchForm.softPubversion = '';
       this.pagination.pageNum = 1;
       this.getTableData();
     },
@@ -251,6 +256,7 @@ export default {
       if (item) {
         this.editObj = true;
         this.editForm = Object.assign({}, item);
+        this.fileStatus = '上传文件'
         if (item.minVersion) {
           this.checked = true
         }
@@ -273,12 +279,12 @@ export default {
       this.$refs[formRef].validate((valid) => {
         if (valid) {
           let params = Object.assign({}, this.editForm);
-          console.log(params)
-          if (this.checked === false) {
-            params.minVersion = ''
-          }
           this.editSubmitLoading = true;
           if (this.editObj) {
+            if (this.checked === false) {
+              params.minVersion = ''
+              params.forceUpdate = 0
+            }
             this.axios.put('A4/appUpdate/softwaredVersion/modify', params)
               .then((res) => {
                 if (res && res.data) {
@@ -291,6 +297,9 @@ export default {
               .catch(() => {
               });
           } else {
+            if (this.checked === true && this.minVersion) {
+              params.forceUpdate = 1
+            }
             this.axios.post('A4/appUpdate/softwaredVersion', params)
               .then((res) => {
                 this.editSubmitLoading = false;
@@ -336,10 +345,16 @@ export default {
       console.log(response)
       this.loadingstatu = false
       this.fileName = file.name
-      this.editForm.saveFile = file.name
       this.loadingstatu = false
-      this.fileStatus = '上传成功'
-      this.editForm.savePath = response.data.newFileName
+      if (response.newFileName) {
+        this.fileStatus = '上传成功'
+        this.editForm.savePath = response.newFileName
+        this.editForm.saveFile = file.name
+      } else {
+        this.$message.error(response.fileName);
+        this.fileStatus = '上传失败'
+      }
+      console.log(this.editForm.savePath)
     },
     handleChange () {
     },
@@ -363,6 +378,7 @@ export default {
     delfile () {
       this.fileName = ''
       this.editForm.savePath = ''
+      this.fileStatus = '上传文件'
     }
   }
 }

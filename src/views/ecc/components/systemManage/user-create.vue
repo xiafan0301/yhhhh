@@ -409,5 +409,29 @@ export default {
       }
     }
   }
+  /deep/ .el-form-item__error {
+    border: 1px solid #FA796C;
+    height: 35px;
+    line-height: 35px;
+    background-color: #FEE6E0;
+    border-radius: 2px;
+    color: #FA796C;
+    padding-top: 0;
+    padding: 0 13px 0 26px;
+  }
+  /deep/ .el-form-item__error:before {
+    content: '!';
+    position: absolute;
+    left: 5px;
+    top: 9px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    line-height: 16px;
+    color: #FFF;
+    font-weight: bold;
+    background-color: #FA796C;
+    border-radius: 50%;
+  }
 }
 </style>
