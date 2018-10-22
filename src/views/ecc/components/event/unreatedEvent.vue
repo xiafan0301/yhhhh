@@ -45,7 +45,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                :action="uploadUrl + '/upload'"
+                :action="uploadUrl + '/upload/new'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"
@@ -304,17 +304,17 @@ export default {
       return $.param({ln: ln});
     },
     handleSuccess (res, file) { // 图片上传成功
-      if (res) {
+      if (res && res.data) {
         const data = {
           attachmentType: dictType.imgId,
-          url: res.newFileName,
-          attachmentName: res.fileName,
-          attachmentSize: res.fileSize,
-          attachmentWidth: res.imageWidth,
-          attachmentHeight: res.imageHeight,
-          thumbnailUrl: res.thumbnailUrl,
-          thumbnailWidth: res.thumbImageWidth,
-          thumbnailHeight: res.thumbImageHeight
+          url: res.data.newFileName,
+          attachmentName: res.data.fileName,
+          attachmentSize: res.data.fileSize,
+          attachmentWidth: res.data.imageWidth,
+          attachmentHeight: res.data.imageHeight,
+          thumbnailUrl: res.data.thumbnailUrl,
+          thumbnailWidth: res.data.thumbImageWidth,
+          thumbnailHeight: res.data.thumbImageHeight
         }
         this.imgList.push(data);
         this.isImgDisabled = false;

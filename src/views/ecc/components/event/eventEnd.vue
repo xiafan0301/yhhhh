@@ -26,7 +26,7 @@
       </el-form>
       <div class='show-img-div'>
         <el-upload
-          :action="uploadUrl + '/upload'"
+          :action="uploadUrl + '/upload/new'"
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
@@ -169,8 +169,8 @@ export default {
       });
     },
     handleSuccess (res, file) {
-      if (res) {
-        const fileName = res.fileName;
+      if (res && res.data) {
+        const fileName = res.data.fileName;
         let type;
         if (fileName) {
           type = fileName.substring(fileName.lastIndexOf('.'));
@@ -179,24 +179,24 @@ export default {
           if (type === '.png' || type === '.jpg' || type === '.bmp') {
             data = {
               attachmentType: dictType.imgId,
-              url: res.newFileName,
-              attachmentName: res.fileName,
-              attachmentSize: res.fileSize,
-              attachmentWidth: res.imageWidth,
-              attachmentHeight: res.imageHeight,
-              thumbnailUrl: res.thumbnailUrl,
-              thumbnailWidth: res.thumbImageWidth,
-              thumbnailHeight: res.thumbImageHeight
+              url: res.data.newFileName,
+              attachmentName: res.data.fileName,
+              attachmentSize: res.data.fileSize,
+              attachmentWidth: res.data.imageWidth,
+              attachmentHeight: res.data.imageHeight,
+              thumbnailUrl: res.data.thumbnailUrl,
+              thumbnailWidth: res.data.thumbImageWidth,
+              thumbnailHeight: res.data.thumbImageHeight
             }
-            this.imgList.push(res);
+            this.imgList.push(res.data);
           } else {
             data = {
               attachmentType: dictType.fileId,
-              url: res.newFileName,
-              attachmentName: res.fileName,
-              attachmentSize: res.fileSize
+              url: res.data.newFileName,
+              attachmentName: res.data.fileName,
+              attachmentSize: res.data.fileSize
             }
-            this.fileList.push(res);
+            this.fileList.push(res.data);
           }
           this.endForm.attachmentList.push(data);
           this.isImgDisabled = false;

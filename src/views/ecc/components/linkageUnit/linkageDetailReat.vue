@@ -36,8 +36,6 @@
               <span class='title'>报案人：</span>
               <span class="content" style='margin-right: 20px'>{{eventDetailObj.reporterPhone}}</span>
               <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank" style="text-decoration: none"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
-              <!-- <img src="../../../../assets/img/temp/voice.png" style="margin-right:10px;cursor:pointer" />
-              <img src="../../../../assets/img/temp/video.png" style="margin-right:10px;cursor:pointer" /> -->
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
