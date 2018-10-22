@@ -326,6 +326,7 @@ export default {
           thumbnailHeight: res.data.thumbImageHeight
         };
         this.form.attachmentList.push(data);
+        console.log(this.form.attachmentList)
       }
     },
     handleRemove (file, fileList) { // 删除图片
