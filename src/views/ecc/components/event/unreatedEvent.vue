@@ -45,7 +45,7 @@
             </div>
             <template v-if="videoList && videoList.length === 0">
               <el-upload
-                :action="uploadUrl + '/upload'"
+                :action="uploadUrl + '/upload/new'"
                 list-type="picture-card"
                 :data="imgParam"
                 accept=".png,.jpg,.bmp"

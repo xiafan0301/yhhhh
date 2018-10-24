@@ -26,7 +26,7 @@
       </el-form>
       <div class='show-img-div'>
         <el-upload
-          :action="uploadUrl + '/upload'"
+          :action="uploadUrl + '/upload/new'"
           list-type='picture-card'
           :data="imgParam"
           accept='.png,.jpg,.bmp,.pdf,.doc,.docx,.ppt,.pptx'
@@ -172,11 +172,10 @@ export default {
       if (res && res.data) {
         const fileName = res.data.fileName;
         let type;
-        console.log(fileName)
         if (fileName) {
           type = fileName.substring(fileName.lastIndexOf('.'));
           let data;
-          res.data.fileName = file.name;
+          res.fileName = file.name;
           if (type === '.png' || type === '.jpg' || type === '.bmp') {
             data = {
               attachmentType: dictType.imgId,
