@@ -5,7 +5,7 @@ import Vue from 'vue';
 import axios from 'axios';
 import ElementUI from 'element-ui';
 // import store from '@/store/store.js';
-import { ajaxCtx, ajaxCtx2, ajaxCtx4, ajaxCtxCommon, imgBaseUrl2 } from '@/config/config.js';
+import { ajaxCtx, ajaxCtx2, ajaxCtx4, ajaxCtxCommon } from '@/config/config.js';
 // axios支持跨域cookie
 axios.defaults.withCredentials = true;
 // axios添加一个请求拦截器u

@@ -51,7 +51,7 @@
       style="width: 100%"
       class="notice-table"
       >
-      <el-table-column fixed label="序号" width="60"  type="index"></el-table-column>
+      <el-table-column fixed label="序号" width="50"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center"  :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="摘要"  min-width="150" align="center"  :show-overflow-tooltip="true">
