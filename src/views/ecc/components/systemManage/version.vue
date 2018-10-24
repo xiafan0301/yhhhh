@@ -71,7 +71,7 @@
             class="upload-demo"
             v-model="editForm.savePath"
             :show-file-list ="false"
-            action="http://10.16.4.50:8084/api/network/upload"
+            :action="uploadUrl + '/upload/'"
             :on-preview="handlePreview"
             :data="imgParam"
             :on-remove="handleRemove"
@@ -93,8 +93,8 @@
         </el-form-item>
         <el-form-item label="提示更新" prop="softFlag">
           <el-radio-group v-model="editForm.softFlag">
-            <el-radio :label="0">是</el-radio>
-            <el-radio :label="1">否</el-radio>
+            <el-radio :label="1">是</el-radio>
+            <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
         <!--<el-form-item label="强制更新" prop="forceUpdate">-->
@@ -144,9 +144,11 @@
   </div>
 </template>
 <script>
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      uploadUrl: null,
       loadingstatu: false,
       fileStatus: '上传文件',
       fileName: '',
@@ -205,6 +207,7 @@ export default {
   created () {
     this.getTableData()
     this.getSoftPubversion()
+    this.uploadUrl = imgBaseUrl2;
   },
   methods: {
     doSearch () {
@@ -225,7 +228,7 @@ export default {
         pageNum: this.pagination.pageNum,
         pageSize: this.pagination.pageSize,
         orderBy: 'soft_pubversion',
-        order: 'asc'
+        order: 'desc'
       };
       this.axios.get('A4/appUpdate/softwaredVersion?' + $.param(params))
         .then((res) => {
@@ -284,6 +287,8 @@ export default {
             if (this.checked === false) {
               params.minVersion = ''
               params.forceUpdate = 0
+            } else if (params.minVersion && this.checked === true) {
+              params.forceUpdate = 1
             }
             this.axios.put('A4/appUpdate/softwaredVersion/modify', params)
               .then((res) => {
@@ -292,14 +297,17 @@ export default {
                   this.dialogVisible = false;
                   this.editObj = false;
                   this.doSearch();
+                } else {
+                  this.editSubmitLoading = false;
                 }
               })
               .catch(() => {
               });
           } else {
-            if (this.checked === true && this.minVersion) {
+            if (this.checked === true && params.minVersion) {
               params.forceUpdate = 1
             }
+            this.editSubmitLoading = false;
             this.axios.post('A4/appUpdate/softwaredVersion', params)
               .then((res) => {
                 this.editSubmitLoading = false;

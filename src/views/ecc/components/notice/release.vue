@@ -40,7 +40,7 @@
         </el-form-item>
         <el-form-item>
           <el-upload
-            action="http://10.16.4.50:8001/api/network/upload/new"
+            :action="uploadUrl + '/upload/new'"
             list-type="picture-card"
             accept=".png,.jpg,.bmp"
             :data="imgParam"
@@ -53,20 +53,21 @@
           >
             <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
             <span class='add-img-text'>添加图片</span>
-            <span class="imgTips" v-show="isImgNumber">图片最多上传9张</span>
+            <span class="imgTips" v-show="isImgNumber" style="width: 160px">图片最多上传9张</span>
           </el-upload>
           <el-dialog :visible.sync="dialogVisible" class="img-dialog">
             <img :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
-        <el-form-item label="发送时间" prop = 'time'>
-          <el-radio-group v-model="form.time">
+        <el-form-item label="发送时间" prop = 'time' style="position: relative">
+          <el-radio-group v-model="form.time" @change="onchangeTime">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
               <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                @change="onchangePub"
                 :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form.publishTime"
@@ -76,6 +77,9 @@
               </el-date-picker>
             </div>
           </el-radio-group>
+          <div style=" position: absolute; top: -47px; left: 291px; width: 160px; height: 60px">
+            <span class="imgTips" v-show="isMsgError">定时时间需要大于当前时间3分钟</span>
+          </div>
         </el-form-item>
       </el-form>
       <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'system'" :rules="rule"  :inline-message="true">
@@ -94,14 +98,15 @@
           <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/10000</span>
           </div>
         </el-form-item>
-        <el-form-item label="发送时间" prop="time">
-          <el-radio-group v-model="form1.time" >
+        <el-form-item label="发送时间" prop="time" style="position: relative">
+          <el-radio-group v-model="form1.time" @change="onchangeTime">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
               <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                @change="onchangePub"
                 :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form1.publishTime"
@@ -111,6 +116,9 @@
               </el-date-picker>
             </div>
           </el-radio-group>
+          <div style=" position: absolute; top: -47px; left: 291px; width: 160px; height: 60px">
+            <span class="imgTips" v-show="isMsgError">定时时间需要大于当前时间3分钟</span>
+          </div>
         </el-form-item>
       </el-form >
       </div>
@@ -123,9 +131,12 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {checkTime} from '@/utils/validator.js';
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      uploadUrl: null,
       pickerOptions0: {
         disabledDate (time) {
           return time.getTime() < Date.now() - 8.64e7;
@@ -138,6 +149,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       isImgNumber: false,
+      isMsgError: false,
       status: '',
       form: {
         publishTime: '',
@@ -150,6 +162,7 @@ export default {
         receiveRelations: [],
         description: null
       },
+      time: '',
       form1: {
         publishTime: '',
         type: '',
@@ -170,6 +183,8 @@ export default {
         ],
         time: [
           {required: true, message: '请选择发送时间'}
+        ],
+        publishTime: [
         ]
       },
       rule: {
@@ -188,8 +203,14 @@ export default {
   },
   created () {
     this.getDepartmentList();
+    this.uploadUrl = imgBaseUrl2;
   },
   computed: {
+  },
+  watch: {
+    time (e) {
+      this.setTime()
+    }
   },
   mounted () {
     if (this.$route.query.status === 'atgment') {
@@ -197,8 +218,42 @@ export default {
     } else if (this.$route.query.status === 'system') {
       this.status = '添加消息'
     }
+    this.time = this.form.time
   },
   methods: {
+    aa () {
+      this.time = this.form.time
+    },
+    onchangeTime (val) {
+      if (val === 1) {
+        this.isMsgError = false
+      }
+      if (val === 2) {
+        this.onchangePub();
+      }
+    },
+    onchangePub () {
+      if (!(new Date(this.form.publishTime) - Date.now() > 3 * 60 * 1000) && this.form.time === 2 && !(this.form.publishTime === '') && !(this.form.publishTime === null)) {
+        this.isMsgError = true;
+        console.log(this.isMsgError)
+      } else if (!(new Date(this.form1.publishTime) - Date.now() > 3 * 60 * 1000) && this.form1.time === 2 && !(this.form1.publishTime === '') && !(this.form1.publishTime === null)) {
+        this.isMsgError = true;
+      } else {
+        this.isMsgError = false
+      }
+      // if (!(new Date(this.form1.publishTime) - Date.now() > 3 * 60 * 1000) && this.form1.time === 2 && !(this.form1.publishTime === '') && !(this.form1.publishTime === null)) {
+      //   this.isMsgError = true;
+      // } else {
+      //   this.isMsgError = false
+      // }
+    },
+    setTime () {
+      if (this.time === 2) {
+        this.rules.publishTime = []
+        this.rules.publishTime.push({ validator: checkTime, trigger: 'blur' })
+        console.log(this.rules.publishTime)
+      }
+    },
     onSubmit (val, val1) {
       if (this.$route.query.status === 'system') {
         this.$refs[val1].validate((valid) => {
@@ -244,9 +299,7 @@ export default {
             }
             if (this.form.attachmentList === []) {
               this.form.attachmentList = null;
-              console.log(1)
             }
-            console.log(1)
             if (this.form.publishTime && this.form.time === 2) {
               this.form.description = 1
             }
@@ -311,6 +364,11 @@ export default {
       } else {
         this.$router.push({name: 'notice-atmanagementList'})
       }
+      let Data = new Date()
+      console.log(Date.now() - this.form.publishTime)
+      console.log(this.form.publishTime)
+      console.log(Date.now())
+      console.log(checkTime)
     },
     handleSuccess (res, file) { // 图片上传成功
       if (res && res.data) {
@@ -459,7 +517,7 @@ export default {
     padding: 0 13px 0 26px;
     -ms-flex-item-align: center;
     align-self: center;
-    width: 160px;
+    width: 250px;
     left: 105px;
     top: 50px;
   }
