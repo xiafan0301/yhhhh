@@ -39,7 +39,7 @@
         </el-form-item>
         <el-form-item  >
           <el-upload
-            action="http://10.16.4.50:8001/api/network/upload/new"
+            :action="uploadUrl + '/upload/new'"
             list-type="picture-card"
             accept=".png,.jpg,.bmp"
             :data="imgParam"
@@ -59,14 +59,15 @@
             <img  :src="dialogImageUrl" alt="">
           </el-dialog>
         </el-form-item>
-        <el-form-item label="发送时间"  prop = 'time'>
-          <el-radio-group v-model="form.time" style="width: 100%">
+        <el-form-item label="发送时间"  prop = 'time' style="position: relative">
+          <el-radio-group v-model="form.time" style="width: 100%" @change="onchangeTime">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
               <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                @change="onchangePub"
                 :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form.publishTime"
@@ -76,6 +77,9 @@
               </el-date-picker>
             </div>
           </el-radio-group>
+          <div style=" position: absolute; top: -47px; left: 291px; width: 160px; height: 60px">
+            <span class="imgTips" v-show="isMsgError" style="width: 160px">定时时间需要大于当前时间3分钟</span>
+          </div>
         </el-form-item>
       </el-form>
       <el-form ref="form1" :model="form1" label-width="80px" v-if="this.$route.query.status === 'modifysystem'" :rules="rule"  :inline-message="true">
@@ -94,14 +98,15 @@
             <span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form1.desc.length}}/10000</span>
           </div>
         </el-form-item>
-        <el-form-item label="发送时间" prop="time">
-          <el-radio-group v-model="form1.time" style="width: 100%">
+        <el-form-item label="发送时间" prop="time" style="position: relative">
+          <el-radio-group v-model="form1.time" style="width: 100%" @change="onchangeTime">
             <div style="display: inline-block" >;
               <el-radio :label="1" >实时</el-radio>
               <el-radio :label="2">定时</el-radio>
             </div>
             <div  style="display: inline-block; margin-left: 20px;">
               <el-date-picker
+                @change="onchangePub"
                 :picker-options="pickerOptions0"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 v-model="form1.publishTime"
@@ -111,6 +116,9 @@
               </el-date-picker>
             </div>
           </el-radio-group>
+          <div style=" position: absolute; top: -47px; left: 291px; width: 160px; height: 60px">
+            <span class="imgTips" v-show="isMsgError">定时时间需要大于当前时间3分钟</span>
+          </div>
         </el-form-item>
       </el-form >
   </div>
@@ -122,9 +130,11 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      uploadUrl: null,
       pickerOptions0: {
         disabledDate (time) {
           return time.getTime() < Date.now() - 8.64e7;
@@ -134,6 +144,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       isImgNumber: false,
+      isMsgError: false,
       status: '',
       form: {
         publishTime: '',
@@ -193,6 +204,7 @@ export default {
   created () {
     this.getmessagedetial();
     this.getDepartmentList();
+    this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
     if (this.$route.query.status === 'modifyatgment') {
@@ -202,6 +214,24 @@ export default {
     }
   },
   methods: {
+    onchangeTime (val) {
+      if (val === 1) {
+        this.isMsgError = false
+      }
+      if (val === 2) {
+        this.onchangePub()
+      }
+    },
+    onchangePub () {
+      if (!(new Date(this.form.publishTime) - Date.now() > 3 * 60 * 1000) && this.form.time === 2 && !(this.form.publishTime === '') && !(this.form.publishTime === null)) {
+        this.isMsgError = true;
+        console.log(this.isMsgError)
+      } else if (!(new Date(this.form1.publishTime) - Date.now() > 3 * 60 * 1000) && this.form1.time === 2 && !(this.form1.publishTime === '') && !(this.form1.publishTime === null)) {
+        this.isMsgError = true;
+      } else {
+        this.isMsgError = false
+      }
+    },
     getmessagedetial () {
       let messageId = this.$route.query.messageId;
       this.axios.get('A2/messageService/' + messageId)
@@ -497,7 +527,7 @@ export default {
     padding: 0 13px 0 26px;
     -ms-flex-item-align: center;
     align-self: center;
-    width: 160px;
+    width: 250px;
     left: 105px;
     top: 50px;
   }

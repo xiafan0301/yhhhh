@@ -121,3 +121,14 @@ export const checkIdCard = (rule, value, callback) => {
   }
   callback()
 }
+// 验证定时时间
+
+export const checkTime = (rule, value, callback) => {
+  if (value) {
+    console.log(rule)
+    if (!(new Date(value) - Date.now() > 3 * 60 * 1000)) {
+      return callback(new Error('经度不符合规范：经度整数部分为0-180,小数部分为0-6位！'));
+    }
+  }
+  callback()
+}
