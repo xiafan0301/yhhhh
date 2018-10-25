@@ -1,9 +1,11 @@
 <template>
   <div class="bg-cas">
     <div style="padding-bottom: 20px; border-bottom: 1px solid #eee; margin-bottom: 20px;">
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item>首页</el-breadcrumb-item>
-        <el-breadcrumb-item>视频监控管理</el-breadcrumb-item>
+      <el-breadcrumb>
+        <!-- <el-breadcrumb-item>首页</el-breadcrumb-item> -->
+        <el-breadcrumb-item>
+          <span style="color:#0785FD;font-size:14px;">设备管理</span>
+        </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="clearfix" style="position: relative;">

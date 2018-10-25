@@ -2,9 +2,11 @@
   <div class="bg-de">
     <div class="bg-de-t">
       <div>
-        <el-breadcrumb separator="/">
-          <el-breadcrumb-item>首页</el-breadcrumb-item>
-          <el-breadcrumb-item>地图绘边</el-breadcrumb-item>
+        <el-breadcrumb>
+          <!-- <el-breadcrumb-item>首页</el-breadcrumb-item> -->
+          <el-breadcrumb-item>
+            <span style="color:#0785FD;font-size:14px;">地图绘边</span>
+          </el-breadcrumb-item>
         </el-breadcrumb>
       </div>
     </div>
