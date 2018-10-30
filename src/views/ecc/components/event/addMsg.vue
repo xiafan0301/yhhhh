@@ -352,15 +352,16 @@ export default {
         .catch(() => {})
     },
     changeRadius (val) { // 当raduis改变时
-      console.log(val);
-      if (val === '推送') {
-        if (this.radiusNumber) {
-          this.isShowRadius = true;
+      if (this.$route.query.status === 'modify') {
+        if (val === '推送') {
+          if (this.radiusNumber !== -1) {
+            this.isShowRadius = true;
+          } else {
+            this.isShowRadius = false;
+          }
         } else {
           this.isShowRadius = false;
         }
-      } else {
-        this.isShowRadius = false;
       }
     },
     getAppEventDetail () {
@@ -369,6 +370,7 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res) {
+              console.log(res.data.radius)
               this.operationForm.reportTime = res.data.reportTime;
               this.operationForm.eventAddress = res.data.eventAddress;
               this.operationForm.longitude = res.data.longitude;
@@ -383,9 +385,8 @@ export default {
                 }
               });
               if (res.data.radius) {
+                this.radiusNumber = res.data.radius;
                 if (res.data.radius !== -1) {
-                  // this.operationForm.radius = '推送';
-                  this.radiusNumber = res.data.radius;
                   this.operationForm.radiusNumber = (res.data.radius).toString();
                 }
               }
