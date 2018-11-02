@@ -357,6 +357,9 @@ export default {
             };
             if (this.form1.time === 2) {
               params.emiMessage.description = 1;
+            } else {
+              params.emiMessage.description = null
+              params.emiMessage.publishTime = null
             }
             this.addPageLoading = true
             this.axios.put('A2/messageService/updateOne', params)

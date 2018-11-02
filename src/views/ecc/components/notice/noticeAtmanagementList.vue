@@ -65,7 +65,7 @@
       </el-table-column>
       <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100" align="center">
