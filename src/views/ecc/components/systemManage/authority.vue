@@ -44,8 +44,8 @@
       :visible.sync="addLimitDialogVisible"
       width="400px"
       center>
-      <el-form class='add-depart-form'>
-        <el-form-item label="权限名称" label-width='85px' :model="addForm">
+      <el-form class='add-depart-form' :model="addForm">
+        <el-form-item label="权限名称" label-width='85px'>
           <el-input type="text" v-model="addForm.resourceName" placeholder='请输入权限名称' style='width: 98%'></el-input>
         </el-form-item>
         <el-form-item label="权限类型" label-width='85px'>

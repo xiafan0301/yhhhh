@@ -66,12 +66,6 @@ export default {
   },
   mounted () {
     let _this = this;
-    // $(window).on('keyup', function (event) {
-    //   if (event && event.keyCode === 13) {
-    //     console.log('111111')
-    //     _this.loginSubmit('loginForm');
-    //   }
-    // });
     _this.isRemember = Boolean(getCookie('cookieStatus'));
     if (Boolean(getCookie('cookieStatus')) === true) {
       this.loginForm.userMobile = getCookie('cookieUserName');
@@ -89,9 +83,7 @@ export default {
           let params = this.loginForm;
           _this.axios.post('A2/authServices/users/login', params).then(function (response) {
             if (response) {
-              console.log('88888888')
               let oUser = response.data;
-              console.log(oUser)
               // 保存用户手机号到cookie
               setCookie('cookieName', oUser.userName, 24, '/');
               if (_this.isRemember === true) {
