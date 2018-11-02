@@ -2,7 +2,7 @@
   <div class="vis-bg-plate">
     <div class="bg-plate-bd">
       <el-breadcrumb separator=">">
-        <el-breadcrumb-item ><span style="color:#0785FD;font-size:14px;">数据维护</span></el-breadcrumb-item>
+        <el-breadcrumb-item ><span style="color:#0785FD;font-size:14px;">地图数据</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="bg-plate-sf">

@@ -109,7 +109,7 @@
                 <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='taskForm.taskContent' @input="calNumber(taskForm.taskContent)"></el-input>
                 <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
               </el-form-item>
-              <el-form-item label="" label-width='80px' v-show='taskList.length > 0'>
+              <el-form-item label="" label-width='80px' v-show='isShowTask'>
                 <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
                 <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
               </el-form-item>
@@ -375,6 +375,7 @@ export default {
       this.taskList.splice(index, 1);
     },
     addTask (form) { // 添加任务
+      console.log('asdasdasd')
       this.isShowTask = true;
     },
     cancelForm (form) { // 取消填写的form

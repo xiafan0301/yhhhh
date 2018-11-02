@@ -163,7 +163,7 @@
             :data="allLimitObj.A"
             show-checkbox
             default-expand-all
-            node-key="resourceName"
+            node-key="uid"
             ref="tree"
             :props="defaultProps">
           </el-tree>
@@ -597,61 +597,61 @@ export default {
       if (obj.roleAuthList && obj.roleAuthList.length > 0) {
         obj.roleAuthList.forEach(item => {
           this.allLimitObj.A.forEach(a => {
-            if (a.resourceName === item.resourceName) {
+            if (a.uid === item.uid) {
               if (a.children && a.children.length === 0) {
-                keysArr.push(item.resourceName);
+                keysArr.push(item.uid);
               }
             }
           })
           this.allLimitObj.B.forEach(b => {
-            if (b.resourceName === item.resourceName) {
+            if (b.uid === item.uid) {
               if (b.children && b.children.length > 0) {
                 b.children.forEach(child => {
-                  if (child.resourceName === item.resourceName) {
-                    keysArr.push(item.resourceName);
+                  if (child.uid === item.uid) {
+                    keysArr.push(item.uid);
                   }
                 })
               } else {
-                keysArr.push(item.resourceName);
+                keysArr.push(item.uid);
               }
             }
           })
           this.allLimitObj.C.forEach(c => {
-            if (c.resourceName === item.resourceName) {
+            if (c.uid === item.uid) {
               if (c.children && c.children.length > 0) {
                 c.children.forEach(child => {
-                  if (child.resourceName === item.resourceName) {
-                    keysArr.push(item.resourceName);
+                  if (child.uid === item.uid) {
+                    keysArr.push(item.uid);
                   }
                 })
               } else {
-                keysArr.push(item.resourceName);
+                keysArr.push(item.uid);
               }
             }
           })
           this.allLimitObj.D.forEach(d => {
-            if (d.resourceName === item.resourceName) {
+            if (d.uid === item.uid) {
               if (d.children && d.children.length > 0) {
                 d.children.forEach(child => {
-                  if (child.resourceName === item.resourceName) {
-                    keysArr.push(item.resourceName);
+                  if (child.uid === item.uid) {
+                    keysArr.push(item.uid);
                   }
                 })
               } else {
-                keysArr.push(item.resourceName);
+                keysArr.push(item.uid);
               }
             }
           })
           this.allLimitObj.E.forEach(e => {
-            if (e.resourceName === item.resourceName) {
+            if (e.uid === item.uid) {
               if (e.children && e.children.length > 0) {
                 e.children.forEach(child => {
-                  if (child.resourceName === item.resourceName) {
-                    keysArr.push(item.resourceName);
+                  if (child.uid === item.uid) {
+                    keysArr.push(item.uid);
                   }
                 })
               } else {
-                keysArr.push(item.resourceName);
+                keysArr.push(item.uid);
               }
             }
           })
@@ -718,7 +718,7 @@ export default {
           let flag = false;
           if (arr && arr.length > 0) {
             for (let j = 0; j < arr.length; j++) {
-              if (this.selectLimitItem.roleAuthList[i].resourceName === arr[j].resourceName) {
+              if (this.selectLimitItem.roleAuthList[i].uid === arr[j].uid) {
                 flag = true;
                 break;
               }
@@ -734,7 +734,7 @@ export default {
           let fg = false;
           if (this.selectLimitItem.roleAuthList && this.selectLimitItem.roleAuthList.length > 0) {
             for (let j = 0; j < this.selectLimitItem.roleAuthList.length; j++) {
-              if (arr[i].resourceName === this.selectLimitItem.roleAuthList[j].resourceName) {
+              if (arr[i].uid === this.selectLimitItem.roleAuthList[j].uid) {
                 fg = true;
                 break;
               }

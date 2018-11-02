@@ -297,33 +297,33 @@ export default {
       let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
-          this.isAddLoading = true;
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
             this.addForm.casualties = -1;
           } else if (this.addForm.casualties === '有') {
-            this.addForm.casualties = this.dieNumber;
             if (!reg.test(this.dieNumber)) {
               this.isDieError = true;
               this.dieTip = '死亡人数只能为正整数';
-              return;
+              return false;
             } else {
               this.isDieError = false;
               this.dieTip = '';
             }
-            if (this.dieNumber > 9999) {
+            if (parseInt(this.dieNumber) > 9999) {
               this.isDieError = true;
               this.dieTip = '可输入的最大死亡人数为9999';
-              return;
+              return false;
             } else {
               this.isDieError = false;
               this.dieTip = '';
             }
+            this.addForm.casualties = this.dieNumber;
           }
           const param = {
             emiEvent: this.addForm
           }
+          this.isAddLoading = true;
           this.axios.post('A2/eventServices/event', param.emiEvent)
             .then((res) => {
               if (res) {
