@@ -45,7 +45,7 @@
         <!--soft_flag 是否须版本提醒标志 ：0 须提醒 1 不提醒 2 未知 -->
         <el-table-column prop="softFlag" label="提示更新" align="center" width="100" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span v-if="scope.row.softFlag === 0">是</span>
+            <span v-if="scope.row.softFlag === 1">是</span>
             <span v-else>否</span>
           </template>
         </el-table-column>
@@ -148,6 +148,8 @@ import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      temp: {a: 1},
+      numbers: [1, 2, 3, 4, 5, 1, 1, 2],
       uploadUrl: null,
       loadingstatu: false,
       fileStatus: '上传文件',
@@ -307,7 +309,6 @@ export default {
             if (this.checked === true && params.minVersion) {
               params.forceUpdate = 1
             }
-            this.editSubmitLoading = false;
             this.axios.post('A4/appUpdate/softwaredVersion', params)
               .then((res) => {
                 this.editSubmitLoading = false;
@@ -390,6 +391,7 @@ export default {
     }
   }
 }
+var ll = '';
 function makeAdder (x) {
   return function (y) {
     return x + y;

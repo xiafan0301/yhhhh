@@ -241,11 +241,6 @@ export default {
       } else {
         this.isMsgError = false
       }
-      // if (!(new Date(this.form1.publishTime) - Date.now() > 3 * 60 * 1000) && this.form1.time === 2 && !(this.form1.publishTime === '') && !(this.form1.publishTime === null)) {
-      //   this.isMsgError = true;
-      // } else {
-      //   this.isMsgError = false
-      // }
     },
     setTime () {
       if (this.time === 2) {
