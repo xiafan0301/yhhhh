@@ -12,6 +12,13 @@ export const ctx = 'vis';
  * prod 生产环境
  * */
 const oDomains = {
+  /*
+   10.16.4.24:8080    http://apiemi.aorise.org
+   10.16.4.41:8083   http://newsemi.aorise.org
+   10.16.4.41:8083   ws://newswsemi.aorise.org
+   10.16.4.50:8001  http://uploademi.aorise.org
+   10.16.2.88:8443   http://vedioemi.aorise.org
+   10.16.2.88:8443   ws://wsemi.aorise.org */
   // ajax开发地址
   domain: {
     // 本地配置 localhost:8902
@@ -19,7 +26,7 @@ const oDomains = {
     dev: 'http://10.16.4.18:8080',
     // dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://10.16.4.18:8080'
+    prod: 'http://apiemi.aorise.org'
   },
   // ajax开发地址
   domain2: {
@@ -28,37 +35,37 @@ const oDomains = {
     // dev: 'http://10.116.64.169:8084',
     // dev: 'http://10.16.4.24:8080',
     test: 'http://10.16.4.24:8080',
-    prod: 'http://10.16.4.24:8080'
+    prod: 'http://apiemi.aorise.org'
   },
   // 查看事件分布地址
   domain3: {
     dev: 'http://10.16.4.37:8071',
     test: 'http://10.16.4.37:8071',
-    prod: 'http://10.16.4.37:8071'
+    prod: 'http://emi.aorise.org/user'
   },
   // 智慧城市公共服务（用于APP版本管理服务、）
   commonDomain: {
     dev: 'http://10.16.4.41:8083',
     test: 'http://10.16.4.41:8083',
-    prod: 'http://10.16.4.41:8083'
+    prod: 'http://newsemi.aorise.org'
   },
   // 文件/图片/CDN地址
   fileDomain: {
     dev: 'http://10.16.3.40:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://10.16.4.18:8080'
+    prod: 'http://apiemi.aorise.org'
   },
   // 文件/图片/CDN地址
   fileDomain2: {
     dev: 'http://10.16.4.50:8084',
     test: 'http://10.16.4.50:8084',
-    prod: 'http://10.16.4.50:8084'
+    prod: 'http://uploademi.aorise.org'
   },
   // 上传地址
   uploadDomain: {
     dev: 'http://10.16.3.40:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://10.16.4.18:8080'
+    prod: 'http://apiemi.aorise.org'
   }
 };
 let sENV = 'dev';
