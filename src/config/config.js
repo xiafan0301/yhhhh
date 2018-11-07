@@ -13,12 +13,14 @@ export const ctx = 'vis';
  * */
 const oDomains = {
   /*
+   10.16.4.18:8080    http://emi.aorise.org
    10.16.4.24:8080    http://apiemi.aorise.org
    10.16.4.41:8083   http://newsemi.aorise.org
    10.16.4.41:8083   ws://newswsemi.aorise.org
    10.16.4.50:8001  http://uploademi.aorise.org
    10.16.2.88:8443   http://vedioemi.aorise.org
-   10.16.2.88:8443   ws://wsemi.aorise.org */
+   10.16.2.88:8443   ws://wsemi.aorise.org
+   222.244.147.121:3479 */
   // ajax开发地址
   domain: {
     // 本地配置 localhost:8902
@@ -26,7 +28,7 @@ const oDomains = {
     dev: 'http://10.16.4.18:8080',
     // dev: 'http://10.16.4.18:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://apiemi.aorise.org'
+    prod: 'http://emi.aorise.org'
   },
   // ajax开发地址
   domain2: {
@@ -53,7 +55,7 @@ const oDomains = {
   fileDomain: {
     dev: 'http://10.16.3.40:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://apiemi.aorise.org'
+    prod: 'http://emi.aorise.org'
   },
   // 文件/图片/CDN地址
   fileDomain2: {
@@ -65,7 +67,7 @@ const oDomains = {
   uploadDomain: {
     dev: 'http://10.16.3.40:8080',
     test: 'http://10.16.4.18:8080',
-    prod: 'http://apiemi.aorise.org'
+    prod: 'http://emi.aorise.org'
   }
 };
 let sENV = 'dev';
