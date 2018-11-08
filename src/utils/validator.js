@@ -132,3 +132,12 @@ export const checkTime = (rule, value, callback) => {
   }
   callback()
 }
+/**
+* 只能是10以内的数字，最多一位小数
+*/
+export const valiNumber = (rule, value, callback) => {
+  let numReg = /^([0-9])(\.[0-9])?$/;
+  if (!numReg.test(value)) {
+    return callback(new Error('请输入10以内的数字,且最多一位小数点'));
+  }
+}

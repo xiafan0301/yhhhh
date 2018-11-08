@@ -66,6 +66,13 @@ import roleList from '@/views/ecc/components/systemManage/roleList.vue';
 import authority from '@/views/ecc/components/systemManage/authority.vue';
 // 系统管理--版本管理
 import sysVersion from '@/views/ecc/components/systemManage/version.vue';
+// 值班管理
+import duty from '@/views/ecc/components/dutyManage/duty.vue';
+import personManage from '@/views/ecc/components/dutyManage/personManage.vue';
+import addPerson from '@/views/ecc/components/dutyManage/addPerson.vue';
+import scheduleManage from '@/views/ecc/components/dutyManage/scheduleManage.vue';
+import schedulePlan from '@/views/ecc/components/dutyManage/schedulePlan.vue';
+import addPlan from '@/views/ecc/components/dutyManage/addPlan.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -183,6 +190,17 @@ export default new Router({
             {path: 'roleList', name: 'role-list', component: roleList},
             {path: 'authority', name: 'authority', component: authority},
             {path: 'organDetail', name: 'organ-detail', component: organDetail}
+          ]
+        },
+        {
+          path: 'duty',
+          component: duty,
+          children: [
+            {path: 'schedulePlan', name: 'schedule-plan', component: schedulePlan},
+            {path: 'personManage', name: 'person-manage', component: personManage},
+            {path: 'scheduleManage', name: 'schedule-manage', component: scheduleManage},
+            {path: 'addPerson', name: 'add-person', component: addPerson},
+            {path: 'addPlan', name: 'add-plan', component: addPlan}
           ]
         }
       ]
