@@ -39,6 +39,8 @@ import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue
 import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue';
 import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue';
 import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue';
+import emergencyKnowledgeBase from '@/views/ecc/components/emergency/knowledgeBase.vue';
+import emergencyAddKnowledgeBase from '@/views/ecc/components/emergency/addKnowledgeBase.vue';
 // 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue';
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue';
@@ -111,7 +113,9 @@ export default new Router({
             {path: 'addMaterial', name: 'emergency-addMaterial', component: emergencyAddMaterial},
             {path: 'seeMaterial', name: 'emergency-seeMaterial', component: emergencySeeMaterial},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
-            {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
+            {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse},
+            {path: 'knowledgeBase', name: 'emergency-knowledgeBase', component: emergencyKnowledgeBase},
+            {path: 'addKnowledgeBase', name: 'emergency-addKnowledgeBase', component: emergencyAddKnowledgeBase}
           ]
         },
         {

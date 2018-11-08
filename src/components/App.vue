@@ -15,6 +15,7 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     height: 100%;
+    overflow: hidden;
   }
   body, html { height: 100%; }
 </style>

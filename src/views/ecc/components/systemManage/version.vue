@@ -309,6 +309,7 @@ export default {
             if (this.checked === true && params.minVersion) {
               params.forceUpdate = 1
             }
+            this.editSubmitLoading = true;
             this.axios.post('A4/appUpdate/softwaredVersion', params)
               .then((res) => {
                 this.editSubmitLoading = false;
