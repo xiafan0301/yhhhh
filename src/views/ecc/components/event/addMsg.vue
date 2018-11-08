@@ -370,7 +370,6 @@ export default {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res) {
-              console.log(res.data.radius)
               this.operationForm.reportTime = res.data.reportTime;
               this.operationForm.eventAddress = res.data.eventAddress;
               this.operationForm.longitude = res.data.longitude;
