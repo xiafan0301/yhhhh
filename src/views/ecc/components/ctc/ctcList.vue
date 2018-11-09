@@ -9,7 +9,7 @@
         <el-button class='selectBtn look-event'>查看事件分布</el-button>
       </a>
     </div>
-    <div class="clearfix search-event" style="position: relative;width: 100%">
+    <div class="clearfix search-event">
       <el-form style="float: left;width:100%" :inline="true" ref='selectForm' :model='selectForm' class="demo-form-inline" size="small">
         <el-form-item style="width: 250px;" prop='reportTime'>
           <el-date-picker
@@ -216,6 +216,7 @@ export default {
         'where.eventStatus': this.selectForm.eventStatus,
         'where.eventType': eventType,
         'where.eventLevel': eventLevel,
+        'where.simulateFlag': false,
         pageNum: this.pagination.pageNum
       }
       this.axios.get('A2/eventServices/events/page', {params: data})

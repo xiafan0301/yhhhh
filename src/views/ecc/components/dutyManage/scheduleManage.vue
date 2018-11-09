@@ -306,7 +306,7 @@
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" class='selectBtn btnClass' @click='selectPersonList'>添加</el-button>
+          <el-button type="primary" class='selectBtn btnClass'>添加</el-button>
         </el-form-item>
         <el-form-item>
           <div class="error-tip">该人员班次冲突不可添加</div>
