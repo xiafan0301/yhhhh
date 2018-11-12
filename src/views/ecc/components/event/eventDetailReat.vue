@@ -320,7 +320,7 @@ export default {
       this.$router.push({name: 'event-end', query: {eventId: this.$route.query.eventId}});
     },
     skipCtcDetail () {
-      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId}});
+      this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.eventDetailObj.eventType}});
     },
     back () { // 返回上一页
       this.$router.back(-1);

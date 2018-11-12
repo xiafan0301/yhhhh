@@ -156,7 +156,7 @@ export default {
       this.$router.push({name: 'simulate-ctc-detail', query: {eventId: scope.row.eventId, eventType: scope.row.eventType}});
     },
     skipCtcEnd (scope) { // 跳转到演练结束页面
-      this.$router.push({name: 'drill-end', query: {eventId: scope.row.eventId}});
+      this.$router.push({name: 'drill-end', query: {eventId: scope.row.eventId, level: scope.row.eventLevel}});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;

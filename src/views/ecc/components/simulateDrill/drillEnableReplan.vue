@@ -1,20 +1,25 @@
 <template>
-  <div class='simulate-ctc-detail'>
-    <div class='ctc-detail-header'>
+  <div class='enable-replan'>
+    <div class='enable-replan-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>方案制定</span></el-breadcrumb-item>
+        <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
+        <el-breadcrumb-item>预案演练</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>启用预案</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class='ctc-detail-body'>
-      <div class='ctc-detail-basic'>
-        <div class='ctc-detail-basic-header'>
+    <div class='enable-replan-detail-body'>
+      <div class='enable-replan-detail-basic'>
+        <div class='enable-replan-detail-basic-header'>
           <div class='flag'></div>
-          <p class='ctc-detail-basic-text'>演练项目名称：{{drillDetailObj.eventCode}}</p>
-          <!-- <p class='ctc-detail-number'>事件编号：{{drillDetailObj.eventCode}}</p> -->
+          <p class='enable-replan-detail-basic-text'>基本信息</p>
+          <!-- <p class='enable-replan-detail-number'>事件编号：{{drillDetailObj.eventCode}}</p> -->
         </div>
-        <div class='ctc-detail-basic-detail'>
-          <div class='ctc-detail-basic-list'>
+        <div class='enable-replan-detail-basic-detail'>
+          <div class='enable-replan-detail-basic-list'>
+            <div>
+              <span class='title'>演练项目名称：</span>
+              <span class='content'>{{drillDetailObj.eventCode}}</span>
+            </div>
             <div>
               <span class='title'>事件类型：</span>
               <span class='content'>{{drillDetailObj.eventTypeName}}</span>
@@ -23,16 +28,15 @@
               <span class='title'>事件等级：</span>
               <span class='content'>{{drillDetailObj.eventLevelName}}</span>
             </div>
-            <div><span class='title'>演练开始时间：</span><span class='content'>{{drillDetailObj.reportTime}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div>
               <span class='title'>报案人：</span>
               <span class='content'>{{drillDetailObj.reporterPhone}}</span>
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{drillDetailObj.eventAddress}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div>
               <span class='title'>人员伤亡：</span>
               <template v-if='drillDetailObj.casualties == -1'>
@@ -49,12 +53,16 @@
               <span class='title'>演练时长：</span>
               <span class='content'>{{drillDetailObj.duration}}</span>
             </div>
+            <div>
+              <span class='title'>演练开始时间：</span>
+              <span class='content'>{{drillDetailObj.reportTime}}</span>
+            </div>
           </div>
-          <div class='ctc-detail-basic-list'>
+          <div class='enable-replan-detail-basic-list'>
             <div style='width:100%'><span class='title'>事件情况：</span><span class='content'>{{drillDetailObj.eventDetail}}</span></div>
           </div>
-          <div class='ctc-detail-basic-list ctc-detail-img-content'>
-            <div style="width: 100%">
+          <div class='enable-replan-detail-basic-list enable-replan-detail-img-content'>
+            <div style="width:100%">
               <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
               <div class='video-list' style="width:auto" v-show="imgList && videoList.length > 0">
                 <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
@@ -69,119 +77,64 @@
           </div>
         </div>
       </div>
-      <div class='ctc-detail-first' v-show='drillDetailObj.taskList && drillDetailObj.taskList.length > 0'>
-        <div class='ctc-detail-first-header'>
-          <div class='flag'></div>
-          <p class='ctc-detail-first-text'>调度指挥方案</p>
-        </div>
-        <div class='ctc-detail-first-content'>
-          <ul v-for="(item, index) in drillDetailObj.taskList" :key="'item'+index">
-            <li>
-              <span class='title'>调度部门：</span><span class='content'>{{item.departmentName}}</span>
-            </li>
-            <li>
-              <span class='title'>任务名称：</span><span class='content'>{{item.taskName}}</span>
-            </li>
-            <li>
-              <span class='title'>任务内容：</span><span class='content'>{{item.taskContent}}</span>
-            </li>
-            <li v-show='drillDetailObj.taskList && drillDetailObj.taskList.length > 0' class='divide'></li>
-          </ul>
-        </div>
-      </div>
-      <div class='ctc-detail-bottom'>
-        <div class='ctc-idea-left'>
-          <div class='ctc-idea-header'>
+      <div class='enable-replan-detail-bottom'>
+        <div class='enable-replan-idea-left'>
+          <div class='enable-replan-idea-header'>
             <div class='flag'></div>
-            <template v-if="drillDetailObj.taskList && drillDetailObj.taskList.length > 0">
-              <p class='ctc-idea-text'>再次调度指挥方案</p>
-            </template>
-            <template v-else>
-              <p class='ctc-idea-text'>调度指挥方案</p>
-            </template>
+            <p class='enable-replan-idea-text'>调度指挥方案</p>
           </div>
-          <div class='ctc-idea-body'>
-            <div class='ctc-idea-body-list' v-for='(item, index) in taskList' :key="'item'+index">
-              <div class='ctc-idea-body-list-detail'>
-                <div class='ctc-idea-body-list-num'>任务{{index + 1}}</div>
-                <div class='ctc-idea-body-list-body'>
+          <template v-if='taskList && taskList.length > 0'>
+            <div class='enable-replan-list' v-for="(item, index) in taskList" :key="'item'+index">
+              <div class='enable-replan-list-detail'>
+                <div class='enable-replan-list-num'>任务{{index + 1}}</div>
+                <div class='enable-replan-list-body'>
                   <p>执行部门： {{item.departmentName}}</p>
                   <p>任务名称：{{item.taskName}}</p>
                   <p>任务内容： {{item.taskContent}}</p>
                 </div>
-                <div class='ctc-idea-body-operation'>
-                  <span @click='modifyTask(index, item.taskContent)'>修改</span>
+                <div class='enable-operation'>
+                  <span @click='modifyDepartment(index, item.taskContent)'>修改</span>
                   /
-                  <span @click='deleteTask(index)'>删除</span>
+                  <span @click='deleteDepartment(index)'>删除</span>
                 </div>
               </div>
             </div>
-            <div v-show='taskList.length > 0' class='ctc-idea-body-divide'></div>
-            <div class='ctc-idea-form'>
-              <el-form class='ctc-idea-form-add' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
-                <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
-                  <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 80%' v-model='taskForm.departmentId'>
-                    <el-option
-                      v-for="item in departmentList"
-                      :key="item.uid"
-                      :label="item.organName"
-                      :value="item.uid"
-                    >
-                    </el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item label="任务名称" label-width='80px' prop='taskName'>
-                  <el-input type="text" placeholder='请输入任务名称' style='width: 80%' v-model='taskForm.taskName'></el-input>
-                </el-form-item>
-                <el-form-item label="任务内容" label-width='80px' prop='taskContent' class="task-content">
-                  <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 80%' v-model='taskForm.taskContent' @input="calNumber(taskForm.taskContent)"></el-input>
-                  <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
-                </el-form-item>
-                <el-form-item label="" label-width='80px' v-show='taskList.length > 0'>
-                  <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
-                  <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
-                </el-form-item>
-              </el-form>
-            </div>
+            <div v-show='taskList.length > 0' class='divide'></div>
+          </template>
+          <div class='enable-replan-idea-body'>
+            <el-form v-show="isShowTask" class='enable-replan-idea-form' :model='taskForm' ref='taskForm' :rules='rules' :class="[taskList.length > 0 ? 'active' : '']">
+              <el-form-item label="执行部门" label-width='80px' prop='departmentId'>
+                <el-select @change='changeDepartment' placeholder="请选择执行部门" style='width: 480px' v-model='taskForm.departmentId'>
+                  <el-option
+                    v-for="item in departmentList"
+                    :key="item.uid"
+                    :label="item.organName"
+                    :value="item.uid"
+                  >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="任务名称" label-width='80px' prop='taskName'>
+                <el-input type="text" placeholder='请输入任务名称' style='width: 480px' v-model='taskForm.taskName'></el-input>
+              </el-form-item>
+              <el-form-item label="任务内容" label-width='80px' prop='taskContent' class="task-content">
+                <el-input type="textarea" placeholder='请输入任务内容' rows='7' style='width: 480px' v-model='taskForm.taskContent' @input="calNumber(taskForm.taskContent)"></el-input>
+                <span class="number-tip">{{currentNum}}/{{totalNum}}</span>
+              </el-form-item>
+              <el-form-item label="" label-width='80px' v-show='isShowTask'>
+                <el-button style='background: #0785FD;color:#fff;width:80px' @click="saveForm('taskForm')">保存</el-button>
+                <el-button style='width:80px' @click="cancelForm('taskForm')">取消</el-button>
+              </el-form-item>
+            </el-form>
             <div class='add-task' @click="addTask('taskForm')">
               <i class="el-icon-plus" style='width: 36px;height:36px;color:#D8D8D8'></i>
               <span class='add-img-text'>添加任务</span>
             </div>
           </div>
         </div>
-        <div class='ctc-replan-right'>
-          <div class='ctc-replan-header'>
-            <div class='flag'></div>
-            <p class='ctc-replan-text'>推荐预案</p>
-          </div>
-          <div class='ctc-replan-table'>
-            <el-table
-              style="width: 100%"
-              :data='reservePlanList'
-              highlight-current-row
-              class='ctc-table'
-              max-height="352"
-            >
-              <el-table-column fixed label="预案名称" prop='planName' align='center' show-overflow-tooltip></el-table-column>
-              <el-table-column fixed label="预案类型" prop='eventTypeName' align='center'></el-table-column>
-              <el-table-column fixed label="适用等级" prop='levelNameList' align='center' show-overflow-tooltip>
-                <template slot-scope="scope">
-                  <span>{{scope.row.levelNameList.join('、')}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column fixed label="操作" align='center'>
-                <template slot-scope="scope">
-                  <i class="icon-chakan- icon-hover" @click="selectReplanDetail(scope)" title="查看"></i>
-                  <i class="icon-qiyong- icon-hover" @click="skipEnableReplan(scope)" title="启用"></i>
-                </template>
-              </el-table-column>
-            </el-table>
-            <div class='more-replan' @click='selectMorePlan'>更多预案</div>
-          </div>
-        </div>
       </div>
     </div>
-    <div class='operation-btn-ctc-detail'>
+    <div class='operation-btn-enable-replan-detail'>
       <el-button @click='back'>返回</el-button>
       <el-button style='background: #0785FD;color:#fff' :loading="isTaskLoading" @click="submitData('taskForm')">确定</el-button>
     </div>
@@ -224,9 +177,6 @@
         <el-button class='noSureBtn' @click="closeReturnVisiable = false">暂不返回</el-button>
       </span>
     </el-dialog>
-    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
-      <img :src="dialogImageUrl" alt="">
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -234,32 +184,21 @@ import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
+      isShowTask: false, // 显示调度指挥表单
       isTaskLoading: false, // 调度指挥加载中
-      dialogFormVisible: false, // 是否显示要修改的表单
+      drillDetailObj: {},
+      dialogFormVisible: false,
       closeReturnVisiable: false,
       dialogImageUrl: '',
       dialogVisible: false,
-      modifyIndex: '', // 要修改的任务索引
-      drillDetailObj: {},
       currentNum: 0, // 事件情况当前字数
       updatecurrentNum: 0,
+      totalNum: 1000, // 可输入的总字数
+      modifyIndex: '', // 要修改的任务信息索引
+      taskList: [], // 预案详情中的任务列表
+      departmentList: [], // 部门数据列表
       videoList: [], // 视频数据列表
       imgList: [], // 图片数据列表
-      totalNum: 1000, // 可输入的总字数
-      reservePlanList: [],
-      rules: {
-        departmentId: [
-          { required: true, message: '请选择执行部门', trigger: 'blur' }
-        ],
-        taskName: [
-          { required: true, message: '请填写任务名称', trigger: 'blur' },
-          { max: 50, message: '最多可以输入50个字' }
-        ],
-        taskContent: [
-          { required: true, message: '请填写任务内容', trigger: 'blur' },
-          { max: 1000, message: '最多可以输入1000个字' }
-        ]
-      },
       taskForm: {
         departmentName: '',
         departmentId: '',
@@ -272,20 +211,25 @@ export default {
         taskName: '',
         taskContent: ''
       },
-      taskList: [], // 要添加的任务列表
-      departmentList: [] // 部门列表
+      rules: {
+        departmentId: [
+          { required: true, message: '请选择执行部门', trigger: 'blur' }
+        ],
+        taskName: [
+          { required: true, message: '请填写任务名称', trigger: 'blur' },
+          { max: 50, message: '最多可以输入50个字' }
+        ],
+        taskContent: [
+          { required: true, message: '请填写任务内容', trigger: 'blur' },
+          { max: 1000, message: '最多可以输入1000个字' }
+        ]
+      }
     }
   },
   created () {
-    if (this.$route.query.eventId) {
-      this.getDrillDetail();
-    } else if (this.$route.query.addForm) {
-      this.getEventLevel();
-      this.getEventType();
-      this.drillDetailObj = this.$route.query.addForm;
-    }
+    this.getDrillDetail();
+    this.getReplanDetail();
     this.getDepartmentList();
-    this.getReplanList();
   },
   mounted () {
     setTimeout(() => {
@@ -348,11 +292,11 @@ export default {
       this.dialogVisible = true;
     },
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'drill-replan-list', query: {eventId: this.$route.query.eventId}});
+      this.$router.push({name: 'replan-list'});
     },
     back (form) {
       const data = JSON.stringify(this.taskForm);
-      if (this.dataStr === data && this.taskList.length === 0) {
+      if (this.dataStr === data) {
         this.$router.back(-1);
       } else {
         this.closeReturnVisiable = true;
@@ -361,49 +305,6 @@ export default {
     sureBack () {
       this.closeReturnVisiable = false;
       this.$router.back(-1);
-    },
-    cancelForm (form) { // 取消填写的form
-      this.$refs[form].resetFields();
-    },
-    saveForm (form) { // 保存填写的form
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          const task = JSON.parse(JSON.stringify(this.taskForm));
-          this.taskList.push(task);
-          this.$refs[form].resetFields();
-          this.currentNum = 0;
-        }
-      });
-    },
-    sureCancelModify (form) { // 取消修改任务
-      this.$refs[form].resetFields();
-      this.dialogFormVisible = false;
-    },
-    sureModifyTask (form) { // 修改任务
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          if (this.modifyIndex !== '') {
-            const index = this.modifyIndex;
-            this.taskList[index].departmentId = this.modifyTaskForm.departmentId;
-            this.taskList[index].departmentName = this.modifyTaskForm.departmentName;
-            this.taskList[index].taskName = this.modifyTaskForm.taskName;
-            this.taskList[index].taskContent = this.modifyTaskForm.taskContent;
-            this.dialogFormVisible = false;
-          }
-        }
-      });
-    },
-    deleteTask (index) { // 删除任务
-      this.taskList.splice(index, 1);
-    },
-    modifyTask (index, content) { // 修改任务
-      this.dialogFormVisible = true;
-      this.modifyIndex = index;
-      this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
-      this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
-      this.modifyTaskForm.taskName = this.taskList[index].taskName;
-      this.modifyTaskForm.taskContent = this.taskList[index].taskContent;
-      this.updatecurrentNum = content.length;
     },
     getDrillDetail () { // 获取事件详情
       const eventId = this.$route.query.eventId;
@@ -427,53 +328,6 @@ export default {
           .catch(() => {})
       }
     },
-    getReplanList () { // 获取预案列表
-      console.log(this.$route.query.eventType)
-      const params = {
-        pageNum: -1,
-        'where.planType': this.$route.query.eventType
-      }
-      this.axios.get('A2/planServices/plans', {params})
-        .then((res) => {
-          if (res && res.data.list) {
-            this.reservePlanList = res.data.list;
-          }
-        })
-        .catch(() => {});
-    },
-    selectReplanDetail (scope) { // 查看预案
-      // console.log(scope.row.planId)
-      this.$router.push({name: 'drill-replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
-    },
-    skipEnableReplan (scope) { // 启用预案
-      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
-    },
-    getEventType () { // 获取事件类型
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
-        .then((res) => {
-          if (res && res.data) {
-            res.data.map((item) => {
-              if (item.dictId === this.$route.query.addForm.eventType) {
-                this.$route.query.addForm.eventType = item.dictContent;
-              }
-            });
-          }
-        })
-        .catch(() => {})
-    },
-    getEventLevel () { // 获取事件等级
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
-        .then((res) => {
-          if (res && res.data) {
-            res.data.map((item) => {
-              if (item.dictId === this.$route.query.addForm.eventLevel) {
-                this.$route.query.addForm.eventLevel = item.dictContent;
-              }
-            });
-          }
-        })
-        .catch(() => {})
-    },
     getDepartmentList () { // 获取部门列表
       const params = {
         pageSize: 0
@@ -486,9 +340,64 @@ export default {
         })
         .catch(() => {})
     },
-    addTask (form) { // 添加任务
+    getReplanDetail () { // 获取预案详情
+      const planId = this.$route.query.planId;
+      if (planId) {
+        this.axios.get('A2/planServices/plans/' + planId, planId)
+          .then((res) => {
+            if (res) {
+              console.log(res.data.taskList)
+              this.taskList = JSON.parse(JSON.stringify(res.data.taskList));
+            }
+          })
+          .catch(() => {})
+      }
+    },
+    selectReplanDetail () { // 查看预案详情
+      this.$router.push({name: 'replan-detail'});
+    },
+    sureCancelModify (form) { // 取消修改任务
+      this.$refs[form].resetFields();
+      this.dialogFormVisible = false;
+    },
+    sureModifyTask (form) { // 确定修改任务
       this.$refs[form].validate((valid) => {
         if (valid) {
+          if (this.modifyIndex !== '') {
+            const index = this.modifyIndex;
+            this.taskList[index].departmentId = this.modifyTaskForm.departmentId;
+            this.taskList[index].departmentName = this.modifyTaskForm.departmentName;
+            this.taskList[index].taskName = this.modifyTaskForm.taskName;
+            this.taskList[index].taskContent = this.modifyTaskForm.taskContent;
+            this.dialogFormVisible = false;
+          }
+        }
+      });
+    },
+    modifyDepartment (index, content) { // 修改任务
+      this.dialogFormVisible = true;
+      this.modifyIndex = index;
+      this.modifyTaskForm.departmentId = this.taskList[index].departmentId;
+      this.modifyTaskForm.departmentName = this.taskList[index].departmentName;
+      this.modifyTaskForm.taskName = this.taskList[index].taskName;
+      this.modifyTaskForm.taskContent = this.taskList[index].taskContent;
+      this.updatecurrentNum = content.length;
+    },
+    deleteDepartment (index) { // 删除任务信息
+      this.taskList.splice(index, 1);
+    },
+    addTask (form) { // 添加任务
+      console.log('asdasdasd')
+      this.isShowTask = true;
+    },
+    cancelForm (form) { // 取消填写的form
+      this.$refs[form].resetFields();
+      this.isShowTask = false;
+    },
+    saveForm (form) { // 保存填写的form
+      this.$refs[form].validate((valid) => {
+        if (valid) {
+          this.isShowTask = false;
           const task = JSON.parse(JSON.stringify(this.taskForm));
           this.taskList.push(task);
           this.$refs[form].resetFields();
@@ -531,7 +440,6 @@ export default {
               this.$message.error('添加任务失败');
               this.isTaskLoading = false;
             }
-            // this.isTaskLoading = false;
           })
           .catch(() => {});
       } else {
@@ -566,18 +474,18 @@ export default {
 }
 </script>
 <style lang='scss'>
-  .simulate-ctc-detail {
+  .enable-replan {
     padding: 20px;
     height: 100%;
-    .ctc-detail-header {
+    .enable-replan-header {
       margin-bottom: 10px;
     }
-    .ctc-detail-body {
+    .enable-replan-detail-body {
       width: 100%;
-      .ctc-detail-basic, .ctc-detail-first{
+      .enable-replan-detail-basic {
         background: #fff;
         margin-bottom: 0.7%;
-        .ctc-detail-basic-header, .ctc-detail-first-header {
+        .enable-replan-detail-basic-header {
           width: 100%;
           display: flex;
           p {
@@ -592,24 +500,24 @@ export default {
             border-bottom-right-radius: 5px;
             background: #0785FD;
           }
-          .ctc-detail-basic-text, .ctc-detail-first-text {
+          .enable-replan-detail-basic-text {
             color: #0785FD;
             font-size: 16px;
             font-weight: bold;
             margin-left: 1%;
           }
-          .ctc-detail-number {
+          .enable-replan-detail-number {
             color: #555555;
             font-size: 14px;
             margin-left: 2%;
           }
         }
-        .ctc-detail-basic-detail, .ctc-detail-first-content {
+        .enable-replan-detail-basic-detail {
           width: 100%;
           display:flex;
           padding: 20px;
           flex-direction: column;
-          .ctc-detail-basic-list {
+          .enable-replan-detail-basic-list {
             display: flex;
             flex-wrap: wrap;
             div {
@@ -629,7 +537,7 @@ export default {
               }
             }
           }
-          .ctc-detail-img-content {
+          .enable-replan-detail-img-content {
             width: 100%;
             padding-left: 80px;
             img {
@@ -639,41 +547,63 @@ export default {
               margin-top: 1%;
             }
           }
-          ul {
-            li {
-              line-height: 27px;
-              .title {
-                color: #222222;
-                font-size: 13px;
-              }
-              .content {
-                color: #777777;
-                font-size: 14px;
-                margin-left:1%;
-              }
-            }
-            .divide {
-              height:1px;
-              margin: 1% 0;
-              background: #EAEAEA;
-            }
-          }
-          & ul:last-child .divide {
-            display: none;
-          }
         }
       }
-      .ctc-detail-bottom {
+      .enable-replan-detail-bottom {
         width: 100%;
         display: flex;
-        .ctc-idea-left {
-          margin-right: 2%;
-        }
-        .ctc-idea-left, .ctc-replan-right {
+        .enable-replan-idea-left{
           background: #fff;
-          width: 49%;
+          width: 100%;
           height: 50%;
-          .ctc-idea-header, .ctc-replan-header {
+          .divide {
+            width: 570px;
+            height:1px;
+            margin: 20px 0 10px 55px;
+            background: #EAEAEA;
+          }
+          .enable-replan-list {
+            width: 100%;
+            padding-top: 2%;
+            font-size: 14px;
+            margin-bottom: -1%;
+            .enable-replan-list-detail {
+              display: flex;
+              width: 580px;
+              margin-left: 50px;
+              padding: 1% 1%;
+              position: relative;
+              border: 1px solid transparent;
+              .enable-replan-list-num {
+                width: 70px;
+                color: #999999;
+              }
+              .enable-replan-list-body {
+                width: 500px;
+                color: #555555;
+                p {
+                  margin-bottom: 2%;
+                }
+              }
+              .enable-operation {
+                color: #0785FD;
+                font-size: 14px;
+                position: absolute;
+                right: 10px;
+                display: none;
+                span {
+                  cursor: pointer;
+                }
+              }
+              &:hover {
+                border: 1px solid #0785FD;
+                .enable-operation {
+                  display: block;
+                }
+              }
+            }
+          }
+          .enable-replan-idea-header{
             width: 100%;
             display: flex;
             p {
@@ -688,37 +618,34 @@ export default {
               border-bottom-right-radius: 5px;
               background: #0785FD;
             }
-            .ctc-idea-text, .ctc-replan-text {
+            .enable-replan-idea-text{
               color: #0785FD;
               font-size: 16px;
               font-weight: bold;
               margin-left: 1%;
             }
           }
-          .ctc-idea-body {
+          .enable-replan-idea-body {
             width: 100%;
-            .ctc-idea-form {
-              width: 90%;
-              margin-top: 2%;
-              margin-left: 25px;
-              .ctc-idea-form-add {
-                padding-top: 2%;
-                border: 1px solid transparent;
-                .task-content {
-                  position: relative;
-                  .number-tip {
-                    position: absolute;
-                    bottom: 0;
-                    right: 22%;
-                    color: #999999;
-                    font-size: 13px;
-                  }
+            .enable-replan-idea-form {
+              padding-top: 1%;
+              width: 580px;
+              margin-left: 50px;
+              border: 1px solid transparent;
+              .task-content {
+                position: relative;
+                .number-tip {
+                  position: absolute;
+                  bottom: -8px;
+                  left: 404px;
+                  color: #999999;
+                  font-size: 13px;
                 }
               }
-              .active {
-                &:hover {
-                  border: 1px solid #0785FD;
-                }
+            }
+            .active {
+              &:hover {
+                border: 1px solid #0785FD;
               }
             }
             .add-task {
@@ -727,8 +654,10 @@ export default {
               line-height: 100px;
               background-color: #EAEAEA;
               border: 1px solid #EAEAEA;
+              margin-left: 125px;
+              margin-bottom: 3%;
+              margin-top: 1%;
               position: relative;
-              margin: 1% 0 2% 105px;
               border-radius: 6px;
               box-sizing: border-box;
               display: inline-block;
@@ -751,85 +680,11 @@ export default {
                 left: 25%;
               }
             }
-            .ctc-idea-body-list {
-              width: 90%;
-              padding-top: 2%;
-              font-size: 14px;
-              margin-bottom: -1%;
-              margin-left: 25px;
-              .ctc-idea-body-list-detail {
-                display: flex;
-                width: 100%;
-                padding: 1% 1%;
-                border: 1px solid transparent;
-                position: relative;
-                .ctc-idea-body-list-num {
-                  width: 70px;
-                  color: #999999;
-                }
-                .ctc-idea-body-list-body {
-                  width: 500px;
-                  color: #555555;
-                  p {
-                    margin-bottom: 2%;
-                  }
-                }
-                .ctc-idea-body-operation {
-                  color: #0785FD;
-                  font-size: 14px;
-                  position: absolute;
-                  right: 10px;
-                  display: none;
-                  span {
-                    cursor: pointer;
-                  }
-                }
-                &:hover {
-                  border: 1px solid #0785FD;
-                  .ctc-idea-body-operation {
-                    display: block;
-                  }
-                }
-              }
-            }
-            .ctc-idea-body-divide {
-              width: 90%;
-              height:1px;
-              margin: 2% 0 2% 25px;
-              background: #EAEAEA;
-            }
-          }
-          .ctc-replan-table {
-            width: 100%;
-            margin-top: 20px;
-            .el-table td {
-              padding: 3px 0 !important;
-            }
-            .ctc-table {
-              padding-top:20px;
-            }
-            .more-replan {
-              color: #fff;
-              background: #0785FD;
-              width: 120px;
-              height: 40px;
-              margin: 3% auto;
-              text-align: center;
-              line-height: 40px;
-              border-radius: 20px;
-              cursor: pointer;
-            }
-            /deep/ .el-table thead th {
-              background-color: #FAFAFA !important;
-            }
-            /deep/ .hover-row>td {
-              background-color: #E6F7FF !important;
-            }
           }
         }
       }
     }
-    .operation-btn-ctc-detail {
+    .operation-btn-enable-replan-detail {
       margin-top: 1%;
       margin-bottom: 1%;
     }
@@ -908,18 +763,6 @@ export default {
     }
     /deep/ .el-upload-list__item-delete {
       display: none !important;
-    }
-    .ctc-table {
-      i {
-        margin: 0 10px;
-      }
-    }
-    .icon-hover {
-      font-size: 30px;
-      color: #BBBBBB;
-    }
-    .icon-hover:hover {
-      color: #0785FD;
     }
   }
 </style>

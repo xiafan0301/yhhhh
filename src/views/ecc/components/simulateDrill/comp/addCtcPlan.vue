@@ -206,10 +206,8 @@ export default {
       this.$emit('ctcPage', this.skipPage);
     },
     submitData (form) { // 调度指挥
-      // const eventId = this.$route.query.eventId;
       let taskList = [];
       if (this.taskList.length > 0) {
-        // this.isTaskLoading = true;
         const data = {
           currentPage: '3',
           taskList: this.taskList
@@ -218,7 +216,6 @@ export default {
       } else {
         this.$refs[form].validate((valid) => {
           if (valid) {
-            // this.isTaskLoading = true;
             taskList.push(this.taskForm);
             const data = {
               currentPage: '3',
@@ -260,7 +257,7 @@ export default {
       });
     },
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'replan-list', query: {eventId: this.$route.query.eventId}});
+      this.$router.push({name: 'drill-replan-list', query: {eventId: this.$route.query.eventId}});
     },
     getDepartmentList () { // 获取部门列表
       const params = {
@@ -296,7 +293,6 @@ export default {
       this.taskList.splice(index, 1);
     },
     modifyTask (index, content) { // 修改任务
-      console.log('22222')
       this.dialogFormVisible = true;
       this.modifyIndex = index;
       this.modifyTaskForm.departmentId = this.taskList[index].departmentId;

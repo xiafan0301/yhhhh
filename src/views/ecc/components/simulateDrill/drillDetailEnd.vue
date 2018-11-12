@@ -19,7 +19,7 @@
         <div class='basic-detail'>
           <div class='basic-list'>
             <div>
-              <span class='title'>演练项目名称</span>
+              <span class='title'>演练项目名称：</span>
               <span class='content'>{{drillDetailObj.eventCode}}</span>
             </div>
             <div>
@@ -38,7 +38,7 @@
           <div class='basic-list'>
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <span class='content'>{{eventDetailObj.reporterPhone}}</span>
+              <span class='content'>{{drillDetailObj.reporterPhone}}</span>
             </div>
             <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{drillDetailObj.eventAddress}}</span></div>
           </div>
@@ -100,7 +100,7 @@
         </div>
       </div>
       <div class='event-progress'
-        v-show="(drillDetailObj.taskList && drillDetailObj.taskList.length > 0) || (drillDetailObj.processingList && eventDetailObj.processingList.length > 0)">
+        v-show="(drillDetailObj.taskList && drillDetailObj.taskList.length > 0) || (drillDetailObj.processingList && drillDetailObj.processingList.length > 0)">
         <div class='event-progress-header'>
           <div class='flag'></div>
           <p class='event-progress-text'>事件进展</p>
@@ -144,11 +144,14 @@
           <div class='flag'></div>
           <p class='event-summary-text'>演练评估</p>
         </div>
-        <div style="font-weight:bold">
-          评估人：{{drillDetailObj.eventSummary}}
+        <div style="font-weight:bold;padding-left: 30px;padding-top:10px;">
+          评估人：{{drillDetailObj.closeUserName}}
         </div>
         <div class='summary-content'>
           {{drillDetailObj.eventSummary}}
+        </div>
+        <div style="display: flex">
+          <div id="imgs1" class="img-list" style="margin-left: 20px"></div>
         </div>
       </div>
     </div>
@@ -171,7 +174,7 @@ export default {
     }
   },
   created () {
-    this.getEventDetail();
+    this.getDrillDetail();
   },
   methods: {
     // 预览图片公共方法
@@ -400,7 +403,7 @@ export default {
             .title {
               color: #222222;
               font-size: 13px;
-              width: 80px;
+              width: 100px;
               display: inline-block;
               text-align: right;
             }

@@ -89,6 +89,7 @@ export default {
       },
       endForm: {
         eventId: '',
+        eventLevel: '',
         eventSummary: '', // 事件总结
         attachmentList: [] // 附件列表
       },
@@ -103,6 +104,7 @@ export default {
   },
   created () {
     this.endForm.eventId = this.$route.query.eventId;
+    this.endForm.eventLevel = this.$route.query.level;
     this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
@@ -209,7 +211,7 @@ export default {
                   message: '演练结束成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'event-list'});
+                this.$router.push({name: 'drill-list'});
                 this.isEndLoading = false;
               } else {
                 this.$message.error('演练结束失败');
@@ -330,7 +332,7 @@ export default {
       }
       .show-file-div {
         width: 500px;
-        margin-left: 150px;
+        margin-left: 100px;
         .show-file-div-list {
           display: flex;
           align-items: center;
