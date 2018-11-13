@@ -26,6 +26,7 @@
               list-type="picture-card"
               :data="imgParam"
               accept=".png,.jpg,.bmp"
+              :file-list="addForm.attachmentList"
               :before-upload='handleBeforeUpload'
               :on-preview="handlePictureCardPreview"
               :on-remove="handleRemove"
@@ -106,8 +107,18 @@ import mapPoint from '@/components/common/mapPoint.vue';
 import {imgBaseUrl2} from '@/config/config.js';
 export default {
   components: {mapPoint},
+  props: ['status', 'addEventForm'],
+  // props: {
+  //   status: {
+  //     type: String
+  //   },
+  //   addEventForm: {
+  //     type: Object
+  //   }
+  // },
   data () {
     return {
+      timer: null,
       uploadUrl: null,
       open: false,
       dialogImageUrl: '',
@@ -177,6 +188,14 @@ export default {
       eventLevelList: [] // 事件等级
     }
   },
+  created () {
+    this.timer = setTimeout(() => {
+      this.getDataInfo();
+    }, 500)
+  },
+  destroyed () {
+    clearTimeout(this.timer);
+  },
   mounted () {
     this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串
     this.getEventType();
@@ -184,6 +203,23 @@ export default {
     this.uploadUrl = imgBaseUrl2;
   },
   methods: {
+    getDataInfo () {
+      if (this.status === 'modify') {
+        console.log(this.addEventForm)
+        let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
+        if (dataInfo.casualties === 0) {
+          dataInfo.casualties = '无';
+        } else if (dataInfo.casualties === -1) {
+          dataInfo.casualties = '不确定';
+        } else if (dataInfo.casualties > 0) {
+          this.dieNumber = dataInfo.casualties;
+          dataInfo.casualties = '有';
+        }
+        console.log(dataInfo)
+        this.addForm = dataInfo;
+        console.log(this.addForm)
+      }
+    },
     onPositionChange (val) { // 事件地点输入框值改变
       let value = val;
       let _this = this;
@@ -250,11 +286,15 @@ export default {
       }
     },
     back (form) {
-      const data = JSON.stringify(this.addForm);
-      if (this.dataStr === data) {
-        this.$router.back(-1);
+      if (this.status !== 'modify') {
+        const data = JSON.stringify(this.addForm);
+        if (this.dataStr === data) {
+          this.$router.back(-1);
+        } else {
+          this.closeReturnVisiable = true;
+        }
       } else {
-        this.closeReturnVisiable = true;
+        this.$router.back(-1);
       }
     },
     sureBack () {
@@ -363,15 +403,6 @@ export default {
       }
       if (fileList.length < 9) {
         this.isImgNumber = false;
-      }
-    },
-    deleteImg (url) {
-      if (url) {
-        this.addForm.attachmentList && this.addForm.attachmentList.map((item, index) => {
-          if (item.url === url) {
-            this.addForm.attachmentList.splice(index, 1);
-          }
-        });
       }
     },
     handleBeforeUpload (file) { // 图片上传之前

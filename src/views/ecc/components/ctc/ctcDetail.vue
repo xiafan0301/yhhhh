@@ -440,7 +440,6 @@ export default {
         .catch(() => {});
     },
     selectReplanDetail (scope) { // 查看预案
-      // console.log(scope.row.planId)
       this.$router.push({name: 'replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
@@ -803,9 +802,9 @@ export default {
             .el-table td {
               padding: 3px 0 !important;
             }
-            .ctc-table {
-              padding-top:20px;
-            }
+            // .ctc-table {
+            //   padding-top:20px;
+            // }
             .more-replan {
               color: #fff;
               background: #0785FD;

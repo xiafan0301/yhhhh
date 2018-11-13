@@ -14,7 +14,7 @@
           <!-- <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p> -->
         </div>
         <div class='event-status'>
-          <img src='../../../../assets/img/temp/treating.png' />
+          <img src='../../../../assets/img/temp/end.png' />
         </div>
         <div class='basic-detail'>
           <div class='basic-list'>
@@ -29,10 +29,6 @@
             <div>
               <span class='title'>事件等级：</span>
               <span class='content'>{{drillDetailObj.eventLevelName}}</span>
-            </div>
-            <div>
-              <span class='title'>演练时长：</span>
-              <span class='content'>{{drillDetailObj.duration}}</span>
             </div>
           </div>
           <div class='basic-list'>
@@ -54,6 +50,10 @@
               <template v-if='drillDetailObj.casualties > 0'>
                 <span class='content'>{{drillDetailObj.casualties}}</span>
               </template>
+            </div>
+            <div>
+              <span class='title'>演练时长：</span>
+              <span class='content'>{{drillDetailObj.duration}}</span>
             </div>
             <div>
               <span class='title'>演练开始时间：</span>

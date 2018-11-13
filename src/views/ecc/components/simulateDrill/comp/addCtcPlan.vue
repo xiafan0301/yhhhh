@@ -147,6 +147,7 @@
 </template>
 <script>
 export default {
+  props: ['status', 'ctcPlanData'],
   data () {
     return {
       skipPage: '1', // 点击上一步
@@ -186,10 +187,24 @@ export default {
       departmentList: [] // 部门列表
     }
   },
+  created () {
+    this.timer = setTimeout(() => {
+      this.getDataInfo();
+      this.getReplanList();
+    }, 1000)
+  },
   mounted () {
     this.getDepartmentList();
   },
+  destroyed () {
+    clearTimeout(this.timer);
+  },
   methods: {
+    getDataInfo () {
+      if (this.status === 'modify') {
+        this.taskList = JSON.parse(JSON.stringify(this.ctcPlanData.taskList));
+      }
+    },
     calNumber (val) { // 计算事件情况字数
       if (val.length > this.totalNum) {
         return;
@@ -257,7 +272,32 @@ export default {
       });
     },
     selectMorePlan () { // 查看更多预案
-      this.$router.push({name: 'drill-replan-list', query: {eventId: this.$route.query.eventId}});
+      if (this.status === 'modify') {
+        console.log(this.$route.query.eventId)
+        this.$router.push({name: 'drill-replan-list', query: {eventId: this.$route.query.eventId}});
+      }
+    },
+    selectReplanDetail (scope) { // 查看预案
+      this.$router.push({name: 'drill-replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
+    },
+    skipEnableReplan (scope) { // 启用预案
+      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
+    },
+    getReplanList () { // 获取预案列表
+      const type = this.ctcPlanData.eventType;
+      if (type) {
+        const params = {
+          pageNum: -1,
+          'where.planType': type
+        }
+        this.axios.get('A2/planServices/plans', {params})
+          .then((res) => {
+            if (res && res.data.list) {
+              this.reservePlanList = res.data.list;
+            }
+          })
+          .catch(() => {});
+      }
     },
     getDepartmentList () { // 获取部门列表
       const params = {
@@ -562,9 +602,9 @@ export default {
           .el-table td {
             padding: 3px 0 !important;
           }
-          .ctc-table {
-            padding-top:20px;
-          }
+          // .ctc-table {
+          //   padding-top:20px;
+          // }
           /deep/ .el-table thead th {
             background-color: #FAFAFA !important;
           }
@@ -608,6 +648,13 @@ export default {
     padding-bottom: 20px;
     // background: red;
     background: rgb(240, 243, 244);
+  }
+  .icon-hover {
+    font-size: 30px;
+    color: #BBBBBB;
+  }
+  .icon-hover:hover {
+    color: #0785FD;
   }
 }
 </style>

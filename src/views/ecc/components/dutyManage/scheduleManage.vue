@@ -8,7 +8,7 @@
       <el-button class='selectBtn preview'>预览排班</el-button>
     </div>
     <div class="date-week">
-      <div class="week-box active-week">
+      <div class="week-box active-week" @click="clickActiveWeek">
         <p class="weekday">周一</p>
         <p class="dotted-line"></p>
         <div class="week-detail">
@@ -50,7 +50,7 @@
           <span class="info" style="font-weight: bold">日期：</span>
           <span class="info">点击日期添加人员</span>
           <img src="../../../../assets/img/temp/ecc-logo.png" alt="">
-          <i class="el-icon-circle-close"></i>
+          <i class="el-icon-circle-close" @click="closeTips"></i>
         </div>
       </div>
       <div class="week-box">
@@ -91,7 +91,7 @@
           </div>
         </div>
       </div>
-      <div class="week-box">
+      <div class="week-box active-week">
         <p class="weekday">周三</p>
         <p class="dotted-line"></p>
         <div class="week-detail">
@@ -127,6 +127,13 @@
             <i class="el-icon-arrow-down"></i>
             <i class="el-icon-arrow-down"></i>
           </div>
+        </div>
+        <div class="tips">
+          <span class="triangle"></span>
+          <span class="info" style="font-weight: bold">日期：</span>
+          <span class="info">点击日期添加人员</span>
+          <img src="../../../../assets/img/temp/ecc-logo.png" alt="">
+          <i class="el-icon-circle-close" @click="closeTips"></i>
         </div>
       </div>
       <div class="week-box">
@@ -353,18 +360,23 @@ export default {
         status: null
       },
       pagination: { total: 0, pageSize: 10, pageNum: 1 },
-      personDataList: []
+      personDataList: [],
+      isActiveWeek: 0
     }
   },
   methods: {
     onPageChange (page) {
       this.pagination.pageNum = page;
-      this.getPersonList();
+      // this.getPersonList();
     },
     onSizeChange (val) {
       this.pagination.pageNum = 1;
       this.pagination.pageSize = val;
-      this.getPersonList();
+      // this.getPersonList();
+    },
+    clickActiveWeek () { // 点击选中某个星期
+    },
+    closeTips () { // 关闭提示
     }
   }
 }
@@ -389,7 +401,7 @@ export default {
     .active-week {
       background: #0785FD !important;
       position: relative;
-      .weekday{
+      .weekday {
         color: #fff !important;
       }
       .week-detail {
@@ -410,7 +422,7 @@ export default {
           }
         }
       }
-      .tips {
+      .tips, .tips-one {
         width: 260px;
         height: 40px;
         line-height: 40px;

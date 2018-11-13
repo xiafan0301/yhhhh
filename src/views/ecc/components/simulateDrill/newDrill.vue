@@ -4,7 +4,7 @@
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
         <el-breadcrumb-item>演练记录</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>新建演练</span></el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>{{currentText}}</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="new-drill-body">
@@ -13,8 +13,8 @@
         <div class="step-box" :class="[currentPage === '2' ? 'active-step' : '']">2.制定方案</div>
         <div class="step-box" :class="[currentPage === '3' ? 'active-step' : '']">3.确定发布</div>
       </div>
-      <div is="addEvent" v-show="currentPage === '1'" @eventData="eventFromChild"></div>
-      <div is="addCtcPlan" v-show="currentPage === '2'" @ctcData="ctcFromChild" @ctcPage="pageFromChild"></div>
+      <div is="addEvent" v-show="currentPage === '1'" @eventData="eventFromChild" :addEventForm="dataInfo" :status="status"></div>
+      <div is="addCtcPlan" v-show="currentPage === '2'" @ctcData="ctcFromChild" @ctcPage="pageFromChild" :ctcPlanData="dataInfo" :status="status"></div>
     </div>
   </div>
 </template>
@@ -25,40 +25,115 @@ export default {
   components: {addEvent, addCtcPlan},
   data () {
     return {
+      currentText: '',
       activeStep: 1,
       currentPage: '1',
       eventDataInfo: null,
-      taskList: []
+      taskList: [],
+      dataInfo: {},
+      status: ''
     }
   },
+  mounted () {
+    this.getDataInfo();
+  },
   methods: {
+    getDataInfo () {
+      const status = this.$route.query.status;
+      if (status === 'modify') {
+        this.status = 'modify';
+        this.currentText = '修改演练';
+        const eventId = this.$route.query.eventId;
+        if (eventId) {
+          this.axios.get('A2/eventServices/events/' + eventId)
+            .then((res) => {
+              if (res) {
+                this.dataInfo = res.data;
+              }
+            })
+            .catch(() => {})
+        }
+      } else {
+        this.currentText = '新建演练';
+      }
+    },
     pageFromChild (data) {
       this.currentPage = data;
     },
     eventFromChild (data) { // 接收来自子组件的值
       this.currentPage = data.currentPage;
       this.eventDataInfo = data.emiEvent;
-      console.log(this.eventDataInfo)
     },
     ctcFromChild (data) {
       this.taskList = data.taskList;
+      if (this.status === 'modify') {
+        this.modifyDataInfo(data);
+      } else {
+        this.addDataInfo(data);
+      }
+    },
+    addDataInfo (data) {
       if (this.eventDataInfo) {
-        this.axios.post('A2/eventServices/event', this.eventDataInfo)
+        this.axios.post('A2/eventServices/event', this.eventDataInfo) // 添加/修改事件
           .then((res) => {
             if (res) {
-              console.log(res)
-              this.axios.post('A2/taskServices/task/' + res.data, this.taskList)
+              this.axios.post('A2/taskServices/task/' + res.data, this.taskList) // 调度任务
                 .then((response) => {
                   if (response) {
                     this.currentPage = data.currentPage;
+                    this.axios.get('A2/eventServices/events/' + res.data)
+                      .then(resp => {
+                        if (resp) {
+                          if (resp.data.isOverReportTime === false) {
+                            this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
+                          } else {
+                            this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                          }
+                        }
+                      })
+                      .catch(() => {})
                     this.$message({
                       message: '发布成功',
                       type: 'success'
                     });
-                    // this.$router.push({name: 'event-detail-reat', query: {eventId: eventId}});
-                    // this.isTaskLoading = false;
                   } else {
                     this.$message.error('发布失败');
+                  }
+                })
+                .catch(() => {});
+            } else {
+              this.$message.error('操作失败');
+            }
+          })
+          .catch(() => {})
+      }
+    },
+    modifyDataInfo (data) {
+      if (this.eventDataInfo) {
+        this.axios.put('A2/eventServices/events/' + this.$route.query.eventId, this.eventDataInfo) // 修改事件
+          .then((res) => {
+            if (res) {
+              this.axios.post('A2/taskServices/task/' + this.$route.query.eventId, this.taskList) // 调度任务
+                .then((response) => {
+                  if (response) {
+                    this.currentPage = data.currentPage;
+                    this.axios.get('A2/eventServices/events/' + this.$route.query.eventId)
+                      .then(resp => {
+                        if (resp) {
+                          if (resp.data.isOverReportTime === false) {
+                            this.$router.push({name: 'unreated-drill', query: {eventId: this.$route.query.eventId}});
+                          } else {
+                            this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+                          }
+                        }
+                      })
+                      .catch(() => {})
+                    this.$message({
+                      message: '修改成功',
+                      type: 'success'
+                    });
+                  } else {
+                    this.$message.error('修改失败');
                   }
                 })
                 .catch(() => {});

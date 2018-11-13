@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column prop='eventStatusName' label="状态" align='center'>
         <template slot-scope="scope">
-          <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '未处理'">未开始</span>
+          <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '处理中' && scope.row.isOverReportTime === false">未开始</span>
           <span style="color: #0785FD;" v-else-if="scope.row.eventStatusName == '处理中'">进行中</span>
           <span style="color: #666666;" v-else>已结束</span>
         </template>
@@ -123,18 +123,13 @@ export default {
         eventId: scope.row.eventId,
         acceptFlag: true
       }
-      if (scope.row.eventStatusName === '未处理') {
-        this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
-          .then((res) => {
-            if (res) {
-              this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
-            }
-          })
-          .catch(() => {})
+      if (scope.row.eventStatusName === '处理中' && scope.row.isOverReportTime === false) {
+        this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       } else if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
       } else {
         this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
+        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
