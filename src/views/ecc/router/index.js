@@ -79,10 +79,19 @@ import addPlan from '@/views/ecc/components/dutyManage/addPlan.vue';
 // 模拟演练
 import drill from '@/views/ecc/components/simulateDrill/drill.vue';
 import drillList from '@/views/ecc/components/simulateDrill/drillList.vue';
+import newDrill from '@/views/ecc/components/simulateDrill/newDrill.vue';
 import simulateCtc from '@/views/ecc/components/simulateDrill/simulateCtc.vue';
 import simulateNotice from '@/views/ecc/components/simulateDrill/simulateNotice.vue';
 import drillRealseNotice from '@/views/ecc/components/simulateDrill/realseNotice.vue';
 import drillSeeNotice from '@/views/ecc/components/simulateDrill/seeNotice.vue';
+import unreatedDrill from '@/views/ecc/components/simulateDrill/unreatedDrill.vue';
+import drillDetailReat from '@/views/ecc/components/simulateDrill/drillDetailReat.vue';
+import drillDetailEnd from '@/views/ecc/components/simulateDrill/drillDetailEnd.vue';
+import drillEnd from '@/views/ecc/components/simulateDrill/drillEnd.vue';
+import simulateCtcDetail from '@/views/ecc/components/simulateDrill/simulateCtcDetail.vue';
+import drillReplanList from '@/views/ecc/components/simulateDrill/drillReplanList.vue';
+import drillReplanDetail from '@/views/ecc/components/simulateDrill/drillReplanDetail.vue';
+import drillEnableReplan from '@/views/ecc/components/simulateDrill/drillEnableReplan.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -225,6 +234,16 @@ export default new Router({
             {path: 'drillList', name: 'drill-list', component: drillList},
             {path: 'realseNotice', name: 'drill-realseNotice', component: drillRealseNotice},
             {path: 'seeNotice', name: 'drill-seeNotice', component: drillSeeNotice}
+            {path: 'drillList', name: 'drill-list', component: drillList},
+            {path: 'unreatedDrill', name: 'unreated-drill', component: unreatedDrill},
+            {path: 'newDrill', name: 'new-drill', component: newDrill},
+            {path: 'drillDetailReat', name: 'drill-detail-reat', component: drillDetailReat},
+            {path: 'drillDetailEnd', name: 'drill-detail-end', component: drillDetailEnd},
+            {path: 'drillEnd', name: 'drill-end', component: drillEnd},
+            {path: 'simulateCtcDetail', name: 'simulate-ctc-detail', component: simulateCtcDetail},
+            {path: 'drillReplanList', name: 'drill-replan-list', component: drillReplanList},
+            {path: 'drillReplanDetail', name: 'drill-replan-detail', component: drillReplanDetail},
+            {path: 'drillEnableReplan', name: 'drill-enable-replan', component: drillEnableReplan}
           ]
         }
       ]

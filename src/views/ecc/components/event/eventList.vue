@@ -229,6 +229,7 @@ export default {
         'where.eventStatus': eventStatus,
         'where.eventLevel': eventLevel,
         'where.eventSource': eventSource,
+        'where.simulateFlag': false,
         'where.otherQuery': this.selectForm.phoneOrNumber,
         pageNum: this.pagination.pageNum
       }

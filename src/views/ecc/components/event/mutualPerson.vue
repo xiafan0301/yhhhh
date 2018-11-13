@@ -162,6 +162,7 @@ export default {
         'where.reportTimeStart': this.selectForm.reportTime[0],
         'where.reportTimeEnd': this.selectForm.reportTime[1],
         'where.eventStatus': eventStatus,
+        'where.simulateFlag': false,
         pageNum: this.pagination.pageNum
       }
       this.axios.get('A2/eventServices/events/page', {params})
