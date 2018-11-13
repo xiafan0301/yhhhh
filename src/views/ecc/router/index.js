@@ -39,6 +39,9 @@ import emergencySeeWarehouse from '@/views/ecc/components/emergency/seehouse.vue
 import emergencySeePlan from '@/views/ecc/components/emergency/seePlan.vue';
 import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.vue';
 import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue';
+import emergencyKnowledgeBase from '@/views/ecc/components/emergency/knowledgeBase.vue';
+import emergencyAddKnowledgeBase from '@/views/ecc/components/emergency/addKnowledgeBase.vue';
+import emergencySeeKnowledgeBase from '@/views/ecc/components/emergency/seeKnowledgeBase.vue';
 // 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue';
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue';
@@ -79,6 +82,8 @@ import drillList from '@/views/ecc/components/simulateDrill/drillList.vue';
 import newDrill from '@/views/ecc/components/simulateDrill/newDrill.vue';
 import simulateCtc from '@/views/ecc/components/simulateDrill/simulateCtc.vue';
 import simulateNotice from '@/views/ecc/components/simulateDrill/simulateNotice.vue';
+import drillRealseNotice from '@/views/ecc/components/simulateDrill/realseNotice.vue';
+import drillSeeNotice from '@/views/ecc/components/simulateDrill/seeNotice.vue';
 import unreatedDrill from '@/views/ecc/components/simulateDrill/unreatedDrill.vue';
 import drillDetailReat from '@/views/ecc/components/simulateDrill/drillDetailReat.vue';
 import drillDetailEnd from '@/views/ecc/components/simulateDrill/drillDetailEnd.vue';
@@ -132,7 +137,10 @@ export default new Router({
             {path: 'addMaterial', name: 'emergency-addMaterial', component: emergencyAddMaterial},
             {path: 'seeMaterial', name: 'emergency-seeMaterial', component: emergencySeeMaterial},
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
-            {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse}
+            {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse},
+            {path: 'knowledgeBase', name: 'emergency-knowledgeBase', component: emergencyKnowledgeBase},
+            {path: 'addKnowledgeBase', name: 'emergency-addKnowledgeBase', component: emergencyAddKnowledgeBase},
+            {path: 'seeKnowledgeBase', name: 'emergency-seeKnowledgeBase', component: emergencySeeKnowledgeBase}
           ]
         },
         {
@@ -223,6 +231,9 @@ export default new Router({
           children: [
             {path: 'simulateNotice', name: 'simulate-notice', component: simulateNotice},
             {path: 'simulateCtc', name: 'simulate-ctc', component: simulateCtc},
+            {path: 'drillList', name: 'drill-list', component: drillList},
+            {path: 'realseNotice', name: 'drill-realseNotice', component: drillRealseNotice},
+            {path: 'seeNotice', name: 'drill-seeNotice', component: drillSeeNotice},
             {path: 'drillList', name: 'drill-list', component: drillList},
             {path: 'unreatedDrill', name: 'unreated-drill', component: unreatedDrill},
             {path: 'newDrill', name: 'new-drill', component: newDrill},

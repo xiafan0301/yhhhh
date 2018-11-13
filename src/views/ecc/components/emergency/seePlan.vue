@@ -61,9 +61,7 @@ export default {
       const planId = this.$route.query.planId;
       this.axios.get('A2/planServices/plans/' + planId)
         .then((res) => {
-          console.log(res);
           this.seeplanList = res.data;
-          console.log(this.seeplanList)
         })
     },
     preview () {
