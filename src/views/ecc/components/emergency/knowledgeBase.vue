@@ -12,17 +12,17 @@
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
       <el-form style="float: left; margin-left: 20px; padding-top: 20px" :inline="true" :model="searchForm" class="demo-form-inline" size="small">
         <el-form-item >
-          <el-select v-model="searchForm.planType" style="width: 160px;" placeholder="所有知识类型">
+          <el-select v-model="searchForm.typeIds" style="width: 160px;" placeholder="所有知识类型">
             <el-option
-              v-for="item in eventTypeList"
-              :key="item.dictId"
-              :label="item.dictContent"
-              :value="item.dictId">
+              v-for="item in knowledgeTypeList"
+              :key="item.typeId"
+              :label="item.knowledgeName"
+              :value="item.typeId">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-input v-model="searchForm.planName" placeholder="请输入标题/关键词/上传者" style="width: 220px" ></el-input>
+          <el-input v-model="searchForm.keyword" placeholder="请输入关键词" style="width: 220px" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn' @click="doSearch">查询</el-button>
@@ -36,21 +36,22 @@
       class="plan-table"
     >
       <el-table-column fixed label="序号" width="80"  type="index" align="center"></el-table-column>
-      <el-table-column prop="planName" label="标题"  :show-overflow-tooltip="true" align="center">
+      <el-table-column prop="title" label="标题"  :show-overflow-tooltip="true" align="center">
       </el-table-column>
-      <el-table-column prop="eventTypeName" label="知识类型"  :show-overflow-tooltip="true" align="center"></el-table-column>
-      <el-table-column prop="levelNameList" label="关键词"  :show-overflow-tooltip="true" align="center">
+      <el-table-column prop="knowledgeType" label="知识类型"  :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
-          <span v-for="(item, index)  in scope.row.levelNameList" :key="'fawe' + index" v-if="item">{{item}} </span>
+          <span v-for="(item ,index) in knowledgeTypeList" :key="index">{{scope.row.typeId === item.typeId? item.knowledgeName: ''}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="planName" label="知识简介"  :show-overflow-tooltip="true" align="center">
+      <el-table-column prop="keyword" label="关键词"  :show-overflow-tooltip="true" align="center">
       </el-table-column>
-      <el-table-column prop="createUserName" label="上传用户"  :show-overflow-tooltip="true" align="center">
+      <el-table-column prop="summary" label="知识简介"  :show-overflow-tooltip="true" align="center">
+      </el-table-column>
+      <el-table-column prop="uploadUser" label="上传用户"  :show-overflow-tooltip="true" align="center">
       </el-table-column>
       <el-table-column prop="createTime" label="上传时间" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">
-          <span>{{(scope.row.createTime).slice(0,16)}}</span>
+          <span>{{scope.row.createTime | moment}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -83,7 +84,7 @@
       width="480px"
       height='285px'
       center>
-      <span style='text-align:center'>是否确认删除?</span>
+      <span >是否确认删除?</span>
       <span slot="footer" class="dialog-footer">
         <el-button class='sureBtn' @click="deletEvent">确定删除</el-button>
         <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
@@ -97,18 +98,17 @@ export default {
   data () {
     return {
       searchForm: {
-        planType: '',
-        planLevel: '',
-        planName: ''
+        typeIds: '',
+        keyword: ''
       },
       pageNum: 1,
       pageSize: 10,
       total: 0,
       tableData: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
-      eventTypeList: [],
+      knowledgeTypeList: [],
       deleteVisiable: false,
-      planId: ''
+      knowledgeId: ''
     }
   },
   computed: {
@@ -117,8 +117,7 @@ export default {
   },
   created () {
     this.getTableData();
-    this.getEventType();
-    this.getEventLevel();
+    this.getknowledgeType();
   },
   methods: {
     getTableData () {
@@ -126,37 +125,32 @@ export default {
         // 'where.beginTime': this.searchForm.beginTime,
         // 'where.endTime': this.searchForm.endTime,
         // 'where.publishState': this.searchForm.publishState,
-        'where.planType': this.searchForm.planType,
-        'where.planLevel': this.searchForm.planLevel,
-        'where.planName': this.searchForm.planName,
+        'where.typeIds': this.searchForm.typeIds,
+        'where.keyword': this.searchForm.keyword,
         // 'where.isReceive': this.searchForm.isReceive,
         // 'where.publishTime': this.searchForm.publishTime,
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
-      this.axios.get('A2/planServices/plans?' + $.param(params))
+      this.axios.get('A2/knowledgeBankService/page?' + $.param(params))
         .then((res) => {
-          console.log(res);
           this.tableData = res.data.list;
           this.total = res.data.total;
         })
         .catch(() => {
         });
     },
-    getEventType () {
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+    getknowledgeType () {
+      let params = {
+        pageSize: 0
+      }
+      this.axios.get('A2/knowledgeBankService/type/page', {params})
         .then((res) => {
-          this.eventTypeList = res.data;
-        })
-    },
-    getEventLevel () {
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
-        .then((res) => {
-          this.eventLevelList = res.data
+          this.knowledgeTypeList = res.data.list;
         })
     },
     deletEvent () {
-      this.axios.delete('A2/planServices/plans/' + this.planId)
+      this.axios.delete('A2/knowledgeBankService/' + this.knowledgeId)
         .then((res) => {
           if (res) {
             this.getTableData();
@@ -169,19 +163,19 @@ export default {
         })
     },
     del (scope) {
-      this.planId = scope.planId
+      this.knowledgeId = scope.knowledgeId
       this.deleteVisiable = true
     },
     edit () {
     },
     doSearch () {
+      this.pageNum = 1;
       this.getTableData();
     },
     searchFormReset () {
       this.pageNum = 1;
-      this.searchForm.planType = '';
-      this.searchForm.planLevel = '';
-      this.searchForm.planName = '';
+      this.searchForm.typeIds = '';
+      this.searchForm.keyword = '';
       this.getTableData();
     },
     // 分页
@@ -198,10 +192,10 @@ export default {
       this.$router.push({name: 'emergency-addKnowledgeBase', query: {status: status}});
     },
     modify (status, scope) {
-      this.$router.push({name: 'emergency-addKnowledgeBase', query: {status: status, planId: scope.planId}});
+      this.$router.push({name: 'emergency-addKnowledgeBase', query: {status: status, knowledgeId: scope.knowledgeId}});
     },
     see (scope) {
-      this.$router.push({name: 'emergency-seePlan', query: {planId: scope.planId}});
+      this.$router.push({name: 'emergency-seeKnowledgeBase', query: {knowledgeId: scope.knowledgeId}});
     }
   }
 }

@@ -41,6 +41,7 @@ import emergencyAddMaterial from '@/views/ecc/components/emergency/addmaterial.v
 import emergencySeeMaterial from '@/views/ecc/components/emergency/seematerial.vue';
 import emergencyKnowledgeBase from '@/views/ecc/components/emergency/knowledgeBase.vue';
 import emergencyAddKnowledgeBase from '@/views/ecc/components/emergency/addKnowledgeBase.vue';
+import emergencySeeKnowledgeBase from '@/views/ecc/components/emergency/seeKnowledgeBase.vue';
 // 预案
 import rePlanList from '@/views/ecc/components/ctc/rePlanList.vue';
 import replanDetail from '@/views/ecc/components/ctc/replanDetail.vue';
@@ -80,6 +81,8 @@ import drill from '@/views/ecc/components/simulateDrill/drill.vue';
 import drillList from '@/views/ecc/components/simulateDrill/drillList.vue';
 import simulateCtc from '@/views/ecc/components/simulateDrill/simulateCtc.vue';
 import simulateNotice from '@/views/ecc/components/simulateDrill/simulateNotice.vue';
+import drillRealseNotice from '@/views/ecc/components/simulateDrill/realseNotice.vue';
+import drillSeeNotice from '@/views/ecc/components/simulateDrill/seeNotice.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -127,7 +130,8 @@ export default new Router({
             {path: 'addWarehouse', name: 'emergency-addWarehouse', component: emergencyAddWarehouse},
             {path: 'seeWarehouse', name: 'emergency-seeWarehouse', component: emergencySeeWarehouse},
             {path: 'knowledgeBase', name: 'emergency-knowledgeBase', component: emergencyKnowledgeBase},
-            {path: 'addKnowledgeBase', name: 'emergency-addKnowledgeBase', component: emergencyAddKnowledgeBase}
+            {path: 'addKnowledgeBase', name: 'emergency-addKnowledgeBase', component: emergencyAddKnowledgeBase},
+            {path: 'seeKnowledgeBase', name: 'emergency-seeKnowledgeBase', component: emergencySeeKnowledgeBase}
           ]
         },
         {
@@ -218,7 +222,9 @@ export default new Router({
           children: [
             {path: 'simulateNotice', name: 'simulate-notice', component: simulateNotice},
             {path: 'simulateCtc', name: 'simulate-ctc', component: simulateCtc},
-            {path: 'drillList', name: 'drill-list', component: drillList}
+            {path: 'drillList', name: 'drill-list', component: drillList},
+            {path: 'realseNotice', name: 'drill-realseNotice', component: drillRealseNotice},
+            {path: 'seeNotice', name: 'drill-seeNotice', component: drillSeeNotice}
           ]
         }
       ]

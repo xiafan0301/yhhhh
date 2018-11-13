@@ -87,7 +87,8 @@ export default {
       padding-top: 62px;
       > .bg-mu-uc {
         height: 100%;
-        overflow: auto;
+        overflow-y:auto;
+        overflow-x: hidden;
       }
     }
     .el-submenu-active {

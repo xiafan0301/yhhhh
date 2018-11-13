@@ -1,5 +1,5 @@
 <template>
-  <div class="add-plans-person">
+  <div class="add-knowledge-person">
     <div class='add-msg-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>应急库</el-breadcrumb-item>
@@ -9,58 +9,52 @@
     </div>
     <div class='add-msg-body'>
       <div class='add-form-person'>
-        <el-form class='form-content-person' :model="form"  ref="form" :inline-message= 'true'>
-          <el-form-item label="标题" label-width='150px' prop="planName" :rules="[{ required: true, message: '请输入预案名称', trigger: 'blur' }]">
-            <el-input  placeholder="填写标题" style='width: 500px' v-model="form.planName">
+        <el-form class='form-content-person' :model="form"  ref="form" :inline-message= 'true' label-width='180px'>
+          <el-form-item label="标题"  prop="title" :rules="[{ required: true, message: '请输入标题', trigger: 'blur' }]">
+            <el-input  placeholder="填写标题" style='width: 500px' v-model="form.title">
             </el-input>
           </el-form-item>
-          <el-form-item label="知识类型" label-width='150px' prop="eventType"  :rules="[{ required: true, message: '请选择预案类型', trigger: 'change' }]">
-            <el-select  placeholder="选择（可填写）" style='width: 500px' v-model="form.eventType"  filterable allow-create default-first-option>
+          <el-form-item label="知识类型"  prop="typeId"  :rules="[{ required: true, message: '请选择知识类型或者填写', trigger: 'change' }]">
+            <el-select  placeholder="选择（可填写）" style='width: 500px' v-model="form.typeId"  filterable allow-create default-first-option>
               <el-option
-                v-for="item in eventTypeList"
-                :key="item.dictId"
-                :label="item.dictContent"
-                :value="item.dictId">
+                v-for="item in knowledgeTypeList"
+                :key="item.typeId"
+                :label="item.knowledgeName"
+                :value="item.typeId">
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="关键词" label-width='150px' prop="planName" :rules="[{ required: true, message: '请选择事件等级（可多选）', trigger: 'change' }]">
-            <el-input  placeholder="如有多个，请用逗号或顿号分隔…" style='width: 500px;' v-model="form.planName" >
+          <el-form-item label="关键词"  prop="keyword" :rules="[{ required: true, message: '请输入关键词', trigger: 'blur' }]">
+            <el-input  placeholder="如有多个，请用逗号或顿号分隔…" style='width: 500px;' v-model="form.keyword" >
             </el-input>
             <span style="font-size: 7px; font-weight: 400; color: #999999">最多添加三个关键词</span>
           </el-form-item>
-          <el-form-item label="知识简介" label-width='150px' prop="planDetail" :rules="[ { required: true, message: '请输入预案正文', trigger: 'blur' }]">
-            <el-input type="textarea" style='width: 500px' placeholder='请输入预案正文...' rows='7' v-model="form.planDetail"></el-input>
+          <el-form-item label="知识简介"  prop="summary" :rules="[ { required: true, message: '请输入知识简介', trigger: 'blur' }]">
+            <el-input type="textarea" style='width: 500px' placeholder='请输入知识简介...' rows='7' v-model="form.summary"></el-input>
           </el-form-item>
-          <el-form-item label="附件" label-width='150px' style="position: relative">
-            <el-input  style='width: 389px; position: relative;' class="xfinput" disabled  :placeholder='placeholderStatus'>
-            </el-input>
+          <el-form-item label="附件" class="defint" style="position: relative">
+            <div style="display: inline-block; width: 220px; height: 37px; border: 1px solid #dcdfe6; border-radius: 4px; vertical-align: middle;"></div>
+            <span style="display: inline-block; position: absolute; left:10px; top: 19px; font-size: 12.5px; font-weight: 400; color: #999999;">{{form.attachmentName}}</span>
             <el-upload style="display: inline-block"
                        :action="uploadUrl + '/upload/new'"
-                       ref="upload"
-                       :limit = "1"
                        :data="imgParam"
+                       :show-file-list="false"
                        :on-change = "aa"
                        accept=".pdf,.doc,.txt,.docx"
                        :on-success="handSuccess"
-                       :auto-upload="false"
                        :before-upload="handpreview">
-              <el-button  type="primary" size="mini" style="position: absolute; left: 5px; top: 6px; background-color: #FAFAFA; border: 1px solid #EAEAEA"  >
-                <span style="font-size:12px;color:#555555">浏览..</span></el-button>
+              <el-button  type="primary" style="width: 90px; height: 39px; position: absolute; top: -1px">上传</el-button>
             </el-upload>
-            <el-button type="primary" size="medium"  @click="submitUpload" v-if="status === '添加预案'">上传</el-button>
-            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "form.attachmentName && status === '修改预案'">重新上传</el-button>
-            <el-button type="primary" size="medium"  @click="submitUpload" v-if = "!form.attachmentName && status === '修改预案'">上传</el-button>
-            <span style="font-size: 7px; font-weight: 400; color: #999999">支持PDF、word、txt文档</span>
+            <div style="display: inline-block; width: 90px"></div>
+            <span style="font-size: 7px; font-weight: 400; color: #999999;display: inline-block;">支持PDF、word、txt文档</span>
           </el-form-item>
-          <el-form-item label="作者" label-width='150px' prop="planName" :rules="[{ required: true, message: '请输入预案名称', trigger: 'blur' }]">
-            <el-input  placeholder="选填" style='width: 220px' v-model="form.planName">
+          <el-form-item label="作者"  prop="author" >
+            <el-input  placeholder="选填" style='width: 220px' v-model="form.author">
             </el-input>
           </el-form-item>
-          <el-form-item label="发布时间" label-width='150px' prop="planName" :rules="[{ required: true, message: '请输入预案名称', trigger: 'blur' }]">
+          <el-form-item label="发布时间"  prop="publishTime" :rules="[{ required: true, message: '请选择发布时间', trigger: 'blur' }]">
             <el-date-picker
-              value-format="yyyy-MM-dd HH:mm:ss"
-              v-model="form.time"
+              v-model="form.publishTime"
               type="datetime"
               placeholder="选择日期时间">
             </el-date-picker>
@@ -85,21 +79,15 @@ export default {
       staskList: [],
       status: '',
       form: {
-        time: '',
-        planName: '',
-        eventType: '',
-        levelList: [],
-        planDetail: '',
-        taskList: [{
-          departmentName: '',
-          taskName: '',
-          taskContent: '',
-          departmentId: '',
-          taskId: ''
-        }],
+        publishTime: '',
+        title: '',
+        typeId: '',
+        summary: '',
+        author: '',
+        keyword: '',
         url: '',
         attachmentType: '',
-        attachmentName: ''
+        attachmentName: '还没上传'
       },
       rules: {
         planName: [
@@ -114,17 +102,8 @@ export default {
         planDetail: [
           { required: true, message: '请输入预案正文', trigger: 'blur' }
         ]
-        // departmentId: [
-        //   { required: true, message: '请选择协同部门', trigger: 'change' }
-        // ],
-        // taskName: [
-        //   { required: true, message: '请输入任务名称', trigger: 'blur' }
-        // ],
-        // taskContent: [
-        //   { required: true, message: '请输入任务内容', trigger: 'blur' }
-        // ]
       },
-      eventTypeList: [],
+      knowledgeTypeList: [],
       eventLevelList: [{dictId: '', dictContent: ''}],
       DepartmentList: [],
       imgParam: {
@@ -135,12 +114,10 @@ export default {
   computed: {
   },
   created () {
-    this.getEventLevel();
-    this.getEventType();
+    this.getknowledgeType();
     if (this.$route.query.status === 'modify') {
-      this.getplans()
+      this.getknowledgedetl()
     }
-    this.getDepartmentList();
     this.uploadUrl = imgBaseUrl2;
   },
   mounted () {
@@ -151,9 +128,6 @@ export default {
     }
   },
   methods: {
-    del (index) {
-      this.form.taskList.splice(index, 1)
-    },
     change (val) {
       this.DepartmentList && this.DepartmentList.map((item, index) => {
         if (item.uid === val) {
@@ -163,97 +137,52 @@ export default {
         }
       });
     },
-    addPlan () {
-      this.form.taskList.push({departmentName: '',
-        taskName: '',
-        taskContent: '',
-        departmentId: '',
-        taskId: ''});
-      // this.staskList = JSON.parse(JSON.stringify(this.form.taskList));
-    },
     onSubmit (form) {
       this.$refs[form].validate((valid) => {
         if (valid) {
+          let params = {
+            emiAttachmentList: [{}],
+            emiKnowledgeBank: {
+              title: this.form.title,
+              publishTime: this.form.publishTime,
+              summary: this.form.summary,
+              author: this.form.author,
+              keyword: this.form.keyword
+            }
+          };
+          if (this.form.url) {
+            params.emiAttachmentList[0].url = this.form.url
+            params.emiAttachmentList[0].attachmentType = dictType.fileId
+            params.emiAttachmentList[0].attachmentName = this.form.attachmentName
+          }
+          let reg = /^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$/
+          let val = this.form.typeId.match(reg)
+          if (val === null) {
+            params.emiKnowledgeBank.knowledgeType = this.form.typeId
+          } else {
+            params.emiKnowledgeBank.typeId = this.form.typeId
+          }
           if (this.$route.query.status === 'add') {
-            this.DepartmentList && this.DepartmentList.map((item, index) => {
-              this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.uid === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.organName;
-                }
-              });
-            });
-            let params = this.form;
-            // let params = {
-            //   attachmentName: this.form.attachmentName,
-            //   attachmentType: this.form.attachmentType,
-            //   eventType: this.form.eventType,
-            //   levelList: this.form.levelList,
-            //   planDetail: this.form.planDetail,
-            //   planName: this.form.planName,
-            //   taskList: [
-            //     {
-            //       departmentName: this.form.taskList[this.index].departmentName,
-            //       departmentId: this.form.taskList[this.index].departmentId,
-            //       taskContent: this.form.taskList[this.index].taskContent,
-            //       taskName: this.form.taskList[this.index].taskName
-            //     }
-            //   ],
-            //   url: this.form.Url
-            // // };
-            this.axios.post('A2/planServices/plan', params)
+            this.axios.post('A2/knowledgeBankService', params)
               .then((res) => {
                 if (res) {
                   this.$message({
-                    message: '添加预案成功',
+                    message: '添加知识成功',
                     type: 'success'
                   });
-                  this.$router.push({name: 'emergency-planList'})
+                  this.$router.push({name: 'emergency-knowledgeBase'})
                 }
               })
           } else {
-            this.DepartmentList && this.DepartmentList.map((item, index) => {
-              this.form.taskList && this.form.taskList.map((ite, ind) => {
-                if (item.uid === ite.departmentId) {
-                  this.form.taskList[ind].departmentName = item.organName;
-                }
-              });
-            });
-            this.form.attachmentType = dictType.fileId;
-            let params = this.form;
-            params.planId = this.$route.query.planId;
-            if (this.form.url === null) {
-              this.form.url = '';
-              this.form.attachmentName = '';
-              this.form.attachmentType = '';
-            }
-            console.log(this.form);
-            // let params = {
-            //   attachmentName: this.form.attachmentName,
-            //   attachmentType: this.form.attachmentType,
-            //   eventType: this.form.eventType,
-            //   levelList: this.form.levelList,
-            //   planDetail: this.form.planDetail,
-            //   planId: this.$route.query.planId,
-            //   planName: this.form.planName,
-            //   taskList: [
-            //     {
-            //       departmentId: this.form.taskList[0].departmentId,
-            //       taskContent: this.form.taskList[0].taskContent,
-            //       taskId: this.form.taskList[0].taskId,
-            //       taskName: this.form.taskList[0].taskName,
-            //       departmentName: this.form.taskList[0].departmentName
-            //     }
-            //   ],
-            //   url: this.form.url
-            // };
-            this.axios.put('A2/planServices/plans', params)
+            params.emiKnowledgeBank.knowledgeId = this.$route.query.knowledgeId;
+            this.axios.put('A2/knowledgeBankService', params)
               .then((res) => {
                 if (res) {
                   this.$message({
-                    message: '修改预案成功',
+                    message: '修改知识成功',
                     type: 'success'
                   });
-                  this.$router.push({name: 'emergency-planList'})
+                  this.$router.push({name: 'emergency-knowledgeBase'})
                 }
               })
           }
@@ -268,40 +197,32 @@ export default {
     getvalue () {
       console.log(this.options.label)
     },
-    getEventLevel () {
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
-        .then((res) => {
-          this.eventLevelList = res.data
-        })
-    },
-    getEventType () {
-      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
-        .then((res) => {
-          this.eventTypeList = res.data;
-        })
-    },
-    getDepartmentList () {
+    getknowledgeType () {
       let params = {
         pageSize: 0
       }
-      this.axios.get('A3/authServices/organInfos', {params})
+      this.axios.get('A2/knowledgeBankService/type/page', {params})
         .then((res) => {
-          if (res && res.data.list) {
-            console.log(res)
-            this.DepartmentList = res.data.list
-          }
+          this.knowledgeTypeList = res.data.list;
         })
-        .catch(() => {})
     },
-    getplans () {
-      const planId = this.$route.query.planId;
-      this.axios.get('A2/planServices/plans/' + planId)
+    getknowledgedetl () {
+      const knowledgeId = this.$route.query.knowledgeId;
+      this.axios.get('A2/knowledgeBankService/' + knowledgeId)
         .then((res) => {
-          this.form = Object.assign({}, res.data);
-          this.form.url = res.data.url;
-          this.placeholderStatus = this.form.attachmentName
-          console.log(this.form.url);
-          console.log(this.form)
+          this.form.title = res.data.emiKnowledgeBank.title;
+          this.form.typeId = res.data.emiKnowledgeBank.typeId;
+          this.form.keyword = res.data.emiKnowledgeBank.keyword;
+          this.form.summary = res.data.emiKnowledgeBank.summary;
+          this.form.author = res.data.emiKnowledgeBank.author
+          this.form.publishTime = res.data.emiKnowledgeBank.publishTime
+          if (res.data.emiAttachmentList.length > 0) {
+            this.form.attachmentName = res.data.emiAttachmentList[0].attachmentName
+            this.form.url = res.data.emiAttachmentList[0].url
+          }
+          if (this.form.attachmentName === null) {
+            this.form.attachmentName = '还没上传'
+          }
         })
     },
     submitUpload () {
@@ -309,7 +230,7 @@ export default {
     },
     handSuccess (response, file, fileList) {
       this.form.url = response.data.newFileName;
-      this.form.attachmentType = dictType.fileId;
+      this.form.attachmentName = response.data.fileName
       if (response.data) {
         this.$message({
           type: 'success',
@@ -318,7 +239,6 @@ export default {
       }
     },
     handpreview (file) {
-      this.form.attachmentName = file.name;
       const isImg = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || file.type === 'text/plain' || file.type === 'application/msword' || file.type === 'application/pdf';
       if (!isImg) {
         this.$message.error('上传的文件只能是PDF、Word、txt格式!');
@@ -326,8 +246,7 @@ export default {
       return isImg
     },
     aa (file) {
-      this.placeholderStatus = '';
-      this.form.attachmentName = file.name;
+      // this.form.attachmentName = file.name;
     },
     handleRemove (response, file, fileList) {
       console.log(response);
@@ -341,7 +260,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .add-plans-person {
+  .add-knowledge-person {
     padding: 20px;
     .add-msg-header {
       margin-bottom: 20px;
@@ -365,6 +284,11 @@ export default {
             }
             /deep/ .el-upload-list__item-name {
               max-width: 300px;
+            }
+          }
+          .defint{
+           /deep/ .el-form-item__content {
+              line-height: 0;
             }
           }
           .add-plan {
@@ -452,11 +376,6 @@ export default {
       font-weight: bold;
       background-color: #FA796C;
       border-radius: 50%;
-    }
-    .jjjj{
-     /deep/ input {
-        border: 0;
-      }
     }
   }
 </style>
