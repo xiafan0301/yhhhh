@@ -192,7 +192,7 @@ export default {
       });
     },
     back (item) {
-      this.$router.push({name: 'emergency-planList'})
+      this.$router.push({name: 'emergency-knowledgeBase'})
     },
     getvalue () {
       console.log(this.options.label)
