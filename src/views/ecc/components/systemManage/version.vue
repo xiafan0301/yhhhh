@@ -85,7 +85,7 @@
           </el-upload>
           <div style="position: absolute; top: 0; left: 27%">
             <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333; word-wrap: break-word;">{{fileName.slice(0,19)}}<span v-if="fileName.length > 19">....</span></span>
-            <span style="display: inline-block; margin-left: 10px; color: #0785FD; cursor: pointer" @click="delfile" v-if="fileName">删</span>
+            <span style="display: inline-block; margin-left: 10px; color: #0785FD; cursor: pointer" @click="delfile" v-if="fileName">删除</span>
           </div>
         </el-form-item>
         <el-form-item label="版本描述" prop="softContent">
@@ -105,7 +105,7 @@
         <!--</el-form-item>-->
         <el-form-item>
           <el-checkbox v-model="checked"></el-checkbox>
-          <span style="display: inline-block; margin-left: 6px">需要过旧版本强制更新时请勾引选</span>
+          <span style="display: inline-block; margin-left: 6px">需要过旧版本强制更新时请勾选</span>
         </el-form-item>
         <el-form-item v-if="checked">
           <el-select  v-model="editForm.minVersion" placeholder="请选择" style="width: 330px">

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      canvas {
+        border: 1px solid #000;
+        margin: 0 auto;
+      }
+    </style>
+</head>
+<body>
+    <canvas width="300" height="300" id="canvas"></canvas>
+</body>
+<script>
+  window.onload = function () {
+    draw ();
+  }
+  function draw () {
+    var canvas = document.getElementById('canvas'); // 获取canvasDOM对象
+    if (canvas.getContext) {
+      var ctx = canvas.getContext('2d'); // 渲染上下文，，绘画上下文
+
+      // ctx.fillRect(25, 25, 100, 100); // 绘制一个填充的矩形
+      // ctx.clearRect(45, 45, 60, 60); // 清除矩形的边框
+      // ctx.strokeRect(50, 50, 50, 50); // 绘制一个矩形
+      
+      ctx.beginPath(); // 新建一条路径
+    }
+  }
+</script>
+</html>

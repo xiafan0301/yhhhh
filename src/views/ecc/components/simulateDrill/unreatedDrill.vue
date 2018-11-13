@@ -134,7 +134,8 @@ export default {
       this.$router.back(-1);
     },
     skipModifyPage () {
-      this.$router.push({name: 'new-drill'});
+      console.log(this.drillDetailObj)
+      this.$router.push({name: 'new-drill', query: {eventId: this.$route.query.eventId, status: 'modify'}});
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');

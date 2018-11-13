@@ -440,7 +440,6 @@ export default {
         .catch(() => {});
     },
     selectReplanDetail (scope) { // 查看预案
-      // console.log(scope.row.planId)
       this.$router.push({name: 'replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
