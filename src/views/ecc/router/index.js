@@ -233,7 +233,7 @@ export default new Router({
             {path: 'simulateCtc', name: 'simulate-ctc', component: simulateCtc},
             {path: 'drillList', name: 'drill-list', component: drillList},
             {path: 'realseNotice', name: 'drill-realseNotice', component: drillRealseNotice},
-            {path: 'seeNotice', name: 'drill-seeNotice', component: drillSeeNotice}
+            {path: 'seeNotice', name: 'drill-seeNotice', component: drillSeeNotice},
             {path: 'drillList', name: 'drill-list', component: drillList},
             {path: 'unreatedDrill', name: 'unreated-drill', component: unreatedDrill},
             {path: 'newDrill', name: 'new-drill', component: newDrill},
