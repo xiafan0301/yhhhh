@@ -84,7 +84,7 @@ export default {
                     this.axios.get('A2/eventServices/events/' + res.data)
                       .then(resp => {
                         if (resp) {
-                          if (resp.data.isOverReportTime === false) {
+                          if (resp.data.isOverReportTime === true) {
                             this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
                           } else {
                             this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
