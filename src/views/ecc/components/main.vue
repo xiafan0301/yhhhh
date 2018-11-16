@@ -38,13 +38,14 @@ export default {
   }
   .vis-bg-l {
     float: left;
-    width: 200px; height: 100%;
+    width: 250px;
+    height: 100%;
     background-color: #fff;
     box-shadow:0px 2px 4px rgba(132,132,132,0.1);
   }
   .vis-bg-r {
     height: 100%;
-    margin-left: 200px;
+    margin-left: 250px;
     position: relative;
   }
   .vis-bg-content {

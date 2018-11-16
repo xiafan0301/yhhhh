@@ -25,7 +25,7 @@
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="onCreateProject">新建用户</el-button>
+        <el-button class='selectBtn add-depart' @click="onCreateProject" v-show="resouceData && resourceBtn[resouceData.addUser]">新建用户</el-button>
       </div>
     </div>
     <el-table
@@ -110,12 +110,12 @@
         width="270px"
         class-name="operate">
         <template  slot-scope="scope" >
-          <i class="icon-xiugai-1 icon-hover" @click="onEdit(scope.row)" title="编辑"></i>
-          <i class="icon-xiugaisuoshuzu- icon-hover" @click="onEditGroups(scope.row)" title="修改所属组"></i>
-          <i class="icon-peizhijiaose- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
-          <i class="icon-jinyong- icon-hover" @click="onForBidUser(scope.row)" title="禁用" v-if="!scope.row.isForce"></i>
-          <i class="icon-qiyong- icon-hover" @click="onUpUser(scope.row)" title="启用" v-else></i>
-          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
+          <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyUser]" @click="onEdit(scope.row)" title="编辑"></i>
+          <i class="icon-xiugaisuoshuzu- icon-hover" v-show="resouceData && resourceBtn[resouceData.userGroupManage]" @click="onEditGroups(scope.row)" title="修改所属组"></i>
+          <i class="icon-peizhijiaose- icon-hover" v-show="resouceData && resourceBtn[resouceData.userRoleManage]" @click="onEditRoles(scope.row)" title="配置角色"></i>
+          <i class="icon-jinyong- icon-hover" v-show="resouceData && resourceBtn[resouceData.startUser]" @click="onForBidUser(scope.row)" title="禁用" v-if="!scope.row.isForce"></i>
+          <i class="icon-qiyong- icon-hover" v-show="resouceData && resourceBtn[resouceData.startUser]" @click="onUpUser(scope.row)" title="启用" v-else></i>
+          <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delUser]" @click="deleteList(scope.row)" title="删除"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -254,9 +254,12 @@
 
 <script>
 import {citys} from '../../../../../static/js/citys.js';
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       citys: '',
       selectForm: {
         organName: ''
@@ -301,6 +304,7 @@ export default {
     }
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getList();
     this.getAllGroups();
     this.getProvince(); // 省份

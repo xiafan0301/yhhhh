@@ -40,9 +40,9 @@
         </table>
         <div class="down-depart-title"><span>下级部门</span></div>
         <div class="btn-group">
-          <div class="create-btn" @click="onAddDepart"><i class="el-icon-plus"></i>添加部门</div>
+          <div class="create-btn" @click="onAddDepart" v-show="resouceData && resourceBtn[resouceData.addDepart]"><i class="el-icon-plus"></i>添加部门</div>
           <template v-if="departData.length > 0">
-            <div class="delete-btn" @click="onDeleteBtn">删除部门</div>
+            <div class="delete-btn" @click="onDeleteBtn" v-show="resouceData && resourceBtn[resouceData.delDepart]">删除部门</div>
           </template>
            <template v-else>
             <div class="delete-btn" style="background: #dddddd;cursor:no-drop">删除部门</div>
@@ -94,7 +94,7 @@
             <el-button type="primary" size="small" class='selectBtn btnClass' @click="selectData">查询</el-button>
           </div>
           <div class="filter-right">
-            <div class="create-btn" @click="onAdminNumber">管理成员</div>
+            <div class="create-btn" @click="onAdminNumber" v-show="resouceData && resourceBtn[resouceData.memberManage]">管理成员</div>
           </div>
         </div>
         <el-table
@@ -235,11 +235,13 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isAddLoading: false,
       isDeleteLoading: false,
       tabState: 1,
@@ -298,6 +300,9 @@ export default {
       },
       deep: true
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getDetailData();

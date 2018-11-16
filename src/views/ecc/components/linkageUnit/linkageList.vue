@@ -82,7 +82,7 @@
       </el-table-column>
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
-          <i class="icon-chakan- icon-hover" @click="skipEventDetail(scope)" title="查看"></i>
+          <i class="icon-chakan- icon-hover" v-show="resouceData && resourceBtn[resouceData.lookCtcLinkage]" @click="skipEventDetail(scope)" title="查看"></i>
           <!-- <el-button type='text' style='color:#0785FD;font-size:14px;border-radius:15px;border:1px solid;padding:5px 10px' @click='skipEventDetail(scope)'>查看</el-button> -->
         </template>
       </el-table-column>
@@ -104,11 +104,13 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       selectForm: {
         reportTime: [], // 时间
         eventStatus: '4037156e-97b5-11e8-b784-93a0bc9b77e5', // 事件状态
@@ -123,6 +125,9 @@ export default {
       eventDataList: [],
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventStatus();

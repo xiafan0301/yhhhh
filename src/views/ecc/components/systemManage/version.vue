@@ -17,7 +17,7 @@
         </el-form-item>
       </el-form>
       <div style="position: absolute; top: 20px; right: 10px;">
-        <el-button type="primary" size="small" @click="edit(null)" class='selectBtn btnClass'>新增</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.addVersion]" @click="edit(null)" class='selectBtn btnClass'>新增</el-button>
       </div>
     </div>
     <div>
@@ -51,7 +51,7 @@
         </el-table-column>
         <el-table-column prop="deviceName" label="操作" align="center" width="150" :show-overflow-tooltip="true">
           <template  slot-scope="scope" >
-            <i title="编辑" class="icon-xiugai-1 icon-hover" @click="edit(scope.row)"></i>
+            <i title="编辑" v-show="resouceData && resourceBtn[resouceData.modifyVersion]" class="icon-xiugai-1 icon-hover" @click="edit(scope.row)"></i>
           </template>
         </el-table-column>
       </el-table>
@@ -145,9 +145,12 @@
 </template>
 <script>
 import {imgBaseUrl2} from '@/config/config.js';
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       temp: {a: 1},
       numbers: [1, 2, 3, 4, 5, 1, 1, 2],
       uploadUrl: null,
@@ -207,6 +210,7 @@ export default {
     this.editForm = this.initEditForm;
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getTableData()
     this.getSoftPubversion()
     this.uploadUrl = imgBaseUrl2;

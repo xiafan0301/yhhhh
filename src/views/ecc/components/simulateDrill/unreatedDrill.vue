@@ -108,22 +108,27 @@
     </div>
     <div class='operation-btn-drill'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click="skipModifyPage">修改</el-button>
+      <el-button style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.modifyDrill]" @click="skipModifyPage">修改</el-button>
     </div>
   </div>
 </template>
 <script>
 import {ajaxCtx3} from '@/config/config.js';
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       drillDetailObj: {},
       imgList: [],
       videoList: [],
       urlDetail: null
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getDrillDetail();
