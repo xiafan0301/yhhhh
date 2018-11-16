@@ -100,8 +100,12 @@ export default {
               let aList = [];
               let aList2 = {};
               let oPoints = {};
+              let aList3 = {};
               for (let i = 0; i < resList.length; i++) {
                 let _o = resList[i];
+                if (_o.resourceType === 2 && _o.resourceLayer === 4) {
+                  aList3[_o.resourceId] = true;
+                }
                 if (_o.resourceType === 1 && _o.resourceLayer === 2) {
                   aList.push(Object.assign({}, _o));
                 }
@@ -112,6 +116,10 @@ export default {
                   aList2[_o.parentId].push(Object.assign({}, _o));
                 }
               }
+              sessionStorage.setItem('resourcebtn', JSON.stringify(aList3));
+
+              // console.log('aList3', aList3)
+              // console.log('aList2', aList3['1ceecfc9-5fa3-4061-a6c7-a4acf195275'])
               for (let j = 0; j < aList.length; j++) {
                 if (aList2[aList[j].resourceId]) {
                   aList[j].children = aList2[aList[j].resourceId];

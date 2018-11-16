@@ -6,11 +6,11 @@
             <el-form-item label="演练项目名称" label-width='150px' prop='eventCode'>
             <el-input style='width: 500px' placeholder='演练项目名称' v-model='addForm.eventCode'></el-input>
           </el-form-item>
-          <el-form-item label="上报人手机号" label-width='150px' prop='reporterPhone'>
-            <el-input style='width: 500px' placeholder='请输入手机号' v-model='addForm.reporterPhone'></el-input>
+          <el-form-item label="报案人手机号" label-width='150px' prop='reporterPhone'>
+            <el-input style='width: 500px' placeholder='请输入报案人手机号' v-model='addForm.reporterPhone'></el-input>
           </el-form-item>
-          <el-form-item label="上报时间" label-width='150px' prop='reportTime'>
-            <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择上报时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
+          <el-form-item label="开始时间" label-width='150px' prop='reportTime'>
+            <el-date-picker :picker-options="pickerOptions0" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择开始时间" style="width: 500px;" v-model='addForm.reportTime'></el-date-picker>
           </el-form-item>
           <el-form-item label="事发地点" label-width='150px' prop='eventAddress' class="address">
             <el-input style='width: 500px' id="tipinput" placeholder='请选择事发地点...' v-model='addForm.eventAddress' @input="onPositionChange" ></el-input>
@@ -108,14 +108,6 @@ import {imgBaseUrl2} from '@/config/config.js';
 export default {
   components: {mapPoint},
   props: ['status', 'addEventForm'],
-  // props: {
-  //   status: {
-  //     type: String
-  //   },
-  //   addEventForm: {
-  //     type: Object
-  //   }
-  // },
   data () {
     return {
       timer: null,
@@ -163,12 +155,12 @@ export default {
         eventCode: [
           { required: true, message: '请输入演练项目名称', trigger: 'blur' }
         ],
-        reporterPhone: [
-          { required: true, message: '请输入手机号', trigger: 'blur' },
-          { validator: valiPhone, trigger: 'blur' }
-        ],
+        // reporterPhone: [
+        //   { required: true, message: '请输入手机号', trigger: 'blur' },
+        //   { validator: valiPhone, trigger: 'blur' }
+        // ],
         reportTime: [
-          { required: true, message: '请选择上报时间', trigger: 'blur' }
+          { required: true, message: '请选择开始时间', trigger: 'blur' }
         ],
         eventAddress: [
           { required: true, message: '请输入事件地点', trigger: 'blur' }
@@ -186,6 +178,7 @@ export default {
       },
       eventTypeList: [], // 事件类型列表
       eventLevelList: [] // 事件等级
+      // reservePlanList: [] // 预案列表
     }
   },
   created () {
@@ -205,7 +198,6 @@ export default {
   methods: {
     getDataInfo () {
       if (this.status === 'modify') {
-        console.log(this.addEventForm)
         let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
         if (dataInfo.casualties === 0) {
           dataInfo.casualties = '无';
@@ -215,9 +207,7 @@ export default {
           this.dieNumber = dataInfo.casualties;
           dataInfo.casualties = '有';
         }
-        console.log(dataInfo)
         this.addForm = dataInfo;
-        console.log(this.addForm)
       }
     },
     onPositionChange (val) { // 事件地点输入框值改变
@@ -333,24 +323,24 @@ export default {
             emiEvent: this.addForm
           }
           this.$emit('eventData', param);
-          // this.isAddLoading = true;
-          // this.axios.post('A2/eventServices/event', param.emiEvent)
-          //   .then((res) => {
-          //     if (res) {
-          //       this.$message({
-          //         message: '添加事件成功',
-          //         type: 'success'
-          //       });
-          //       this.$router.push({name: 'event-list'});
-          //       this.isAddLoading = false;
-          //     } else {
-          //       this.$message.error('添加事件失败');
-          //       this.isAddLoading = false;
-          //     }
-          //   })
-          //   .catch(() => {})
+          this.getReplanList();
         }
       });
+    },
+    getReplanList () { // 获取预案列表
+      if (this.addForm.eventType) {
+        const params = {
+          pageNum: -1,
+          'where.planType': this.addForm.eventType
+        }
+        this.axios.get('A2/planServices/plans', {params})
+          .then((res) => {
+            if (res && res.data.list) {
+              this.$emit('reservePlan', res.data.list);
+            }
+          })
+          .catch(() => {});
+      }
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)

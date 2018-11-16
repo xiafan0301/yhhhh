@@ -153,6 +153,16 @@
         <div style="display: flex">
           <div id="imgs1" class="img-list" style="margin-left: 20px"></div>
         </div>
+        <div class='show-file-div'>
+          <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
+            <img src='../../../../assets/img/temp/file.png' />
+            <a :href="item.url" style="text-decoration: none">
+              <span>{{item.attachmentName}}</span>
+              <el-button type="primary" size="mini" style="margin-left: 5px">下载</el-button>
+            </a>
+          </div>
+        </div>
+        <div style="height:  37px; background-color: #fff"></div>
       </div>
     </div>
     <div class='operation-btn-event'>
@@ -540,6 +550,25 @@ export default {
   }
   .operation-btn-event {
     margin-top: 2%;
+  }
+  .show-file-div {
+    width: 500px;
+    margin-left: 22px;
+    .show-file-div-list {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      span {
+        color: #0785FD;
+        font-size: 14px;
+        margin: 0 5px;
+      }
+      i {
+        font-size: 18px;
+        color: #5D5D5D;
+        cursor: pointer;
+      }
+    }
   }
 }
 </style>

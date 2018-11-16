@@ -13,14 +13,15 @@
         <div class="step-box" :class="[currentPage === '2' ? 'active-step' : '']">2.制定方案</div>
         <div class="step-box" :class="[currentPage === '3' ? 'active-step' : '']">3.确定发布</div>
       </div>
-      <div is="addEvent" v-show="currentPage === '1'" @eventData="eventFromChild" :addEventForm="dataInfo" :status="status"></div>
-      <div is="addCtcPlan" v-show="currentPage === '2'" @ctcData="ctcFromChild" @ctcPage="pageFromChild" :ctcPlanData="dataInfo" :status="status"></div>
+      <div is="addEvent" v-show="currentPage === '1'" @eventData="eventFromChild" @reservePlan="reservePlanFromChild" :addEventForm="dataInfo" :status="status"></div>
+      <div is="addCtcPlan" v-show="currentPage === '2'" @ctcData="ctcFromChild" @ctcPage="pageFromChild" :ctcPlanData="dataInfo" :status="status" :reservePlanList="reservePlanList && reservePlanList"></div>
     </div>
   </div>
 </template>
 <script>
 import addEvent from './comp/addEvent.vue';
 import addCtcPlan from './comp/addCtcPlan.vue';
+import {dictType} from '@/config/data.js';
 export default {
   components: {addEvent, addCtcPlan},
   data () {
@@ -31,7 +32,8 @@ export default {
       eventDataInfo: null,
       taskList: [],
       dataInfo: {},
-      status: ''
+      status: '',
+      reservePlanList: []
     }
   },
   mounted () {
@@ -63,6 +65,11 @@ export default {
     eventFromChild (data) { // 接收来自子组件的值
       this.currentPage = data.currentPage;
       this.eventDataInfo = data.emiEvent;
+      console.log('eventDataInfo', this.eventDataInfo)
+    },
+    reservePlanFromChild (data) {
+      this.reservePlanList = data;
+      console.log('reservePlanList', this.reservePlanList);
     },
     ctcFromChild (data) {
       this.taskList = data.taskList;
@@ -71,6 +78,20 @@ export default {
       } else {
         this.addDataInfo(data);
       }
+    },
+    getReplanList () { // 获取预案列表
+      console.log(this.$route.query.eventType)
+      const params = {
+        pageNum: -1,
+        'where.planType': this.eventDataInfo.eventType
+      }
+      this.axios.get('A2/planServices/plans', {params})
+        .then((res) => {
+          if (res && res.data.list) {
+            this.reservePlanList = res.data.list;
+          }
+        })
+        .catch(() => {});
     },
     addDataInfo (data) {
       if (this.eventDataInfo) {
@@ -84,7 +105,7 @@ export default {
                     this.axios.get('A2/eventServices/events/' + res.data)
                       .then(resp => {
                         if (resp) {
-                          if (resp.data.isOverReportTime === true) {
+                          if (resp.data.eventStatusName === '未处理') {
                             this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
                           } else {
                             this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
@@ -120,7 +141,7 @@ export default {
                     this.axios.get('A2/eventServices/events/' + this.$route.query.eventId)
                       .then(resp => {
                         if (resp) {
-                          if (resp.data.isOverReportTime === false) {
+                          if (resp.data.eventStatusName === '未处理') {
                             this.$router.push({name: 'unreated-drill', query: {eventId: this.$route.query.eventId}});
                           } else {
                             this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});

@@ -163,7 +163,7 @@
                       <p class='time'>{{item.createTime}}</p>
                     </div>
                     <div class='info-detail'>{{item.content}}</div>
-                    <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+                    <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"  v-show="resouceData && resourceBtn[resouceData.delCommntE]"></i>
                   </li>
                 </ul>
                 <template v-if='this.pagination.total > 5'>
@@ -230,7 +230,9 @@
       <el-button @click='back'>返回</el-button>
       <template v-if="!eventDetailObj.closeReason">
         <el-button v-show='isSave' type="primary" :loading="isSaveLoading" style='background: #0785FD' @click='handleSave'>保存</el-button>
-        <el-button v-show='!isSave' type="primary" style='background: #FB796C;border-color:#FB796C' @click="modifyEvent">修改</el-button>
+        <template v-if="resouceData && resourceBtn[resouceData.modifyEvent]">
+          <el-button v-show='!isSave' type="primary" style='background: #FB796C;border-color:#FB796C' @click="modifyEvent">修改</el-button>
+        </template>
       </template>
     </div>
     <el-dialog
@@ -261,10 +263,12 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resouceData: resouceData,
+      resourceBtn: {}, // 按钮权限
       isSaveLoading: false, // 保存加载中
       isDeleteLoading: false, // 删除评论加载中
       dialogFormVisible: false,
@@ -294,6 +298,7 @@ export default {
     }
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getEventType();
     this.getEventLevel();
     this.getEventDetail();

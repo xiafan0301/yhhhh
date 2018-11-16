@@ -5,7 +5,7 @@
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>APP互助消息管理</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-msg' @click="skipAddMsg('add')">添加消息</el-button>
+      <el-button class='selectBtn add-msg' @click="skipAddMsg('add')" v-show="resouceData && resourceBtn[resouceData.addMsg]">添加消息</el-button>
     </div>
     <div class="clearfix search-person">
       <el-form style="float: left;width:100%" :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
@@ -51,8 +51,8 @@
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="skipPersonDetail(scope)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover" @click="skipAddMsg('modify', scope)" title="编辑"></i>
-          <i class="icon-shanchu- icon-hover" @click="showDelete(scope)" title="删除"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="skipAddMsg('modify', scope)" title="编辑" v-show="resouceData && resourceBtn[resouceData.modifyMsg]"></i>
+          <i class="icon-shanchu- icon-hover" @click="showDelete(scope)" title="删除" v-show="resouceData && resourceBtn[resouceData.delMsg]"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -84,11 +84,13 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       deleteVisiable: false,
       delEventId: '', // 要删除的eventid
       selectForm: {
@@ -100,7 +102,8 @@ export default {
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
-  computed: {
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventStatus();

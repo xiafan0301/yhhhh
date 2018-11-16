@@ -2,8 +2,9 @@
   <div class='simulate-ctc-detail'>
     <div class='ctc-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>方案制定</span></el-breadcrumb-item>
+        <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
+        <el-breadcrumb-item>模拟调度指挥</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>调度指挥</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class='ctc-detail-body'>

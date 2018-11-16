@@ -42,7 +42,7 @@
     </div>
     <el-table style="width: 100%" :data='drillDataList' class="table-ctc">
       <el-table-column fixed prop='eventCode' label="演练项目名称" align='center'></el-table-column>
-      <el-table-column prop='eventTypeName' label="创建人" align='center'></el-table-column>
+      <el-table-column prop='reporterUser' label="创建人" align='center'></el-table-column>
       <el-table-column prop='reportTime' label="开始时间" align='center'></el-table-column>
       <el-table-column prop='duration' label="演练时长" align='center'>
         <template slot-scope="scope">
@@ -52,7 +52,7 @@
       </el-table-column>
       <el-table-column prop='eventStatusName' label="状态" align='center'>
         <template slot-scope="scope">
-          <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '处理中' && scope.row.isOverReportTime === true">未开始</span>
+          <span style="color: #FB796C;" v-if="scope.row.eventStatusName == '未处理'">未开始</span>
           <span style="color: #0785FD;" v-else-if="scope.row.eventStatusName == '处理中'">进行中</span>
           <span style="color: #666666;" v-else>已结束</span>
         </template>
@@ -119,11 +119,7 @@ export default {
       this.getDrillList();
     },
     skipDrillDetail (scope) { // 跳到详情页
-      const params = {
-        eventId: scope.row.eventId,
-        acceptFlag: true
-      }
-      if (scope.row.eventStatusName === '处理中' && scope.row.isOverReportTime === true) {
+      if (scope.row.eventStatusName === '未处理') {
         this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       } else if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
