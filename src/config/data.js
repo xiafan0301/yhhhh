@@ -20,11 +20,13 @@ export const resouceData = { // 功能按钮id
   addEvent: '2a2ce3a7-3f99-4a11-96b0-d032319a3a4a', // 添加事件
   closeEvent: 'd05388c3-f3fb-4459-83da-974c42fdee9f', // 关闭事件
   modifyEvent: '80ab2e11-7995-4867-b823-18c6d3a9bfb5', // 修改事件
+  delCommntE: '8ad94d6c-21f1-4acf-a826-4a1fb95af7c1', // 删除评论--事件
   saveEvent: '21629ab3-8e35-4bd0-b469-d12f17d3365b', // 保存事件
   ctcEvent: 'f9a922cf-e70e-42ff-8062-a0bb9e40b358', // 调度指挥事件
   delMsg: 'b2fe968d-543f-4b41-aabd-fb07e9c682eb', // 删除消息
   addMsg: '47873362-4aec-4b16-ae2e-0e29e390d126', // 添加消息
   modifyMsg: 'd594942a-c4b1-4500-a342-cdfe1d834b17', // 编辑消息
+  delCommntA: '8ca06f94-720f-4797-b4d0-a022585bba44', // 删除评论--互助
   endHelp: '6706fdd8-820e-4976-92bf-c3ae81adb95a', // 结束互助
   lookEvent: '1ceecfc9-5fa3-4061-a6c7-a4acf195275d', // 查看事件分布
   lookCtc: '72a16fcc-fd68-4e5f-91ea-71d5ac3e5cd7', // 查看调度

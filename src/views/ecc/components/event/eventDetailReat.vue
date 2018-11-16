@@ -140,7 +140,7 @@
                   <p class='time'>{{item.createTime}}</p>
                 </div>
                 <div class='info-detail'>{{item.content}}</div>
-                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)" v-show="resouceData && resourceBtn[resouceData.delCommntE]"></i>
               </li>
             </ul>
             <template v-if='this.pagination.total > 5'>
