@@ -85,8 +85,8 @@
       </div>
       <div class='operation-btn'>
         <el-button @click="back('addForm')">返回</el-button>
-        <el-button style='background: #0785FD;color:#fff' :loading="isAddLoading" @click="submitForm('addForm')">保存</el-button>
-        <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('addForm')">去调度指挥</el-button>
+        <el-button v-show="resouceData && resourceBtn[resouceData.saveEvent]" style='background: #0785FD;color:#fff' :loading="isAddLoading" @click="submitForm('addForm')">保存</el-button>
+        <el-button v-show="resouceData && resourceBtn[resouceData.ctcEvent]" style='background: #FB796C;color:#fff' @click="skipCtcDetail('addForm')">去调度指挥</el-button>
       </div>
     </div>
     <div is="mapPoint" @mapPointSubmit="mapPointSubmit" :open="open" :oConfig="oConfig"></div>
@@ -109,13 +109,15 @@
 </template>
 <script>
 import {valiPhone} from '@/utils/validator.js';
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 import {imgBaseUrl2} from '@/config/config.js';
 export default {
   components: {mapPoint},
   data () {
     return {
+      resouceData: resouceData,
+      resourceBtn: {}, // 按钮权限
       uploadUrl: null,
       open: false,
       dialogImageUrl: '',
@@ -177,6 +179,9 @@ export default {
       eventTypeList: [], // 事件类型列表
       eventLevelList: [] // 事件等级
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.dataStr = JSON.stringify(this.addForm); // 将初始数据转成字符串

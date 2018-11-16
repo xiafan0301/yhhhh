@@ -92,6 +92,13 @@ import simulateCtcDetail from '@/views/ecc/components/simulateDrill/simulateCtcD
 import drillReplanList from '@/views/ecc/components/simulateDrill/drillReplanList.vue';
 import drillReplanDetail from '@/views/ecc/components/simulateDrill/drillReplanDetail.vue';
 import drillEnableReplan from '@/views/ecc/components/simulateDrill/drillEnableReplan.vue';
+// 联动单位--模拟演练
+// import linkDrill from '@/views/ecc/components/linkageDrill/linkDrill.vue';
+// import linkDrillList from '@/views/ecc/components/linkageDrill/linkDrillList.vue';
+// import linkSimulateCtc from '@/views/ecc/components/linkageDrill/linkSimulateCtc.vue';
+// import linkUnreatedDrill from '@/views/ecc/components/linkageDrill/linkUnreatedDrill.vue';
+// import linkDrillDetailReat from '@/views/ecc/components/linkageDrill/linkDrillDetailReat.vue';
+// import linkDrillDetailEnd from '@/views/ecc/components/linkageDrill/linkDrillDetailEnd.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -245,6 +252,17 @@ export default new Router({
             {path: 'drillEnableReplan', name: 'drill-enable-replan', component: drillEnableReplan}
           ]
         }
+        // {
+        //   path: 'linkDrill',
+        //   component: linkDrill,
+        //   children: [
+        //     {path: 'linkSimulateCtc', name: 'link-simulate-ctc', component: linkSimulateCtc},
+        //     {path: 'linkDrillList', name: 'link-drill-list', component: linkDrillList},
+        //     {path: 'linkDrillDetailReat', name: 'link-drill-detail-reat', component: linkDrillDetailReat},
+        //     {path: 'linkDrillDetailEnd', name: 'link-drill-detail-end', component: linkDrillDetailEnd},
+        //     {path: 'linkUnreatedDrill', name: 'link-unreated-drill', component: linkUnreatedDrill}
+        //   ]
+        // }
       ]
     }
   ]

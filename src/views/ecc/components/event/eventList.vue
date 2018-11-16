@@ -5,7 +5,14 @@
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>事件管理</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-event' @click='skipAddEvent'>添加事件</el-button>
+      <!-- <template v-if="resouceData && resourceBtn[resouceData.addEvent]"> -->
+      <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.addEvent]">添加事件</el-button>
+      <!-- </template> -->
+      <!-- <template v-if="resouceData && resourceBtn[resouceData.reportEvent]"> -->
+      <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.reportEvent]">上报事件</el-button>
+      <!-- </template> -->
+      <!-- <span>{{resouceData.reportEvent}}</span> -->
+      <!-- <el-button class='selectBtn add-event' @click='skipAddEvent'>上报事件</el-button> -->
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
@@ -119,7 +126,7 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
   data () {
@@ -136,8 +143,13 @@ export default {
       eventLevelList: [],
       eventSourceList: [],
       eventDataList: [],
+      resourceBtn: {},
+      resouceData: resouceData,
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventStatus();
