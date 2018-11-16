@@ -92,7 +92,7 @@
                 <p class='time'>{{item.createTime}}</p>
               </div>
               <div class='info-detail'>{{item.content}}</div>
-              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+              <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"  v-show="resouceData && resourceBtn[resouceData.delCommntA]"></i>
             </li>
           </ul>
           <template v-if='this.pagination.total > 5'>
@@ -115,7 +115,7 @@
       <el-button @click='back'>返回</el-button>
       <template v-if="this.$route.query.eventStatus === '处理中'">
         <template v-if='eventDetailObj.eventFlag === false'>
-          <el-button style='background: #0785FD;color:#fff' @click='endEvent'>宣布结束</el-button>
+          <el-button style='background: #0785FD;color:#fff' @click='endEvent' v-show="resouceData && resourceBtn[resouceData.endHelp]">宣布结束</el-button>
         </template>
       </template>
     </div>
@@ -146,12 +146,14 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {ajaxCtx3} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isDeleteLoading: false, // 删除评论加载中
       isEndLoading: false, // 结束互助加载中
       closeCommentVisiable: false,
@@ -171,6 +173,9 @@ export default {
         pageSize: 5
       }
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventDetail();

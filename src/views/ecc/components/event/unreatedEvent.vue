@@ -107,12 +107,12 @@
     <div class='operation-btn-untreated'>
       <el-button @click='back'>返回</el-button>
       <template v-if="detailForm.flagType.indexOf('民众互助') !== -1">
-        <el-button style='background: #0785FD;color:#fff' :loading="isSaveLoading" @click="modifyEvent('detailForm')">保存</el-button>
+        <el-button v-show="resouceData && resourceBtn[resouceData.saveEvent]" style='background: #0785FD;color:#fff' :loading="isSaveLoading" @click="modifyEvent('detailForm')">保存</el-button>
       </template>
       <template v-else>
-        <el-button style='background: #0785FD;color:#fff' @click='dialogFormVisible = true'>关闭事件</el-button>
+        <el-button v-show="resouceData && resourceBtn[resouceData.closeEvent]" style='background: #0785FD;color:#fff' @click='dialogFormVisible = true'>关闭事件</el-button>
       </template>
-      <el-button style='background: #FB796C;color:#fff' @click="skipCtcDetail('detailForm')">去调度指挥</el-button>
+      <el-button v-show="resouceData && resourceBtn[resouceData.ctcEvent]" style='background: #FB796C;color:#fff' @click="skipCtcDetail('detailForm')">去调度指挥</el-button>
     </div>
     <el-dialog title="操作提示" :visible.sync="dialogFormVisible" center width='30%' class="close-reason-dialog">
       <p class='close-reason-p'>请选择关闭事件的原因:</p>
@@ -163,7 +163,7 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {valiPhone} from '@/utils/validator.js';
 import {ajaxCtx3, imgBaseUrl2} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
@@ -172,6 +172,8 @@ export default {
   components: {mapPoint},
   data () {
     return {
+      resouceData: resouceData,
+      resourceBtn: {}, // 按钮权限
       uploadUrl: null,
       currentNum: 0,
       totalNum: 140,
@@ -244,6 +246,7 @@ export default {
     }
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getEventDetail();
     this.getEventType();
     this.getEventLevel();

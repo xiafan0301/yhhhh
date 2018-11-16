@@ -140,7 +140,7 @@
                   <p class='time'>{{item.createTime}}</p>
                 </div>
                 <div class='info-detail'>{{item.content}}</div>
-                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i>
+                <i class='el-icon-circle-close close' @click="closeComment(item.commentId)" v-show="resouceData && resourceBtn[resouceData.delCommntE]"></i>
               </li>
             </ul>
             <template v-if='this.pagination.total > 5'>
@@ -171,8 +171,8 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
-      <el-button style='background: #FB796C;color:#fff' class='skipCtcDetail' @click='skipCtcDetail'>
+      <el-button v-show="resouceData && resourceBtn[resouceData.endEvent]" style='background: #0785FD;color:#fff' @click='skipEventEnd'>事件结束</el-button>
+      <el-button v-show="resouceData && resourceBtn[resouceData.ctcEvent]" style='background: #FB796C;color:#fff' class='skipCtcDetail' @click='skipCtcDetail'>
         <template v-if="eventDetailObj.taskList && eventDetailObj.taskList.length > 0">
           再次调度
         </template>
@@ -199,12 +199,14 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {ajaxCtx3} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resouceData: resouceData,
+      resourceBtn: {}, // 按钮权限
       isDeleteLoading: false, // 删除评论加载中
       closeCommentVisiable: false,
       urlDetail: '',
@@ -225,6 +227,9 @@ export default {
       eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventDetail();

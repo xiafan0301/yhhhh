@@ -52,7 +52,7 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='ctcDataList' class="table-ctc">
-      <el-table-column fixed prop='eventCode' label="事件编号" align='center'></el-table-column>
+      <el-table-column fixed prop='eventCode' label="演练项目名称" align='center'></el-table-column>
       <el-table-column prop='eventTypeName' label="事件类型" align='center'>
         <template slot-scope="scope">
           <span v-if="scope.row.eventTypeName">{{scope.row.eventTypeName}}</span>
@@ -65,9 +65,9 @@
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column prop='acceptTime' label="受理时间" align='center'>
+      <el-table-column prop='acceptTime' label="开始时间" align='center'>
         <template slot-scope="scope">
-          <span v-if="scope.row.acceptTime">{{scope.row.acceptTime}}</span>
+          <span v-if="scope.row.reportTime">{{scope.row.reportTime}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>

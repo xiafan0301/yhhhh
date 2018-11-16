@@ -1,5 +1,5 @@
 <template>
-  <div class='enable-replan'>
+  <div class='drill-enable-replan'>
     <div class='enable-replan-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
@@ -474,7 +474,7 @@ export default {
 }
 </script>
 <style lang='scss'>
-  .enable-replan {
+  .drill-enable-replan {
     padding: 20px;
     height: 100%;
     .enable-replan-header {
