@@ -149,7 +149,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #fff;color:#0785FD;border:1px solid #0785FD' class='skipCtcDetail' @click='skipCtcDetail'>
+      <el-button v-show="resouceData && resourceBtn[resouceData.ctcDrill]" style='background: #fff;color:#0785FD;border:1px solid #0785FD' class='skipCtcDetail' @click='skipCtcDetail'>
         <template v-if="drillDetailObj.taskList && drillDetailObj.taskList.length > 0">
           再次调度
         </template>
@@ -157,17 +157,19 @@
           调度
         </template>
       </el-button>
-      <el-button style='background: #0785FD;color:#fff' @click='skipDrillEnd'>演练结束</el-button>
+      <el-button v-show="resouceData && resourceBtn[resouceData.endDrill]" style='background: #0785FD;color:#fff' @click='skipDrillEnd'>演练结束</el-button>
     </div>
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {ajaxCtx3} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       urlDetail: '',
       drillDetailObj: {},
       videoList: [], // 视频数据列表
@@ -175,6 +177,9 @@ export default {
       proVideoList: [], // 视频数据列表
       proImgList: [] // 图片数据列表
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getDrillDetail();

@@ -16,7 +16,7 @@
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="showAddDialog">新建部门</el-button>
+        <el-button class='selectBtn add-depart' v-show="resouceData && resourceBtn[resouceData.addDepart]" @click="showAddDialog">新建部门</el-button>
       </div>
     </div>
     <el-table style="width: 100%;" :data='departmentList' class='event-table' @row-click="goDetail">
@@ -26,8 +26,8 @@
       <el-table-column label="部门负责人" prop='chargeUserNameStr' align='center'></el-table-column>
       <el-table-column label="操作" align='center' class="operation" width="150px">
         <template slot-scope="scope">
-          <i class="icon-xiugai-1 icon-hover" @click.stop="editDepart(scope)" title="编辑"></i>
-          <i class="icon-shanchu- icon-hover" @click.stop="deleteDepart(scope)" title="删除"></i>
+          <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyDepart]" @click.stop="editDepart(scope)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delDepart]" @click.stop="deleteDepart(scope)" title="删除"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -122,9 +122,12 @@
   </div>
 </template>
 <script>
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isAddStyle: false,
       isAddLoading: false,
       isDeleteLoading: false,
@@ -156,6 +159,9 @@ export default {
       deleteId: '', // 要删除的部门id
       editDepartment: {} // 要编辑的部门信息
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getDepartmentList();

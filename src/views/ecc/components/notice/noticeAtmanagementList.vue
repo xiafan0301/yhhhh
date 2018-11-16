@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>公告管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.sendNotice]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -80,9 +80,9 @@
         width="200" align="center">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
+          <i class="icon-xiugai-1 icon-hover"  title="编辑" v-show="resouceData && resourceBtn[resouceData.modifyNotice]" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-shanchu- icon-hover"  title="删除" v-show="resouceData && resourceBtn[resouceData.delNotice]" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" v-show="resouceData && resourceBtn[resouceData.revokeNotice]" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
           </template>
       </el-table-column>
     </el-table>
@@ -114,9 +114,12 @@
 </template>
 <script>
 import {formatDate} from '@/utils/method.js';
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       searchForm: {
         publishState: '',
         messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
@@ -134,11 +137,9 @@ export default {
       messageId: ''
     }
   },
-  computed: {
-  },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getDepartmentList();
-    console.log(this.searchForm.publishTime)
   },
   mounted () {
     this.getOneMonth();

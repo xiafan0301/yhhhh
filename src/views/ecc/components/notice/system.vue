@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>系统消息</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog('system')" class='selectBtn btnClass'>发布</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.sendSysMsg]"  @click.native="showEditDialog('system')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -85,9 +85,9 @@
         >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifysystem',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px;"></i>
+          <i class="icon-xiugai-1 icon-hover"  title="编辑" v-show="resouceData && resourceBtn[resouceData.modifySysMsg]" @click="modify('modifysystem',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-shanchu- icon-hover"  title="删除" v-show="resouceData && resourceBtn[resouceData.delSysMsg]" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" v-show="resouceData && resourceBtn[resouceData.revokeSysMsg]" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px;"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -118,11 +118,13 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       searchForm: {
         beginTime: null,
         endTime: null,
@@ -143,13 +145,12 @@ export default {
       messageId: ''
     }
   },
-  computed: {
-  },
   mounted () {
     this.getOneMonth();
     this.getTableData();
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getMessageType();
     this.getDepartmentList();
   },
@@ -160,35 +161,6 @@ export default {
           this.messageTypeList = res.data;
         })
     },
-    // del (scope) {
-    //   this.$confirm('确定删除吗?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     if (scope) {
-    //       console.log(scope.messageId);
-    //       const params = {
-    //         messageId: scope.messageId
-    //       };
-    //       this.axios.delete('A2/messageService/' + scope.messageId, {params})
-    //         .then((res) => {
-    //           if (res) {
-    //             this.getTableData();
-    //             this.$message({
-    //               type: 'success',
-    //               message: '删除成功!'
-    //             });
-    //           }
-    //         })
-    //     }
-    //   }).catch(() => {
-    //     this.$message({
-    //       type: 'info',
-    //       message: '已取消删除'
-    //     });
-    //   });
-    // },
     deletEvent () {
       const params = {
         messageId: this.messageId

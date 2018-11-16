@@ -5,7 +5,7 @@
         <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>演练记录</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-drill' @click='skipAddDrill'>新建演练</el-button>
+      <el-button class='selectBtn add-drill' @click='skipAddDrill' v-show="resouceData && resourceBtn[resouceData.addDrill]">新建演练</el-button>
     </div>
     <div class="clearfix search-drill">
       <el-form style="float: left;width:100%" :inline="true" ref='selectForm' :model='selectForm' class="demo-form-inline" size="small">
@@ -79,11 +79,13 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       selectForm: {
         projectName: null,
         reportTime: [],
@@ -93,6 +95,9 @@ export default {
       eventStatusList: [],
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getEventStatus();

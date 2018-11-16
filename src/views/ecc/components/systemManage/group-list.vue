@@ -10,7 +10,7 @@
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="onCreateGroup">创建组</el-button>
+        <el-button class='selectBtn add-depart' @click="onCreateGroup" v-show="resouceData && resourceBtn[resouceData.addUserGroup]">创建组</el-button>
       </div>
     </div>
     <el-table
@@ -71,11 +71,11 @@
         width="300px"
         class-name="operate">
         <template slot-scope="scope">
-          <i class="icon-chakan- icon-hover" @click="onWatchNumber(scope.row)" title="查看组成员"></i>
-          <i class="icon-xiugai-1 icon-hover" @click="onEditInfo(scope.row)" title="编辑"></i>
-          <i class="icon-guanlichengyuan- icon-hover" @click="onAdminNumer(scope.row)" title="管理成员"></i>
-          <i class="icon-peizhiquanxian- icon-hover" @click="onEditRoles(scope.row)" title="配置角色"></i>
-          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除"></i>
+          <i class="icon-chakan- icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyUser]" @click="onWatchNumber(scope.row)" title="查看组成员"></i>
+          <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyUserGroup]" @click="onEditInfo(scope.row)" title="编辑"></i>
+          <i class="icon-guanlichengyuan- icon-hover" v-show="resouceData && resourceBtn[resouceData.ugMemberManage]" @click="onAdminNumer(scope.row)" title="管理成员"></i>
+          <i class="icon-peizhiquanxian- icon-hover" v-show="resouceData && resourceBtn[resouceData.ugRoleManage]" @click="onEditRoles(scope.row)" title="配置角色"></i>
+          <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delUserGroup]" @click="deleteList(scope.row)" title="删除"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -214,11 +214,13 @@
     </el-dialog>
   </div>
 </template>
-
 <script>
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       userName: '',
       selectForm: {
         organName: ''
@@ -266,6 +268,7 @@ export default {
     }
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getList();
   },
   methods: {
