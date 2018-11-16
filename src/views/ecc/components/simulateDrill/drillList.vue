@@ -79,6 +79,7 @@
   </div>
 </template>
 <script>
+
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {

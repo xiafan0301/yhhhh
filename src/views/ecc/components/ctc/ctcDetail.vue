@@ -167,14 +167,12 @@
               </el-table-column>
               <el-table-column fixed label="操作" align='center'>
                 <template slot-scope="scope">
-                  <i class="icon-chakan- icon-hover" @click="selectReplanDetail(scope)" title="查看"></i>
-                  <i class="icon-qiyong- icon-hover" @click="skipEnableReplan(scope)" title="启用"></i>
-                  <!-- <img title="查看" src="../../../../assets/img/temp/select.png" @click="selectReplanDetail(scope)" />
-                  <img title="启用" src="../../../../assets/img/temp/open.png" @click="skipEnableReplan(scope)" /> -->
+                  <i class="icon-chakan- icon-hover" v-show="resouceData && resourceBtn[resouceData.seePlan]" @click="selectReplanDetail(scope)" title="查看"></i>
+                  <i class="icon-qiyong- icon-hover" v-show="resouceData && resourceBtn[resouceData.startPlan]" @click="skipEnableReplan(scope)" title="启用"></i>
                 </template>
               </el-table-column>
             </el-table>
-            <div class='more-replan' @click='selectMorePlan'>更多预案</div>
+            <div class='more-replan' v-show="resouceData && resourceBtn[resouceData.seeAllPlan]" @click='selectMorePlan'>更多预案</div>
           </div>
         </div>
       </div>
@@ -228,10 +226,12 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isTaskLoading: false, // 调度指挥加载中
       dialogFormVisible: false, // 是否显示要修改的表单
       closeReturnVisiable: false,
@@ -275,6 +275,7 @@ export default {
     }
   },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     if (this.$route.query.eventId) {
       this.getEventDetail();
     } else if (this.$route.query.addForm) {

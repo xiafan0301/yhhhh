@@ -32,6 +32,9 @@ export const resouceData = { // 功能按钮id
   lookCtc: '72a16fcc-fd68-4e5f-91ea-71d5ac3e5cd7', // 查看调度
   endEvent: '86f4eaba-978c-4f48-88fd-55b486352492', // 结束事件
   ctcTask: 'f0492e84-405d-4166-aece-e8be41fbb594', // 调度
+  seePlan: '1f7d40dd-7f5b-442f-9aaf-1002f6c97803', // 查看预案--调度指挥
+  startPlan: 'fb19f195-92db-482e-b70b-829f77104a16', // 启用预案--调度指挥
+  seeAllPlan: '67147b52-58fe-4dce-b605-7cec552d89d8', // 查看更多预案--调度指挥
   addWarehouse: 'bf9a27a5-9618-44ec-bddb-de969a7920c5', // 添加仓库
   modifyWarehouse: '669cd01b-83ec-4617-86c0-b48ea8d08874', // 修改仓库
   delWarehouse: 'a5d3b66b-42bb-4c7e-bdf8-b9e7c2791b28', // 删除仓库
@@ -89,5 +92,8 @@ export const resouceData = { // 功能按钮id
   sendNoticeS: '53e781e4-e8f0-43ee-baae-347efaaacfc6', // 发布公告--模拟
   modifyNoticeS: '6fc516f4-2bf2-4e24-8191-321dec2451d4', // 修改公告--模拟
   revokeNoticeS: '670bd7c9-82b2-4b31-af67-51019bb4aadf', // 撤销公告--模拟
-  delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271' // 删除公告--模拟
+  delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271', // 删除公告--模拟
+  lookCtcLinkage: '26becb41-394d-43c0-b572-584e9c8c9e05', // 查看调度指挥--联动单位--调度指挥
+  feekbackLinkage: '973def65-46e3-49b8-9815-f27ec1b75b65' // 反馈情况--联动单位--调度指挥
+  // delCommentLinkage: '7703f03b-1865-407e-82fe-2d83dc603a01' // 删除评论--联动单位--调度指挥
 }

@@ -174,9 +174,9 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' @click='skipFeedBack'>反馈情况</el-button>
+      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackLinkage]" @click='skipFeedBack'>反馈情况</el-button>
     </div>
-    <el-dialog
+    <!-- <el-dialog
       title="操作提示"
       :visible.sync="closeCommentVisiable"
       width="480px"
@@ -187,18 +187,20 @@
         <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script>
 import {ajaxCtx3} from '@/config/config.js';
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       urlDetail: '',
-      closeCommentVisiable: false,
+      // closeCommentVisiable: false,
       isDeleteLoading: false, // 删除评论加载中
       isDisabled: false, // 反馈按钮是否可点
       delCommentId: '', // 要删除的评论Id
@@ -216,6 +218,9 @@ export default {
       eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     if (this.$route.query.name === '已完成') {
@@ -376,31 +381,31 @@ export default {
           })
           .catch(() => {})
       }
-    },
-    closeComment (id) {
-      this.delCommentId = id;
-      this.closeCommentVisiable = true;
-    },
-    deleteComment () { // 删除评论
-      if (this.delCommentId) {
-        this.isDeleteLoading = true;
-        this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
-          .then((res) => {
-            if (res) {
-              this.$message({
-                message: '评论删除成功',
-                type: 'success'
-              });
-              this.getCommentList();
-            } else {
-              this.$message.error('评论删除失败');
-            }
-            this.closeCommentVisiable = false;
-            this.isDeleteLoading = false;
-          })
-          .catch(() => {})
-      }
     }
+    // closeComment (id) {
+    //   this.delCommentId = id;
+    //   this.closeCommentVisiable = true;
+    // },
+    // deleteComment () { // 删除评论
+    //   if (this.delCommentId) {
+    //     this.isDeleteLoading = true;
+    //     this.axios.delete('A2/eventServices/comment/' + this.delCommentId, this.delCommentId)
+    //       .then((res) => {
+    //         if (res) {
+    //           this.$message({
+    //             message: '评论删除成功',
+    //             type: 'success'
+    //           });
+    //           this.getCommentList();
+    //         } else {
+    //           this.$message.error('评论删除失败');
+    //         }
+    //         this.closeCommentVisiable = false;
+    //         this.isDeleteLoading = false;
+    //       })
+    //       .catch(() => {})
+    //   }
+    // }
   }
 }
 </script>
