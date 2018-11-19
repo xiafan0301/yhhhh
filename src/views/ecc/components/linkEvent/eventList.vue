@@ -1,15 +1,15 @@
 <template>
-  <div class="event-data-list">
+  <div class="link-event-data-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>事件管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <!-- <template v-if="resouceData && resourceBtn[resouceData.addEvent]"> -->
-      <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.addEvent]">添加事件</el-button>
+      <!-- <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.addEvent]">添加事件</el-button> -->
       <!-- </template> -->
       <!-- <template v-if="resouceData && resourceBtn[resouceData.reportEvent]"> -->
-      <!-- <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.reportEvent]">上报事件</el-button> -->
+      <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.reportEvent]">上报事件</el-button>
       <!-- </template> -->
       <!-- <span>{{resouceData.reportEvent}}</span> -->
       <!-- <el-button class='selectBtn add-event' @click='skipAddEvent'>上报事件</el-button> -->
@@ -160,7 +160,7 @@ export default {
   },
   methods: {
     skipAddEvent () { // 跳转到添加事件页面
-      this.$router.push({name: 'add-event'});
+      this.$router.push({name: 'link-add-event'});
     },
     onPageChange (page) {
       this.pagination.pageNum = page;
@@ -180,14 +180,14 @@ export default {
         this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
           .then((res) => {
             if (res) {
-              this.$router.push({name: 'event-untreated', query: {eventId: scope.row.eventId}});
+              this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'never'}});
             }
           })
           .catch(() => {})
       } else if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'event-detail-end', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'end'}});
       } else {
-        this.$router.push({name: 'event-detail-reat', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'ing'}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -270,13 +270,12 @@ export default {
       this.$refs[form].resetFields();
       this.getOneMonth();
       this.getEventList();
-      console.log(this.selectForm.reportTime)
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-  .event-data-list {
+  .link-event-data-list {
     padding: 20px;
     .header {
       margin-bottom: 10px;

@@ -1,8 +1,8 @@
 <template>
-  <div class='feedback'>
+  <div class='link-feedback'>
     <div class='event-end-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
+        <el-breadcrumb-item>事件管理</el-breadcrumb-item>
         <el-breadcrumb-item>事件详情</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>反馈情况</span></el-breadcrumb-item>
       </el-breadcrumb>
@@ -226,7 +226,7 @@ export default {
 }
 </script>
 <style lang='scss'>
-  .feedback {
+  .link-feedback {
     padding: 20px;
     height: 100%;
     .event-end-header {

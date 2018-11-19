@@ -77,7 +77,6 @@ export const resouceData = { // 功能按钮id
   addResource: '1120df16-85ea-4a1e-815b-5a901ac3b711', // 添加权限
   modifyResource: '394e7683-6016-4485-983a-ea3fd950bad8', // 修改权限
   delResource: '117ecb42-43d8-49d5-a6c9-9f59b03eb248', // 删除权限
-  reportEvent: '56d79684-d6ad-45c6-ab85-4685a575fb02', // 上报事件
   startUser: '7a94d029-c502-460c-82c5-560070ecbc4c', // 启用禁用用户
   addVersion: 'e3d3e308-7555-4aeb-aad9-1f0c7fd2c53f', // 新增版本
   modifyVersion: 'cffce051-9bf6-4a31-ac38-58e5a223d56c', // 编辑版本
@@ -94,6 +93,9 @@ export const resouceData = { // 功能按钮id
   revokeNoticeS: '670bd7c9-82b2-4b31-af67-51019bb4aadf', // 撤销公告--模拟
   delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271', // 删除公告--模拟
   lookCtcLinkage: '26becb41-394d-43c0-b572-584e9c8c9e05', // 查看调度指挥--联动单位--调度指挥
-  feekbackLinkage: '973def65-46e3-49b8-9815-f27ec1b75b65' // 反馈情况--联动单位--调度指挥
-  // delCommentLinkage: '7703f03b-1865-407e-82fe-2d83dc603a01' // 删除评论--联动单位--调度指挥
+  feekbackLinkage: '973def65-46e3-49b8-9815-f27ec1b75b65', // 反馈情况--联动单位--调度指挥
+  reportEvent: '08f4262d-cd6f-43e3-a6e6-6f15e3f5e725', // 上报事件--联动单位--事件管理
+  feekbackEventLink: '4b92e4b2-736c-4adc-86d6-d010b55e6e0b', // 反馈情况--联动单位--事件管理
+  feekbackEventLinkY: '69846da4-79b0-4a88-8413-a69562026ec3', // 反馈情况--联动单位--模拟演练--演练记录
+  feekbackEventLinkD: '51e1be74-ed2c-4330-95cf-9e4054d08632' // 反馈情况--联动单位--模拟演练--模拟调度指挥
 }

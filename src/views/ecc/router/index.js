@@ -93,12 +93,18 @@ import drillReplanList from '@/views/ecc/components/simulateDrill/drillReplanLis
 import drillReplanDetail from '@/views/ecc/components/simulateDrill/drillReplanDetail.vue';
 import drillEnableReplan from '@/views/ecc/components/simulateDrill/drillEnableReplan.vue';
 // 联动单位--模拟演练
-// import linkDrill from '@/views/ecc/components/linkageDrill/linkDrill.vue';
-// import linkDrillList from '@/views/ecc/components/linkageDrill/linkDrillList.vue';
-// import linkSimulateCtc from '@/views/ecc/components/linkageDrill/linkSimulateCtc.vue';
-// import linkUnreatedDrill from '@/views/ecc/components/linkageDrill/linkUnreatedDrill.vue';
-// import linkDrillDetailReat from '@/views/ecc/components/linkageDrill/linkDrillDetailReat.vue';
-// import linkDrillDetailEnd from '@/views/ecc/components/linkageDrill/linkDrillDetailEnd.vue';
+import linkDrill from '@/views/ecc/components/linkageDrill/linkDrill.vue';
+import linkDrillList from '@/views/ecc/components/linkageDrill/linkDrillList.vue';
+import linkSimulateCtc from '@/views/ecc/components/linkageDrill/linkSimulateCtc.vue';
+import linkDrillFeedback from '@/views/ecc/components/linkageDrill/feedback.vue';
+import linkDrillDetail from '@/views/ecc/components/linkageDrill/linkDrillDetail.vue';
+import linkSimulateCtcDetail from '@/views/ecc/components/linkageDrill/linkSimulateCtcDetail.vue';
+// 联动单位--事件管理
+import linkEvent from '@/views/ecc/components/linkEvent/event.vue';
+import linkEventList from '@/views/ecc/components/linkEvent/eventList.vue';
+import linkAddEvent from '@/views/ecc/components/linkEvent/addEvent.vue';
+import linkFeekback from '@/views/ecc/components/linkEvent/feedback.vue';
+import linkEventDetail from '@/views/ecc/components/linkEvent/eventDetail.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -251,18 +257,28 @@ export default new Router({
             {path: 'drillReplanDetail', name: 'drill-replan-detail', component: drillReplanDetail},
             {path: 'drillEnableReplan', name: 'drill-enable-replan', component: drillEnableReplan}
           ]
+        },
+        {
+          path: 'linkEvent',
+          component: linkEvent,
+          children: [
+            {path: 'linkEventList', name: 'link-event-list', component: linkEventList},
+            {path: 'linkAddEvent', name: 'link-add-event', component: linkAddEvent},
+            {path: 'linkEventDetail', name: 'link-event-detail', component: linkEventDetail},
+            {path: 'linkFeekback', name: 'link-feek-back', component: linkFeekback}
+          ]
+        },
+        {
+          path: 'linkDrill',
+          component: linkDrill,
+          children: [
+            {path: 'linkDrillFeedback', name: 'link-drill-feed-back', component: linkDrillFeedback},
+            {path: 'linkDrillList', name: 'link-drill-list', component: linkDrillList},
+            {path: 'linkDrillDetail', name: 'link-drill-detail', component: linkDrillDetail},
+            {path: 'linkSimulateCtcDetail', name: 'link-simulate-ctc-detail', component: linkSimulateCtcDetail},
+            {path: 'linkSimulateCtc', name: 'link-simulate-ctc', component: linkSimulateCtc}
+          ]
         }
-        // {
-        //   path: 'linkDrill',
-        //   component: linkDrill,
-        //   children: [
-        //     {path: 'linkSimulateCtc', name: 'link-simulate-ctc', component: linkSimulateCtc},
-        //     {path: 'linkDrillList', name: 'link-drill-list', component: linkDrillList},
-        //     {path: 'linkDrillDetailReat', name: 'link-drill-detail-reat', component: linkDrillDetailReat},
-        //     {path: 'linkDrillDetailEnd', name: 'link-drill-detail-end', component: linkDrillDetailEnd},
-        //     {path: 'linkUnreatedDrill', name: 'link-unreated-drill', component: linkUnreatedDrill}
-        //   ]
-        // }
       ]
     }
   ]
