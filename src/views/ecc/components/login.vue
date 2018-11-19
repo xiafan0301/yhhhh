@@ -118,7 +118,7 @@ export default {
               }
               sessionStorage.setItem('resourcebtn', JSON.stringify(aList3));
 
-              // console.log('aList3', aList3)
+              console.log('aList3', aList3)
               // console.log('aList2', aList3['1ceecfc9-5fa3-4061-a6c7-a4acf195275'])
               for (let j = 0; j < aList.length; j++) {
                 if (aList2[aList[j].resourceId]) {

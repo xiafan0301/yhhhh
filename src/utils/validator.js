@@ -30,6 +30,15 @@ export const checkGps = (rule, value, callback) => {
   }
   callback();
 };
+export const keywords = (rule, value, callback) => {
+  if (value) {
+    let keywords = value.split(',');
+    if (keywords.length > 3) {
+      return callback(new Error('最多添加3个关键词'));
+    }
+  }
+  callback();
+};
 // 验证手机号
 export const valiPhone = (rule, value, callback) => {
   if (value) {

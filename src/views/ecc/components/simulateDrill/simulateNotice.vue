@@ -46,11 +46,11 @@
       <el-table-column fixed label="序号" width="50"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.title" label="主题"  align="center"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要"   align="center"  :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center" :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-            <div v-for="(ite, inde) in scope.row.receiveRelations" :key="inde" >{{ite.receiveUserName}}</div>
+            <div v-for="(ite, inde) in scope.row.receiveRelations" :key="inde" v-if="inde < scope.row.receiveRelations[scope.row.receiveRelations.length - 1].allgroup">{{ite.receiveUserName}}</div>
           <p v-if="scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onOpenAll(scope.row)">展开全部<i class="el-icon-arrow-down"></i></p>
           <p v-if="!scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onCloseAll(scope.row)">收起<i class="el-icon-arrow-up"></i></p>
         </template>

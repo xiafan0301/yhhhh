@@ -9,12 +9,12 @@
     </div>
     <div class='add-msg-body'>
       <div class='add-form-person'>
-        <el-form class='form-content-person' :model="form"  ref="form" :inline-message= 'true' label-width='180px'>
-          <el-form-item label="标题"  prop="title" :rules="[{ required: true, message: '请输入标题', trigger: 'blur' }]">
+        <el-form class='form-content-person' :model="form"  ref="form" :inline-message= 'true' label-width='180px' :rules="rules">
+          <el-form-item label="标题"  prop="title">
             <el-input  placeholder="填写标题" style='width: 500px' v-model="form.title">
             </el-input>
           </el-form-item>
-          <el-form-item label="知识类型"  prop="typeId"  :rules="[{ required: true, message: '请选择知识类型或者填写', trigger: 'change' }]">
+          <el-form-item label="知识类型"  prop="typeId"  >
             <el-select  placeholder="选择（可填写）" style='width: 500px' v-model="form.typeId"  filterable allow-create default-first-option>
               <el-option
                 v-for="item in knowledgeTypeList"
@@ -24,20 +24,23 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="关键词"  prop="keyword" :rules="[{ required: true, message: '请输入关键词', trigger: 'blur' }]">
-            <el-input  placeholder="如有多个，请用逗号或顿号分隔…" style='width: 500px;' v-model="form.keyword" >
+          <el-form-item label="关键词"  prop="keyword" >
+            <el-input  placeholder="如有多个，请用逗号或顿号分隔…" style='width: 500px;' v-model="form.keyword" onafterpaste="this.value=this.value.replace(/,/g,'，')" onkeyup="this.value=this.value.replace(/,/g,'，')">
             </el-input>
-            <span style="font-size: 7px; font-weight: 400; color: #999999">最多添加三个关键词</span>
+            <span style="font-size: 14px; font-weight: 400; color: #999999">最多添加三个关键词</span>
           </el-form-item>
-          <el-form-item label="知识简介"  prop="summary" :rules="[ { required: true, message: '请输入知识简介', trigger: 'blur' }]">
-            <el-input type="textarea" style='width: 500px' placeholder='请输入知识简介...' rows='7' v-model="form.summary"></el-input>
+          <el-form-item label="知识简介"  prop="summary"  style="position: relative">
+            <el-input type="textarea" style='width: 500px;' placeholder='请输入知识简介...' rows='7' v-model="form.summary">
+            </el-input>
+            <span style="position: absolute; left: 445px; bottom: 5px; color: #999999">{{form.summary.length}}/500</span>
           </el-form-item>
-          <el-form-item label="附件" class="defint" style="position: relative">
+          <el-form-item label="附件" class="defint" style="position: relative"   prop="url">
             <div style="display: inline-block; width: 220px; height: 37px; border: 1px solid #dcdfe6; border-radius: 4px; vertical-align: middle;"></div>
             <span style="display: inline-block; position: absolute; left:10px; top: 19px; font-size: 12.5px; font-weight: 400; color: #999999;">{{form.attachmentName}}</span>
             <el-upload style="display: inline-block"
                        :action="uploadUrl + '/upload/new'"
                        :data="imgParam"
+                       v-model="form.url"
                        :show-file-list="false"
                        :on-change = "aa"
                        accept=".pdf,.doc,.txt,.docx"
@@ -46,13 +49,13 @@
               <el-button  type="primary" style="width: 90px; height: 39px; position: absolute; top: -1px">上传</el-button>
             </el-upload>
             <div style="display: inline-block; width: 90px"></div>
-            <span style="font-size: 7px; font-weight: 400; color: #999999;display: inline-block;">支持PDF、word、txt文档</span>
+            <span style="font-size: 14px; font-weight: 400; color: #999999;display: inline-block;">支持PDF、word、txt文档</span>
           </el-form-item>
           <el-form-item label="作者"  prop="author" >
             <el-input  placeholder="选填" style='width: 220px' v-model="form.author">
             </el-input>
           </el-form-item>
-          <el-form-item label="发布时间"  prop="publishTime" :rules="[{ required: true, message: '请选择发布时间', trigger: 'blur' }]">
+          <el-form-item label="发布时间"  prop="publishTime">
             <el-date-picker
               v-model="form.publishTime"
               type="datetime"
@@ -63,7 +66,7 @@
       </div>
       <div class='operation-btn-msg' >
         <el-button  @click="back">取消</el-button>
-        <el-button type="primary" @click="onSubmit('form')" >确定</el-button>
+        <el-button type="primary" @click="onSubmit('form')" :loading="addPageLoading">确定</el-button>
       </div>
     </div>
   </div>
@@ -73,7 +76,26 @@ import {dictType} from '@/config/data.js';
 import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
+    const keywords = (rule, value, callback) => {
+      if (value) {
+        let keywords = value.split('，');
+        let keyword = value.split('、');
+        if (keywords.length > 3) {
+          return callback(new Error('最多添加3个关键词'));
+        }
+        if (keyword.length > 3) {
+          return callback(new Error('最多添加3个关键词'));
+        }
+        keywords && keywords.map((item) => {
+          if (item.length > 5) {
+            return callback(new Error('每个关键词最多5个字'));
+          }
+        })
+      }
+      callback();
+    };
     return {
+      addPageLoading: false,
       uploadUrl: null,
       placeholderStatus: '未选择文件',
       staskList: [],
@@ -90,17 +112,26 @@ export default {
         attachmentName: '还没上传'
       },
       rules: {
-        planName: [
-          { required: true, message: '请输入预案名称', trigger: 'blur' }
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+          { max: 75, message: '最多75个字符', trigger: 'blur' }
         ],
-        eventType: [
-          { required: true, message: '请选择预案类型', trigger: 'change' }
+        typeId: [
+          { required: true, message: '请选择知识类型或者填写', trigger: 'change' }
         ],
-        levelList: [
-          { required: true, message: '请选择事件等级（可多选）', trigger: 'change' }
+        keyword: [
+          { required: true, message: '请输入关键词', trigger: 'blur' },
+          { validator: keywords, trigger: 'blur' }
         ],
-        planDetail: [
-          { required: true, message: '请输入预案正文', trigger: 'blur' }
+        summary: [
+          { required: true, message: '请输入知识简介', trigger: 'blur' },
+          { max: 250, message: '最多25个字符', trigger: 'blur' }
+        ],
+        url: [
+          { required: true, message: '请上传附件', trigger: 'blur' }
+        ],
+        author: [
+          { max: 4, message: '最多4个字符', trigger: 'blur' }
         ]
       },
       knowledgeTypeList: [],
@@ -140,6 +171,7 @@ export default {
     onSubmit (form) {
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.addPageLoading = true
           let params = {
             emiAttachmentList: [{}],
             emiKnowledgeBank: {
@@ -171,6 +203,9 @@ export default {
                     type: 'success'
                   });
                   this.$router.push({name: 'emergency-knowledgeBase'})
+                  this.addPageLoading = false
+                } else {
+                  this.addPageLoading = false
                 }
               })
           } else {
@@ -183,6 +218,9 @@ export default {
                     type: 'success'
                   });
                   this.$router.push({name: 'emergency-knowledgeBase'})
+                  this.addPageLoading = false
+                } else {
+                  this.addPageLoading = false
                 }
               })
           }
@@ -210,16 +248,18 @@ export default {
       const knowledgeId = this.$route.query.knowledgeId;
       this.axios.get('A2/knowledgeBankService/' + knowledgeId)
         .then((res) => {
-          this.form.title = res.data.emiKnowledgeBank.title;
-          this.form.typeId = res.data.emiKnowledgeBank.typeId;
-          this.form.keyword = res.data.emiKnowledgeBank.keyword;
-          this.form.summary = res.data.emiKnowledgeBank.summary;
-          this.form.author = res.data.emiKnowledgeBank.author
-          this.form.publishTime = res.data.emiKnowledgeBank.publishTime
-          if (res.data.emiAttachmentList.length > 0) {
-            this.form.attachmentName = res.data.emiAttachmentList[0].attachmentName
-            this.form.url = res.data.emiAttachmentList[0].url
-          }
+          this.form = Object.assign({}, res.data.emiKnowledgeBank, res.data.emiAttachmentList[0])
+          console.log(this.form)
+          // this.form.title = res.data.emiKnowledgeBank.title;
+          // this.form.typeId = res.data.emiKnowledgeBank.typeId;
+          // this.form.keyword = res.data.emiKnowledgeBank.keyword;
+          // this.form.summary = res.data.emiKnowledgeBank.summary;
+          // this.form.author = res.data.emiKnowledgeBank.author
+          // this.form.publishTime = res.data.emiKnowledgeBank.publishTime
+          // if (res.data.emiAttachmentList.length > 0) {
+          //   this.form.attachmentName = res.data.emiAttachmentList[0].attachmentName
+          //   this.form.url = res.data.emiAttachmentList[0].url
+          // }
           if (this.form.attachmentName === null) {
             this.form.attachmentName = '还没上传'
           }

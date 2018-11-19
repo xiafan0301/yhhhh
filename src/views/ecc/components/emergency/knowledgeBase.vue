@@ -22,7 +22,7 @@
           </el-select>
         </el-form-item>
         <el-form-item >
-          <el-input v-model="searchForm.keyword" placeholder="请输入关键词" style="width: 220px" ></el-input>
+          <el-input v-model="searchForm.keyword" placeholder="请输入标题/关键词/上传者" style="width: 220px" ></el-input>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class='selectBtn' @click="doSearch">查询</el-button>
@@ -84,10 +84,10 @@
       width="480px"
       height='285px'
       center>
-      <span >是否确认删除?</span>
+      <span >删除后不可恢复，是否确认删除？</span>
       <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' @click="deletEvent">确定删除</el-button>
-        <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
+        <el-button class='sureBtn' @click="deletEvent">确定</el-button>
+        <el-button class='noSureBtn' @click="deleteVisiable = false">取消</el-button>
       </span>
     </el-dialog>
   </div>
