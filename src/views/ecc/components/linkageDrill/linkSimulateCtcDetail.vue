@@ -1,8 +1,9 @@
 <template>
-  <div class='linkage-detail'>
+  <div class='link-simulate-ctc-detail'>
     <div class='event-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>事件管理</el-breadcrumb-item>
+        <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
+        <el-breadcrumb-item>模拟调度指挥</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>事件详情</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -14,7 +15,12 @@
           <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
-          <img src='../../../../assets/img/temp/treating.png' />
+          <template v-if="status === 'ing'">
+            <img src='../../../../assets/img/temp/handling.png' />
+          </template>
+          <template v-if="status === 'end'">
+            <img src='../../../../assets/img/temp/end.png' />
+          </template>
         </div>
         <div class='basic-detail'>
           <div class='basic-list'>
@@ -35,7 +41,9 @@
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
               <span class="content" style='margin-right: 20px'>{{eventDetailObj.reporterPhone}}</span>
-              <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank" style="text-decoration: none"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
+              <template v-if="status === 'ing'">
+                <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank" style="text-decoration: none"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
+              </template>
             </div>
             <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
@@ -174,7 +182,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackLinkage]" @click='skipFeedBack'>反馈情况</el-button>
+      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkD]" @click='skipFeedBack'>反馈情况</el-button>
     </div>
     <!-- <el-dialog
       title="操作提示"
@@ -221,6 +229,7 @@ export default {
   },
   created () {
     this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
+    this.status = this.$route.query.status;
   },
   mounted () {
     if (this.$route.query.name === '已完成') {
@@ -315,7 +324,7 @@ export default {
       }, 100)
     },
     skipFeedBack () { // 跳到反馈页面
-      this.$router.push({name: 'feedback', query: {eventId: this.$route.query.eventId, taskId: this.$route.query.taskId}});
+      this.$router.push({name: 'link-drill-feed-back', query: {eventId: this.$route.query.eventId, text: 'ctc', taskId: this.$route.query.taskId}});
     },
     back () { // 返回上一页
       this.$router.back(-1);
@@ -410,7 +419,7 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .linkage-detail {
+  .link-simulate-ctc-detail {
     padding: 20px;
     .event-detail-header {
       margin-bottom: 20px;

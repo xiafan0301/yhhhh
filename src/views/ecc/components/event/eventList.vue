@@ -9,21 +9,21 @@
       <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.addEvent]">添加事件</el-button>
       <!-- </template> -->
       <!-- <template v-if="resouceData && resourceBtn[resouceData.reportEvent]"> -->
-      <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.reportEvent]">上报事件</el-button>
+      <!-- <el-button class='selectBtn add-event' @click='skipAddEvent' v-show="resouceData && resourceBtn[resouceData.reportEvent]">上报事件</el-button> -->
       <!-- </template> -->
       <!-- <span>{{resouceData.reportEvent}}</span> -->
       <!-- <el-button class='selectBtn add-event' @click='skipAddEvent'>上报事件</el-button> -->
     </div>
     <div class="clearfix search">
       <el-form :inline="true" :model='selectForm' ref='selectForm' class="demo-form-inline" size="small">
-        <el-form-item style="width: 250px;" prop='reportTime'>
+        <el-form-item style="width: 230px;" prop='reportTime'>
           <el-date-picker
             v-model='selectForm.reportTime'
             type="daterange"
             value-format="yyyy-MM-dd"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 250px;"
+            style="width: 230px;"
           ></el-date-picker>
         </el-form-item>
         <el-form-item style="width: 110px;" prop='eventStatus'>

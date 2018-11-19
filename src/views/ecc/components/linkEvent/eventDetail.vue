@@ -1,5 +1,5 @@
 <template>
-  <div class='linkage-detail'>
+  <div class='link-event-detail'>
     <div class='event-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件管理</el-breadcrumb-item>
@@ -14,7 +14,15 @@
           <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
-          <img src='../../../../assets/img/temp/treating.png' />
+          <template v-if="status === 'never'">
+            <img src='../../../../assets/img/temp/untreated.png' />
+          </template>
+          <template v-if="status === 'end'">
+            <img src='../../../../assets/img/temp/end.png' />
+          </template>
+          <template v-if="status === 'ing'">
+            <img src='../../../../assets/img/temp/treating.png' />
+          </template>
         </div>
         <div class='basic-detail'>
           <div class='basic-list'>
@@ -26,18 +34,17 @@
               <span class='title'>事件等级：</span>
               <span class='content'>{{eventDetailObj.eventLevelName}}</span>
             </div>
-            <div>
-              <span class='title'>报案时间：</span>
-              <span class='content'>{{eventDetailObj.reportTime}}</span>
-            </div>
+            <div><span class='title'>报案时间：</span><span class='content'>{{eventDetailObj.reportTime}}</span></div>
           </div>
           <div class='basic-list'>
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <span class="content" style='margin-right: 20px'>{{eventDetailObj.reporterPhone}}</span>
-              <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank" style="text-decoration: none"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
+              <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
+              <template v-if="status === 'ing'">
+                <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
+              </template>
             </div>
-            <div style='width: 50%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
+            <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{eventDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -92,13 +99,14 @@
           </ul>
         </div>
       </div>
-      <div class='event-progress' v-show='eventDetailObj.processingList && eventDetailObj.processingList.length > 0'>
+      <div class='event-progress'
+        v-show="(eventDetailObj.taskList && eventDetailObj.taskList.length > 0) || (eventDetailObj.processingList && eventDetailObj.processingList.length > 0) || (commentList && commentList.length > 0)">
         <div class='event-progress-header'>
           <div class='flag'></div>
           <p class='event-progress-text'>事件进展</p>
         </div>
         <div class='event-progress-body'>
-          <div class='depart'>
+          <div class='depart' v-show="eventDetailObj.taskList && eventDetailObj.taskList.length > 0">
             <p class='progress-title'>参与部门</p>
             <div class='depart-detail' v-for='(item, index) in eventDetailObj.taskList' :key="'item'+index">
               <p>{{item.departmentName}}</p>
@@ -106,8 +114,8 @@
               <p>{{item.taskStatusName}}</p>
             </div>
           </div>
-          <div class=divide></div>
-          <div class='event-process'>
+          <div class=divide v-show="(eventDetailObj.taskList && eventDetailObj.taskList.length > 0) && (eventDetailObj.processingList && eventDetailObj.processingList.length > 0)"></div>
+          <div class='event-process' v-show="eventDetailObj.processingList && eventDetailObj.processingList.length > 0">
             <p class='progress-title'>事件过程</p>
             <ul>
               <li v-for="(item, index) in eventDetailObj.processingList" :key="'item'+index">
@@ -119,7 +127,6 @@
                 <template v-if='eventDetailObj.processingList.length > 1'>
                   <div class='line'></div>
                 </template>
-                <!-- <div class='line'></div> -->
                 <div class='content-right'>
                   <div class='time'>{{item.createTime}}</div>
                   <div class='content'>{{item.processContent}}（操作人：{{item.opUserName}}）</div>
@@ -130,7 +137,7 @@
               </li>
             </ul>
           </div>
-          <div v-show="commentList && commentList.length > 0" class=divide></div>
+          <div class=divide v-show="commentList && commentList.length > 0"></div>
           <div class='comment' v-show='commentList && commentList.length > 0'>
             <p class='progress-title'>
               APP端互助
@@ -143,7 +150,7 @@
                   <p class='time'>{{item.createTime}}</p>
                 </div>
                 <div class='info-detail'>{{item.content}}</div>
-                <!-- <i class='el-icon-circle-close close' @click="closeComment(item.commentId)"></i> -->
+                <!-- <i class='el-icon-circle-close close' @click="closeComment(item.commentId)" v-show="resouceData && resourceBtn[resouceData.delCommntE]"></i> -->
               </li>
             </ul>
             <template v-if='this.pagination.total > 5'>
@@ -174,7 +181,15 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackLinkage]" @click='skipFeedBack'>反馈情况</el-button>
+      <template v-if="status === 'ing'">
+        <el-button
+          :disabled="isDisabled"
+          :style="[isDisabled === true ? styleObj : '']"
+          v-show="resouceData && resourceBtn[resouceData.feekbackEventLink]"
+          style='background: #0785FD;color:#fff'
+          @click='skipEventFeek'
+        >反馈情况</el-button>
+      </template>
     </div>
     <!-- <el-dialog
       title="操作提示"
@@ -187,40 +202,49 @@
         <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
         <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
       </span>
+    </el-dialog>
+    <el-dialog :visible.sync="dialogVisible" class="img-dialog">
+      <img :src="dialogImageUrl" alt="">
     </el-dialog> -->
   </div>
 </template>
 <script>
-import {ajaxCtx3} from '@/config/config.js';
 import {dictType, resouceData} from '@/config/data.js';
+import {ajaxCtx3} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
-      resourceBtn: {},
       resouceData: resouceData,
-      urlDetail: '',
-      // closeCommentVisiable: false,
+      resourceBtn: {}, // 按钮权限
       isDeleteLoading: false, // 删除评论加载中
-      isDisabled: false, // 反馈按钮是否可点
+      closeCommentVisiable: false,
+      urlDetail: '',
       delCommentId: '', // 要删除的评论Id
       imgSrc: '', // 事件状态图片
-      styleObj: {
-        backgroundColor: '#dddddd'
-      },
+      dialogImageUrl: '',
+      dialogVisible: false,
+      videoList: [], // 视频数据列表
+      imgList: [], // 图片数据列表
+      proVideoList: [], // 视频数据列表
+      proImgList: [], // 图片数据列表
       pagination: {
         total: 0,
         pageNum: 1,
         pageSize: 5
       },
-      videoList: [],
-      imgList: [],
+      styleObj: {
+        backgroundColor: '#dddddd'
+      },
+      isDisabled: false, // 反馈按钮是否可点
+      value: '',
       eventDetailObj: {}, // 事件详情列表
       commentList: [] // 评论列表
     }
   },
   created () {
     this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
+    this.status = this.$route.query.status;
   },
   mounted () {
     if (this.$route.query.name === '已完成') {
@@ -283,7 +307,6 @@ export default {
         let imgs2 = []
         // 获取图片列表容器
         let $el = document.getElementById('proImgs' + index);
-        console.log($el)
         let html = '';
         // 创建img dom
         imgs.forEach(function (src) {
@@ -314,9 +337,16 @@ export default {
         }
       }, 100)
     },
-    skipFeedBack () { // 跳到反馈页面
-      this.$router.push({name: 'feedback', query: {eventId: this.$route.query.eventId, taskId: this.$route.query.taskId}});
+    handlePictureCardPreview (file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
     },
+    skipEventFeek () { // 跳到事件结束页面
+      this.$router.push({name: 'link-feek-back', query: {eventId: this.$route.query.eventId}});
+    },
+    // skipCtcDetail () {
+    //   this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.eventDetailObj.eventType}});
+    // },
     back () { // 返回上一页
       this.$router.back(-1);
     },
@@ -344,9 +374,6 @@ export default {
                   this.imgList.push(item);
                 }
               });
-              if (this.imgList.length > 0) {
-                this.previewPictures(this.imgList);
-              }
               res.data.taskList && res.data.taskList.map((item, index) => {
                 if (item.departmentId === departmentId && item.taskStatus === '6f18f326-d056-41d0-b749-2c9be0ea83d3') {
                   this.isDisabled = true;
@@ -358,6 +385,9 @@ export default {
                     this.previewPicturesOne(index, items.attachmentList);
                   }
                 });
+              }
+              if (this.imgList.length > 0) {
+                this.previewPictures(this.imgList);
               }
             }
           })
@@ -410,13 +440,16 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .linkage-detail {
+  .link-event-detail {
     padding: 20px;
     .event-detail-header {
       margin-bottom: 20px;
     }
     .event-detail-body {
       width: 100%;
+      a {
+        text-decoration: none;
+      }
       .basic, .ctc,.event-progress,.event-summary,.close-reason {
         background: #fff;
         margin-bottom: 2%;
@@ -605,6 +638,9 @@ export default {
                     color: #888888;
                   }
                 }
+                .info-detail {
+                  width: 95%;
+                }
                 .close {
                   position: absolute;
                   font-size: 21px;
@@ -681,6 +717,32 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
+    }
+    /deep/ .el-upload--picture-card {
+      width: 100px;
+      height: 100px;
+      line-height: 100px;
+      background-color: #EAEAEA;
+      border: 1px solid #EAEAEA;
+      position: relative;
+    }
+    /deep/ .el-upload-list--picture-card .el-upload-list__item {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    /deep/ .el-upload--picture-card {
+      display: none;
+    }
+    .img-dialog {
+      /deep/ .el-dialog__header {
+        padding: 40px 20px 10px;
+      }
+       /deep/  .el-dialog__body {
+        text-align: center !important;
+      }
+    }
+    /deep/ .el-upload-list__item-delete {
+      display: none !important;
     }
   }
 </style>

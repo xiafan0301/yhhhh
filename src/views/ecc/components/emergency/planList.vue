@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>预案管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  class='selectBtn btnClass'  @click.native="showEditDialog('add')">添加预案</el-button>
+        <el-button type="primary" size="small"  class='selectBtn btnClass'  @click.native="showEditDialog('add')" v-show="resouceData && resourceBtn[resouceData.addPlan]">添加预案</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -68,8 +68,8 @@
       >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover" @click="modify('modify', scope.row)" title="编辑"></i>
-          <i class="icon-shanchu- icon-hover" @click="del(scope.row)" title="删除"></i>
+          <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyPlan]" @click="modify('modify', scope.row)" title="编辑"></i>
+          <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delPlan]" @click="del(scope.row)" title="删除"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -100,10 +100,12 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       searchForm: {
         planType: '',
         planLevel: '',
@@ -119,11 +121,8 @@ export default {
       planId: ''
     }
   },
-  computed: {
-  },
-  mounted () {
-  },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getTableData();
     this.getEventType();
     this.getEventLevel();

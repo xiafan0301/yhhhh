@@ -28,9 +28,9 @@
               <span>{{ data.resourceName }}</span>
               <span class="operation">
                 <i class="icon-tuodong- icon-hover" @click="canDragNode(data)" title="拖动变换顺序"></i>
-                <i class="icon-xinzeng- icon-hover" @click="onAddLimit(data)" title="添加"></i>
-                <i class="icon-xiugai-1 icon-hover" @click="onEditRole(data)" title="编辑"></i>
-                <i class="icon-shanchu- icon-hover" @click="onDeleteLimit(data)" title="删除"></i>
+                <i class="icon-xinzeng- icon-hover" v-show="resouceData && resourceBtn[resouceData.addResource]" @click="onAddLimit(data)" title="添加"></i>
+                <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyResource]" @click="onEditRole(data)" title="编辑"></i>
+                <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delResource]" @click="onDeleteLimit(data)" title="删除"></i>
               </span>
             </span>
           </el-tree>
@@ -123,9 +123,12 @@
   </div>
 </template>
 <script>
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isAddLoading: false, // 添加权限加载中
       isDeleteLoading: false, // 删除权限加载中
       isEditLoading: false, // 编辑权限加载中
@@ -155,6 +158,9 @@ export default {
       startParentId: null,
       checkedResource: null // 可以拖动的节点名称
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getAuthorityList();

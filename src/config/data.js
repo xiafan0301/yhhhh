@@ -31,7 +31,10 @@ export const resouceData = { // 功能按钮id
   lookEvent: '1ceecfc9-5fa3-4061-a6c7-a4acf195275d', // 查看事件分布
   lookCtc: '72a16fcc-fd68-4e5f-91ea-71d5ac3e5cd7', // 查看调度
   endEvent: '86f4eaba-978c-4f48-88fd-55b486352492', // 结束事件
-  feekback: 'f0492e84-405d-4166-aece-e8be41fbb594', // 反馈情况
+  ctcTask: 'f0492e84-405d-4166-aece-e8be41fbb594', // 调度
+  seePlan: '1f7d40dd-7f5b-442f-9aaf-1002f6c97803', // 查看预案--调度指挥
+  startPlan: 'fb19f195-92db-482e-b70b-829f77104a16', // 启用预案--调度指挥
+  seeAllPlan: '67147b52-58fe-4dce-b605-7cec552d89d8', // 查看更多预案--调度指挥
   addWarehouse: 'bf9a27a5-9618-44ec-bddb-de969a7920c5', // 添加仓库
   modifyWarehouse: '669cd01b-83ec-4617-86c0-b48ea8d08874', // 修改仓库
   delWarehouse: 'a5d3b66b-42bb-4c7e-bdf8-b9e7c2791b28', // 删除仓库
@@ -74,5 +77,25 @@ export const resouceData = { // 功能按钮id
   addResource: '1120df16-85ea-4a1e-815b-5a901ac3b711', // 添加权限
   modifyResource: '394e7683-6016-4485-983a-ea3fd950bad8', // 修改权限
   delResource: '117ecb42-43d8-49d5-a6c9-9f59b03eb248', // 删除权限
-  reportEvent: '56d79684-d6ad-45c6-ab85-4685a575fb02' // 上报事件
+  startUser: '7a94d029-c502-460c-82c5-560070ecbc4c', // 启用禁用用户
+  addVersion: 'e3d3e308-7555-4aeb-aad9-1f0c7fd2c53f', // 新增版本
+  modifyVersion: 'cffce051-9bf6-4a31-ac38-58e5a223d56c', // 编辑版本
+  addDrill: '2524ccaa-c85d-4a77-bc61-754a9091a4b1', // 新建演练
+  modifyDrill: '53e8046d-50bc-472c-9410-f12fc8bc4c14', // 修改演练
+  endDrill: 'e9edafed-ddcd-42c5-ac45-73f3cc9f0c0b', // 结束演练
+  ctcDrill: 'f46acd54-c5e8-41d8-b1af-d9147931d822', // 调度--演练记录
+  lookEventS: 'e64a8c23-c4b3-48d6-a3be-c7be13822ad3', // 查看事件分布--模拟
+  ctcEventS: '9cb90915-e2cf-43bf-bf51-8d55b483309c', // 调度--模拟
+  lookCtcS: 'd7b29896-de0f-43ce-832b-52c425ff4c5a', // 查看调度--模拟
+  endEventS: '8f20c547-3bb7-4db5-a336-635c0675f821', // 结束事件--模拟
+  sendNoticeS: '53e781e4-e8f0-43ee-baae-347efaaacfc6', // 发布公告--模拟
+  modifyNoticeS: '6fc516f4-2bf2-4e24-8191-321dec2451d4', // 修改公告--模拟
+  revokeNoticeS: '670bd7c9-82b2-4b31-af67-51019bb4aadf', // 撤销公告--模拟
+  delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271', // 删除公告--模拟
+  lookCtcLinkage: '26becb41-394d-43c0-b572-584e9c8c9e05', // 查看调度指挥--联动单位--调度指挥
+  feekbackLinkage: '973def65-46e3-49b8-9815-f27ec1b75b65', // 反馈情况--联动单位--调度指挥
+  reportEvent: '08f4262d-cd6f-43e3-a6e6-6f15e3f5e725', // 上报事件--联动单位--事件管理
+  feekbackEventLink: '4b92e4b2-736c-4adc-86d6-d010b55e6e0b', // 反馈情况--联动单位--事件管理
+  feekbackEventLinkY: '69846da4-79b0-4a88-8413-a69562026ec3', // 反馈情况--联动单位--模拟演练--演练记录
+  feekbackEventLinkD: '51e1be74-ed2c-4330-95cf-9e4054d08632' // 反馈情况--联动单位--模拟演练--模拟调度指挥
 }

@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>调度指挥</span></el-breadcrumb-item>
       </el-breadcrumb>
       <a :href="url" target="_blank">
-        <el-button class='selectBtn look-event'>查看事件分布</el-button>
+        <el-button class='selectBtn look-event' v-show="resouceData && resourceBtn[resouceData.lookEvent]">查看事件分布</el-button>
       </a>
     </div>
     <div class="clearfix search-event">
@@ -80,11 +80,13 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width='200px'>
         <template slot-scope="scope">
-          <a :href="urlDetail + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank" @click="handleLook(scope.row.eventId)">
-            <i class="icon-chakan- icon-hover" title="查看"></i>
-          </a>
-          <i class="icon-tiaodu- icon-hover" @click="skipCtcDetail(scope)" title="调度"></i>
-          <i class="icon-jieshu- icon-hover" @click="skipCtcEnd(scope)" title="结束"></i>
+          <template v-if="resouceData && resourceBtn[resouceData.lookCtc]">
+             <a :href="urlDetail + '?eventId=' + scope.row.eventId + '&' + userInfoParam()" target="_blank" @click="handleLook(scope.row.eventId)">
+              <i class="icon-chakan- icon-hover" title="查看"></i>
+            </a>
+          </template>
+          <i class="icon-tiaodu- icon-hover" v-show="resouceData && resourceBtn[resouceData.ctcTask]" @click="skipCtcDetail(scope)" title="调度"></i>
+          <i class="icon-jieshu- icon-hover" v-show="resouceData && resourceBtn[resouceData.endEvent]" @click="skipCtcEnd(scope)" title="结束"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -104,13 +106,15 @@
   </div>
 </template>
 <script>
-import {dictType} from '@/config/data.js';
+import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 import {ajaxCtx3} from '@/config/config.js';
 import { setCookie, getCookie } from '@/utils/util.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       selectForm: {
         eventFlag: true,
         mutualFlag: false,
@@ -127,7 +131,8 @@ export default {
       pagination: { total: 0, pageSize: 10, pageNum: 1 }
     }
   },
-  computed: {
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getOneMonth();

@@ -16,7 +16,7 @@
         </el-form-item>
       </el-form>
       <div class="add-depart-box">
-        <el-button class='selectBtn add-depart' @click="showAddDialog">创建角色</el-button>
+        <el-button class='selectBtn add-depart' @click="showAddDialog" v-show="resouceData && resourceBtn[resouceData.addRole]">创建角色</el-button>
       </div>
     </div>
     <el-table style="width: 100%" :data='roleList' class='event-table'>
@@ -36,10 +36,10 @@
       </el-table-column>
       <el-table-column label="操作" align='center' width="300px">
         <template slot-scope="scope">
-          <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限"></i>
-          <i class="icon-xiugai-1 icon-hover" @click="onEditRole(scope.row)" title="编辑角色"></i>
-          <i class="icon-peizhiquanxian- icon-hover" @click="onEditLimit(scope.row)" title="配置权限"></i>
-          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除角色"></i>
+          <i class="icon-chakan- icon-hover" @click="onSeeLimit(scope.row)" title="查看权限" v-show="resouceData && resourceBtn[resouceData.lookConfig]"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="onEditRole(scope.row)" title="编辑角色" v-show="resouceData && resourceBtn[resouceData.modifyRole]"></i>
+          <i class="icon-peizhiquanxian- icon-hover" @click="onEditLimit(scope.row)" title="配置权限" v-show="resouceData && resourceBtn[resouceData.configResourse]"></i>
+          <i class="icon-shanchu- icon-hover" @click="deleteList(scope.row)" title="删除角色" v-show="resouceData && resourceBtn[resouceData.delRole]"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -144,7 +144,7 @@
           </el-tree>
         </div>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer" v-show="resouceData && resourceBtn[resouceData.configResourse]">
         <el-button @click="onGoEditLimitDialog">配置权限</el-button>
       </span>
     </el-dialog>
@@ -177,9 +177,12 @@
   </div>
 </template>
 <script>
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       isAddLoading: false, // 添加角色加载中
       isDeleteLoading: false, // 删除加载中
       isEditLoading: false,
@@ -220,6 +223,9 @@ export default {
       isShowError: false,
       deleteId: '' // 要删除的角色id
     }
+  },
+  created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
   },
   mounted () {
     this.getAuthorityList();

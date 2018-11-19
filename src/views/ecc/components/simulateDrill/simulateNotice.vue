@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>模拟发布公告</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small"  @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.sendNoticeS]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -47,9 +47,6 @@
       <el-table-column prop="emiMessage.title" label="主题"  align="center"  :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center" :show-overflow-tooltip="true">
-        <!--<template slot-scope="scope">-->
-          <!--{{scope.row.emiMessage.details.slice(0, 70)}}-->
-        <!--</template>-->
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -68,9 +65,9 @@
         width="100" align="center">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover"  title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-shanchu- icon-hover"  title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
-          <i class="icon-chexiao- icon-hover"  title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
+          <i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyNoticeS]" title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delNoticeS]" title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-chexiao- icon-hover" v-show="resouceData && resourceBtn[resouceData.revokeNoticeS]" title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -98,41 +95,16 @@
         <el-button class='noSureBtn' @click="deleteVisiable = false">暂不删除</el-button>
       </span>
     </el-dialog>
-    <canvas id="test-canvas" width="200" heigth="100" style="border:1px solid #c3c3c3;">
-      <p>你的浏览器不支持Canvas</p>
-    </canvas>
   </div>
 </template>
 <script>
 import {formatDate} from '@/utils/method.js';
-function say (valu) {
-  console.log(valu)
-  console.log(1)
-}
-function test (resolve, reject) {
-  var timeOut = Math.random() * 2;
-  console.log('set timeout to: ' + timeOut + ' seconds.');
-  setTimeout(function () {
-    if (timeOut < 1) {
-      console.log('call resolve()...');
-      resolve('200 OK');
-    } else {
-      console.log('call reject()...');
-      reject('timeout in ' + timeOut + ' seconds.');
-    }
-  }, timeOut * 1000);
-}
-new Promise(test).then(function (result) {
-  console.log('成功：' + result);
-}).catch(function (reason) {
-  console.log('失败：' + reason);
-});
-function say1 (somefunction, val) {
-  console.log(this)
-}
+import {resouceData} from '@/config/data.js';
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       searchForm: {
         publishState: '',
         messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc7',
@@ -150,9 +122,8 @@ export default {
       messageId: ''
     }
   },
-  computed: {
-  },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getDepartmentList();
   },
   mounted () {
@@ -161,13 +132,6 @@ export default {
   },
   methods: {
     getTableData () {
-      var canvas = document.getElementById('test-canvas');
-      var ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#FF0000';
-      ctx.fillRect(5, 0, 150, 75);
-      ctx.moveTo(100, 0);
-      ctx.lineTo(200, 100);
-      ctx.stroke();
       let params = {
         'where.beginTime': this.searchForm.publishTime[0],
         'where.endTime': this.searchForm.publishTime[1],

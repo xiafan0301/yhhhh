@@ -10,7 +10,7 @@
     <div style=" width: 21%;" class="warehouse">
       <div style="padding:20px 10px; box-sizing: border-box; background-color: #FAFAFA;" class="clearfix">
         <span style="display: inline-block;float: left; padding-top: 5px;font-size:18px; color: #0785FD; font-weight:bold" >仓库管理</span>
-        <el-button style="float: right;" class="add-material" size="small" @click.native="showEditDialog('add')">添加仓库</el-button>
+        <el-button style="float: right;" class="add-material" size="small" @click.native="showEditDialog('add')" v-show="resouceData && resourceBtn[resouceData.addWarehouse]">添加仓库</el-button>
       </div>
         <div>
           <el-table
@@ -31,14 +31,14 @@
                 <el-popover trigger="click" width="50" style="padding: 0" class="tanchu">
                   <div style="text-align: center; margin: 0">
                     <div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">
-                    <el-button type="text" @click.native="showEditDialog('modify', scope.row)">修改</el-button>
+                      <el-button type="text" @click.native="showEditDialog('modify', scope.row)" v-show="resouceData && resourceBtn[resouceData.modifyWarehouse]">修改</el-button>
                     </div>
                     <div style="margin-bottom: 5px; border-bottom: 1px solid #E8E8E8">
                       <el-button type="text" @click="seeck(scope.row)">查看</el-button>
                     </div>
-                    <el-button  type="text" @click="del('warehouse',scope.row)">删除</el-button>
+                    <el-button  type="text" @click="del('warehouse',scope.row)" v-show="resouceData && resourceBtn[resouceData.delWarehouse]">删除</el-button>
                   </div>
-                <i class="icon iconfont anbutton" style="cursor: pointer;" slot="reference" @click="ii(scope)" v-if="scope.$index > 0">&#xe6f4;</i>
+                  <i class="icon iconfont anbutton" style="cursor: pointer;" slot="reference" @click="ii(scope)" v-if="scope.$index > 0">&#xe6f4;</i>
                 </el-popover>
               </template>
             </el-table-column>
@@ -57,7 +57,7 @@
           </el-form-item>
         </el-form>
         <div style="position: absolute; right: 20px; top: 20px">
-          <el-button type="primary" size="small" class='selectBtn btnClass' @click.native="addmodify('add')" >添加物资</el-button>
+          <el-button type="primary" size="small" class='selectBtn btnClass' @click.native="addmodify('add')" v-show="resouceData && resourceBtn[resouceData.addMaterial]">添加物资</el-button>
         </div>
       </div>
     <el-table
@@ -88,8 +88,8 @@
       >
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row)" title="查看"></i>
-          <i class="icon-xiugai-1 icon-hover" @click="addmodify('modify',scope.row)" title="编辑"></i>
-          <i class="icon-shanchu- icon-hover" @click="del('material',scope.row)" title="删除"></i>
+          <i class="icon-xiugai-1 icon-hover" @click="addmodify('modify',scope.row)" title="编辑" v-show="resouceData && resourceBtn[resouceData.modifyMaterial]"></i>
+          <i class="icon-shanchu- icon-hover" @click="del('material',scope.row)" title="删除" v-show="resouceData && resourceBtn[resouceData.delMaterial]"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -123,10 +123,13 @@
   </div>
 </template>
 <script>
+import {resouceData} from '@/config/data.js';
 var list = [];
 export default {
   data () {
     return {
+      resourceBtn: {},
+      resouceData: resouceData,
       statusindex: 0,
       visible2: false,
       visitType: 0,
@@ -146,9 +149,8 @@ export default {
       messageStatus: ''
     }
   },
-  computed: {
-  },
   created () {
+    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.getTableData();
     this.getTableDatack();
   },

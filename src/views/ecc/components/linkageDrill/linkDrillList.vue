@@ -1,11 +1,11 @@
 <template>
-  <div class="drill-list">
+  <div class="link-drill-list">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>演练记录</span></el-breadcrumb-item>
       </el-breadcrumb>
-      <el-button class='selectBtn add-drill' @click='skipAddDrill' v-show="resouceData && resourceBtn[resouceData.addDrill]">新建演练</el-button>
+      <!-- <el-button class='selectBtn add-drill' @click='skipAddDrill' v-show="resouceData && resourceBtn[resouceData.addDrill]">新建演练</el-button> -->
     </div>
     <div class="clearfix search-drill">
       <el-form style="float: left;width:100%" :inline="true" ref='selectForm' :model='selectForm' class="demo-form-inline" size="small">
@@ -126,12 +126,11 @@ export default {
     },
     skipDrillDetail (scope) { // 跳到详情页
       if (scope.row.eventStatusName === '未处理') {
-        this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-drill-detail', query: {eventId: scope.row.eventId, status: 'never'}});
       } else if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-drill-detail', query: {eventId: scope.row.eventId, status: 'end'}});
       } else {
-        this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
-        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-drill-detail', query: {eventId: scope.row.eventId, status: 'ing', taskId: scope.row.taskId, name: scope.row.taskStatusName}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -194,7 +193,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.drill-list {
+.link-drill-list {
   padding: 20px;
   .header {
     margin-bottom: 10px;

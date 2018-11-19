@@ -1,9 +1,9 @@
 <template>
-  <div class="linkage-data-list">
+  <div class="link-simulate-ctc">
     <div class='header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>调度指挥</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>调度指挥</span></el-breadcrumb-item>
+        <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>模拟调度指挥</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
     <div class="clearfix search">
@@ -154,14 +154,13 @@ export default {
         }
         this.axios.post('A2/taskServices/task/process/' + scope.row.eventId + '/' + scope.row.taskId, params)
           .then((res) => {
-            console.log(res);
           })
           .catch(() => {})
       }
       if (scope.row.eventStatusName === '已结束') {
-        this.$router.push({name: 'linkage-detail-end', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: scope.row.eventId, status: 'end'}});
       } else {
-        this.$router.push({name: 'linkage-detail-reat', query: {eventId: scope.row.eventId, taskId: scope.row.taskId, name: scope.row.taskStatusName}});
+        this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: scope.row.eventId, status: 'end', taskId: scope.row.taskId, name: scope.row.taskStatusName}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -264,7 +263,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-  .linkage-data-list {
+  .link-simulate-ctc {
     padding: 20px;
     .header {
       margin-bottom: 10px;
