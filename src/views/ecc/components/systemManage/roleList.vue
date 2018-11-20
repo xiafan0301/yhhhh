@@ -162,6 +162,7 @@
             class="filter-tree"
             :data="allLimitObj.A"
             show-checkbox
+            check-strictly
             default-expand-all
             node-key="uid"
             ref="tree"
@@ -604,9 +605,9 @@ export default {
         obj.roleAuthList.forEach(item => {
           this.allLimitObj.A.forEach(a => {
             if (a.uid === item.uid) {
-              if (a.children && a.children.length === 0) {
-                keysArr.push(item.uid);
-              }
+              // if (a.children && a.children.length === 0) {
+              keysArr.push(item.uid);
+              // }
             }
           })
           this.allLimitObj.B.forEach(b => {
@@ -617,9 +618,8 @@ export default {
                     keysArr.push(item.uid);
                   }
                 })
-              } else {
-                keysArr.push(item.uid);
               }
+              keysArr.push(item.uid);
             }
           })
           this.allLimitObj.C.forEach(c => {
@@ -630,9 +630,8 @@ export default {
                     keysArr.push(item.uid);
                   }
                 })
-              } else {
-                keysArr.push(item.uid);
               }
+              keysArr.push(item.uid);
             }
           })
           this.allLimitObj.D.forEach(d => {
@@ -643,9 +642,8 @@ export default {
                     keysArr.push(item.uid);
                   }
                 })
-              } else {
-                keysArr.push(item.uid);
               }
+              keysArr.push(item.uid);
             }
           })
           this.allLimitObj.E.forEach(e => {
@@ -656,44 +654,10 @@ export default {
                     keysArr.push(item.uid);
                   }
                 })
-              } else {
-                keysArr.push(item.uid);
               }
+              keysArr.push(item.uid);
             }
           })
-          // if (item.resourceLayer !== 1) {
-          //   keysArr.push(item.resourceName)
-          // }
-          // this.allLimitObj.A.forEach(a => {
-          //   if (a.children && a.children.length > 0) {
-          //     a.children.forEach(b => {
-          //       if (item.resourceName === b.resourceName) {
-          //         keysArr.push(b.resourceName);
-          //       }
-          //       if (b.children && b.children.length > 0) {
-          //         b.children.forEach(c => {
-          //           if (item.resourceName === c.resourceName) {
-          //             keysArr.push(c.resourceName);
-          //           }
-          //           if (c.children && c.children.length > 0) {
-          //             c.children.forEach(d => {
-          //               if (item.resourceName === d.resourceName) {
-          //                 keysArr.push(d.resourceName);
-          //               }
-          //               if (d.children && d.children.length > 0) {
-          //                 d.children.forEach(f => {
-          //                   if (item.resourceName === f.resourceName) {
-          //                     keysArr.push(f.resourceName);
-          //                   }
-          //                 })
-          //               }
-          //             })
-          //           }
-          //         })
-          //       }
-          //     })
-          //   }
-          // })
         })
       }
       this.defaultKeys = JSON.parse(JSON.stringify(keysArr));

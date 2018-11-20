@@ -447,7 +447,7 @@ export default {
       this.$router.push({name: 'drill-replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
-      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
+      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId, status: 'over'}});
     },
     getEventType () { // 获取事件类型
       this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
