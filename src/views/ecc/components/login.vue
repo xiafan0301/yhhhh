@@ -85,6 +85,7 @@ export default {
             if (response) {
               let oUser = response.data;
               // 保存用户手机号到cookie
+              setCookie('cookieDepartmentId', oUser.departmentId, 24, '/');
               setCookie('cookieName', oUser.userName, 24, '/');
               if (_this.isRemember === true) {
                 setCookie('cookieUserName', oUser.userMobile, 24, '/');

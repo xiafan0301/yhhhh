@@ -28,11 +28,11 @@
             </div>
           </el-form-item>
           <el-form-item label="主题" prop= "title">
-            <el-input v-model="form.title" style="width: 500px"></el-input>
+            <el-input v-model="form.title" style="width: 500px"  placeholder="请输入公告标题..."></el-input>
           </el-form-item>
           <el-form-item label="内容" prop = "desc">
             <div style=" position: relative; display: inline-block ">
-              <el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"   :rows="9"></el-input>
+              <el-input type="textarea" v-model="form.desc" style="display: inline-block; width: 500px"   :rows="9" placeholder="请输入公告内容..."></el-input>
               <!--<span style="display: inline-block; position: absolute; right: 0; bottom: -3px">{{form.desc.length}}/10000</span>-->
             </div>
           </el-form-item>

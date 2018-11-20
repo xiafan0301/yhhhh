@@ -15,7 +15,7 @@
         <li><span class="title" style="vertical-align: top">知识简介</span>
           <span class="content" style="margin-left:15px "><el-input type="textarea" v-model="seeKnowledgeList.summary" style="display: inline-block; width: 500px"  :autosize="{ minRows: 8, maxRows: 11}" rows="7" disabled></el-input></span>
         </li>
-        <li><span class="title">附件</span><span class="content" v-if="!attachmentName">无</span><a class="content" :href="url" style="color:#0785FD;text-decoration:none;"> {{attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium" v-if="attachmentName">下载</el-button></a></li>
+        <li><span class="title">附件</span><span class="content" v-if="!attachmentName">无</span><a class="content" :href="url" style="color:#0785FD;text-decoration:none;"> {{attachmentName}}<el-button  type="primary" style="margin-left: 20px" size="medium" v-if="attachmentName">下载</el-button></a><a target="_blank" :href="ajaxCtx2 + '/knowledgeBankService/previewAttach/' + url"><el-button style="margin-left: 20px; color: #0785FD" size="medium" v-if="attachmentName">预览</el-button></a></li>
         <li><span class="title">作者</span><span class="content">{{ seeKnowledgeList.author}}</span><span class="title">发布时间</span> <span class="content">{{seeKnowledgeList.publishTime | moment}}</span></li>
         <li><span class="title">上传用户</span><span class="content">{{ seeKnowledgeList.uploadUser}}</span><span class="title">上传时间</span> <span class="content">{{seeKnowledgeList.createTime | moment}}</span></li>
       </ul>
