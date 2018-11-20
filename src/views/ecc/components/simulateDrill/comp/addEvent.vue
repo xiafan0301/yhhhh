@@ -107,7 +107,7 @@ import mapPoint from '@/components/common/mapPoint.vue';
 import {imgBaseUrl2} from '@/config/config.js';
 export default {
   components: {mapPoint},
-  props: ['status', 'addEventForm'],
+  props: ['status', 'addEventForm', 'eventDataInfo'],
   data () {
     return {
       timer: null,
@@ -143,6 +143,8 @@ export default {
         longitude: '', // 经度
         latitude: '', // 纬度
         eventType: '',
+        eventTypeName: '',
+        eventLevelName: '',
         eventLevel: null,
         casualties: '',
         eventFlag: true,
@@ -182,6 +184,9 @@ export default {
     }
   },
   created () {
+    if (this.eventDataInfo) {
+      this.addForm = {...this.eventDataInfo};
+    }
     this.timer = setTimeout(() => {
       this.getDataInfo();
     }, 500)
@@ -295,6 +300,7 @@ export default {
       let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
+          this.getReplanList();
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
@@ -317,13 +323,17 @@ export default {
               this.dieTip = '';
             }
             this.addForm.casualties = this.dieNumber;
+            this.eventTypeList.map(item => {
+              if (item.dictId === this.addForm.eventType) {
+                this.addForm.eventTypeName = item.dictContent;
+              }
+            });
+            this.eventLevelList.map(item => {
+              if (item.dictId === this.addForm.eventLevel) {
+                this.addForm.eventLevelName = item.dictContent;
+              }
+            });
           }
-          const param = {
-            currentPage: '2',
-            emiEvent: this.addForm
-          }
-          this.$emit('eventData', param);
-          this.getReplanList();
         }
       });
     },
@@ -336,7 +346,13 @@ export default {
         this.axios.get('A2/planServices/plans', {params})
           .then((res) => {
             if (res && res.data.list) {
-              this.$emit('reservePlan', res.data.list);
+              this.replanList = res.data.list;
+              const param = {
+                currentPage: '2',
+                emiEvent: this.addForm,
+                replanList: this.replanList
+              }
+              this.$emit('eventData', param);
             }
           })
           .catch(() => {});

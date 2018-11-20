@@ -40,7 +40,7 @@
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
               <span class='content' style='margin-right:20px;'>{{eventDetailObj.reporterPhone}}</span>
-              <template v-if="status === 'ing'">
+              <template v-if="status !== 'end'">
                 <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
               </template>
             </div>
@@ -181,7 +181,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="status === 'ing'">
+      <template v-if="status === 'ing' && eventDetailObj.taskList.length > 0">
         <el-button
           :disabled="isDisabled"
           :style="[isDisabled === true ? styleObj : '']"
@@ -342,7 +342,7 @@ export default {
       this.dialogVisible = true;
     },
     skipEventFeek () { // 跳到事件结束页面
-      this.$router.push({name: 'link-feek-back', query: {eventId: this.$route.query.eventId}});
+      this.$router.push({name: 'link-feek-back', query: {eventId: this.$route.query.eventId, taskId: this.eventDetailObj.taskList[0].taskId}});
     },
     // skipCtcDetail () {
     //   this.$router.push({name: 'ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.eventDetailObj.eventType}});

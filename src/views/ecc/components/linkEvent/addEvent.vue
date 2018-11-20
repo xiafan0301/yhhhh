@@ -145,7 +145,7 @@ export default {
         reporterPhone: '',
         reportTime: '',
         eventAddress: '',
-        eventSource: 'cee2d05e-97b1-11e8-b784-db60b034ea83',
+        eventSource: 'cee2d05e-97b1-11e8-b784-db60b034ea84',
         eventDetail: '',
         longitude: '', // 经度
         latitude: '', // 纬度
@@ -230,37 +230,37 @@ export default {
     calNumber (val) { // 计算事件情况字数
       this.currentNum = val.length;
     },
-    skipCtcDetail (form) { // 跳到调度指挥方案制定页面
-      this.$refs[form].validate((valid) => {
-        if (valid) {
-          this.addForm.dispatchFlag = true;
-          if (this.addForm.casualties === '无') {
-            this.addForm.casualties = 0;
-          } else if (this.addForm.casualties === '不确定') {
-            this.addForm.casualties = -1;
-          } else if (this.addForm.casualties === '有') {
-            this.addForm.casualties = this.dieNumber;
-          }
-          const param = {
-            emiEvent: this.addForm
-          }
-          this.axios.post('A2/eventServices/event', param.emiEvent)
-            .then((res) => {
-              if (res && res.data) {
-                console.log(res)
-                this.$message({
-                  message: '添加事件成功',
-                  type: 'success'
-                });
-                this.$router.push({name: 'ctc-detail', query: {eventId: res.data}});
-              } else {
-                this.$message.error('添加事件失败');
-              }
-            })
-            .catch(() => {})
-        }
-      });
-    },
+    // skipCtcDetail (form) { // 跳到调度指挥方案制定页面
+    //   this.$refs[form].validate((valid) => {
+    //     if (valid) {
+    //       this.addForm.dispatchFlag = true;
+    //       if (this.addForm.casualties === '无') {
+    //         this.addForm.casualties = 0;
+    //       } else if (this.addForm.casualties === '不确定') {
+    //         this.addForm.casualties = -1;
+    //       } else if (this.addForm.casualties === '有') {
+    //         this.addForm.casualties = this.dieNumber;
+    //       }
+    //       const param = {
+    //         emiEvent: this.addForm
+    //       }
+    //       this.axios.post('A2/eventServices/event', param.emiEvent)
+    //         .then((res) => {
+    //           if (res && res.data) {
+    //             console.log(res)
+    //             this.$message({
+    //               message: '添加事件成功',
+    //               type: 'success'
+    //             });
+    //             this.$router.push({name: 'ctc-detail', query: {eventId: res.data}});
+    //           } else {
+    //             this.$message.error('添加事件失败');
+    //           }
+    //         })
+    //         .catch(() => {})
+    //     }
+    //   });
+    // },
     showMap () {
       if (this.addForm.eventAddress === '') {
         this.oConfig = {};
@@ -336,7 +336,7 @@ export default {
                   message: '添加事件成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'event-list'});
+                this.$router.push({name: 'link-event-list'});
                 this.isAddLoading = false;
               } else {
                 this.$message.error('添加事件失败');

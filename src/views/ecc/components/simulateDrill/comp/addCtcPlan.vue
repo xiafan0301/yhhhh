@@ -184,18 +184,16 @@ export default {
       },
       eventTypeId: null, // 事件类型
       taskList: [], // 要添加的任务列表
-      // reservePlanList: [],
       departmentList: [] // 部门列表
+      // reservePlan: []
     }
   },
   created () {
     this.timer = setTimeout(() => {
       this.getDataInfo();
-      // this.getReplanList();
     }, 1000)
   },
   mounted () {
-    // this.reservePlanList = this.reservePlanList;
     this.getDepartmentList();
   },
   destroyed () {
@@ -205,7 +203,6 @@ export default {
     getDataInfo () {
       if (this.status === 'modify') {
         this.taskList = JSON.parse(JSON.stringify(this.ctcPlanData.taskList));
-        // this.eventTypeId = this.ctcPlanData.eventType;
       }
     },
     calNumber (val) { // 计算事件情况字数
@@ -223,7 +220,7 @@ export default {
     preStep () { // 上一步
       this.$emit('ctcPage', this.skipPage);
     },
-    submitData (form) { // 调度指挥
+    submitData (form) { // 新建演练
       let taskList = [];
       if (this.taskList.length > 0) {
         const data = {
@@ -281,7 +278,22 @@ export default {
       this.$router.push({name: 'drill-replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
-      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
+      console.log('111111')
+      console.log('ctcPlanData', this.ctcPlanData)
+      if (this.ctcPlanData) {
+        let params;
+        if (this.status === 'modify') {
+          params = {
+            eventForm: {...this.ctcPlanData}
+          };
+        } else {
+          params = {
+            eventForm: {...this.ctcPlanData},
+            taskList: [...this.taskList]
+          };
+        }
+        this.$router.push({name: 'drill-enable-replan', params: {data: JSON.stringify(params)}, query: {eventId: this.$route.query.eventId, status: this.status === 'modify' ? 'over' : '', planId: scope.row.planId}});
+      }
     },
     getReplanList () { // 获取预案列表
       // const type = this.ctcPlanData.eventType;

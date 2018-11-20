@@ -159,7 +159,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="status === 'ing'">
+      <template v-if="status === 'ing' && drillDetailObj.taskList.length > 0">
         <el-button
           v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkY]"
           style='background: #0785FD;color:#fff'
@@ -307,11 +307,8 @@ export default {
           .catch(() => {})
       }
     },
-    // skipCtcDetail () {
-    //   this.$router.push({name: 'simulate-ctc-detail', query: {eventId: this.$route.query.eventId, eventType: this.drillDetailObj.eventType}});
-    // },
     skipDrillFeek () {
-      this.$router.push({name: 'link-drill-feed-back', query: {eventId: this.$route.query.eventId, text: 'drill', taskId: this.$route.query.taskId}});
+      this.$router.push({name: 'link-drill-feed-back', query: {eventId: this.$route.query.eventId, text: 'drill', taskId: this.drillDetailObj.taskList[0].taskId}});
     }
   }
 }

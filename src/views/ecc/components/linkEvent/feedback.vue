@@ -213,7 +213,7 @@ export default {
                   message: '反馈成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'linkage-detail-reat', query: {eventId: eventId, taskId: taskId}});
+                this.$router.push({name: 'link-event-detail', query: {eventId: eventId, taskId: taskId, status: 'ing'}});
               } else {
                 this.$message.error('反馈失败');
               }
