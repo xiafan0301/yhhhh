@@ -218,7 +218,12 @@ export default {
                   message: '反馈成功',
                   type: 'success'
                 });
-                this.$router.push({name: 'linkage-detail-reat', query: {eventId: eventId, taskId: taskId}});
+                if (this.$route.quert.text === 'ctc') {
+                  this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: eventId, taskId: taskId}});
+                } else {
+                  this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
+                }
+                // this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
               } else {
                 this.$message.error('反馈失败');
               }

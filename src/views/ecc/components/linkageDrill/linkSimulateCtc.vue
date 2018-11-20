@@ -231,6 +231,7 @@ export default {
         'where.eventStatus': eventStatus,
         'where.eventLevel': eventLevel,
         'where.eventType': eventType,
+        'where.simulateFlag': true,
         pageNum: this.pagination.pageNum
       }
       this.axios.get('A2/taskServices/tasks', {params})

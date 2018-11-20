@@ -223,20 +223,66 @@ export default {
           { required: true, message: '请填写任务内容', trigger: 'blur' },
           { max: 1000, message: '最多可以输入1000个字' }
         ]
-      }
+      },
+      eventTypeList: [],
+      eventLevelList: []
     }
   },
   created () {
-    this.getDrillDetail();
+    this.getEventType();
+    this.getEventLevel();
     this.getReplanDetail();
     this.getDepartmentList();
   },
   mounted () {
+    if (this.$route.params.data) {
+      this.allDataInfo = JSON.parse(this.$route.params.data);
+      this.drillDetailObj = {...this.allDataInfo.eventForm};
+      console.log('allDataInfo', this.allDataInfo)
+      // console.log(this.eventTypeList)
+      // console.log(this.eventLevelList)
+      // if (this.eventTypeList.length > 0) {
+      //   console.log('11111')
+      //   this.eventTypeList.map(item => {
+      //     if (item.dicId === this.drillDetailObj.eventType) {
+      //       this.drillDetailObj.eventTypeName = item.dicContent;
+      //     }
+      //   })
+      // }
+      // if (this.eventLevelList.length > 0) {
+      //   console.log('2222')
+      //   this.eventLevelList.map(item => {
+      //     if (item.dicId === this.drillDetailObj.eventLevel) {
+      //       this.drillDetailObj.eventLevelName = item.dicContent;
+      //     }
+      //   })
+      // }
+    } else {
+      this.getDrillDetail();
+    }
     setTimeout(() => {
       this.dataStr = JSON.stringify(this.taskForm); // 将初始数据转成字符串
     }, 1000);
   },
   methods: {
+    getEventType () { // 获取事件类型
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventTypeId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventTypeList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
+    getEventLevel () { // 获取事件等级
+      this.axios.get('A2/dictServices/dicts/byDictTypeId/' + dictType.eventLevelId)
+        .then((res) => {
+          if (res && res.data) {
+            this.eventLevelList = res.data;
+          }
+        })
+        .catch(() => {})
+    },
     // 预览图片公共方法
     previewPictures (data) {
       setTimeout(() => {
@@ -387,7 +433,6 @@ export default {
       this.taskList.splice(index, 1);
     },
     addTask (form) { // 添加任务
-      console.log('asdasdasd')
       this.isShowTask = true;
     },
     cancelForm (form) { // 取消填写的form
@@ -420,24 +465,105 @@ export default {
       });
     },
     submitData (form) { // 调度指挥
-      const eventId = this.$route.query.eventId;
+      // if (this.status === 'over') {
+      //   this.modifyData(form);
+      // } else {
+      //   this.addData(form);
+      // }
+      // const eventId = this.$route.query.eventId;
+      // let taskList = [];
+      // let params;
+      // if (this.taskList.length > 0) {
+      //   this.isTaskLoading = true;
+      //   if (this.allDataInfo.taskList.length > 0) {
+      //     params = {
+      //       ...this.allDataInfo.eventForm,
+      //       taskList: [...this.taskList, this.allDataInfo.taskList]
+      //     }
+      //   } else {
+      //     params = {
+      //       ...this.allDataInfo.eventForm,
+      //       taskList: [...this.taskList]
+      //     }
+      //   }
+      //   this.axios.post('A2/eventServices/simulateEvent', params)
+      //     .then((res) => {
+      //       if (res) {
+      //         this.$message({
+      //           message: '添加任务成功',
+      //           type: 'success'
+      //         });
+      //         this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+      //         this.isTaskLoading = false;
+      //       } else {
+      //         this.$message.error('添加任务失败');
+      //         this.isTaskLoading = false;
+      //       }
+      //     })
+      //     .catch(() => {});
+      // } else {
+      //   this.$refs[form].validate((valid) => {
+      //     if (valid) {
+      //       this.isTaskLoading = true;
+      //       taskList.push(this.taskForm);
+      //       if (this.allDataInfo.taskList.length > 0) {
+      //         params = {
+      //           ...this.allDataInfo.eventForm,
+      //           taskList: [...taskList, this.allDataInfo.taskList]
+      //         }
+      //       } else {
+      //         params = {
+      //           ...this.allDataInfo.eventForm,
+      //           taskList: [...taskList]
+      //         }
+      //       }
+      //       this.axios.post('A2/eventServices/simulateEvent', params)
+      //         .then((res) => {
+      //           if (res) {
+      //             this.$message({
+      //               message: '添加任务成功',
+      //               type: 'success'
+      //             });
+      //             this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+      //             this.isTaskLoading = false;
+      //           } else {
+      //             this.$message.error('添加任务失败');
+      //             this.isTaskLoading = false;
+      //           }
+      //           // this.isTaskLoading = false;
+      //         })
+      //         .catch(() => {});
+      //     }
+      //   })
+      // }
+      if (this.$route.query.status === 'over') { // 从调度或者再次调度按钮进入
+        console.log('11111111')
+        this.modifyData(form);
+      } else { // 是从新建演练启用进入
+        console.log('222222222222')
+        this.addData(form);
+      }
+    },
+    modifyData (form) {
       let taskList = [];
+      let params;
       if (this.taskList.length > 0) {
         this.isTaskLoading = true;
-        const data = {
-          taskList: this.taskList
+        params = {
+          eventId: this.$route.query.eventId,
+          taskList: [...this.taskList]
         }
-        this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+        this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
           .then((res) => {
             if (res) {
               this.$message({
-                message: '添加任务成功',
+                message: '启用成功',
                 type: 'success'
               });
-              this.$router.push({name: 'drill-detail-reat', query: {eventId: eventId}});
+              this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
               this.isTaskLoading = false;
             } else {
-              this.$message.error('添加任务失败');
+              this.$message.error('启用失败');
               this.isTaskLoading = false;
             }
           })
@@ -447,20 +573,88 @@ export default {
           if (valid) {
             this.isTaskLoading = true;
             taskList.push(this.taskForm);
-            const data = {
-              taskList: taskList
+            params = {
+              eventId: this.$route.query.eventId,
+              taskList: [...this.taskList]
             }
-            this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+            this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
               .then((res) => {
                 if (res) {
                   this.$message({
-                    message: '添加任务成功',
+                    message: '启用成功',
                     type: 'success'
                   });
-                  this.$router.push({name: 'drill-detail-reat', query: {eventId: eventId}});
+                  this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
                   this.isTaskLoading = false;
                 } else {
-                  this.$message.error('添加任务失败');
+                  this.$message.error('启用失败');
+                  this.isTaskLoading = false;
+                }
+                // this.isTaskLoading = false;
+              })
+              .catch(() => {});
+          }
+        })
+      }
+    },
+    addData (form) {
+      let taskList = [];
+      let params;
+      if (this.taskList.length > 0) {
+        this.isTaskLoading = true;
+        if (this.allDataInfo.taskList.length > 0) {
+          params = {
+            ...this.allDataInfo.eventForm,
+            taskList: [...this.taskList, this.allDataInfo.taskList]
+          }
+        } else {
+          params = {
+            ...this.allDataInfo.eventForm,
+            taskList: [...this.taskList]
+          }
+        }
+        this.axios.post('A2/eventServices/simulateEvent', params)
+          .then((res) => {
+            if (res) {
+              this.$message({
+                message: '启用成功',
+                type: 'success'
+              });
+              this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+              this.isTaskLoading = false;
+            } else {
+              this.$message.error('启用失败');
+              this.isTaskLoading = false;
+            }
+          })
+          .catch(() => {});
+      } else {
+        this.$refs[form].validate((valid) => {
+          if (valid) {
+            this.isTaskLoading = true;
+            taskList.push(this.taskForm);
+            if (this.allDataInfo.taskList.length > 0) {
+              params = {
+                ...this.allDataInfo.eventForm,
+                taskList: [...taskList, this.allDataInfo.taskList]
+              }
+            } else {
+              params = {
+                ...this.allDataInfo.eventForm,
+                taskList: [...taskList]
+              }
+            }
+            this.axios.post('A2/eventServices/simulateEvent', params)
+              .then((res) => {
+                if (res) {
+                  this.$message({
+                    message: '启用成功',
+                    type: 'success'
+                  });
+                  this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                  this.isTaskLoading = false;
+                } else {
+                  this.$message.error('启用失败');
                   this.isTaskLoading = false;
                 }
                 // this.isTaskLoading = false;

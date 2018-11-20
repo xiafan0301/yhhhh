@@ -48,7 +48,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item style="width: 130px;" prop='eventSource'>
+        <!-- <el-form-item style="width: 130px;" prop='eventSource'>
           <el-select  placeholder="事件来源" style="width: 100%;" v-model='selectForm.eventSource'>
             <el-option value='全部来源'></el-option>
             <el-option
@@ -58,7 +58,7 @@
               :value="item.dictId"
             ></el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item style="width: 220px;" prop='phoneOrNumber'>
           <el-input placeholder='请输入提交者手机号或事件编号' style='width:220px' v-model='selectForm.phoneOrNumber'></el-input>
         </el-form-item>
@@ -135,7 +135,7 @@ export default {
         reportTime: [], // 时间
         eventStatus: '38a5dfa6-97b5-11e8-b784-d75706a2b83f', // 事件状态
         eventLevel: '全部等级', // 事件等级
-        eventSource: '全部来源', // 事件来源
+        eventSource: 'cee2d05e-97b1-11e8-b784-db60b034ea84', // 事件来源
         phoneOrNumber: '' // 事件编号或提交人手机号
       },
       eventStatusList: [],
