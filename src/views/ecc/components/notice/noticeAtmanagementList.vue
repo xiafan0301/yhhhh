@@ -77,7 +77,7 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        width="200" align="center">
+        width="180" align="center">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
           <i class="icon-xiugai-1 icon-hover"  title="编辑" v-show="resouceData && resourceBtn[resouceData.modifyNotice]" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
@@ -115,6 +115,7 @@
 <script>
 import {formatDate} from '@/utils/method.js';
 import {resouceData} from '@/config/data.js';
+import {getCookie} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -144,6 +145,7 @@ export default {
   mounted () {
     this.getOneMonth();
     this.getTableData();
+    console.log(getCookie('cookieDepartmentId'))
   },
   methods: {
     getTableData () {
@@ -159,6 +161,10 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
+      if (!(getCookie('cookieDepartmentId') === 'ca13989f-f6c6-4bbf-8891-e977eb035e17')) {
+        params['where.publishUnitId'] = getCookie('cookieDepartmentId')
+        params['where.receiverId'] = getCookie('cookieDepartmentId')
+      }
       if (this.searchForm.publishUnitId) {
         params['where.publishUnitId'] = this.searchForm.publishUnitId
       }
