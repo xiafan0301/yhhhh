@@ -25,6 +25,8 @@ import unreatedEvent from '@/views/ecc/components/event/unreatedEvent.vue';
 import eventDetailReat from '@/views/ecc/components/event/eventDetailReat.vue';
 import mutualPerson from '@/views/ecc/components/event/mutualPerson.vue';
 import mutualDetail from '@/views/ecc/components/event/mutualDetail.vue';
+// 统计分析
+import eventStatistics from '@/views/ecc/components/event/statistics.vue';
 // 调度指挥
 import ctc from '@/views/ecc/components/ctc/ctc.vue';
 import ctcList from '@/views/ecc/components/ctc/ctcList.vue';
@@ -172,7 +174,8 @@ export default new Router({
             {path: 'eventEnd', name: 'event-end', component: eventEnd},
             {path: 'unreatedEvent', name: 'event-untreated', component: unreatedEvent},
             {path: 'mutualPerson', name: 'mutual-person', component: mutualPerson},
-            {path: 'mutualDetail', name: 'mutual-detail', component: mutualDetail}
+            {path: 'mutualDetail', name: 'mutual-detail', component: mutualDetail},
+            {path: 'statistics', name: 'event-statistics', component: eventStatistics}
           ]
         },
         {
