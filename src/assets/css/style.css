@@ -145,3 +145,117 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 .el-table .cell {
   line-height: 26px;
 }
+
+
+.e_stat_dp .el-range-separator {
+  width: 30px;
+  text-align: center;
+}
+.e_stat_content .el-loading-spinner {
+  top: 150px;
+}
+
+.e_stat_tb_ld1 {
+  width: 200px;
+  left: auto !important;
+  right: 30px !important;
+}
+.e_stat_tb_ld1 .g2-legend-list {
+  overflow: hidden;
+  width: 200px;
+}
+.e_stat_tb_ld1 .g2-legend-list-item {
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  width: 50%; float: left;
+  padding: 5px;
+}
+.e_stat_tb_ld1 .g2-legend-list-item > div {
+  border-radius: 4px;
+  border: 1px solid #F2F2F2;
+  background-color: #fff;
+  padding: 5px 10px;
+}
+.e_stat_tb_ld1 .g2-legend-list-item > div > div {
+  font-weight: bold;
+  font-size: 14px;
+  color: #666;
+  height: 24px;
+  line-height: 24px;
+  overflow: hidden;
+  position: relative;
+  padding-left: 20px;
+}
+.e_stat_tb_ld1 .g2-legend-list-item > div > div > i {
+  display: inline-block;
+  position: absolute; top: 6px; left: 0px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: rgba(0, 162, 255, 0.4);
+}
+.e_stat_tb_ld1 .g2-legend-list-item > div > div > i > i {
+  display: inline-block;
+  position: absolute; top: 4px; left: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: rgba(0, 162, 255, 1);
+}
+.e_stat_tb_ld1 .g2-legend-list-item > div > p {
+  color: #999;
+  height: 20px;
+  line-height: 20px;
+  overflow: hidden;
+}
+
+.e_stat_tb_ld4 {
+  left: auto !important;
+  right: 30px !important;
+  top: 45px !important;
+  width: 150px !important;
+}
+
+.e_stat_tb_ld4 .g2-legend-list-item {
+  margin-right: 0 !important;
+  margin-bottom: 0 !important;
+  padding: 5px;
+  border-bottom: 1px solid #F2F2F2;
+}
+.e_stat_tb_ld4 .g2-legend-list-item:last-child {
+  border-bottom: 0;
+}
+.e_stat_tb_ld4 .g2-legend-list-item > div {
+  position: relative;
+  height: 50px;
+  padding-left: 10px;
+}
+.e_stat_tb_ld4 .g2-legend-list-item > div > span {
+  position: absolute; top: 10px; left: 0;
+  width: 4px; height: 30px;
+  border-radius: 2px;
+}
+.e_stat_tb_ld4 .g2-legend-list-item > div > i {
+  position: absolute; top: 17px; right: 5px;
+  width: 34px; height: 19px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 100% 100%;
+}
+.e_stat_tb_ld4 .g2-legend-list-item:nth-child(odd) > div > i {
+  background-image: url(../img/stat/stat-051.png);
+}
+.e_stat_tb_ld4 .g2-legend-list-item:nth-child(even) > div > i {
+  background-image: url(../img/stat/stat-052.png);
+}
+.e_stat_tb_ld4 .g2-legend-list-item > div > div > div {
+  color: #999;
+  height: 16px; line-height: 16px;
+}
+.e_stat_tb_ld4 .g2-legend-list-item > div > div > p {
+  color: #666;
+  font-size: 15px;
+  font-weight: 600;
+  padding-top: 7px;
+  height: 27px; line-height: 20px;
+}
