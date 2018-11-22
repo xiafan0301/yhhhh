@@ -145,7 +145,6 @@ export default {
   mounted () {
     this.getOneMonth();
     this.getTableData();
-    console.log(getCookie('cookieDepartmentId'))
   },
   methods: {
     getTableData () {
@@ -161,10 +160,6 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
-      if (!(getCookie('cookieDepartmentId') === 'ca13989f-f6c6-4bbf-8891-e977eb035e17')) {
-        params['where.publishUnitId'] = getCookie('cookieDepartmentId')
-        params['where.receiverId'] = getCookie('cookieDepartmentId')
-      }
       if (this.searchForm.publishUnitId) {
         params['where.publishUnitId'] = this.searchForm.publishUnitId
       }

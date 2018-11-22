@@ -101,12 +101,21 @@ import linkSimulateCtc from '@/views/ecc/components/linkageDrill/linkSimulateCtc
 import linkDrillFeedback from '@/views/ecc/components/linkageDrill/feedback.vue';
 import linkDrillDetail from '@/views/ecc/components/linkageDrill/linkDrillDetail.vue';
 import linkSimulateCtcDetail from '@/views/ecc/components/linkageDrill/linkSimulateCtcDetail.vue';
+import linkSimulateNotice from '@/views/ecc/components/linkageDrill/linkSimulateNotice.vue';
+import linkRealseNotice from '@/views/ecc/components/linkageDrill/linkRealseNotice.vue';
+import linkSeeNotice from '@/views/ecc/components/linkageDrill/linkSeeNotice.vue';
 // 联动单位--事件管理
 import linkEvent from '@/views/ecc/components/linkEvent/event.vue';
 import linkEventList from '@/views/ecc/components/linkEvent/eventList.vue';
 import linkAddEvent from '@/views/ecc/components/linkEvent/addEvent.vue';
 import linkFeekback from '@/views/ecc/components/linkEvent/feedback.vue';
 import linkEventDetail from '@/views/ecc/components/linkEvent/eventDetail.vue';
+// 联动单位--消息管理
+import linkNotice from '@/views/ecc/components/linknotice/notice.vue';
+import linkNoticeAtmanagementList from '@/views/ecc/components/linknotice/noticeAtmanagementList.vue';
+import linkRelse from '@/views/ecc/components/linknotice/relse.vue';
+import linkModify from '@/views/ecc/components/linknotice/modify.vue';
+import linkSee from '@/views/ecc/components/linknotice/see.vue';
 Vue.use(Router);
 
 export default new Router({
@@ -279,7 +288,20 @@ export default new Router({
             {path: 'linkDrillList', name: 'link-drill-list', component: linkDrillList},
             {path: 'linkDrillDetail', name: 'link-drill-detail', component: linkDrillDetail},
             {path: 'linkSimulateCtcDetail', name: 'link-simulate-ctc-detail', component: linkSimulateCtcDetail},
-            {path: 'linkSimulateCtc', name: 'link-simulate-ctc', component: linkSimulateCtc}
+            {path: 'linkSimulateCtc', name: 'link-simulate-ctc', component: linkSimulateCtc},
+            {path: 'linkSimulateNotice', name: 'link-simulate-notice', component: linkSimulateNotice},
+            {path: 'linkRealseNotice', name: 'link-realse-notice', component: linkRealseNotice},
+            {path: 'linkSeeNotice', name: 'link-see-notice', component: linkSeeNotice}
+          ]
+        },
+        {
+          path: 'linkNotice',
+          component: linkNotice,
+          children: [
+            {path: 'linkNoticeAtmanagementList', name: 'link-noticeAtmanagementList', component: linkNoticeAtmanagementList},
+            {path: 'linkRelse', name: 'link-relse', component: linkRelse},
+            {path: 'linkModify', name: 'link-modify', component: linkModify},
+            {path: 'linkSee', name: 'link-see', component: linkSee}
           ]
         }
       ]

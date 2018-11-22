@@ -6,7 +6,7 @@
         <el-breadcrumb-item><span style='color: #0785FD'>模拟发布公告</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.sendNoticeS]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.linckDirrReckNotice]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -50,7 +50,7 @@
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-            <div v-for="(ite, inde) in scope.row.receiveRelations" :key="inde" v-if="inde < scope.row.receiveRelations[scope.row.receiveRelations.length - 1].allgroup">{{ite.receiveUserName}}</div>
+          <div v-for="(ite, inde) in scope.row.receiveRelations" :key="inde" v-if="inde < scope.row.receiveRelations[scope.row.receiveRelations.length - 1].allgroup">{{ite.receiveUserName}}</div>
           <p v-if="scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onOpenAll(scope.row)">展开全部<i class="el-icon-arrow-down"></i></p>
           <p v-if="!scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onCloseAll(scope.row)">收起<i class="el-icon-arrow-up"></i></p>
         </template>
@@ -274,14 +274,14 @@ export default {
     },
     showEditDialog (status) {
       // this.editDialogVisible = flag;
-      this.$router.push({name: 'drill-realseNotice', query: {status: status}});
+      this.$router.push({name: 'link-realse-notice', query: {status: status}});
     },
     modify (status, scope) {
       this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
     },
     see (scope) {
       const status = '查看公告';
-      this.$router.push({name: 'drill-seeNotice', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
+      this.$router.push({name: 'link-see-notice', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
     }
   }
 }

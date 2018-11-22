@@ -2,11 +2,11 @@
   <div class="ba-not">
     <div style="padding-bottom: 20px; position: relative">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
-        <el-breadcrumb-item><span style='color: #0785FD'>模拟发布公告</span></el-breadcrumb-item>
+        <el-breadcrumb-item>消息管理</el-breadcrumb-item>
+        <el-breadcrumb-item><span style='color: #0785FD'>公告管理</span></el-breadcrumb-item>
       </el-breadcrumb>
       <div style="position: absolute; top: -10px; right: 0;">
-        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.sendNoticeS]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
+        <el-button type="primary" size="small" v-show="resouceData && resourceBtn[resouceData.linkRelseNotice]" @click.native="showEditDialog('atgment')" class='selectBtn btnClass'>发布</el-button>
       </div>
     </div>
     <div class="clearfix" style="position: relative; background-color: #FFFFFF; margin-bottom: 16px">
@@ -20,6 +20,14 @@
             end-placeholder="结束日期"
             style="width: 250px;"
           ></el-date-picker>
+        </el-form-item>
+        <el-form-item >
+          <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
+            <el-option label="全部状态" value=''></el-option>
+            <el-option label="待发送" :value="1"></el-option>
+            <el-option label="发送成功" :value="2"></el-option>
+            <el-option label="已撤销" :value="3"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
@@ -44,30 +52,37 @@
       class="notice-table"
     >
       <el-table-column fixed label="序号" width="50"  type="index"></el-table-column>
-      <el-table-column prop="emiMessage.title" label="主题"  align="center"  :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.title" label="主题" min-width="150" align="center"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center" :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.details" label="摘要"  min-width="150" align="center"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.terminal" label="接收者" min-width="100" align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-            <div v-for="(ite, inde) in scope.row.receiveRelations" :key="inde" v-if="inde < scope.row.receiveRelations[scope.row.receiveRelations.length - 1].allgroup">{{ite.receiveUserName}}</div>
-          <p v-if="scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onOpenAll(scope.row)">展开全部<i class="el-icon-arrow-down"></i></p>
-          <p v-if="!scope.row.receiveRelations[scope.row.receiveRelations.length - 1].isShowAllGroup && scope.row.receiveRelations.length > 4" class="expand" @click="onCloseAll(scope.row)">收起<i class="el-icon-arrow-up"></i></p>
+          <span  v-if="scope.row.emiMessage.terminal == 1 || scope.row.emiMessage.terminal == 3">App端</span>
+          <span v-if="scope.row.emiMessage.terminal == 3" >/</span>
+          <span v-for="(item, index) in scope.row.receiveRelations" :key="index" v-if="item.receiveUserName"> {{item.receiveUserName}}/</span>
         </template>
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUserName" label="发布用户"  align="center">
+      <el-table-column prop="emiMessage.publishUserName" label="发布用户" min-width="100" align="center">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishUnitName" label="发布单位"  align="center" :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.publishUnitName" label="发布单位" min-width="100" align="center" :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="emiMessage.publishTime" label="发布时间"  align="center" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="emiMessage.publishTime" label="发布时间" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="emiMessage.publishState" label="发布状态" min-width="100" align="center">
+        <template slot-scope="scope">
+          <span style="color: #1AAC19;" v-if="scope.row.emiMessage.publishState == 1">待发送</span>
+          <span style="color: #0785FD;" v-else-if="scope.row.emiMessage.publishState == 2">发送成功</span>
+          <span style="color: #CCCCCC;" v-else-if="scope.row.emiMessage.publishState == 3" >已撤销</span>
+        </template>
+      </el-table-column>
       <el-table-column
         label="操作"
-        width="100" align="center">
+        width="180" align="center">
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="see(scope.row.emiMessage)" title="查看"></i>
-          <!--<i class="icon-xiugai-1 icon-hover" v-show="resouceData && resourceBtn[resouceData.modifyNoticeS]" title="编辑" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>-->
-          <!--<i class="icon-shanchu- icon-hover" v-show="resouceData && resourceBtn[resouceData.delNoticeS]" title="删除" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>-->
-          <!--<i class="icon-chexiao- icon-hover" v-show="resouceData && resourceBtn[resouceData.revokeNoticeS]" title="撤消" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>-->
+          <i class="icon-xiugai-1 icon-hover"  title="编辑" v-show="resouceData && resourceBtn[resouceData.linckModifyNotice]" @click="modify('modifyatgment',scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-shanchu- icon-hover"  title="删除" v-show="resouceData && resourceBtn[resouceData.linckDelNotice]" @click="del(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 3"></i>
+          <i class="icon-chexiao- icon-hover"  title="撤消" v-show="resouceData && resourceBtn[resouceData.linckReckNotice]" @click="Revoke(scope.row.emiMessage)" v-if="scope.row.emiMessage.publishState === 1" style="margin-left: 5px"></i>
         </template>
       </el-table-column>
     </el-table>
@@ -100,6 +115,7 @@
 <script>
 import {formatDate} from '@/utils/method.js';
 import {resouceData} from '@/config/data.js';
+import {getCookie} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -107,7 +123,7 @@ export default {
       resouceData: resouceData,
       searchForm: {
         publishState: '',
-        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc7',
+        messageType: '39728bba-9b6f-11e8-8a14-3f814d634dc2',
         publishUnitId: null,
         receiverId: null,
         isReceive: '',
@@ -144,42 +160,19 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
+      params['where.publishUnitId'] = getCookie('cookieDepartmentId')
+      params['where.receiverId'] = getCookie('cookieDepartmentId')
       if (this.searchForm.publishUnitId) {
         params['where.publishUnitId'] = this.searchForm.publishUnitId
       }
       this.axios.get('A2/messageService/page?' + $.param(params))
         .then((res) => {
-          res.data.list.map((item) => {
-            item.receiveRelations.map((ite) => {
-              this.DepartmentList.map((aa) => {
-                if (ite.receiveUser === aa.uid) {
-                  ite.receiveUserName = aa.organName
-                }
-              })
-            })
-          })
-          res.data.list.forEach(obj => {
-            if (obj.receiveRelations) {
-              obj.receiveRelations[obj.receiveRelations.length] = {
-                allgroup: 3,
-                isShowAllGroup: true
-              }
-            }
-          });
+          console.log(res);
           this.tableData = res.data.list;
           this.total = res.data.total;
-          console.log(res);
         })
         .catch(() => {
         });
-    },
-    onOpenAll (obj) {
-      obj.receiveRelations[obj.receiveRelations.length - 1].allgroup = 99999;
-      obj.receiveRelations[obj.receiveRelations.length - 1].isShowAllGroup = false;
-    },
-    onCloseAll (obj) {
-      obj.receiveRelations[obj.receiveRelations.length - 1].allgroup = 3;
-      obj.receiveRelations[obj.receiveRelations.length - 1].isShowAllGroup = true;
     },
     getDepartmentList () {
       let params = {
@@ -274,14 +267,14 @@ export default {
     },
     showEditDialog (status) {
       // this.editDialogVisible = flag;
-      this.$router.push({name: 'drill-realseNotice', query: {status: status}});
+      this.$router.push({name: 'link-relse', query: {status: status}});
     },
     modify (status, scope) {
-      this.$router.push({name: 'notice-modify', query: {status: status, messageId: scope.messageId}});
+      this.$router.push({name: 'link-modify', query: {status: status, messageId: scope.messageId}});
     },
     see (scope) {
       const status = '查看公告';
-      this.$router.push({name: 'drill-seeNotice', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
+      this.$router.push({name: 'link-see', query: {status: status, messageId: scope.messageId, publishState: scope.publishState}});
     }
   }
 }
@@ -348,31 +341,6 @@ export default {
       height:35px;
       line-height: 10px;
       color:#666666;
-    }
-    .expand {
-      width:86px; height:26px;
-      background:#FFF;
-      border-radius:12px;
-      line-height: 26px;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
-      border: 1px solid #DBDBDB;
-      cursor: pointer;
-      margin: 0 auto;
-      .row-insert-i {
-        font-size: 12px;
-        color: #999;
-        margin-left: 3px;
-      }
-      &:hover {
-        color: #0785FD;
-        border: 1px solid #0785FD;
-        background:#F4FFFE;
-        .row-insert-i {
-          color: #0785FD;
-        }
-      }
     }
   }
 </style>
