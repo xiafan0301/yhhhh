@@ -174,7 +174,7 @@ export default {
         ]
       ],
       searchForm: {
-        time: [new Date(), new Date()]
+        time: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7), new Date()]
       },
       // 事件总体情况统计数据
       generalData: {
@@ -319,7 +319,7 @@ export default {
             for (let i = 0; i < res.data.length; i++) {
               _data.push({
                 year: res.data[i].time,
-                sales: Number(res.data[i].count)
+                value: Number(res.data[i].count) + 2
               });
             }
             this.setStats3(_data);
@@ -630,6 +630,9 @@ export default {
         tickInterval: 20
       });
       chart.legend(false);
+      chart.tooltip({
+        showTitle: false
+      });
       chart.interval()
         .position('year*sales')
         .size(20)
@@ -644,6 +647,7 @@ export default {
         this.charts.chart3.guide().clear();// 清理guide
         this.charts.chart3.repaint();
         return false;
+        // this.charts.chart3.clear(); // 清理所有
       }
       let _this = this;
       let temp = document.getElementById('stat_3');
@@ -655,33 +659,27 @@ export default {
         height: G2.DomUtil.getHeight(temp)
       });
       chart.source(data);
-      chart.scale({
-        value: {
-          min: 10000
-        },
-        year: {
-          range: [0, 1]
-        }
-      });
-      chart.axis('value', {
-        label: {
-          formatter: function formatter (val) {
-            return (val / 10000).toFixed(1) + 'k';
-          }
-        }
-      });
       chart.tooltip({
+        showTitle: false,
+        itemTpl: '<li style="color:#666;">{year}：{value}&nbsp;件</li>',
         crosshairs: {
-          type: 'line'
+          type: 'y'
         }
       });
       chart.legend(false);
       chart.area().position('year*value')
         .opacity(1)
+        .tooltip(false)
         // .color(['#33C8FF'])
         .color(['l(270) 0:#0785FD 1:#33C8FF'])
         .shape('smooth');
       chart.line().position('year*value')
+        .tooltip('year*value', function (year, value) {
+          return {
+            year: year,
+            value: value
+          };
+        })
         .color('value', ['#33C8FF'])
         .shape('smooth')
         .size(1);
@@ -754,6 +752,9 @@ export default {
       outterView.coord('theta', {
         innerRadius: 0.8,
         radius: 0.8
+      });
+      chart.tooltip({
+        showTitle: false
       });
       outterView.intervalStack()
         .position('percent')
