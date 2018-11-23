@@ -2,8 +2,8 @@
   <div>
     <!-- 面包屑 -->
     <div class="e_stat_bd">
-      <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item>事件管理</el-breadcrumb-item>
+      <el-breadcrumb separator-class="el-icon-ESlint-right">
+        <el-breadcrumb-item>事件互助管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>统计分析</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -20,6 +20,7 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            :editable="false"
             :picker-options="pickerOptions2">
           </el-date-picker>
         </el-form-item>
@@ -35,7 +36,7 @@
           <div>
             <span></span>
             <div>
-              <h3>2088</h3>
+              <h3>{{generalData.totalCount}}</h3>
               <p>事件数量</p>
             </div>
           </div>
@@ -44,7 +45,7 @@
           <div>
             <span></span>
             <div>
-              <h3>2088</h3>
+              <h3>{{generalData.finishCount}}</h3>
               <p>处理完成</p>
             </div>
           </div>
@@ -53,7 +54,7 @@
           <div>
             <span></span>
             <div>
-              <h3>2088</h3>
+              <h3>{{generalData.processingCount}}</h3>
               <p>处理中</p>
             </div>
           </div>
@@ -62,7 +63,7 @@
           <div>
             <span></span>
             <div>
-              <h3>2088</h3>
+              <h3>{{generalData.pendingCount}}</h3>
               <p>待处理</p>
             </div>
           </div>
@@ -105,14 +106,41 @@
           <div class="stat_map_cl">
             <h4 class="stat_title">事件高发地点分析</h4>
             <ul class="stat_map_cl_ul">
-              <li v-for="(item) in 5" :key="item">
-                <span></span>
-                <h5>桥江镇</h5>
-                <div><span>124</span>&nbsp;件</div>
-              </li>
+              <template v-if="polygons && polygons.length > 0">
+                <li v-if="polygons.length > 0">
+                  <span></span>
+                  <h5>{{polygons[0].areaName}}</h5>
+                  <div><span>{{polygons[0].eventCount}}</span>&nbsp;件</div>
+                </li>
+                <li v-if="polygons.length > 1">
+                  <span></span>
+                  <h5>{{polygons[1].areaName}}</h5>
+                  <div><span>{{polygons[1].eventCount}}</span>&nbsp;件</div>
+                </li>
+                <li v-if="polygons.length > 2">
+                  <span></span>
+                  <h5>{{polygons[2].areaName}}</h5>
+                  <div><span>{{polygons[2].eventCount}}</span>&nbsp;件</div>
+                </li>
+                <li v-if="polygons.length > 3">
+                  <span></span>
+                  <h5>{{polygons[3].areaName}}</h5>
+                  <div><span>{{polygons[3].eventCount}}</span>&nbsp;件</div>
+                </li>
+                <li v-if="polygons.length > 4">
+                  <span></span>
+                  <h5>{{polygons[4].areaName}}</h5>
+                  <div><span>{{polygons[4].eventCount}}</span>&nbsp;件</div>
+                </li>
+              </template>
             </ul>
           </div>
           <div class="stat_map_cr" id="drawEdge"></div>
+          <div class="de-close-btn">
+            <span class="de-btn-r" @click="setMapStatus('1')"></span>
+            <span class="de-btn-fd" @click="setMapStatus('2')" :class="{'de-btn-dis': mapScale.fd}"></span>
+            <span class="de-btn-sx" @click="setMapStatus('3')" :class="{'de-btn-dis': mapScale.sx}"></span>
+          </div>
         </div>
       </div>
     </div>
@@ -122,10 +150,18 @@
 import G2 from '@antv/g2';
 import { View } from '@antv/data-set';
 import {mapXupuxian} from '@/config/config.js';
+import {formatDate} from '@/utils/util.js';
 export default {
   data () {
     return {
       searchLoading: false,
+      loadingHandler: true,
+      charts: {
+        chart1: null,
+        chart2: null,
+        chart3: null,
+        chart4: null
+      },
       colors: [
         ['#00A2FF', '#0080FE', '#0054FE', '#BF2CFE', '#218FD5'],
         [
@@ -138,6 +174,13 @@ export default {
       ],
       searchForm: {
         time: [new Date(), new Date()]
+      },
+      // 事件总体情况统计数据
+      generalData: {
+        finishCount: 0,
+        pendingCount: 0,
+        processingCount: 0,
+        totalCount: 0
       },
       pickerOptions2: {
         shortcuts: [
@@ -183,13 +226,23 @@ export default {
             }
           }
         ]
+      },
+      amap: null,
+      sonPolygons: null,
+      polygons: null,
+      zoom: 10,
+      zooms: [9, 17],
+      mapScale: {
+        fd: false,
+        sx: false
       }
     }
   },
   mounted () {
     this.intitReportSize();
     this.initMap();
-    this.initStats();
+    this.getSonBoundary();
+    this.searchSubmit();
   },
   methods: {
     intitReportSize () {
@@ -199,40 +252,267 @@ export default {
         $list.height(iw * 0.4);
       }
     },
-    initStats () {
-      this.setStats1(); // 统计图表1
-      this.setStats2(); // 统计图表2
-      this.setStats3(); // 统计图表3
-      this.setStats4(); // 统计图表4
+    searchSubmit () {
+      this.searchLoading = true;
+      this.loadingHandler = true;
+      this.initDatas();
     },
-    setStats1 () {
+    initDatas () {
+      // 事件总体情况统计
+      this.getGeneralData();
+      // 事件性质统计
+      this.getPropertyData();
+      // 事件数量趋势分析
+      this.getQuantitativetyData();
+      // 事件等级分析
+      this.getRankAnalysisData();
+      // 事件类型分析
+      this.getTypeAnalysisData();
+      // 事件高发地点分析
+      this.getHotLocationData();
+    },
+    // 事件总体情况统计
+    getGeneralData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/generalCondition/?' + $.param(params))
+        .then((res) => {
+          if (res && res.data) {
+            // console.log('事件总体情况统计', res);
+            this.generalData = res.data;
+            this.loadHandler();
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 事件性质统计
+    getPropertyData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/propertyStatistics/?' + $.param(params))
+        .then((res) => {
+          if (res && res.data) {
+            // console.log('事件性质统计', res);
+            let _data = [{
+              value: Number(res.data.eventCount),
+              name: '应急事件'
+            }, {
+              value: Number(res.data.mutualCount),
+              name: '民众互助'
+            }, {
+              value: Number(res.data.otherCount),
+              name: '其它'
+            }];
+            this.setStats4(_data);
+            this.loadHandler();
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 事件数量趋势分析
+    getQuantitativetyData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/quantitativeTrend/?' + $.param(params))
+        .then((res) => {
+          if (res) {
+            // console.log('事件数量趋势分析', res);
+            let _data = [];
+            for (let i = 0; i < res.data.length; i++) {
+              _data.push({
+                year: res.data[i].time,
+                sales: Number(res.data[i].count)
+              });
+            }
+            this.setStats3(_data);
+            this.loadHandler();
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 事件等级分析
+    getRankAnalysisData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/rankAnalysis/?' + $.param(params))
+        .then((res) => {
+          if (res && res.data) {
+            // console.log('事件等级分析', res);
+            let _data = [];
+            for (let i = 0; i < res.data.length; i++) {
+              _data.push({
+                item: res.data[i].level,
+                count: res.data[i].count,
+                percent: isNaN(res.data[i].proportion) ? 0 : (Number(res.data[i].proportion) / 100)
+              });
+            }
+            this.setStats1(_data);
+            this.loadHandler();
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 事件类型分析
+    getTypeAnalysisData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/typeAnalysis/?' + $.param(params))
+        .then((res) => {
+          // console.log('事件类型分析', res);
+          if (res && res.data) {
+            let _data = [];
+            for (let i = 0; i < res.data.length; i++) {
+              _data.push({
+                year: res.data[i].type,
+                sales: Number(res.data[i].count)
+              });
+            }
+            this.setStats2(_data);
+            this.loadHandler();
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 事件高发地点分析
+    getHotLocationData () {
+      let params = this.getSearchParams();
+      this.axios.get('A2/eventCountServices/hotLocation/?' + $.param(params))
+        .then((res) => {
+          if (res && res.data) {
+            // console.log('事件高发地点分析', res);
+            this.polygons = res.data;
+            this.setsonPolygons(res.data);
+          }
+        })
+        .catch(() => { this.loadHandler(); })
+    },
+    // 查询参数
+    getSearchParams () {
+      return {
+        'where.reportTimeStart': formatDate(this.searchForm.time[0], 'yyyy-MM-dd'),
+        'where.reportTimeEnd': formatDate(this.searchForm.time[1], 'yyyy-MM-dd')
+      }
+    },
+    setsonPolygons (data) {
       let _this = this;
-      let data = [{
-        item: '事例一',
-        count: 40,
-        percent: 0.4
-      }, {
-        item: '事例二',
-        count: 21,
-        percent: 0.21
-      }, {
-        item: '事例三',
-        count: 17,
-        percent: 0.17
-      }, {
-        item: '事例四',
-        count: 13,
-        percent: 0.13
-      }, {
-        item: '事例五',
-        count: 9,
-        percent: 0.09
-      }];
+      if (this.amap && this.sonPolygons) {
+        // console.log('remove')
+        this.amap.remove(this.sonPolygons);
+        this.sonPolygons = null;
+      }
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] && data[i].borderList) {
+          // let oDis = result.districtList[0];
+          // console.log('this.tableData[i]', this.tableData[i]);
+          let borderList = data[i].borderList;
+          let bounds = [];
+          for (let j = 0; j < borderList.length; j++) {
+            if (borderList[j].longitude > 0 && borderList[j].latitude > 0) {
+              bounds.push(new AMap.LngLat(borderList[j].longitude, borderList[j].latitude));
+            }
+          }
+          // console.log('setsonPolygons bounds', bounds);
+          // 行政区边界渲染，使用多边形覆盖物实现
+          // let _name = data[i].areaName;
+          let polygonStyles = {
+            n: {
+              fillOpacity: 1, // 0.95
+              strokeColor: '#fff',
+              fillColor: '#088bfd'
+            },
+            s: {
+              fillOpacity: 1, // 0.95
+              strokeColor: '#fff',
+              fillColor: '#f9783f'
+            }
+          };
+          let polygon = new AMap.Polygon(Object.assign({
+            map: this.amap,
+            path: [bounds],
+            bubble: false, // 是否将覆盖物的鼠标或touch等事件冒泡到地图上
+            zIndex: 12,
+            extData: {
+              // areaName: _name
+            }
+          }, this.getPolygonStyles(i)));
+          if (!this.sonPolygons) {
+            this.sonPolygons = [];
+          }
+          this.sonPolygons.push(polygon);
+        }
+      }
+      // console.log('this.sonPolygons', this.sonPolygons)
+    },
+    getPolygonStyles (_index) {
+      let _o = {
+        fillOpacity: 1,
+        strokeColor: '#fff'
+      };
+      let fillColors = ['#00A2FF', '#0F70C4', '#0054FE', '#4E2DF6', '#BF2CFE'];
+      if (_index < 5) {
+        _o.strokeWeight = 4;
+        _o.fillColor = fillColors[_index];
+      } else {
+        _o.fillColor = '#088bfd';
+        _o.strokeWeight = 1;
+      }
+      return _o;
+    },
+    // 行政边界
+    getSonBoundary () {
+      let _this = this;
+      AMap.service('AMap.DistrictSearch', function () { // 回调函数
+        // 实例化DistrictSearch
+        let districtSearch = new AMap.DistrictSearch({
+          level: 'biz_area', // country、province、city、district、biz_area
+          subdistrict: 0, // 返回下一级行政区
+          showbiz: true, // 最后一级返回街道信息
+          extensions: 'all' // 返回行政区边界坐标组等具体信息
+        });
+        // 使用districtSearch对象调用行政区查询的功能
+        districtSearch.search(mapXupuxian.adcode, function (status, result) {
+          // console.log('result', result)
+          if (result && result.districtList && result.districtList[0]) {
+            let oDis = result.districtList[0];
+            let bounds = oDis.boundaries;
+            // 行政区边界渲染，使用多边形覆盖物实现
+            let polygon = new AMap.Polygon({
+              map: _this.amap,
+              strokeWeight: 2,
+              path: bounds,
+              fillOpacity: 0, // 0.95
+              fillColor: '#02269e', // 0b21a0 032488
+              strokeColor: '#0dd8ff',
+              strokeOpacity: 0.5,
+              zIndex: 10
+            });
+            polygon.on('click', function (e) {
+            });
+            polygon.on('dblclick', function (e) {
+              _this.amap.setZoom(_this.amap.getZoom() + 1);
+            });
+          }
+          // map.setFitView();
+        })
+        // map.setZooms(9.8);
+      });
+    },
+    loadHandler () {
+      if (this.loadingHandler) {
+        setTimeout(() => {
+          this.searchLoading = false;
+        }, 500);
+        this.loadingHandler = false;
+      }
+    },
+    setStats1 (data) {
+      if (this.charts.chart1) {
+        this.charts.chart1.source(data);
+        this.charts.chart1.guide().clear();// 清理guide
+        this.charts.chart1.repaint();
+        return false;
+      }
+      let _this = this;
       let temp = document.getElementById('stat_1');
       let chart = new G2.Chart({
         container: 'stat_1',
         forceFit: true,
-        padding: [ 12, 12 * 10, 12, 0 ],
+        padding: [ 12, 12 * 14, 12, 0 ],
         width: G2.DomUtil.getWidth(temp),
         height: G2.DomUtil.getHeight(temp)
       });
@@ -259,7 +539,7 @@ export default {
         offsetX: -11 * 12,
         // itemGap: 20, // 图例项之间的间距
         useHtml: true,
-        containerTpl: '<div class="g2-legend e_stat_tb_ld1" style="position:absolute;top:20px;right:60px;width:auto;">' +
+        containerTpl: '<div class="g2-legend e_stat_tb_ld1 as-trans50-t" style="position:absolute;top:20px;right:60px;width:auto;">' +
         '<ul class="g2-legend-list" style="list-style-type:none;margin:0;padding:0;"></ul>' +
         '</div>',
         itemTpl: (value, color, checked, index) => {
@@ -270,8 +550,8 @@ export default {
             '" data-value="' + value + '" data-color=' + color + '>' +
             '<div>' +
               '<div><i style="background-color: rgba(' + _this.colors[1][index][0] + ', ' + _this.colors[1][index][1] + ', ' + _this.colors[1][index][2] + ', 0.4)">' +
-              '<i style="background-color: rgba(' + _this.colors[1][index][0] + ', ' + _this.colors[1][index][1] + ', ' + _this.colors[1][index][2] + ', 1)"></i></i>' + value + '</div>' +
-              '<p>' + '1级事件(件）' + '' + '</p>' +
+              '<i style="background-color: rgba(' + _this.colors[1][index][0] + ', ' + _this.colors[1][index][1] + ', ' + _this.colors[1][index][2] + ', 1)"></i></i>' + data[index].count + '</div>' +
+              '<p>' + value + '' + '</p>' +
             '</div>' +
           '</li>';
         }
@@ -298,8 +578,15 @@ export default {
           stroke: '#fff'
         });
       chart.render();
+      this.charts.chart1 = chart;
     },
-    setStats2 () {
+    setStats2 (data) {
+      if (this.charts.chart2) {
+        this.charts.chart2.source(data);
+        this.charts.chart2.guide().clear();// 清理guide
+        this.charts.chart2.repaint();
+        return false;
+      }
       const Shape = G2.Shape;
       /*  圆柱（圆角柱状图） */
       Shape.registerShape('interval', 'cylinder', {
@@ -329,31 +616,6 @@ export default {
         }
       });
       let _this = this;
-      let data = [{
-        year: '1951 年',
-        sales: 38
-      }, {
-        year: '1952 年',
-        sales: 52
-      }, {
-        year: '1956 年',
-        sales: 61
-      }, {
-        year: '1957 年',
-        sales: 145
-      }, {
-        year: '1958 年',
-        sales: 48
-      }, {
-        year: '1959 年',
-        sales: 38
-      }, {
-        year: '1960 年',
-        sales: 38
-      }, {
-        year: '1962 年',
-        sales: 38
-      }];
       let temp = document.getElementById('stat_2');
       let chart = new G2.Chart({
         container: 'stat_2',
@@ -373,37 +635,16 @@ export default {
         .color('year', [ 'l(90) 0:#009AFF 1:#00C6FF' ])
         .shape('cylinder');
       chart.render();
+      this.charts.chart2 = chart;
     },
-    setStats3 () {
+    setStats3 (data) {
+      if (this.charts.chart3) {
+        this.charts.chart3.source(data);
+        this.charts.chart3.guide().clear();// 清理guide
+        this.charts.chart3.repaint();
+        return false;
+      }
       let _this = this;
-      let data = [{
-        year: '1991',
-        value: 15468
-      }, {
-        year: '1992',
-        value: 16100
-      }, {
-        year: '1993',
-        value: 15900
-      }, {
-        year: '1994',
-        value: 17409
-      }, {
-        year: '1995',
-        value: 17000
-      }, {
-        year: '1996',
-        value: 31056
-      }, {
-        year: '1997',
-        value: 31982
-      }, {
-        year: '1998',
-        value: 32040
-      }, {
-        year: '1999',
-        value: 33233
-      }];
       let temp = document.getElementById('stat_3');
       let chart = new G2.Chart({
         container: 'stat_3',
@@ -444,22 +685,22 @@ export default {
         .shape('smooth')
         .size(1);
       chart.render();
+      this.charts.chart3 = chart;
     },
-    setStats4 () {
+    setStats4 (data) {
+      if (this.charts.chart4) {
+        this.charts.chart4.source(data);
+        this.charts.chart4.guide().clear();// 清理guide
+        this.charts.chart4.repaint();
+        return false;
+      }
       let _this = this;
-      let data = [{
-        value: 451,
-        name: '民众互助'
-      }, {
-        value: 1048,
-        name: '应急事件'
-      }];
       // chart
       let temp = document.getElementById('stat_4');
       let chart = new G2.Chart({
         container: 'stat_4',
         forceFit: true,
-        padding: [ 12 * 1, 12 * 12, 12 * 1, 12 * 1 ],
+        padding: [ 12 * 1, 12 * 14, 12 * 1, 12 * 1 ],
         width: G2.DomUtil.getWidth(temp),
         height: G2.DomUtil.getHeight(temp)
       });
@@ -474,7 +715,7 @@ export default {
         offsetX: -11 * 11,
         // itemGap: 20, // 图例项之间的间距
         useHtml: true,
-        containerTpl: '<div class="g2-legend e_stat_tb_ld4" style="position:absolute;top:20px;right:30px;width:auto;left: auto;">' +
+        containerTpl: '<div class="g2-legend e_stat_tb_ld4 as-trans50-t" style="position:absolute;top:20px;right:30px;width:auto;left: auto;">' +
         '<ul class="g2-legend-list" style="list-style-type:none;margin:0;padding:0;"></ul>' +
         '</div>',
         itemTpl: (value, color, checked, index) => {
@@ -485,7 +726,7 @@ export default {
             '" data-value="' + value + '" data-color=' + color + '>' +
             '<div>' +
               '<span style="background-color: ' + color + ';"></span>' +
-              '<div><p>1231</p><div>应急事件(件)</div>' +
+              '<div><p>' + data[index].value + '</p><div>' + data[index].name + '(件)</div>' +
               '</div>' +
               '<i></i>' +
             '</div>' +
@@ -515,7 +756,7 @@ export default {
       });
       outterView.intervalStack()
         .position('percent')
-        .color('name', ['#bf2cfe', '#1774f2'])
+        .color('name', ['#bf2cfe', '#1774f2', '#228ed6'])
         .label('name')
         .tooltip('name*percent', function (item, percent) {
           percent = (percent * 100).toFixed(2) + '%';
@@ -543,7 +784,7 @@ export default {
       });
       middleView.intervalStack()
         .position('percent')
-        .color('name', ['#d98ff9', '#85b3f3'])
+        .color('name', ['#d98ff9', '#85b3f3', '#8ac2e5'])
         // .label('name')
         .tooltip('name*percent', function (item, percent) {
           percent = (percent * 100).toFixed(2) + '%';
@@ -571,7 +812,7 @@ export default {
       });
       innerView.intervalStack()
         .position('percent')
-        .color('name', ['#efd2fc', '#cee1fa'])
+        .color('name', ['#efd2fc', '#cee1fa', '#d0e6f4'])
         // .label('name')
         .tooltip('name*percent', function (item, percent) {
           percent = (percent * 100).toFixed(2) + '%';
@@ -585,6 +826,7 @@ export default {
         });
       // render
       chart.render();
+      this.charts.chart4 = chart;
     },
 
     // 地图
@@ -598,12 +840,24 @@ export default {
         zooms: this.zooms
       });
       map.setMapStyle('amap://styles/light');
+      this.amap = map;
     },
-    searchSubmit () {
-      this.searchLoading = true;
-      setTimeout(() => {
-        this.searchLoading = false;
-      }, 2000);
+    setMapStatus (status) {
+      if (this.amap) {
+        if (status === '1') {
+          this.amap.setZoomAndCenter(this.zoom, mapXupuxian.center);
+        } else if (status === '2') {
+          let iZoom = this.amap.getZoom() + 1;
+          if (iZoom <= this.zooms[1]) {
+            this.amap.setZoom(iZoom);
+          }
+        } else if (status === '3') {
+          let iZoom = this.amap.getZoom() - 1;
+          if (iZoom >= this.zooms[0]) {
+            this.amap.setZoom(iZoom);
+          }
+        }
+      }
     }
   }
 }
@@ -690,7 +944,7 @@ export default {
     padding: 10px 20px 20px 20px;
     > .stat_map_c {
       position: relative;
-      width: 100%; height: 600px;
+      width: 100%; height: 1000px;
       background-color: #fff;
       > .stat_map_cl {
         width: 300px; height: 100%;
@@ -767,5 +1021,43 @@ export default {
   }
   .stat_tt_item {
     position: relative;
+  }
+
+  .de-close-btn {
+    position: absolute; top: 10px; right: 10px; z-index:11;
+    > span {
+      float: left;
+      display: inline-block;
+      background-color: #f7f7f7;
+      border: 1px solid #D3D3D3;
+      background-repeat: no-repeat;
+      background-position: center center;
+      -webkit-background-size: 60% 60%;
+      background-size: 60% 60%;
+      width: 40px; height: 40px;
+      cursor: pointer;
+    }
+    > .de-btn-r {
+      background-image: url(../../../../assets/img/icons/draw/de-010.png);
+      border-radius: 8px;
+      margin-right: 12px;
+    }
+    > .de-btn-fd {
+      background-image: url(../../../../assets/img/icons/draw/de-011.png);
+      border-radius: 8px 0 0 8px;
+      &.de-btn-dis {
+        background-image: url(../../../../assets/img/icons/draw/de-011d.png);
+        cursor: default;
+      }
+    }
+    > .de-btn-sx {
+      background-image: url(../../../../assets/img/icons/draw/de-012.png);
+      border-left: 0;
+      border-radius: 0 8px 8px 0;
+      &.de-btn-dis {
+        background-image: url(../../../../assets/img/icons/draw/de-012d.png);
+        cursor: default;
+      }
+    }
   }
 </style>
