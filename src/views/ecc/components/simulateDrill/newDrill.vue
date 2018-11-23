@@ -13,53 +13,20 @@
         <div class="step-box" :class="[$store.state.currentPage === 2 ? 'active-step' : '']">2.制定方案</div>
         <div class="step-box" :class="[$store.state.currentPage === 3 ? 'active-step' : '']">3.确定发布</div>
       </div>
-      <template v-if="$store.state.currentPage === 1">
+      <!-- <template v-if="$store.state.currentPage === 1"> -->
         <div
           is="addEvent"
+          v-show="$store.state.currentPage === 1"
           :status="status">
         </div>
-        <!-- <div
-          is="addEvent"
-          @eventData="eventFromChild"
-          :eventDataInfo="eventDataInfo"
-          :addEventForm="ctcDataInfo"
-          :status="status">
-        </div> -->
-      </template>
-      <!-- <div
-        is="addEvent"
-        v-if="currentPage === '1'"
-        @eventData="eventFromChild"
-        :eventDataInfo="eventDataInfo"
-        @reservePlan="reservePlanFromChild"
-        :addEventForm="dataInfo"
-        :status="status">
-      </div> -->
-      <template v-if="$store.state.currentPage === 2">
+      <!-- </template>
+      <template v-if="$store.state.currentPage === 2"> -->
         <div
           is="addCtcPlan"
+          v-show="$store.state.currentPage === 2"
           :status="status"
         ></div>
-        <!-- <div
-          is="addCtcPlan"
-          v-if="currentPage === '2'"
-          @ctcData="ctcFromChild"
-          @ctcPage="pageFromChild"
-          :ctcPlanData="ctcDataInfo"
-          :status="status"
-          :reservePlanList="reservePlanList.length > 0 && reservePlanList"
-        ></div> -->
-      </template>
-      <!-- <div
-        is="addCtcPlan"
-        v-if="currentPage === '2'"
-        @ctcData="ctcFromChild"
-        @ctcPage="pageFromChild"
-        :ctcPlanData="dataInfo"
-        :eventForm="eventData && eventData"
-        :status="status"
-        :reservePlanList="reservePlanList && reservePlanList"
-      ></div> -->
+      <!-- </template> -->
     </div>
   </div>
 </template>
@@ -73,9 +40,7 @@ export default {
     return {
       currentText: '',
       activeStep: 1,
-      // currentPage: '1',
       eventDataInfo: null,
-      // eventData: null,
       taskList: [],
       ctcDataInfo: {},
       status: '',

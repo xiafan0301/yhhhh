@@ -79,7 +79,7 @@
   </div>
 </template>
 <script>
-
+import store from '@/store/store.js';
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
@@ -130,8 +130,8 @@ export default {
       } else if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
       } else {
-        this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
-        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
+        // this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -161,6 +161,7 @@ export default {
     },
     skipAddDrill () { // 跳转到新建演练的页面
       this.$router.push({name: 'new-drill'});
+      this.$store.commit('setCurrentPage', {currentPage: 1});
     },
     getDrillList () { // 分页获取模拟事件
       let eventStatus;

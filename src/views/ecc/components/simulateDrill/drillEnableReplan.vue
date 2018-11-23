@@ -235,29 +235,10 @@ export default {
     this.getDepartmentList();
   },
   mounted () {
-    if (this.$route.params.data) {
-      console.log('222222222222222')
-      this.allDataInfo = JSON.parse(this.$route.params.data);
-      this.drillDetailObj = {...this.allDataInfo.eventForm};
-      console.log('allDataInfo', this.allDataInfo)
-      // console.log(this.eventTypeList)
-      // console.log(this.eventLevelList)
-      // if (this.eventTypeList.length > 0) {
-      //   console.log('11111')
-      //   this.eventTypeList.map(item => {
-      //     if (item.dicId === this.drillDetailObj.eventType) {
-      //       this.drillDetailObj.eventTypeName = item.dicContent;
-      //     }
-      //   })
-      // }
-      // if (this.eventLevelList.length > 0) {
-      //   console.log('2222')
-      //   this.eventLevelList.map(item => {
-      //     if (item.dicId === this.drillDetailObj.eventLevel) {
-      //       this.drillDetailObj.eventLevelName = item.dicContent;
-      //     }
-      //   })
-      // }
+    console.log(this.$store.state.simEventDataInfo)
+    if (!this.$route.query.status) {
+      console.log('adasdsadasd')
+      this.drillDetailObj = {...this.$store.state.simEventDataInfo};
     } else {
       this.getDrillDetail();
     }
@@ -477,11 +458,18 @@ export default {
       let params;
       if (this.taskList.length > 0) {
         this.isTaskLoading = true;
-        params = {
-          eventId: this.$route.query.eventId,
-          taskList: [...this.taskList]
+        if (this.$store.state.taskList.length > 0) {
+          params = {
+            eventId: this.$route.query.eventId,
+            taskList: [...this.taskList, ...this.$store.state.taskList]
+          }
+        } else {
+          params = {
+            eventId: this.$route.query.eventId,
+            taskList: [...this.taskList]
+          }
         }
-        this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
+        this.axios.put('A2/eventServices/simulateEvent', params)
           .then((res) => {
             if (res) {
               this.$message({
@@ -505,7 +493,7 @@ export default {
               eventId: this.$route.query.eventId,
               taskList: [...this.taskList]
             }
-            this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
+            this.axios.put('A2/eventServices/simulateEvent', params)
               .then((res) => {
                 if (res) {
                   this.$message({
@@ -530,14 +518,14 @@ export default {
       let params;
       if (this.taskList.length > 0) {
         this.isTaskLoading = true;
-        if (this.allDataInfo.taskList.length > 0) {
+        if (this.$store.state.taskList.length > 0) {
           params = {
-            ...this.allDataInfo.eventForm,
-            taskList: [...this.taskList, this.allDataInfo.taskList]
+            ...this.drillDetailObj,
+            taskList: [...this.taskList, ...this.$store.state.taskList]
           }
         } else {
           params = {
-            ...this.allDataInfo.eventForm,
+            ...this.drillDetailObj,
             taskList: [...this.taskList]
           }
         }
@@ -561,14 +549,14 @@ export default {
           if (valid) {
             this.isTaskLoading = true;
             taskList.push(this.taskForm);
-            if (this.allDataInfo.taskList.length > 0) {
+            if (this.$store.state.taskList.length > 0) {
               params = {
-                ...this.allDataInfo.eventForm,
-                taskList: [...taskList, this.allDataInfo.taskList]
+                ...this.drillDetailObj,
+                taskList: [...taskList, this.$store.state.taskList]
               }
             } else {
               params = {
-                ...this.allDataInfo.eventForm,
+                ...this.drillDetailObj,
                 taskList: [...taskList]
               }
             }
@@ -585,7 +573,6 @@ export default {
                   this.$message.error('启用失败');
                   this.isTaskLoading = false;
                 }
-                // this.isTaskLoading = false;
               })
               .catch(() => {});
           }

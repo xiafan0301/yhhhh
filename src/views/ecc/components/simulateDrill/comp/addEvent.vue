@@ -155,6 +155,9 @@ export default {
         attachmentList: [] // 附件列表
       },
       rules: {
+        reporterPhone: [
+          { validator: valiPhone, trigger: 'blur' }
+        ],
         eventCode: [
           { required: true, message: '请输入演练项目名称', trigger: 'blur' }
         ],
@@ -177,16 +180,40 @@ export default {
       },
       eventTypeList: [], // 事件类型列表
       eventLevelList: [] // 事件等级
-      // reservePlanList: [] // 预案列表
     }
   },
   created () {
-    if (this.eventDataInfo) {
-      this.addForm = {...this.eventDataInfo};
+    if (this.$route.query.status === 'modify') {
+      console.log('111111')
+      console.log('simEventDataInfo', this.$store.state.simEventDataInfo)
+      let dataInfo;
+      if (this.$store.state.simEventDataInfo) {
+        dataInfo = JSON.parse(JSON.stringify(this.$store.state.simEventDataInfo));
+        if (dataInfo.casualties === 0) {
+          dataInfo.casualties = '无';
+        } else if (dataInfo.casualties === -1) {
+          dataInfo.casualties = '不确定';
+        } else if (dataInfo.casualties > 0) {
+          this.dieNumber = dataInfo.casualties;
+          dataInfo.casualties = '有';
+        }
+        this.addForm = {...dataInfo};
+        console.log('addForm', this.addForm)
+      }
+      // if (dataInfo.casualties === 0) {
+      //   dataInfo.casualties = '无';
+      // } else if (dataInfo.casualties === -1) {
+      //   dataInfo.casualties = '不确定';
+      // } else if (dataInfo.casualties > 0) {
+      //   this.dieNumber = dataInfo.casualties;
+      //   dataInfo.casualties = '有';
+      // }
+      // this.addForm = {...dataInfo};
+    } else {
+      // if (this.$store.state.simEventDataInfo) {
+      //   this.addForm = {...this.$store.state.simEventDataInfo};
+      // }
     }
-    this.timer = setTimeout(() => {
-      this.getDataInfo();
-    }, 500)
   },
   destroyed () {
     clearTimeout(this.timer);
@@ -198,20 +225,23 @@ export default {
     this.uploadUrl = imgBaseUrl2;
   },
   methods: {
-    getDataInfo () {
-      if (this.status === 'modify') {
-        let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
-        if (dataInfo.casualties === 0) {
-          dataInfo.casualties = '无';
-        } else if (dataInfo.casualties === -1) {
-          dataInfo.casualties = '不确定';
-        } else if (dataInfo.casualties > 0) {
-          this.dieNumber = dataInfo.casualties;
-          dataInfo.casualties = '有';
-        }
-        this.addForm = dataInfo;
-      }
-    },
+    // getDataInfo () {
+    //   if (this.$route.query.status === 'modify') {
+    //     if ()
+    //     let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
+    //     if (dataInfo.casualties === 0) {
+    //       dataInfo.casualties = '无';
+    //     } else if (dataInfo.casualties === -1) {
+    //       dataInfo.casualties = '不确定';
+    //     } else if (dataInfo.casualties > 0) {
+    //       this.dieNumber = dataInfo.casualties;
+    //       dataInfo.casualties = '有';
+    //     }
+    //     this.addForm = dataInfo;
+    //   } else {
+
+    //   }
+    // },
     onPositionChange (val) { // 事件地点输入框值改变
       let value = val;
       let _this = this;
@@ -350,12 +380,14 @@ export default {
           .then((res) => {
             if (res && res.data.list) {
               this.replanList = res.data.list;
-              const param = {
-                currentPage: 2,
-                emiEvent: this.addForm,
-                replanList: this.replanList
-              }
-              this.$store.commit('saveSimEventData', {currentPage: 2, simEventDataInfo: this.addForm, replanList: res.data.list});
+              // const param = {
+              //   currentPage: 2,
+              //   emiEvent: this.addForm,
+              //   replanList: this.replanList
+              // }
+              this.$store.commit('setCurrentPage', {currentPage: 2});
+              this.$store.commit('saveReplanList', {replanList: res.data.list});
+              this.$store.commit('saveSimEventData', {simEventDataInfo: this.addForm});
               // this.$store.commit('saveSimEventData', {simEventDataInfo: param});
               // this.$emit('eventData', param);
             }

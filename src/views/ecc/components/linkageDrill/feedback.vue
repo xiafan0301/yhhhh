@@ -221,7 +221,7 @@ export default {
                   message: '反馈成功',
                   type: 'success'
                 });
-                if (this.$route.quert.text === 'ctc') {
+                if (this.$route.query.text === 'ctc') {
                   this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: eventId, taskId: taskId}});
                 } else {
                   this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
