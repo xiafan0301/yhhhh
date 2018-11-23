@@ -21,6 +21,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             :editable="false"
+            :clearable="false"
             :picker-options="pickerOptions2">
           </el-date-picker>
         </el-form-item>
