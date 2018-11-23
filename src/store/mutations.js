@@ -53,5 +53,12 @@ export default {
     state.fileBaseUrl = options.fileBaseUrl;
     state.fileUploadUrl = options.fileUploadUrl;
     state.fileDownloadUrl = options.fileDownloadUrl;
+  },
+  // 保存新建演练第一步的数据
+  saveSimEventData (state, options) {
+    state.currentPage = options.currentPage;
+    state.simEventDataInfo = options.simEventDataInfo;
+    state.taskList = options.taskList;
+    state.replanList = options.replanList;
   }
 }

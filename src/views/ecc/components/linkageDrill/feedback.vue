@@ -47,7 +47,7 @@
     </div>
     <div class='operation-btn-event-end'>
       <el-button @click='back'>返回</el-button>
-      <el-button style='background: #0785FD;color:#fff' @click="feedbackEvent('feedbackForm')">确定</el-button>
+      <el-button style='background: #0785FD;color:#fff' :loading="isLoading" @click="feedbackEvent('feedbackForm')">确定</el-button>
     </div>
     <el-dialog
       title="操作提示"
@@ -72,6 +72,7 @@ import {imgBaseUrl2} from '@/config/config.js';
 export default {
   data () {
     return {
+      isLoading: false,
       uploadUrl: null,
       dialogImageUrl: null,
       dialogVisible: false,
@@ -210,10 +211,12 @@ export default {
           } else {
             this.feedbackForm.taskStatus = '';
           }
+          this.isLoading = true;
           this.axios.post('A2/taskServices/task/process/' + eventId + '/' + taskId, this.feedbackForm)
             .then((res) => {
               if (res) {
                 console.log(res)
+                this.isLoading = false;
                 this.$message({
                   message: '反馈成功',
                   type: 'success'
@@ -225,6 +228,7 @@ export default {
                 }
                 // this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
               } else {
+                this.isLoading = false;
                 this.$message.error('反馈失败');
               }
             })

@@ -105,7 +105,6 @@ import {valiPhone} from '@/utils/validator.js';
 import {dictType} from '@/config/data.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 import {imgBaseUrl2} from '@/config/config.js';
-import store from '@/store/store.js';
 export default {
   components: {mapPoint},
   props: ['status', 'addEventForm', 'eventDataInfo'],
@@ -158,6 +157,10 @@ export default {
         eventCode: [
           { required: true, message: '请输入演练项目名称', trigger: 'blur' }
         ],
+        // reporterPhone: [
+        //   { required: true, message: '请输入手机号', trigger: 'blur' },
+        //   { validator: valiPhone, trigger: 'blur' }
+        // ],
         reportTime: [
           { required: true, message: '请选择开始时间', trigger: 'blur' }
         ],
@@ -297,6 +300,7 @@ export default {
       let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
+          console.log('0909090')
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
@@ -322,20 +326,17 @@ export default {
           }
           this.eventTypeList.map(item => {
             if (item.dictId === this.addForm.eventType) {
+              console.log('sadasdasd')
               this.addForm.eventTypeName = item.dictContent;
             }
           });
           this.eventLevelList.map(item => {
             if (item.dictId === this.addForm.eventLevel) {
+              console.log('dfdsfdsfsf')
               this.addForm.eventLevelName = item.dictContent;
             }
           });
-          // const param = {
-          //   currentPage: 2,
-          //   eventInfo: this.addForm
-          //   // replanList: this.replanList
-          // }
-          // this.$store.commit('saveSimEventData', {currentPage: 2, simEventDataInfo: this.addForm});
+          console.log('addForm', this.addForm)
           this.getReplanList();
         }
       });
@@ -351,13 +352,11 @@ export default {
             if (res && res.data.list) {
               this.replanList = res.data.list;
               const param = {
-                currentPage: 2,
+                currentPage: '2',
                 emiEvent: this.addForm,
                 replanList: this.replanList
               }
-              this.$store.commit('saveSimEventData', {currentPage: 2, simEventDataInfo: this.addForm, replanList: res.data.list});
-              // this.$store.commit('saveSimEventData', {simEventDataInfo: param});
-              // this.$emit('eventData', param);
+              this.$emit('eventData', param);
             }
           })
           .catch(() => {});

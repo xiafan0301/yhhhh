@@ -1,28 +1,20 @@
 <template>
-  <div class="link-drill-detail">
+  <div class="drill-detail-end">
     <div class='drill-detail-header'>
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>模拟演练</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>事件演练</span></el-breadcrumb-item>
       </el-breadcrumb>
     </div>
-    <div class='drill-detail-reat-body'>
+    <div class='drill-detail-body'>
       <div class='basic'>
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <!-- <p class='event-number' v-show='drillDetailObj.eventCode'>事件编号：{{drillDetailObj.eventCode}}</p> -->
+          <!-- <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p> -->
         </div>
         <div class='event-status'>
-          <template v-if="status === 'never'">
-            <img src='../../../../assets/img/temp/unstart.png' />
-          </template>
-          <template v-if="status === 'ing'">
-            <img src='../../../../assets/img/temp/handling.png' />
-          </template>
-          <template v-if="status === 'end'">
-            <img src='../../../../assets/img/temp/end.png' />
-          </template>
+          <img src='../../../../assets/img/temp/end.png' />
         </div>
         <div class='basic-detail'>
           <div class='basic-list'>
@@ -42,15 +34,9 @@
           <div class='basic-list'>
             <div style='display:flex;align-items: center;'>
               <span class='title'>报案人：</span>
-              <span class='content' style='margin-right:20px;'>{{drillDetailObj.reporterPhone}}</span>
-              <template v-if="status === 'ing'">
-                <a :href="urlDetail + '?eventId=' + this.$route.query.eventId + '&' + userInfoParam()" target="_blank"><div class="relation-person"><i class="el-icon-phone"></i>联系上报人</div></a>
-              </template>
+              <span class='content'>{{drillDetailObj.reporterPhone}}</span>
             </div>
-            <div style='width: 65%'>
-              <span class='title'>事发地点：</span>
-              <span class='content'>{{drillDetailObj.eventAddress}}</span>
-            </div>
+            <div style='width: 65%'><span class='title'>事发地点：</span><span class='content'>{{drillDetailObj.eventAddress}}</span></div>
           </div>
           <div class='basic-list'>
             <div>
@@ -75,10 +61,7 @@
             </div>
           </div>
           <div class='basic-list'>
-            <div style='width: 100%'>
-              <span class='title'>事件情况：</span>
-              <span class='content'>{{drillDetailObj.eventDetail}}</span>
-            </div>
+            <div style='width: 100%'><span class='title'>事件情况：</span><span class='content'>{{drillDetailObj.eventDetail}}</span></div>
           </div>
           <div class='basic-list img-content'>
             <div style="width:100%;">
@@ -156,52 +139,54 @@
           </div>
         </div>
       </div>
+      <div class='event-summary' v-show='drillDetailObj.eventSummary'>
+        <div class='event-summary-header'>
+          <div class='flag'></div>
+          <p class='event-summary-text'>演练评估</p>
+        </div>
+        <div style="font-weight:bold;padding-left: 30px;padding-top:10px;">
+          评估人：{{drillDetailObj.closeUserName}}
+        </div>
+        <div class='summary-content'>
+          {{drillDetailObj.eventSummary}}
+        </div>
+        <div style="display: flex">
+          <div id="imgs1" class="img-list" style="margin-left: 20px"></div>
+        </div>
+        <div class='show-file-div'>
+          <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
+            <img src='../../../../assets/img/temp/file.png' />
+            <a :href="item.url" style="text-decoration: none">
+              <span>{{item.attachmentName}}</span>
+              <el-button type="primary" size="mini" style="margin-left: 5px">下载</el-button>
+            </a>
+          </div>
+        </div>
+        <div style="height:  37px; background-color: #fff"></div>
+      </div>
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="status === 'ing' && (drillDetailObj.taskList && drillDetailObj.taskList.length > 0)">
-        <el-button
-          v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkY]"
-          style='background: #0785FD;color:#fff'
-          @click='skipDrillFeek'>反馈情况</el-button>
-      </template>
     </div>
   </div>
 </template>
 <script>
-import {dictType, resouceData} from '@/config/data.js';
-import {ajaxCtx3} from '@/config/config.js';
-import { setCookie, getCookie } from '@/utils/util.js';
+import {dictType} from '@/config/data.js';
 export default {
   data () {
     return {
-      resourceBtn: {},
-      resouceData: resouceData,
-      urlDetail: '',
-      drillDetailObj: {},
+      imgSrc: '', // 事件状态图片
       videoList: [], // 视频数据列表
       imgList: [], // 图片数据列表
-      proVideoList: [], // 视频数据列表
-      proImgList: [] // 图片数据列表
+      imgList1: [],
+      drillDetailObj: {}, // 事件详情
+      fileList: [] // 要上传的文件列表
     }
   },
   created () {
-    this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
-    this.status = this.$route.query.status;
-  },
-  mounted () {
     this.getDrillDetail();
-    this.urlDetail = ajaxCtx3;
   },
   methods: {
-    back () { // 返回上一页
-      this.$router.back(-1);
-    },
-    userInfoParam () {
-      let ln = getCookie('cookieUserName');
-      if (!ln) { ln = ''; }
-      return $.param({ln: ln});
-    },
     // 预览图片公共方法
     previewPictures (data) {
       setTimeout(() => {
@@ -210,6 +195,44 @@ export default {
         let imgs2 = []
         // 获取图片列表容器
         let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
+    // 预览图片公共方法
+    previewPictures1 (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs1');
         let html = '';
         // 创建img dom
         imgs.forEach(function (src) {
@@ -277,14 +300,15 @@ export default {
         }
       }, 100)
     },
-    getDrillDetail () {
+    back () {
+      this.$router.back(-1);
+    },
+    getDrillDetail () { // 获取事件详情
       const eventId = this.$route.query.eventId;
       if (eventId) {
         this.axios.get('A2/eventServices/events/' + eventId)
           .then((res) => {
             if (res && res.data) {
-              this.drillDetailObj = res.data;
-              console.log(res.data)
               res.data.attachmentList && res.data.attachmentList.map((item, index) => {
                 if (item.attachmentType === dictType.videoId) { // 视频
                   this.videoList.push(item);
@@ -292,6 +316,18 @@ export default {
                   this.imgList.push(item);
                 }
               });
+              this.drillDetailObj = res.data;
+              if (this.imgList.length > 0) {
+                this.previewPictures(this.imgList);
+              }
+              this.drillDetailObj.closeAttachmentList.forEach(aa => {
+                if (aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.png' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.jpg' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.bmp') {
+                  this.imgList1.push(aa);
+                  this.previewPictures1(this.imgList1)
+                } else {
+                  this.fileList.push(aa)
+                }
+              })
               if (res.data.processingList.length > 0) {
                 res.data.processingList.map((items, index) => {
                   if (items.attachmentList.length > 0) {
@@ -299,36 +335,30 @@ export default {
                   }
                 });
               }
-              if (this.imgList.length > 0) {
-                this.previewPictures(this.imgList);
-              }
             }
           })
           .catch(() => {})
       }
-    },
-    skipDrillFeek () {
-      this.$router.push({name: 'link-drill-feed-back', query: {eventId: this.$route.query.eventId, text: 'drill', taskId: this.drillDetailObj.taskList[0].taskId}});
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.link-drill-detail {
+.drill-detail-end {
   padding: 20px;
   .drill-detail-header {
-    margin-bottom: 20px;
-  }
-  .drill-detail-reat-body {
+      margin-bottom: 20px;
+    }
+  .drill-detail-body {
     width: 100%;
     a {
       text-decoration: none;
     }
-    .basic, .ctc,.event-progress {
+    .basic, .ctc,.event-progress,.event-summary{
       background: #fff;
       margin-bottom: 2%;
-      .basic-header,.ctc-header,.event-progress-header{
+      .basic-header,.ctc-header,.event-progress-header,.event-summary-header{
         width: 100%;
         display: flex;
         p {
@@ -343,7 +373,7 @@ export default {
           border-bottom-right-radius: 5px;
           background: #0785FD;
         }
-        .basic-text, .ctc-text,.event-progress-text{
+        .basic-text, .ctc-text,.event-progress-text,.event-summary-text{
           color: #0785FD;
           font-size: 16px;
           font-weight: bold;
@@ -515,6 +545,28 @@ export default {
       i {
         margin-right: 5px;
         font-size: 18px;
+      }
+    }
+  }
+  .operation-btn-event {
+    margin-top: 2%;
+  }
+  .show-file-div {
+    width: 500px;
+    margin-left: 22px;
+    .show-file-div-list {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      span {
+        color: #0785FD;
+        font-size: 14px;
+        margin: 0 5px;
+      }
+      i {
+        font-size: 18px;
+        color: #5D5D5D;
+        cursor: pointer;
       }
     }
   }

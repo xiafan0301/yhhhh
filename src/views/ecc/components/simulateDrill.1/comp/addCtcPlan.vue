@@ -90,7 +90,7 @@
           <div class='ctc-replan-table'>
             <el-table
               style="width: 100%"
-              :data='$store.state.replanList'
+              :data='reservePlanList'
               highlight-current-row
               class='ctc-table'
               max-height="352"
@@ -146,7 +146,6 @@
   </div>
 </template>
 <script>
-import store from '@/store/store.js';
 export default {
   props: ['status', 'ctcPlanData', 'reservePlanList'],
   data () {
@@ -195,7 +194,6 @@ export default {
     }, 1000)
   },
   mounted () {
-    // this.getReplanList
     this.getDepartmentList();
   },
   destroyed () {
@@ -225,69 +223,22 @@ export default {
     submitData (form) { // 新建演练
       let taskList = [];
       if (this.taskList.length > 0) {
-        // const data = {
-        //   currentPage: '3',
-        //   taskList: this.taskList
-        // }
-        if (this.status === 'modify') {
-          // this.modifyDataInfo();
-        } else {
-          this.addDataInfo();
-          this.$store.commit('saveSimEventData', {currentPage: 3, taskList: this.taskList});
+        const data = {
+          currentPage: '3',
+          taskList: this.taskList
         }
-        // this.$emit('ctcData', data);
+        this.$emit('ctcData', data);
       } else {
         this.$refs[form].validate((valid) => {
           if (valid) {
             taskList.push(this.taskForm);
-            // const data = {
-            //   currentPage: '3',
-            //   taskList: taskList
-            // }
-            if (this.status === 'modify') {
-              // this.modifyDataInfo();
-            } else {
-              this.addDataInfo();
-              this.$store.commit('saveSimEventData', {currentPage: 3, taskList: this.taskList});
+            const data = {
+              currentPage: '3',
+              taskList: taskList
             }
-            // this.$store.commit('saveSimEventData', {currentPage: 3, taskList: this.taskList});
-            // this.$emit('ctcData', data);
+            this.$emit('ctcData', data);
           }
         })
-      }
-    },
-    addDataInfo () { // 新增演练事件
-      const params = {...this.$store.state.simEventDataInfo, taskList: [...this.taskList]};
-      console.log('params', params)
-      if (params) {
-        this.axios.post('A2/eventServices/simulateEvent', params)
-          .then(res => {
-            if (res) {
-              this.$message({
-                message: '发布成功',
-                type: 'success'
-              });
-              this.axios.get('A2/eventServices/events/' + res.data)
-                .then(resp => {
-                  if (resp) {
-                    if (resp.data.eventStatusName === '未处理') {
-                      this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
-                    } else {
-                      this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
-                    }
-                  }
-                })
-                .catch(() => {})
-              // if (res.data.eventStatusName === '未处理') {
-              //   this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
-              // } else {
-              //   this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
-              // }
-            } else {
-              this.$message.error('发布失败');
-            }
-          })
-          .catch(() => {});
       }
     },
     cancelForm (form) { // 取消填写的form
@@ -344,22 +295,22 @@ export default {
         this.$router.push({name: 'drill-enable-replan', params: {data: JSON.stringify(params)}, query: {eventId: this.$route.query.eventId, status: this.status === 'modify' ? 'over' : '', planId: scope.row.planId}});
       }
     },
-    // getReplanList () { // 获取预案列表
-    //   // const type = this.ctcPlanData.eventType;
-    //   if (this.$store.state.simEventDataInfo.eventType) {
-    //     const params = {
-    //       pageNum: -1,
-    //       'where.planType': this.$store.state.simEventDataInfo.eventType
-    //     }
-    //     this.axios.get('A2/planServices/plans', {params})
-    //       .then((res) => {
-    //         if (res && res.data.list) {
-    //           this.reservePlanList = res.data.list;
-    //         }
-    //       })
-    //       .catch(() => {});
-    //   }
-    // },
+    getReplanList () { // 获取预案列表
+      // const type = this.ctcPlanData.eventType;
+      if (this.eventTypeId) {
+        const params = {
+          pageNum: -1,
+          'where.planType': this.eventTypeId
+        }
+        this.axios.get('A2/planServices/plans', {params})
+          .then((res) => {
+            if (res && res.data.list) {
+              this.reservePlanList = res.data.list;
+            }
+          })
+          .catch(() => {});
+      }
+    },
     getDepartmentList () { // 获取部门列表
       const params = {
         pageSize: 0
