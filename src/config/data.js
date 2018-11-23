@@ -97,5 +97,10 @@ export const resouceData = { // 功能按钮id
   reportEvent: '08f4262d-cd6f-43e3-a6e6-6f15e3f5e725', // 上报事件--联动单位--事件管理
   feekbackEventLink: '4b92e4b2-736c-4adc-86d6-d010b55e6e0b', // 反馈情况--联动单位--事件管理
   feekbackEventLinkY: '69846da4-79b0-4a88-8413-a69562026ec3', // 反馈情况--联动单位--模拟演练--演练记录
-  feekbackEventLinkD: '51e1be74-ed2c-4330-95cf-9e4054d08632' // 反馈情况--联动单位--模拟演练--模拟调度指挥
+  feekbackEventLinkD: '51e1be74-ed2c-4330-95cf-9e4054d08632', // 反馈情况--联动单位--模拟演练--模拟调度指挥
+  linkRelseNotice: 'f71b5c34-e407-429d-aebf-38a2e8f02209', //  联动单位-消息管理-发布公告
+  linckModifyNotice: '08e29e31-1589-4463-b105-05e16bb0a246', // 联动单位-消息管理-修改公告
+  linckReckNotice: '1e55c057-57dd-40c1-9da1-2f1ec253f37b', // 联动单位-消息管理-撤销公告
+  linckDelNotice: '1339a79f-f133-4aaa-b41b-3c0a8db6c080', // 联动单位-消息管理-删除公告
+  linckDirrReckNotice: '61e3acea-bbfb-4322-a6e9-8885f04ee9e3' // 联动单位-模拟演练-发布公告
 }
