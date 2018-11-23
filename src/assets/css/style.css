@@ -159,6 +159,8 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   width: 200px;
   left: auto !important;
   right: 30px !important;
+  top: 50% !important;
+
 }
 .e_stat_tb_ld1 .g2-legend-list {
   overflow: hidden;
@@ -212,8 +214,8 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
 .e_stat_tb_ld4 {
   left: auto !important;
   right: 30px !important;
-  top: 45px !important;
   width: 150px !important;
+  top: 50% !important;
 }
 
 .e_stat_tb_ld4 .g2-legend-list-item {
@@ -241,12 +243,16 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   background-repeat: no-repeat;
   background-position: center center;
   background-size: 100% 100%;
+  background-image: url(../img/stat/stat-052.png);
 }
-.e_stat_tb_ld4 .g2-legend-list-item:nth-child(odd) > div > i {
+.e_stat_tb_ld4 .g2-legend-list-item:nth-child(1) > div > i {
   background-image: url(../img/stat/stat-051.png);
 }
-.e_stat_tb_ld4 .g2-legend-list-item:nth-child(even) > div > i {
+.e_stat_tb_ld4 .g2-legend-list-item:nth-child(2) > div > i {
   background-image: url(../img/stat/stat-052.png);
+}
+.e_stat_tb_ld4 .g2-legend-list-item:nth-child(3) > div > i {
+  background-image: url(../img/stat/stat-053.png);
 }
 .e_stat_tb_ld4 .g2-legend-list-item > div > div > div {
   color: #999;
