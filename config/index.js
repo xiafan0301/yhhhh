@@ -53,10 +53,10 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/vis-web/index.html'),
+    index: path.resolve(__dirname, '../dist/vis-web-back/index.html'),
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist/vis-web'),
+    assetsRoot: path.resolve(__dirname, '../dist/vis-web-back'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '../',
 
