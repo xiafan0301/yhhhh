@@ -334,7 +334,6 @@ export default {
       this.axios.get('A2/eventCountServices/rankAnalysis/?' + $.param(params))
         .then((res) => {
           if (res && res.data) {
-            // console.log('事件等级分析', res);
             let _data = [];
             for (let i = 0; i < res.data.length; i++) {
               _data.push({
@@ -502,21 +501,21 @@ export default {
       }
     },
     setStats1 (data) {
+      let chart = null;
       if (this.charts.chart1) {
-        this.charts.chart1.source(data);
-        this.charts.chart1.guide().clear();// 清理guide
-        this.charts.chart1.repaint();
-        return false;
+        this.charts.chart1.clear();
+        chart = this.charts.chart1;
+      } else {
+        let temp = document.getElementById('stat_1');
+        chart = new G2.Chart({
+          container: 'stat_1',
+          forceFit: true,
+          padding: [ 12, 12 * 14, 12, 0 ],
+          width: G2.DomUtil.getWidth(temp),
+          height: G2.DomUtil.getHeight(temp)
+        });
       }
       let _this = this;
-      let temp = document.getElementById('stat_1');
-      let chart = new G2.Chart({
-        container: 'stat_1',
-        forceFit: true,
-        padding: [ 12, 12 * 14, 12, 0 ],
-        width: G2.DomUtil.getWidth(temp),
-        height: G2.DomUtil.getHeight(temp)
-      });
       chart.source(data, {
         percent: {
           formatter: function formatter (val) {
@@ -582,11 +581,19 @@ export default {
       this.charts.chart1 = chart;
     },
     setStats2 (data) {
+      let chart = null;
       if (this.charts.chart2) {
-        this.charts.chart2.source(data);
-        this.charts.chart2.guide().clear();// 清理guide
-        this.charts.chart2.repaint();
-        return false;
+        this.charts.chart2.clear();
+        chart = this.charts.chart2;
+      } else {
+        let temp = document.getElementById('stat_2');
+        chart = new G2.Chart({
+          container: 'stat_2',
+          forceFit: true,
+          padding: [ 12 * 2, 12 * 3, 12 * 4.5, 12 * 6 ],
+          width: G2.DomUtil.getWidth(temp),
+          height: G2.DomUtil.getHeight(temp)
+        });
       }
       const Shape = G2.Shape;
       /*  圆柱（圆角柱状图） */
@@ -618,13 +625,6 @@ export default {
       });
       let _this = this;
       let temp = document.getElementById('stat_2');
-      let chart = new G2.Chart({
-        container: 'stat_2',
-        forceFit: true,
-        padding: [ 12 * 2, 12 * 3, 12 * 4.5, 12 * 6 ],
-        width: G2.DomUtil.getWidth(temp),
-        height: G2.DomUtil.getHeight(temp)
-      });
       chart.source(data);
       chart.scale('sales', {
         tickInterval: 20
@@ -642,22 +642,21 @@ export default {
       this.charts.chart2 = chart;
     },
     setStats3 (data) {
+      let chart = null;
       if (this.charts.chart3) {
-        this.charts.chart3.source(data);
-        this.charts.chart3.guide().clear();// 清理guide
-        this.charts.chart3.repaint();
-        return false;
-        // this.charts.chart3.clear(); // 清理所有
+        this.charts.chart3.clear();
+        chart = this.charts.chart3;
+      } else {
+        let temp = document.getElementById('stat_3');
+        chart = new G2.Chart({
+          container: 'stat_3',
+          forceFit: true,
+          padding: [ 12 * 2, 12 * 3, 12 * 4.5, 12 * 6 ],
+          width: G2.DomUtil.getWidth(temp),
+          height: G2.DomUtil.getHeight(temp)
+        });
       }
       let _this = this;
-      let temp = document.getElementById('stat_3');
-      let chart = new G2.Chart({
-        container: 'stat_3',
-        forceFit: true,
-        padding: [ 12 * 2, 12 * 3, 12 * 4.5, 12 * 6 ],
-        width: G2.DomUtil.getWidth(temp),
-        height: G2.DomUtil.getHeight(temp)
-      });
       chart.source(data);
       chart.tooltip({
         showTitle: false,
@@ -687,22 +686,22 @@ export default {
       this.charts.chart3 = chart;
     },
     setStats4 (data) {
+      let chart = null;
       if (this.charts.chart4) {
-        this.charts.chart4.source(data);
-        this.charts.chart4.guide().clear();// 清理guide
-        this.charts.chart4.repaint();
-        return false;
+        this.charts.chart4.clear();
+        chart = this.charts.chart4;
+      } else {
+        let temp = document.getElementById('stat_4');
+        chart = new G2.Chart({
+          container: 'stat_4',
+          forceFit: true,
+          padding: [ 12 * 1, 12 * 14, 12 * 1, 12 * 1 ],
+          width: G2.DomUtil.getWidth(temp),
+          height: G2.DomUtil.getHeight(temp)
+        });
       }
       let _this = this;
       // chart
-      let temp = document.getElementById('stat_4');
-      let chart = new G2.Chart({
-        container: 'stat_4',
-        forceFit: true,
-        padding: [ 12 * 1, 12 * 14, 12 * 1, 12 * 1 ],
-        width: G2.DomUtil.getWidth(temp),
-        height: G2.DomUtil.getHeight(temp)
-      });
       chart.legend({
         position: 'right',
         title: null,
