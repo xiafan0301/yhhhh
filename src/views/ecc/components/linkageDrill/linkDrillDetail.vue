@@ -159,7 +159,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="status === 'ing' && drillDetailObj.taskList.length > 0">
+      <template v-if="status === 'ing' && (drillDetailObj.taskList && drillDetailObj.taskList.length > 0)">
         <el-button
           v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkY]"
           style='background: #0785FD;color:#fff'

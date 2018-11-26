@@ -105,6 +105,7 @@ import {valiPhone} from '@/utils/validator.js';
 import {dictType} from '@/config/data.js';
 import mapPoint from '@/components/common/mapPoint.vue';
 import {imgBaseUrl2} from '@/config/config.js';
+import store from '@/store/store.js';
 export default {
   components: {mapPoint},
   props: ['status', 'addEventForm', 'eventDataInfo'],
@@ -154,13 +155,12 @@ export default {
         attachmentList: [] // 附件列表
       },
       rules: {
+        reporterPhone: [
+          { validator: valiPhone, trigger: 'blur' }
+        ],
         eventCode: [
           { required: true, message: '请输入演练项目名称', trigger: 'blur' }
         ],
-        // reporterPhone: [
-        //   { required: true, message: '请输入手机号', trigger: 'blur' },
-        //   { validator: valiPhone, trigger: 'blur' }
-        // ],
         reportTime: [
           { required: true, message: '请选择开始时间', trigger: 'blur' }
         ],
@@ -180,16 +180,40 @@ export default {
       },
       eventTypeList: [], // 事件类型列表
       eventLevelList: [] // 事件等级
-      // reservePlanList: [] // 预案列表
     }
   },
   created () {
-    if (this.eventDataInfo) {
-      this.addForm = {...this.eventDataInfo};
+    // if (this.$route.query.status === 'modify') {
+    console.log('111111')
+    console.log('simEventDataInfo', this.$store.state.simEventDataInfo)
+    let dataInfo;
+    if (this.$store.state.simEventDataInfo) {
+      dataInfo = JSON.parse(JSON.stringify(this.$store.state.simEventDataInfo));
+      if (dataInfo.casualties === 0) {
+        dataInfo.casualties = '无';
+      } else if (dataInfo.casualties === -1) {
+        dataInfo.casualties = '不确定';
+      } else if (dataInfo.casualties > 0) {
+        this.dieNumber = dataInfo.casualties;
+        dataInfo.casualties = '有';
+      }
+      this.addForm = {...dataInfo};
+      console.log('addForm', this.addForm)
     }
-    this.timer = setTimeout(() => {
-      this.getDataInfo();
-    }, 500)
+    // if (dataInfo.casualties === 0) {
+    //   dataInfo.casualties = '无';
+    // } else if (dataInfo.casualties === -1) {
+    //   dataInfo.casualties = '不确定';
+    // } else if (dataInfo.casualties > 0) {
+    //   this.dieNumber = dataInfo.casualties;
+    //   dataInfo.casualties = '有';
+    // }
+    // this.addForm = {...dataInfo};
+  // } else {
+    // if (this.$store.state.simEventDataInfo) {
+    //   this.addForm = {...this.$store.state.simEventDataInfo};
+    // }
+    // }
   },
   destroyed () {
     clearTimeout(this.timer);
@@ -201,20 +225,23 @@ export default {
     this.uploadUrl = imgBaseUrl2;
   },
   methods: {
-    getDataInfo () {
-      if (this.status === 'modify') {
-        let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
-        if (dataInfo.casualties === 0) {
-          dataInfo.casualties = '无';
-        } else if (dataInfo.casualties === -1) {
-          dataInfo.casualties = '不确定';
-        } else if (dataInfo.casualties > 0) {
-          this.dieNumber = dataInfo.casualties;
-          dataInfo.casualties = '有';
-        }
-        this.addForm = dataInfo;
-      }
-    },
+    // getDataInfo () {
+    //   if (this.$route.query.status === 'modify') {
+    //     if ()
+    //     let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
+    //     if (dataInfo.casualties === 0) {
+    //       dataInfo.casualties = '无';
+    //     } else if (dataInfo.casualties === -1) {
+    //       dataInfo.casualties = '不确定';
+    //     } else if (dataInfo.casualties > 0) {
+    //       this.dieNumber = dataInfo.casualties;
+    //       dataInfo.casualties = '有';
+    //     }
+    //     this.addForm = dataInfo;
+    //   } else {
+
+    //   }
+    // },
     onPositionChange (val) { // 事件地点输入框值改变
       let value = val;
       let _this = this;
@@ -300,7 +327,6 @@ export default {
       let reg = /^([1-9]\d*|0)(\.\d*[1-9])?$/; // 校验死亡人数
       this.$refs[form].validate((valid) => {
         if (valid) {
-          this.getReplanList();
           if (this.addForm.casualties === '无') {
             this.addForm.casualties = 0;
           } else if (this.addForm.casualties === '不确定') {
@@ -323,17 +349,24 @@ export default {
               this.dieTip = '';
             }
             this.addForm.casualties = this.dieNumber;
-            this.eventTypeList.map(item => {
-              if (item.dictId === this.addForm.eventType) {
-                this.addForm.eventTypeName = item.dictContent;
-              }
-            });
-            this.eventLevelList.map(item => {
-              if (item.dictId === this.addForm.eventLevel) {
-                this.addForm.eventLevelName = item.dictContent;
-              }
-            });
           }
+          this.eventTypeList.map(item => {
+            if (item.dictId === this.addForm.eventType) {
+              this.addForm.eventTypeName = item.dictContent;
+            }
+          });
+          this.eventLevelList.map(item => {
+            if (item.dictId === this.addForm.eventLevel) {
+              this.addForm.eventLevelName = item.dictContent;
+            }
+          });
+          // const param = {
+          //   currentPage: 2,
+          //   eventInfo: this.addForm
+          //   // replanList: this.replanList
+          // }
+          // this.$store.commit('saveSimEventData', {currentPage: 2, simEventDataInfo: this.addForm});
+          this.getReplanList();
         }
       });
     },
@@ -347,12 +380,16 @@ export default {
           .then((res) => {
             if (res && res.data.list) {
               this.replanList = res.data.list;
-              const param = {
-                currentPage: '2',
-                emiEvent: this.addForm,
-                replanList: this.replanList
-              }
-              this.$emit('eventData', param);
+              // const param = {
+              //   currentPage: 2,
+              //   emiEvent: this.addForm,
+              //   replanList: this.replanList
+              // }
+              this.$store.commit('setCurrentPage', {currentPage: 2});
+              this.$store.commit('saveReplanList', {replanList: res.data.list});
+              this.$store.commit('saveSimEventData', {simEventDataInfo: this.addForm});
+              // this.$store.commit('saveSimEventData', {simEventDataInfo: param});
+              // this.$emit('eventData', param);
             }
           })
           .catch(() => {});

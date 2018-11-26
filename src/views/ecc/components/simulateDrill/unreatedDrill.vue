@@ -140,8 +140,8 @@ export default {
     },
     skipModifyPage () {
       console.log(this.drillDetailObj)
-      const data = JSON.stringify(this.drillDetailObj);
-      this.$router.push({name: 'new-drill', params: {data: data}, query: {eventId: this.$route.query.eventId, status: 'modify'}});
+      // const data = JSON.stringify(this.drillDetailObj);
+      this.$router.push({name: 'new-drill', query: {eventId: this.$route.query.eventId, status: 'modify'}});
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');
@@ -204,6 +204,9 @@ export default {
                 this.previewPictures(this.imgList);
               }
             }
+            this.$store.commit('setCurrentPage', {currentPage: 1});
+            this.$store.commit('saveTaskList', {taskList: this.drillDetailObj.taskList});
+            this.$store.commit('saveSimEventData', {simEventDataInfo: this.drillDetailObj});
           })
           .catch(() => {})
       }

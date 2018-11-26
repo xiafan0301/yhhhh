@@ -56,6 +56,12 @@ export default {
   created () {
     let aList = JSON.parse(getLocalStore('userMenuPermission'));
     console.log('menu aList', aList)
+    if (aList.length > 0) {
+      aList.map(item => {
+        item.resourceName = item.resourceName.split('(')[0];
+        // console.log(item.resourceName.split('(')[0])
+      });
+    }
     this.menuList = aList;
   },
   mounted () {

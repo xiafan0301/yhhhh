@@ -53,5 +53,24 @@ export default {
     state.fileBaseUrl = options.fileBaseUrl;
     state.fileUploadUrl = options.fileUploadUrl;
     state.fileDownloadUrl = options.fileDownloadUrl;
+  },
+  // 设置新建演练的步骤条索引
+  setCurrentPage (state, options) {
+    state.currentPage = options.currentPage;
+  },
+  // 保存新建演练的任务数据
+  saveTaskList (state, options) {
+    state.taskList = options.taskList;
+  },
+  // 保存新建演练预案列表数据
+  saveReplanList (state, options) {
+    state.replanList = options.replanList;
+  },
+  // 保存新建演练第一步的数据
+  saveSimEventData (state, options) {
+    // state.currentPage = options.currentPage;
+    state.simEventDataInfo = options.simEventDataInfo;
+    // state.taskList = options.taskList;
+    // state.replanList = options.replanList;
   }
 }

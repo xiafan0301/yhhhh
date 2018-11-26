@@ -41,10 +41,10 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='drillDataList' class="table-ctc">
-      <el-table-column fixed prop='eventCode' label="演练项目名称" align='center'></el-table-column>
-      <el-table-column prop='reporterUser' label="创建人" align='center'></el-table-column>
-      <el-table-column prop='reportTime' label="开始时间" align='center'></el-table-column>
-      <el-table-column prop='duration' label="演练时长" align='center'>
+      <el-table-column fixed prop='eventCode' label="演练项目名称" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='reporterUser' label="创建人" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='reportTime' label="开始时间" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='duration' label="演练时长" align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.duration">{{scope.row.duration}}</span>
           <span v-else>-</span>
@@ -79,7 +79,7 @@
   </div>
 </template>
 <script>
-
+import store from '@/store/store.js';
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
 export default {
@@ -161,6 +161,10 @@ export default {
     },
     skipAddDrill () { // 跳转到新建演练的页面
       this.$router.push({name: 'new-drill'});
+      this.$store.commit('setCurrentPage', {currentPage: 1});
+      this.$store.commit('saveTaskList', {taskList: []});
+      this.$store.commit('saveReplanList', {replanList: []});
+      this.$store.commit('saveSimEventData', {simEventDataInfo: {}});
     },
     getDrillList () { // 分页获取模拟事件
       let eventStatus;
@@ -182,7 +186,6 @@ export default {
       this.axios.get('A2/eventServices/events/page', {params})
         .then((res) => {
           if (res && res.data.list) {
-            console.log(res.data);
             this.drillDataList = res.data.list;
             this.pagination.total = res.data.total;
           }
