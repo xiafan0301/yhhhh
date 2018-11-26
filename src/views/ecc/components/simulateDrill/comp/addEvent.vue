@@ -183,37 +183,37 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.status === 'modify') {
-      console.log('111111')
-      console.log('simEventDataInfo', this.$store.state.simEventDataInfo)
-      let dataInfo;
-      if (this.$store.state.simEventDataInfo) {
-        dataInfo = JSON.parse(JSON.stringify(this.$store.state.simEventDataInfo));
-        if (dataInfo.casualties === 0) {
-          dataInfo.casualties = '无';
-        } else if (dataInfo.casualties === -1) {
-          dataInfo.casualties = '不确定';
-        } else if (dataInfo.casualties > 0) {
-          this.dieNumber = dataInfo.casualties;
-          dataInfo.casualties = '有';
-        }
-        this.addForm = {...dataInfo};
-        console.log('addForm', this.addForm)
+    // if (this.$route.query.status === 'modify') {
+    console.log('111111')
+    console.log('simEventDataInfo', this.$store.state.simEventDataInfo)
+    let dataInfo;
+    if (this.$store.state.simEventDataInfo) {
+      dataInfo = JSON.parse(JSON.stringify(this.$store.state.simEventDataInfo));
+      if (dataInfo.casualties === 0) {
+        dataInfo.casualties = '无';
+      } else if (dataInfo.casualties === -1) {
+        dataInfo.casualties = '不确定';
+      } else if (dataInfo.casualties > 0) {
+        this.dieNumber = dataInfo.casualties;
+        dataInfo.casualties = '有';
       }
-      // if (dataInfo.casualties === 0) {
-      //   dataInfo.casualties = '无';
-      // } else if (dataInfo.casualties === -1) {
-      //   dataInfo.casualties = '不确定';
-      // } else if (dataInfo.casualties > 0) {
-      //   this.dieNumber = dataInfo.casualties;
-      //   dataInfo.casualties = '有';
-      // }
-      // this.addForm = {...dataInfo};
-    } else {
-      // if (this.$store.state.simEventDataInfo) {
-      //   this.addForm = {...this.$store.state.simEventDataInfo};
-      // }
+      this.addForm = {...dataInfo};
+      console.log('addForm', this.addForm)
     }
+    // if (dataInfo.casualties === 0) {
+    //   dataInfo.casualties = '无';
+    // } else if (dataInfo.casualties === -1) {
+    //   dataInfo.casualties = '不确定';
+    // } else if (dataInfo.casualties > 0) {
+    //   this.dieNumber = dataInfo.casualties;
+    //   dataInfo.casualties = '有';
+    // }
+    // this.addForm = {...dataInfo};
+  // } else {
+    // if (this.$store.state.simEventDataInfo) {
+    //   this.addForm = {...this.$store.state.simEventDataInfo};
+    // }
+    // }
   },
   destroyed () {
     clearTimeout(this.timer);

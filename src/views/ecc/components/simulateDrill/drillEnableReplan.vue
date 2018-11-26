@@ -331,6 +331,8 @@ export default {
       }
     },
     sureBack () {
+      console.log(this.$store.state.taskList)
+      console.log(this.$store.state.simEventDataInfo)
       this.closeReturnVisiable = false;
       this.$router.back(-1);
     },
@@ -465,6 +467,7 @@ export default {
           }
         } else {
           params = {
+            simulateFlag: true,
             eventId: this.$route.query.eventId,
             taskList: [...this.taskList]
           }
@@ -490,6 +493,7 @@ export default {
             this.isTaskLoading = true;
             taskList.push(this.taskForm);
             params = {
+              simulateFlag: true,
               eventId: this.$route.query.eventId,
               taskList: [...this.taskList]
             }
@@ -520,11 +524,13 @@ export default {
         this.isTaskLoading = true;
         if (this.$store.state.taskList.length > 0) {
           params = {
+            simulateFlag: true,
             ...this.drillDetailObj,
             taskList: [...this.taskList, ...this.$store.state.taskList]
           }
         } else {
           params = {
+            simulateFlag: true,
             ...this.drillDetailObj,
             taskList: [...this.taskList]
           }
@@ -551,11 +557,13 @@ export default {
             taskList.push(this.taskForm);
             if (this.$store.state.taskList.length > 0) {
               params = {
+                simulateFlag: true,
                 ...this.drillDetailObj,
                 taskList: [...taskList, this.$store.state.taskList]
               }
             } else {
               params = {
+                simulateFlag: true,
                 ...this.drillDetailObj,
                 taskList: [...taskList]
               }

@@ -79,6 +79,7 @@ export default {
       currentNum: 0, // 事件反馈当前字数
       totalNum: 10000, // 可输入的总字数
       feedbackForm: {
+        simulateFlag: true,
         processType: '',
         processContent: '', // 事件总结
         taskStatus: '否',

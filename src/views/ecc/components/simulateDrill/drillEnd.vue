@@ -88,6 +88,7 @@ export default {
         projectType: 4
       },
       endForm: {
+        simulateFlag: true,
         eventId: '',
         eventLevel: '',
         eventSummary: '', // 事件总结

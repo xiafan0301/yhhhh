@@ -198,13 +198,14 @@ export default {
   },
   methods: {
     getDataInfo () {
-      if (this.status === 'modify') {
-        if (this.$store.state.taskList.length > 0) {
-          console.log('---------')
-          this.taskList = JSON.parse(JSON.stringify(this.$store.state.taskList));
-          console.log(this.taskList)
-        }
+      console.log('taskListaaa', this.$store.state.taskList)
+      // if (this.status === 'modify') {
+      if (this.$store.state.taskList.length > 0) {
+        console.log('---------')
+        this.taskList = JSON.parse(JSON.stringify(this.$store.state.taskList));
+        console.log(this.taskList)
       }
+      // }
     },
     calNumber (val) { // 计算事件情况字数
       if (val.length > this.totalNum) {

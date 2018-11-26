@@ -130,8 +130,8 @@ export default {
       } else if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
       } else {
-        // this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
-        this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
+        this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
+        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -162,6 +162,9 @@ export default {
     skipAddDrill () { // 跳转到新建演练的页面
       this.$router.push({name: 'new-drill'});
       this.$store.commit('setCurrentPage', {currentPage: 1});
+      this.$store.commit('saveTaskList', {taskList: []});
+      this.$store.commit('saveReplanList', {replanList: []});
+      this.$store.commit('saveSimEventData', {simEventDataInfo: {}});
     },
     getDrillList () { // 分页获取模拟事件
       let eventStatus;
@@ -183,7 +186,6 @@ export default {
       this.axios.get('A2/eventServices/events/page', {params})
         .then((res) => {
           if (res && res.data.list) {
-            console.log(res.data);
             this.drillDataList = res.data.list;
             this.pagination.total = res.data.total;
           }
