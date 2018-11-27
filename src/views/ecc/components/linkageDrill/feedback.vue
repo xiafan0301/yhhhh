@@ -227,7 +227,6 @@ export default {
                 } else {
                   this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
                 }
-                // this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
               } else {
                 this.isLoading = false;
                 this.$message.error('反馈失败');

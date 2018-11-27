@@ -58,7 +58,7 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='eventDataList' class='event-table'>
-      <el-table-column fixed label="事件编号" prop='eventCode' align='center'></el-table-column>
+      <el-table-column fixed label="演练项目名称" prop='eventCode' align='center'></el-table-column>
       <el-table-column label="事件类型" prop='eventType' align='center'>
         <template slot-scope="scope">
           <span v-if='scope.row.eventType'>{{scope.row.eventType}}</span>
