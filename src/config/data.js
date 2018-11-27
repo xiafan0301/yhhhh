@@ -89,9 +89,9 @@ export const resouceData = { // 功能按钮id
   lookCtcS: 'd7b29896-de0f-43ce-832b-52c425ff4c5a', // 查看调度--模拟
   endEventS: '8f20c547-3bb7-4db5-a336-635c0675f821', // 结束事件--模拟
   sendNoticeS: '53e781e4-e8f0-43ee-baae-347efaaacfc6', // 发布公告--模拟
-  modifyNoticeS: '6fc516f4-2bf2-4e24-8191-321dec2451d4', // 修改公告--模拟
-  revokeNoticeS: '670bd7c9-82b2-4b31-af67-51019bb4aadf', // 撤销公告--模拟
-  delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271', // 删除公告--模拟
+  // modifyNoticeS: '6fc516f4-2bf2-4e24-8191-321dec2451d4', // 修改公告--模拟
+  // revokeNoticeS: '670bd7c9-82b2-4b31-af67-51019bb4aadf', // 撤销公告--模拟
+  // delNoticeS: 'e4ec57e2-41de-40af-a2de-a3c963c88271', // 删除公告--模拟
   lookCtcLinkage: '26becb41-394d-43c0-b572-584e9c8c9e05', // 查看调度指挥--联动单位--调度指挥
   feekbackLinkage: '973def65-46e3-49b8-9815-f27ec1b75b65', // 反馈情况--联动单位--调度指挥
   reportEvent: '08f4262d-cd6f-43e3-a6e6-6f15e3f5e725', // 上报事件--联动单位--事件管理

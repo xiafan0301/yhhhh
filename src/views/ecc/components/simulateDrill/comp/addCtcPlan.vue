@@ -90,7 +90,7 @@
           <div class='ctc-replan-table'>
             <el-table
               style="width: 100%"
-              :data='reservePlanList'
+              :data='$store.state.replanList'
               highlight-current-row
               class='ctc-table'
               max-height="352"
@@ -146,11 +146,12 @@
   </div>
 </template>
 <script>
+import store from '@/store/store.js';
 export default {
   props: ['status', 'ctcPlanData', 'reservePlanList'],
   data () {
     return {
-      skipPage: '1', // 点击上一步
+      // skipPage: '1', // 点击上一步
       currentNum: 0, // 事件情况当前字数
       updatecurrentNum: 0,
       totalNum: 1000, // 可输入的总字数
@@ -185,25 +186,26 @@ export default {
       eventTypeId: null, // 事件类型
       taskList: [], // 要添加的任务列表
       departmentList: [] // 部门列表
-      // reservePlan: []
     }
   },
   created () {
     this.timer = setTimeout(() => {
       this.getDataInfo();
-    }, 1000)
+    }, 1000);
   },
   mounted () {
     this.getDepartmentList();
   },
-  destroyed () {
-    clearTimeout(this.timer);
-  },
   methods: {
     getDataInfo () {
-      if (this.status === 'modify') {
-        this.taskList = JSON.parse(JSON.stringify(this.ctcPlanData.taskList));
+      console.log('taskListaaa', this.$store.state.taskList)
+      // if (this.status === 'modify') {
+      if (this.$store.state.taskList.length > 0) {
+        console.log('---------')
+        this.taskList = JSON.parse(JSON.stringify(this.$store.state.taskList));
+        console.log(this.taskList)
       }
+      // }
     },
     calNumber (val) { // 计算事件情况字数
       if (val.length > this.totalNum) {
@@ -218,27 +220,89 @@ export default {
       this.updatecurrentNum = val.length;
     },
     preStep () { // 上一步
-      this.$emit('ctcPage', this.skipPage);
+      this.$store.commit('setCurrentPage', {currentPage: 1});
     },
     submitData (form) { // 新建演练
       let taskList = [];
       if (this.taskList.length > 0) {
-        const data = {
-          currentPage: '3',
-          taskList: this.taskList
+        if (this.status === 'modify') {
+          this.modifyDataInfo(this.taskList);
+        } else {
+          this.addDataInfo(this.taskList);
         }
-        this.$emit('ctcData', data);
       } else {
         this.$refs[form].validate((valid) => {
           if (valid) {
             taskList.push(this.taskForm);
-            const data = {
-              currentPage: '3',
-              taskList: taskList
+            if (this.status === 'modify') {
+              this.modifyDataInfo(taskList);
+            } else {
+              this.addDataInfo(taskList);
             }
-            this.$emit('ctcData', data);
           }
         })
+      }
+    },
+    addDataInfo (data) { // 新增演练事件
+      const params = {...this.$store.state.simEventDataInfo, taskList: [...data]};
+      console.log('params', params)
+      if (params) {
+        this.axios.post('A2/eventServices/simulateEvent', params)
+          .then(res => {
+            if (res) {
+              this.$message({
+                message: '发布成功',
+                type: 'success'
+              });
+              this.axios.get('A2/eventServices/events/' + res.data)
+                .then(resp => {
+                  if (resp) {
+                    if (resp.data.eventStatusName === '未处理') {
+                      this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
+                    } else {
+                      this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                    }
+                  }
+                })
+                .catch(() => {})
+              this.$store.commit('setCurrentPage', {currentPage: 3});
+              this.$store.commit('saveTaskList', {taskList: data});
+            } else {
+              this.$message.error('发布失败');
+            }
+          })
+          .catch(() => {});
+      }
+    },
+    modifyDataInfo (data) { // 修改演练事件
+      const params = {...this.$store.state.simEventDataInfo, taskList: [...data]};
+      console.log('params', params)
+      if (params) {
+        this.axios.put('A2/eventServices/simulateEvent', params)
+          .then(res => {
+            if (res) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              });
+              this.axios.get('A2/eventServices/events/' + this.$route.query.eventId)
+                .then(resp => {
+                  if (resp) {
+                    if (resp.data.eventStatusName === '未处理') {
+                      this.$router.push({name: 'unreated-drill', query: {eventId: this.$route.query.eventId}});
+                    } else {
+                      this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+                    }
+                  }
+                })
+                .catch(() => {})
+              this.$store.commit('setCurrentPage', {currentPage: 3});
+              this.$store.commit('saveTaskList', {taskList: data});
+            } else {
+              this.$message.error('修改失败');
+            }
+          })
+          .catch(() => {});
       }
     },
     cancelForm (form) { // 取消填写的form
@@ -278,38 +342,16 @@ export default {
       this.$router.push({name: 'drill-replan-detail', query: {eventId: this.$route.query.eventId, planId: scope.row.planId}});
     },
     skipEnableReplan (scope) { // 启用预案
-      console.log('111111')
-      console.log('ctcPlanData', this.ctcPlanData)
-      if (this.ctcPlanData) {
-        let params;
-        if (this.status === 'modify') {
-          params = {
-            eventForm: {...this.ctcPlanData}
-          };
-        } else {
-          params = {
-            eventForm: {...this.ctcPlanData},
-            taskList: [...this.taskList]
-          };
+      let taskList = [];
+      if (this.taskList.length > 0) {
+        this.$store.commit('saveTaskList', {taskList: this.taskList});
+      } else {
+        if (this.taskForm.departmentId && this.taskForm.departmentName && this.taskForm.taskName && this.taskForm.taskContent) {
+          taskList.push(this.taskForm);
+          this.$store.commit('saveTaskList', {taskList: taskList});
         }
-        this.$router.push({name: 'drill-enable-replan', params: {data: JSON.stringify(params)}, query: {eventId: this.$route.query.eventId, status: this.status === 'modify' ? 'over' : '', planId: scope.row.planId}});
       }
-    },
-    getReplanList () { // 获取预案列表
-      // const type = this.ctcPlanData.eventType;
-      if (this.eventTypeId) {
-        const params = {
-          pageNum: -1,
-          'where.planType': this.eventTypeId
-        }
-        this.axios.get('A2/planServices/plans', {params})
-          .then((res) => {
-            if (res && res.data.list) {
-              this.reservePlanList = res.data.list;
-            }
-          })
-          .catch(() => {});
-      }
+      this.$router.push({name: 'drill-enable-replan', query: {eventId: this.$route.query.eventId, status: this.$route.query.status === 'modify' ? 'over' : '', planId: scope.row.planId}});
     },
     getDepartmentList () { // 获取部门列表
       const params = {

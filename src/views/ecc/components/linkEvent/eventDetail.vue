@@ -181,7 +181,7 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <template v-if="status === 'ing' && eventDetailObj.taskList.length > 0">
+      <template v-if="status === 'ing' && (eventDetailObj.taskList && eventDetailObj.taskList.length > 0)">
         <el-button
           :disabled="isDisabled"
           :style="[isDisabled === true ? styleObj : '']"
@@ -379,16 +379,6 @@ export default {
                   this.isDisabled = true;
                 }
               });
-              if (res.data.processingList.length > 0) {
-                res.data.processingList.map((items, index) => {
-                  if (items.attachmentList.length > 0) {
-                    this.previewPicturesOne(index, items.attachmentList);
-                  }
-                });
-              }
-              if (this.imgList.length > 0) {
-                this.previewPictures(this.imgList);
-              }
             }
           })
           .catch(() => {})

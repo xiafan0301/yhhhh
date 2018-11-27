@@ -187,7 +187,7 @@ export default {
   },
   methods: {
     back () { // 返回上一页
-      this.$router.back(-1);
+      this.$router.push({name: 'drill-list'});
     },
     userInfoParam () {
       let ln = getCookie('cookieUserName');

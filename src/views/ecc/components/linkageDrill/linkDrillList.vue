@@ -41,10 +41,10 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='drillDataList' class="table-ctc">
-      <el-table-column fixed prop='eventCode' label="演练项目名称" align='center'></el-table-column>
-      <el-table-column prop='reporterUser' label="创建人" align='center'></el-table-column>
-      <el-table-column prop='reportTime' label="开始时间" align='center'></el-table-column>
-      <el-table-column prop='duration' label="演练时长" align='center'>
+      <el-table-column fixed prop='eventCode' label="演练项目名称" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='reporterUser' label="创建人" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='reportTime' label="开始时间" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='duration' label="演练时长" align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.duration">{{scope.row.duration}}</span>
           <span v-else>-</span>
