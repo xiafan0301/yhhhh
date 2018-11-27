@@ -32,20 +32,17 @@ export default {
   .main {
     margin: 0 auto;
     min-width: 1200px; height: 100%;
-   /* background: -webkit-linear-gradient(top, #010721, #010623);
-    background: -moz-linear-gradient(top, #010721, #010623);
-    background: linear-gradient(top, #010721, #010623); */
   }
   .vis-bg-l {
     float: left;
-    width: 250px;
+    width: 200px;
     height: 100%;
     background-color: #fff;
     box-shadow:0px 2px 4px rgba(132,132,132,0.1);
   }
   .vis-bg-r {
     height: 100%;
-    margin-left: 250px;
+    margin-left: 200px;
     position: relative;
   }
   .vis-bg-content {
