@@ -78,19 +78,33 @@ export default {
   data () {
     const keywords = (rule, value, callback) => {
       if (value) {
-        let keywords = value.split('，');
-        let keyword = value.split('、');
-        if (keywords.length > 3) {
-          return callback(new Error('最多添加3个关键词'));
-        }
-        if (keyword.length > 3) {
-          return callback(new Error('最多添加3个关键词'));
-        }
-        keywords && keywords.map((item) => {
-          if (item.length > 5) {
+        if (!(value.indexOf('，') === -1) && !(value.indexOf('、') === -1)) {
+          return callback(new Error('请保持格式一致'));
+        } else if (!(value.indexOf('、') === -1)) {
+          let keyword = value.split('、');
+          if (keyword.length > 3) {
+            return callback(new Error('最多添加3个关键词'));
+          }
+          keyword && keyword.map((item) => {
+            if (item.length > 5) {
+              return callback(new Error('每个关键词最多5个字'));
+            }
+          })
+        } else if (!(value.indexOf('，') === -1)) {
+          let keywords = value.split('，');
+          if (keywords.length > 3) {
+            return callback(new Error('最多添加3个关键词'));
+          }
+          keywords && keywords.map((item) => {
+            if (item.length > 5) {
+              return callback(new Error('每个关键词最多5个字'));
+            }
+          })
+        } else {
+          if (value.length > 5) {
             return callback(new Error('每个关键词最多5个字'));
           }
-        })
+        }
       }
       callback();
     };
@@ -125,7 +139,7 @@ export default {
         ],
         summary: [
           { required: true, message: '请输入知识简介', trigger: 'blur' },
-          { max: 250, message: '最多25个字符', trigger: 'blur' }
+          { max: 500, message: '最多500个字符', trigger: 'blur' }
         ],
         url: [
           { required: true, message: '请上传附件', trigger: 'blur' }

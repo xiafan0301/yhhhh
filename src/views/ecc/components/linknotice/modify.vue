@@ -329,7 +329,7 @@ export default {
             this.axios.put('A2/messageService/updateOne', params)
               .then((res) => {
                 if (res) {
-                  this.$router.push({name: 'notice-atmanagementList'})
+                  this.$router.push({name: 'link-noticeAtmanagementList'})
                   this.addPageLoading = false
                   this.$message.success('修改公告成功');
                 } else {
