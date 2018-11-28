@@ -12,7 +12,7 @@
         <div class='basic-header'>
           <div class='flag'></div>
           <p class='basic-text'>基本信息</p>
-          <p class='event-number' v-show='eventDetailObj.eventCode'>事件编号：{{eventDetailObj.eventCode}}</p>
+          <p class='event-number' v-show='eventDetailObj.eventCode'>演练项目名称：{{eventDetailObj.eventCode}}</p>
         </div>
         <div class='event-status'>
           <template v-if="status === 'ing'">
@@ -182,7 +182,14 @@
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
-      <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkD]" @click='skipFeedBack'>反馈情况</el-button>
+      <template v-if="status === 'ing'">
+        <el-button :disabled="isDisabled"
+          :style="[isDisabled === true ? styleObj : '']"
+          style='background: #0785FD;color:#fff'
+          v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkD]"
+          @click='skipFeedBack'
+        >反馈情况</el-button>
+      </template>
     </div>
     <!-- <el-dialog
       title="操作提示"

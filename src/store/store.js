@@ -33,7 +33,7 @@ const state = {
   // 客户端密钥
   authProkey: '241ba47e5a28a33d03795bfc0c8e6a1e',
   proKey: '69e1a034c587a490f34a8b28724beb0d',
-  simEventDataInfo: {}, // 模拟演练--新建演练的第一步的数据保存
+  simEventDataInfo: null, // 模拟演练--新建演练的第一步的数据保存
   currentPage: 1, // 模拟演练---新建演练的进度索引
   replanList: [], // 模拟演练---新建演练--预案列表数据
   taskList: [] // 模拟演练---新建演练任务列表

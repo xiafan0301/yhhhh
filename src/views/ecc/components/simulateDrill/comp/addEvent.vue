@@ -198,22 +198,8 @@ export default {
         dataInfo.casualties = '有';
       }
       this.addForm = {...dataInfo};
-      console.log('addForm', this.addForm)
     }
-    // if (dataInfo.casualties === 0) {
-    //   dataInfo.casualties = '无';
-    // } else if (dataInfo.casualties === -1) {
-    //   dataInfo.casualties = '不确定';
-    // } else if (dataInfo.casualties > 0) {
-    //   this.dieNumber = dataInfo.casualties;
-    //   dataInfo.casualties = '有';
-    // }
-    // this.addForm = {...dataInfo};
-  // } else {
-    // if (this.$store.state.simEventDataInfo) {
-    //   this.addForm = {...this.$store.state.simEventDataInfo};
-    // }
-    // }
+    console.log('addForm', this.addForm)
   },
   destroyed () {
     clearTimeout(this.timer);
@@ -225,23 +211,6 @@ export default {
     this.uploadUrl = imgBaseUrl2;
   },
   methods: {
-    // getDataInfo () {
-    //   if (this.$route.query.status === 'modify') {
-    //     if ()
-    //     let dataInfo = JSON.parse(JSON.stringify(this.addEventForm));
-    //     if (dataInfo.casualties === 0) {
-    //       dataInfo.casualties = '无';
-    //     } else if (dataInfo.casualties === -1) {
-    //       dataInfo.casualties = '不确定';
-    //     } else if (dataInfo.casualties > 0) {
-    //       this.dieNumber = dataInfo.casualties;
-    //       dataInfo.casualties = '有';
-    //     }
-    //     this.addForm = dataInfo;
-    //   } else {
-
-    //   }
-    // },
     onPositionChange (val) { // 事件地点输入框值改变
       let value = val;
       let _this = this;
@@ -360,12 +329,6 @@ export default {
               this.addForm.eventLevelName = item.dictContent;
             }
           });
-          // const param = {
-          //   currentPage: 2,
-          //   eventInfo: this.addForm
-          //   // replanList: this.replanList
-          // }
-          // this.$store.commit('saveSimEventData', {currentPage: 2, simEventDataInfo: this.addForm});
           this.getReplanList();
         }
       });
@@ -380,16 +343,9 @@ export default {
           .then((res) => {
             if (res && res.data.list) {
               this.replanList = res.data.list;
-              // const param = {
-              //   currentPage: 2,
-              //   emiEvent: this.addForm,
-              //   replanList: this.replanList
-              // }
               this.$store.commit('setCurrentPage', {currentPage: 2});
               this.$store.commit('saveReplanList', {replanList: res.data.list});
               this.$store.commit('saveSimEventData', {simEventDataInfo: this.addForm});
-              // this.$store.commit('saveSimEventData', {simEventDataInfo: param});
-              // this.$emit('eventData', param);
             }
           })
           .catch(() => {});

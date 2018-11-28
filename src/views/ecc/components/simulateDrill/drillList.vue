@@ -42,7 +42,7 @@
     </div>
     <el-table style="width: 100%" :data='drillDataList' class="table-ctc">
       <el-table-column fixed prop='eventCode' label="演练项目名称" align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column prop='reporterUser' label="创建人" align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column prop='createUser' label="创建人" align='center' show-overflow-tooltip></el-table-column>
       <el-table-column prop='reportTime' label="开始时间" align='center' show-overflow-tooltip></el-table-column>
       <el-table-column prop='duration' label="演练时长" align='center' show-overflow-tooltip>
         <template slot-scope="scope">
@@ -164,7 +164,7 @@ export default {
       this.$store.commit('setCurrentPage', {currentPage: 1});
       this.$store.commit('saveTaskList', {taskList: []});
       this.$store.commit('saveReplanList', {replanList: []});
-      this.$store.commit('saveSimEventData', {simEventDataInfo: {}});
+      this.$store.commit('saveSimEventData', {simEventDataInfo: null});
     },
     getDrillList () { // 分页获取模拟事件
       let eventStatus;
@@ -181,7 +181,9 @@ export default {
         'where.otherQuery': this.selectForm.projectName,
         'where.simulateFlag': true,
         pageNum: this.pagination.pageNum,
-        pageSize: this.pagination.pageSize
+        pageSize: this.pagination.pageSize,
+        order: 'desc',
+        orderBy: 'report_time'
       }
       this.axios.get('A2/eventServices/events/page', {params})
         .then((res) => {
