@@ -160,7 +160,6 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
-      params['where.publishUnitId'] = getCookie('cookieDepartmentId')
       params['where.receiverId'] = getCookie('cookieDepartmentId')
       if (this.searchForm.publishUnitId) {
         params['where.publishUnitId'] = this.searchForm.publishUnitId

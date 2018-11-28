@@ -27,7 +27,17 @@
   </div>
 </template>
 <script>
+// "张三"
 import {ajaxCtx2} from '@/config/config.js';
+let person = new class {
+  constructor (name) {
+    this.name = name;
+  }
+  sayName () {
+    console.log(this.name);
+  }
+}('张三');
+console.log(person.sayName())
 export default {
   data () {
     return {

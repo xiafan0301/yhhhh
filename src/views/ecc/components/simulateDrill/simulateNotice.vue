@@ -47,6 +47,12 @@
       <el-table-column prop="emiMessage.title" label="主题"  align="center"  :show-overflow-tooltip="true">
       </el-table-column>
       <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <el-tooltip :content="scope.row.emiMessage.details"  v-if="scope.row.emiMessage.details.length > 5000">
+            <span>{{scope.row.emiMessage.details.slice(0, 200)}}</span>
+          </el-tooltip>
+          <span v-else>{{scope.row.emiMessage.details}}</span>
+          </template>
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">
