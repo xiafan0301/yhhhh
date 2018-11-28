@@ -98,12 +98,12 @@
           <span style="color: #666666;" v-else>已结束</span>
         </template>
       </el-table-column>
-      <el-table-column label="是否查看" prop='acceptFlag' align='center'>
+      <!-- <el-table-column label="是否查看" prop='acceptFlag' align='center'>
         <template slot-scope="scope">
           <span style="color: #555555;" v-if="scope.row.acceptFlag == true">是</span>
           <span style="color: #FB796C;" v-else>否</span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <el-table-column label="操作" align='center'>
         <template slot-scope="scope">
           <i class="icon-chakan- icon-hover" @click="skipEventDetail(scope)" title="查看"></i>
@@ -172,18 +172,8 @@ export default {
       this.getEventList();
     },
     skipEventDetail (scope) { // 跳转到事件详情页面
-      const params = {
-        eventId: scope.row.eventId,
-        acceptFlag: true
-      }
       if (scope.row.eventStatusName === '未处理') {
-        this.axios.put('A2/eventServices/events/' + scope.row.eventId, params)
-          .then((res) => {
-            if (res) {
-              this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'never'}});
-            }
-          })
-          .catch(() => {})
+        this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'never'}});
       } else if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'link-event-detail', query: {eventId: scope.row.eventId, status: 'end'}});
       } else {
