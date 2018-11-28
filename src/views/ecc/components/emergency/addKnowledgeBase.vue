@@ -139,7 +139,7 @@ export default {
         ],
         summary: [
           { required: true, message: '请输入知识简介', trigger: 'blur' },
-          { max: 500, message: '最多500个字符', trigger: 'blur' }
+          { max: 250, message: '最多250个字符', trigger: 'blur' }
         ],
         url: [
           { required: true, message: '请上传附件', trigger: 'blur' }

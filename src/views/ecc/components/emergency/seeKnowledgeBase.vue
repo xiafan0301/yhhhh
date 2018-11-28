@@ -27,7 +27,6 @@
   </div>
 </template>
 <script>
-import {ajaxCtx2} from '@/config/config.js';
 export default {
   data () {
     return {
