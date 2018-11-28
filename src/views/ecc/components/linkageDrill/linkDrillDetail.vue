@@ -156,6 +156,31 @@
           </div>
         </div>
       </div>
+      <div class='event-summary' v-show='drillDetailObj.eventSummary'>
+        <div class='event-summary-header'>
+          <div class='flag'></div>
+          <p class='event-summary-text'>演练评估</p>
+        </div>
+        <div style="font-weight:bold;padding-left: 30px;padding-top:10px;">
+          评估人：{{drillDetailObj.closeUserName}}
+        </div>
+        <div class='summary-content'>
+          {{drillDetailObj.eventSummary}}
+        </div>
+        <div style="display: flex">
+          <div id="imgs1" class="img-list" style="margin-left: 20px"></div>
+        </div>
+        <div class='show-file-div'>
+          <div class='show-file-div-list' v-for="(item, index) in fileList" :key="'item'+index">
+            <img src='../../../../assets/img/temp/file.png' />
+            <a :href="item.url" style="text-decoration: none">
+              <span>{{item.attachmentName}}</span>
+              <el-button type="primary" size="mini" style="margin-left: 5px">下载</el-button>
+            </a>
+          </div>
+        </div>
+        <div style="height:  37px; background-color: #fff"></div>
+      </div>
     </div>
     <div class='operation-btn-event'>
       <el-button @click='back'>返回</el-button>
@@ -163,6 +188,7 @@
         <el-button
           v-show="resouceData && resourceBtn[resouceData.feekbackEventLinkY]"
           style='background: #0785FD;color:#fff'
+          :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']"
           @click='skipDrillFeek'>反馈情况</el-button>
       </template>
     </div>
@@ -176,7 +202,13 @@ export default {
   data () {
     return {
       resourceBtn: {},
+      isDisabled: false,
       resouceData: resouceData,
+      styleObj: {
+        backgroundColor: '#dddddd'
+      },
+      fileList: [],
+      imgList1: [],
       urlDetail: '',
       drillDetailObj: {},
       videoList: [], // 视频数据列表
@@ -186,6 +218,11 @@ export default {
     }
   },
   created () {
+    // if (this.$route.query.name === '已完成') {
+    //   this.isDisabled = true;
+    // } else {
+    //   this.isDisabled = false;
+    // }
     this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.status = this.$route.query.status;
   },
@@ -210,6 +247,44 @@ export default {
         let imgs2 = []
         // 获取图片列表容器
         let $el = document.getElementById('imgs');
+        let html = '';
+        // 创建img dom
+        imgs.forEach(function (src) {
+          // 拼接html结构
+          html += '<div class="item" style=" float: left;position:relative;display: flex;align-items: center;justify-content: center;width: 100px;height: 100px;box-sizing: border-box;border: 1px solid #f1f1f1;margin: 5px;cursor: pointer;" data-angle="' + 0 + '"><img src="' + src + '" style="width: 100%;height: 100px;"></div>';
+          // 生成imgs2数组
+          imgs2.push({
+            url: src,
+            angle: 0
+          })
+        })
+        // 将图片添加至图片容器中
+        $el.innerHTML = html;
+        // 使用方法
+        let config = {
+          showToolbar: true
+        }
+        let ziv = new ZxImageView(config, imgs2);
+        // console.log(ziv);
+        // 查看第几张
+        let $images = $el.querySelectorAll('.item');
+        for (let i = 0; i < $images.length; i++) {
+          (function (index) {
+            $images[i].addEventListener('click', function () {
+              ziv.view(index);
+            })
+          }(i))
+        }
+      }, 100)
+    },
+    // 预览图片公共方法
+    previewPictures1 (data) {
+      setTimeout(() => {
+        let imgs = data.map(value => value.url);// 图片路径要配置好！
+        // 图片数组2
+        let imgs2 = []
+        // 获取图片列表容器
+        let $el = document.getElementById('imgs1');
         let html = '';
         // 创建img dom
         imgs.forEach(function (src) {
@@ -292,6 +367,19 @@ export default {
                   this.imgList.push(item);
                 }
               });
+              this.drillDetailObj.closeAttachmentList.forEach(aa => {
+                if (aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.png' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.jpg' || aa.attachmentName.substring(aa.attachmentName.lastIndexOf('.')) === '.bmp') {
+                  this.imgList1.push(aa);
+                  this.previewPictures1(this.imgList1);
+                } else {
+                  this.fileList.push(aa);
+                }
+              });
+              res.data.taskList && res.data.taskList.map((item, index) => {
+                if (item.taskStatus === '6f18f326-d056-41d0-b749-2c9be0ea83d3') {
+                  this.isDisabled = true;
+                }
+              });
               if (res.data.processingList.length > 0) {
                 res.data.processingList.map((items, index) => {
                   if (items.attachmentList.length > 0) {
@@ -325,10 +413,10 @@ export default {
     a {
       text-decoration: none;
     }
-    .basic, .ctc,.event-progress {
+    .basic, .ctc,.event-progress,.event-summary {
       background: #fff;
       margin-bottom: 2%;
-      .basic-header,.ctc-header,.event-progress-header{
+      .basic-header,.ctc-header,.event-progress-header,.event-summary-header{
         width: 100%;
         display: flex;
         p {
@@ -343,7 +431,7 @@ export default {
           border-bottom-right-radius: 5px;
           background: #0785FD;
         }
-        .basic-text, .ctc-text,.event-progress-text{
+        .basic-text, .ctc-text,.event-progress-text,.event-summary-text{
           color: #0785FD;
           font-size: 16px;
           font-weight: bold;
@@ -515,6 +603,25 @@ export default {
       i {
         margin-right: 5px;
         font-size: 18px;
+      }
+    }
+  }
+  .show-file-div {
+    width: 500px;
+    margin-left: 22px;
+    .show-file-div-list {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      span {
+        color: #0785FD;
+        font-size: 14px;
+        margin: 0 5px;
+      }
+      i {
+        font-size: 18px;
+        color: #5D5D5D;
+        cursor: pointer;
       }
     }
   }

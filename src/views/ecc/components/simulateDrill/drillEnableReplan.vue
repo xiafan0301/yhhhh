@@ -472,7 +472,7 @@ export default {
             taskList: [...this.taskList]
           }
         }
-        this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
+        this.axios.put('A2/eventServices/simulateEvent', params)
           .then((res) => {
             if (res) {
               this.$message({
