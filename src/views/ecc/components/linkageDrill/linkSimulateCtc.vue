@@ -160,7 +160,7 @@ export default {
       if (scope.row.eventStatusName === '已结束') {
         this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: scope.row.eventId, status: 'end'}});
       } else {
-        this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: scope.row.eventId, status: 'end', taskId: scope.row.taskId, name: scope.row.taskStatusName}});
+        this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: scope.row.eventId, status: 'ing', taskId: scope.row.taskId, name: scope.row.taskStatusName}});
       }
     },
     getEventStatus () { // 获取事件状态

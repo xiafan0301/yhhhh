@@ -223,9 +223,9 @@ export default {
                   type: 'success'
                 });
                 if (this.$route.query.text === 'ctc') {
-                  this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: eventId, taskId: taskId}});
+                  this.$router.push({name: 'link-simulate-ctc-detail', query: {eventId: eventId, taskId: taskId, status: 'ing'}});
                 } else {
-                  this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId}});
+                  this.$router.push({name: 'link-drill-detail', query: {eventId: eventId, taskId: taskId, status: 'ing'}});
                 }
               } else {
                 this.isLoading = false;
