@@ -516,20 +516,31 @@ export default {
       let taskList = [];
       if (this.taskList.length > 0) {
         this.isTaskLoading = true;
-        const data = {
-          taskList: this.taskList
+        let data;
+        if (this.drillDetailObj.taskList.length > 0) {
+          data = {
+            simulateFlag: true,
+            eventId: eventId,
+            taskList: [...this.taskList, ...this.drillDetailObj.taskList]
+          }
+        } else {
+          data = {
+            simulateFlag: true,
+            eventId: eventId,
+            taskList: [...this.taskList]
+          }
         }
-        this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+        this.axios.put('A2/eventServices/simulateEvent', data)
           .then((res) => {
             if (res) {
               this.$message({
-                message: '添加任务成功',
+                message: '调度成功',
                 type: 'success'
               });
               this.$router.push({name: 'drill-detail-reat', query: {eventId: eventId}});
               this.isTaskLoading = false;
             } else {
-              this.$message.error('添加任务失败');
+              this.$message.error('调度失败');
               this.isTaskLoading = false;
             }
             // this.isTaskLoading = false;
@@ -539,21 +550,35 @@ export default {
         this.$refs[form].validate((valid) => {
           if (valid) {
             this.isTaskLoading = true;
+            let data;
             taskList.push(this.taskForm);
-            const data = {
-              taskList: taskList
+            if (this.drillDetailObj.taskList.length > 0) {
+              data = {
+                simulateFlag: true,
+                eventId: eventId,
+                taskList: [...taskList, ...this.drillDetailObj.taskList]
+              }
+            } else {
+              data = {
+                simulateFlag: true,
+                eventId: eventId,
+                taskList: [...taskList]
+              }
             }
-            this.axios.post('A2/taskServices/task/' + eventId, data.taskList)
+            // const data = {
+            //   taskList: taskList
+            // }
+            this.axios.put('A2/eventServices/simulateEvent', data)
               .then((res) => {
                 if (res) {
                   this.$message({
-                    message: '添加任务成功',
+                    message: '调度成功',
                     type: 'success'
                   });
                   this.$router.push({name: 'drill-detail-reat', query: {eventId: eventId}});
                   this.isTaskLoading = false;
                 } else {
-                  this.$message.error('添加任务失败');
+                  this.$message.error('调度失败');
                   this.isTaskLoading = false;
                 }
                 // this.isTaskLoading = false;
