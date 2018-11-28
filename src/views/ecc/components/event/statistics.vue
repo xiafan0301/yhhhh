@@ -230,6 +230,7 @@ export default {
       },
       amap: null,
       sonPolygons: null,
+      textMarkers: null,
       polygons: null,
       zoom: 10,
       zooms: [9, 17],
@@ -391,9 +392,12 @@ export default {
     setsonPolygons (data) {
       let _this = this;
       if (this.amap && this.sonPolygons) {
-        // console.log('remove')
         this.amap.remove(this.sonPolygons);
         this.sonPolygons = null;
+      }
+      if (this.amap && this.textMarkers) {
+        this.amap.remove(this.textMarkers);
+        this.textMarkers = null;
       }
       for (let i = 0; i < data.length; i++) {
         if (data[i] && data[i].borderList) {
@@ -434,6 +438,26 @@ export default {
             this.sonPolygons = [];
           }
           this.sonPolygons.push(polygon);
+        }
+        if (data[i] && data[i].nameLocation) {
+          if (data[i].nameLocation.latitude > 0 && data[i].nameLocation.longitude > 0) {
+            let textMarker = new AMap.Text({
+              text: data[i].areaName,
+              map: this.amap,
+              style: {
+                'background': 'inherit',
+                color: '#fff',
+                border: 0
+              },
+              bubble: false, // 是否将覆盖物的鼠标或touch等事件冒泡到地图上
+              position: new AMap.LngLat(data[i].nameLocation.longitude, data[i].nameLocation.latitude),
+              zIndex: 12
+            });
+            if (!this.textMarkers) {
+              this.textMarkers = [];
+            }
+            this.textMarkers.push(textMarker);
+          }
         }
       }
       // console.log('this.sonPolygons', this.sonPolygons)
