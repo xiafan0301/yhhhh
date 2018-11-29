@@ -16,7 +16,7 @@
         </div>
         <div class='event-status'>
           <template v-if="status === 'ing'">
-            <img src='../../../../assets/img/temp/handling.png' />
+            <img src='../../../../assets/img/temp/treating.png' />
           </template>
           <template v-if="status === 'end'">
             <img src='../../../../assets/img/temp/end.png' />
@@ -67,7 +67,7 @@
           <div class='basic-list img-content'>
             <div style="width:100%;">
               <div class='img-list' style="width:auto" id="imgs" v-show="imgList && imgList.length > 0"></div>
-              <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
+              <!-- <div class='video-list' style="width:auto" v-show="videoList && videoList.length > 0">
                 <video id="my-video" class="video-js" controls preload="auto" width="100" height="100"
                 data-setup="{}" v-for="(item, index) in videoList" :key="'item'+index">
                   <source :src="item.url" type="video/mp4">
@@ -75,7 +75,7 @@
                   <source :src="item.url" type="video/ogg">
                   <p class="vjs-no-js"> 您的浏览器不支持 video 标签。</p>
                 </video>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>

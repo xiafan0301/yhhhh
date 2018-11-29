@@ -278,7 +278,7 @@ export default {
       const params = {...this.$store.state.simEventDataInfo, taskList: [...data]};
       console.log('params', params)
       if (params) {
-        this.axios.put('A2/eventServices/simulateEvent/' + this.$route.query.eventId, params)
+        this.axios.put('A2/eventServices/simulateEvent', params)
           .then(res => {
             if (res) {
               this.$message({

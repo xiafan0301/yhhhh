@@ -58,23 +58,23 @@
       </el-form>
     </div>
     <el-table style="width: 100%" :data='eventDataList' class='event-table'>
-      <el-table-column fixed label="演练项目名称" prop='eventCode' align='center'></el-table-column>
-      <el-table-column label="事件类型" prop='eventType' align='center'>
+      <el-table-column fixed label="演练项目名称" prop='eventCode' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="事件类型" prop='eventType' align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if='scope.row.eventType'>{{scope.row.eventType}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="事件等级" prop='eventLevel' align='center'>
+      <el-table-column label="事件等级" prop='eventLevel' align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if='scope.row.eventLevel'>{{scope.row.eventLevel}}</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
-      <el-table-column label="派单时间" prop='createTime' align='center'></el-table-column>
+      <el-table-column label="派单时间" prop='createTime' align='center' show-overflow-tooltip></el-table-column>
       <el-table-column label="任务名称" prop='taskName' align='center' show-overflow-tooltip></el-table-column>
-      <el-table-column label="状态" prop='eventStatusName' align='center'></el-table-column>
-      <el-table-column label="是否查看" prop='taskStatusName' align='center'>
+      <el-table-column label="状态" prop='eventStatusName' align='center' show-overflow-tooltip></el-table-column>
+      <el-table-column label="是否查看" prop='taskStatusName' align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span style="color: #555555;" v-if="scope.row.taskStatusName == '已查看'">{{scope.row.taskStatusName}}</span>
           <span style="color: #FB796C;" v-else>{{scope.row.taskStatusName}}</span>
