@@ -235,9 +235,7 @@ export default {
     this.getDepartmentList();
   },
   mounted () {
-    console.log(this.$store.state.simEventDataInfo)
     if (!this.$route.query.status) {
-      console.log('adasdsadasd')
       this.drillDetailObj = {...this.$store.state.simEventDataInfo};
     } else {
       this.getDrillDetail();
@@ -349,7 +347,13 @@ export default {
                   this.imgList.push(item);
                 }
               });
+              if (res.data.taskList.length > 0) {
+                res.data.taskList.map(item => {
+                  this.taskList.push(item);
+                });
+              }
               this.drillDetailObj = res.data;
+              // this.taskList = [...this.drillDetailObj.taskList];
               if (this.imgList.length > 0) {
                 this.previewPictures(this.imgList);
               }
@@ -377,7 +381,12 @@ export default {
           .then((res) => {
             if (res) {
               console.log(res.data.taskList)
-              this.taskList = JSON.parse(JSON.stringify(res.data.taskList));
+              if (res.data.taskList.length > 0) {
+                res.data.taskList.map(item => {
+                  this.taskList.push(item);
+                });
+              }
+              // this.taskList = [...res.data.taskList];
             }
           })
           .catch(() => {})
@@ -463,7 +472,7 @@ export default {
         if (this.$store.state.taskList.length > 0) {
           params = {
             eventId: this.$route.query.eventId,
-            taskList: [...this.taskList, ...this.$store.state.taskList]
+            taskList: [...this.taskList]
           }
         } else {
           params = {
@@ -479,7 +488,18 @@ export default {
                 message: '启用成功',
                 type: 'success'
               });
-              this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+              this.axios.get('A2/eventServices/events/' + this.$route.query.eventId)
+                .then(resp => {
+                  if (resp) {
+                    if (resp.data.eventStatusName === '未处理') {
+                      this.$router.push({name: 'unreated-drill', query: {eventId: this.$route.query.eventId}});
+                    } else {
+                      this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+                    }
+                  }
+                })
+                .catch(() => {})
+              // this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
               this.isTaskLoading = false;
             } else {
               this.$message.error('启用失败');
@@ -504,7 +524,18 @@ export default {
                     message: '启用成功',
                     type: 'success'
                   });
-                  this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+                  this.axios.get('A2/eventServices/events/' + this.$route.query.eventId)
+                    .then(resp => {
+                      if (resp) {
+                        if (resp.data.eventStatusName === '未处理') {
+                          this.$router.push({name: 'unreated-drill', query: {eventId: this.$route.query.eventId}});
+                        } else {
+                          this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
+                        }
+                      }
+                    })
+                    .catch(() => {})
+                  // this.$router.push({name: 'drill-detail-reat', query: {eventId: this.$route.query.eventId}});
                   this.isTaskLoading = false;
                 } else {
                   this.$message.error('启用失败');
@@ -542,7 +573,18 @@ export default {
                 message: '启用成功',
                 type: 'success'
               });
-              this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+              this.axios.get('A2/eventServices/events/' + res.data)
+                .then(resp => {
+                  if (resp) {
+                    if (resp.data.eventStatusName === '未处理') {
+                      this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
+                    } else {
+                      this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                    }
+                  }
+                })
+                .catch(() => {})
+              // this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
               this.isTaskLoading = false;
             } else {
               this.$message.error('启用失败');
@@ -575,7 +617,18 @@ export default {
                     message: '启用成功',
                     type: 'success'
                   });
-                  this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                  this.axios.get('A2/eventServices/events/' + res.data)
+                    .then(resp => {
+                      if (resp) {
+                        if (resp.data.eventStatusName === '未处理') {
+                          this.$router.push({name: 'unreated-drill', query: {eventId: res.data}});
+                        } else {
+                          this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
+                        }
+                      }
+                    })
+                    .catch(() => {})
+                  // this.$router.push({name: 'drill-detail-reat', query: {eventId: res.data}});
                   this.isTaskLoading = false;
                 } else {
                   this.$message.error('启用失败');
