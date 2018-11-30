@@ -176,18 +176,6 @@
       <el-button @click='back'>返回</el-button>
       <el-button :disabled="isDisabled" :style="[isDisabled === true ? styleObj : '']" style='background: #0785FD;color:#fff' v-show="resouceData && resourceBtn[resouceData.feekbackLinkage]" @click='skipFeedBack'>反馈情况</el-button>
     </div>
-    <!-- <el-dialog
-      title="操作提示"
-      :visible.sync="closeCommentVisiable"
-      width="480px"
-      height='285px'
-      center>
-      <span style='text-align:center'>删除后APP端将不再显示此条评论，是否确认删除?</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button class='sureBtn' :loading="isDeleteLoading" @click='deleteComment'>确定删除</el-button>
-        <el-button class='noSureBtn' @click="closeCommentVisiable = false">暂不删除</el-button>
-      </span>
-    </el-dialog> -->
   </div>
 </template>
 <script>

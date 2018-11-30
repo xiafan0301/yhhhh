@@ -46,7 +46,13 @@
       <el-table-column fixed label="序号" width="50"  type="index"></el-table-column>
       <el-table-column prop="emiMessage.title" label="主题"  align="center"  :show-overflow-tooltip="true">
       </el-table-column>
-      <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center" :show-overflow-tooltip="true">
+      <el-table-column prop="emiMessage.details" label="摘要" min-width="150px" align="center">
+        <template slot-scope="scope">
+          <el-tooltip :content="scope.row.emiMessage.details">
+            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{scope.row.emiMessage.details}}</span>
+          </el-tooltip>
+          <!--<span v-else style="display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{scope.row.emiMessage.details}}</span>-->
+          </template>
       </el-table-column>
       <el-table-column prop="emiMessage.terminal" label="接收者"  align="center" :show-overflow-tooltip="true">
         <template slot-scope="scope">

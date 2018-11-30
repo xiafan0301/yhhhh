@@ -33,7 +33,7 @@ const oDomains = {
   // ajax开发地址
   domain2: {
     // 本地配置 localhost:8902
-    // dev: 'http://10.16.3.43:8080',
+    dev: 'http://10.16.3.43:8080',
     // dev: 'http://10.116.64.169:8084',
     dev: 'http://10.16.3.43:8080',
     test: 'http://10.16.4.24:8080',

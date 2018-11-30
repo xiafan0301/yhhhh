@@ -32,7 +32,7 @@
           <el-form-item label="知识简介"  prop="summary"  style="position: relative">
             <el-input type="textarea" style='width: 500px;' placeholder='请输入知识简介...' rows='7' v-model="form.summary">
             </el-input>
-            <span style="position: absolute; left: 445px; bottom: 5px; color: #999999">{{form.summary.length}}/500</span>
+            <span style="position: absolute; left: 445px; bottom: 5px; color: #999999">{{form.summary.length}}/250</span>
           </el-form-item>
           <el-form-item label="附件" class="defint" style="position: relative"   prop="url">
             <div style="display: inline-block; width: 220px; height: 37px; border: 1px solid #dcdfe6; border-radius: 4px; vertical-align: middle;"></div>
@@ -139,7 +139,7 @@ export default {
         ],
         summary: [
           { required: true, message: '请输入知识简介', trigger: 'blur' },
-          { max: 500, message: '最多500个字符', trigger: 'blur' }
+          { max: 250, message: '最多250个字符', trigger: 'blur' }
         ],
         url: [
           { required: true, message: '请上传附件', trigger: 'blur' }

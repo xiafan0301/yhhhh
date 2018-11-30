@@ -45,7 +45,7 @@ export default {
     console.log(encodeURIComponent('http://swift.aorise.org:8090/v1/AUTH_86d41ab027ab4e0da8c8494c84d1e4aa/sc-vis-pub/doc/f49f581b-bcdd-4f80-b138-7c9fea209f7d.txt'))
   },
   mounted () {
-    this.ajaxCtx2 = ajaxCtx2
+    this.ajaxCtx2 = ajaxCtx2;
     this.$nextTick(() => {
       this.getknowledgedetl()
     })

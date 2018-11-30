@@ -145,6 +145,9 @@ export default {
       //   this.isShowDel = false;
       // } else {
       this.isShowDel = true;
+      if (!this.isShowTimeSec) {
+        this.isShowDel = false
+      }
       // }
       this.isShowDelIcon = false;
     },
@@ -168,6 +171,7 @@ export default {
       } else if (this.isShowTimeSec) {
         this.isShowTimeSec = false;
         this.isShowDel = false;
+      } else if (this.isShowTimeSec) {
       }
     },
     addTime () {
