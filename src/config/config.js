@@ -75,12 +75,13 @@ if (process.env.NODE_ENV === 'production') {
   if (buildEnv && buildEnv.toLowerCase() === 'test') {
     // npm run build -- test
     sENV = 'test';
+  } else if (buildEnv && buildEnv.toLowerCase() === 'dev') {
+    // npm run build -- dev
+    sENV = 'dev';
   } else {
     // npm run build / npm run build -- prod
     sENV = 'prod';
   }
-} else if (process.env.NODE_ENV === 'development') {
-  sENV = 'dev';
 }
 console.log('environment', sENV);
 // ajax default
