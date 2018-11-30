@@ -2,7 +2,7 @@
   <div>
     <!-- 面包屑 -->
     <div class="e_stat_bd">
-      <el-breadcrumb separator-class="el-icon-ESlint-right">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item>事件互助管理</el-breadcrumb-item>
         <el-breadcrumb-item><span style='color: #0785FD'>统计分析</span></el-breadcrumb-item>
       </el-breadcrumb>
@@ -174,7 +174,7 @@ export default {
         ]
       ],
       searchForm: {
-        time: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 7), new Date()]
+        time: [new Date(new Date().getTime() - 3600 * 1000 * 24 * 30), new Date()]
       },
       // 事件总体情况统计数据
       generalData: {
@@ -320,7 +320,7 @@ export default {
             for (let i = 0; i < res.data.length; i++) {
               _data.push({
                 year: res.data[i].time,
-                value: Number(res.data[i].count) + 2
+                value: Number(res.data[i].count)
               });
             }
             this.setStats3(_data);
@@ -469,7 +469,7 @@ export default {
       };
       let fillColors = ['#00A2FF', '#0F70C4', '#0054FE', '#4E2DF6', '#BF2CFE'];
       if (_index < 5) {
-        _o.strokeWeight = 4;
+        _o.strokeWeight = 3;
         _o.fillColor = fillColors[_index];
       } else {
         _o.fillColor = '#088bfd';
@@ -543,7 +543,7 @@ export default {
       chart.source(data, {
         percent: {
           formatter: function formatter (val) {
-            val = val * 100 + '%';
+            val = (val * 100).toFixed(2) + '%';
             return val;
           }
         }
@@ -651,7 +651,8 @@ export default {
       let temp = document.getElementById('stat_2');
       chart.source(data);
       chart.scale('sales', {
-        tickInterval: 20
+        range: [ 0, 1 ],
+        min: 0
       });
       chart.legend(false);
       chart.tooltip({
@@ -688,6 +689,10 @@ export default {
         crosshairs: {
           type: 'y'
         }
+      });
+      chart.scale('value', {
+        range: [ 0, 1 ],
+        min: 0
       });
       chart.legend(false);
       chart.area().position('year*value')

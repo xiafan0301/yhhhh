@@ -160,6 +160,7 @@ input:-ms-input-placeholder{  /* Internet Explorer 10-11 */
   left: auto !important;
   right: 30px !important;
   top: 50% !important;
+  overflow: hidden !important;
 
 }
 .e_stat_tb_ld1 .g2-legend-list {
