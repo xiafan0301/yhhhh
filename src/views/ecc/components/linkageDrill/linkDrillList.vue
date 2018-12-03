@@ -82,6 +82,7 @@
 
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
+import {changeTime} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -184,6 +185,13 @@ export default {
             console.log(res.data);
             this.drillDataList = res.data.list;
             this.pagination.total = res.data.total;
+            if (this.drillDataList.length > 0) {
+              this.drillDataList.map(item => {
+                if (item.duration) {
+                  item.duration = changeTime(item.duration);
+                }
+              });
+            }
           }
         })
         .catch(() => {})
