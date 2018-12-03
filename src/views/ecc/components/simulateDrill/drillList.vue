@@ -47,7 +47,7 @@
       <el-table-column prop='duration' label="演练时长" align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.duration">{{scope.row.duration}}</span>
-          <span v-else>-</span>
+          <!-- <span v-else>-</span> -->
         </template>
       </el-table-column>
       <el-table-column prop='eventStatusName' label="状态" align='center'>
@@ -82,6 +82,7 @@
 import store from '@/store/store.js';
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
+import {changeTime} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -190,6 +191,13 @@ export default {
           if (res && res.data.list) {
             this.drillDataList = res.data.list;
             this.pagination.total = res.data.total;
+            if (this.drillDataList.length > 0) {
+              this.drillDataList.map(item => {
+                if (item.duration) {
+                  item.duration = changeTime(item.duration);
+                }
+              });
+            }
           }
         })
         .catch(() => {})

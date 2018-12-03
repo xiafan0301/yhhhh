@@ -126,3 +126,36 @@ export const delCookie = (name, expires) => {
     document.cookie = str;
   }
 };
+// 将分钟转换为时分秒格式
+export const changeTime = (num) => { // num单位为分钟
+  console.log(num)
+  let h, m, s = num / 1000;
+  if (isNaN(parseInt(num))) {
+    return '-';
+  }
+  if (s > 60) { // 如果秒数大于60，则将秒数转为分钟
+    m = parseInt(s / 60); // 获取分钟
+    s = parseInt(s % 60);
+    if (m > 60) { // 如果分钟大于60，则将分钟转为小时
+      h = parseInt(m / 60);
+      m = parseInt(m % 60);
+    }
+  }
+  let result = s.toFixed(1) + '秒';
+  if (m > 0) {
+    if (s === 0) {
+      result = parseInt(m) + '分钟';
+    } else {
+      result = parseInt(m) + '分钟' + parseInt(s) + '秒';
+    }
+  }
+  if (h > 0) {
+    if (s === 0) {
+      result = parseInt(h) + '小时' + parseInt(m) + '分钟';
+    } else {
+      result = parseInt(h) + '小时' + parseInt(m) + '分钟' + parseInt(s) + '秒';
+    }
+    // result = parseInt(h) + '小时' + parseInt(m) + '分钟' + parseInt(s) + '秒';
+  }
+  return result;
+};
