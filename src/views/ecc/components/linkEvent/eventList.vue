@@ -79,6 +79,7 @@
       <el-table-column label="角色" prop='reporterRole' align='center'>
         <template slot-scope="scope">
           <span v-if='scope.row.reporterRole'>{{scope.row.reporterRole}}</span>
+          <span v-else-if='!scope.row.reporterUser'>市民</span>
           <span v-else>-</span>
         </template>
       </el-table-column>
