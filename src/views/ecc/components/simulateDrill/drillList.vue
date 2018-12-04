@@ -132,7 +132,6 @@ export default {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
       } else {
         this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
-        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
