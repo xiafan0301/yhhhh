@@ -197,7 +197,7 @@
 <script>
 import {dictType, resouceData} from '@/config/data.js';
 import {ajaxCtx3} from '@/config/config.js';
-import { setCookie, getCookie } from '@/utils/util.js';
+import { setCookie, getCookie, changeTime } from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -218,11 +218,6 @@ export default {
     }
   },
   created () {
-    // if (this.$route.query.name === '已完成') {
-    //   this.isDisabled = true;
-    // } else {
-    //   this.isDisabled = false;
-    // }
     this.resourceBtn = JSON.parse(sessionStorage.getItem('resourcebtn'));
     this.status = this.$route.query.status;
   },
@@ -389,6 +384,9 @@ export default {
               }
               if (this.imgList.length > 0) {
                 this.previewPictures(this.imgList);
+              }
+              if (this.drillDetailObj) {
+                this.drillDetailObj.duration = changeTime(this.drillDetailObj.duration);
               }
             }
           })

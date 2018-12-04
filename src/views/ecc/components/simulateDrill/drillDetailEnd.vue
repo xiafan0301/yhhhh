@@ -172,6 +172,7 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {changeTime} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -334,6 +335,9 @@ export default {
                     this.previewPicturesOne(index, items.attachmentList);
                   }
                 });
+              }
+              if (this.drillDetailObj) {
+                this.drillDetailObj.duration = changeTime(this.drillDetailObj.duration);
               }
             }
           })

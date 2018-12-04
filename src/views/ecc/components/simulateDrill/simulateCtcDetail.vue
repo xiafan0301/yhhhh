@@ -232,6 +232,7 @@
 </template>
 <script>
 import {dictType} from '@/config/data.js';
+import {changeTime} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -422,6 +423,9 @@ export default {
               this.drillDetailObj = res.data;
               if (this.imgList.length > 0) {
                 this.previewPictures(this.imgList);
+              }
+              if (this.drillDetailObj) {
+                this.drillDetailObj.duration = changeTime(this.drillDetailObj.duration);
               }
             }
           })
