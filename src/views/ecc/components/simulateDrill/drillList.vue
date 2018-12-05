@@ -47,7 +47,7 @@
       <el-table-column prop='duration' label="演练时长" align='center' show-overflow-tooltip>
         <template slot-scope="scope">
           <span v-if="scope.row.duration">{{scope.row.duration}}</span>
-          <span v-else>-</span>
+          <!-- <span v-else>-</span> -->
         </template>
       </el-table-column>
       <el-table-column prop='eventStatusName' label="状态" align='center'>
@@ -82,6 +82,7 @@
 import store from '@/store/store.js';
 import {dictType, resouceData} from '@/config/data.js';
 import {formatDate} from '@/utils/method.js';
+import {changeTime} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -131,7 +132,6 @@ export default {
         this.$router.push({name: 'drill-detail-end', query: {eventId: scope.row.eventId}});
       } else {
         this.$router.push({name: 'drill-detail-reat', query: {eventId: scope.row.eventId}});
-        // this.$router.push({name: 'unreated-drill', query: {eventId: scope.row.eventId}});
       }
     },
     getEventStatus () { // 获取事件状态
@@ -190,6 +190,13 @@ export default {
           if (res && res.data.list) {
             this.drillDataList = res.data.list;
             this.pagination.total = res.data.total;
+            if (this.drillDataList.length > 0) {
+              this.drillDataList.map(item => {
+                if (item.duration) {
+                  item.duration = changeTime(item.duration);
+                }
+              });
+            }
           }
         })
         .catch(() => {})

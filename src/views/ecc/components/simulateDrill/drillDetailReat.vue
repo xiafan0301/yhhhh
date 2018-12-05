@@ -164,7 +164,7 @@
 <script>
 import {dictType, resouceData} from '@/config/data.js';
 import {ajaxCtx3} from '@/config/config.js';
-import { setCookie, getCookie } from '@/utils/util.js';
+import { setCookie, getCookie, changeTime } from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -290,6 +290,9 @@ export default {
                     this.previewPicturesOne(index, items.attachmentList);
                   }
                 });
+              }
+              if (this.drillDetailObj) {
+                this.drillDetailObj.duration = changeTime(this.drillDetailObj.duration);
               }
               if (this.imgList.length > 0) {
                 this.previewPictures(this.imgList);

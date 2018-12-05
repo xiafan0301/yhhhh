@@ -33,9 +33,8 @@ const oDomains = {
   // ajax开发地址
   domain2: {
     // 本地配置 localhost:8902
-    dev: 'http://10.16.3.43:8080',
     // dev: 'http://10.116.64.169:8084',
-    // dev: 'http://10.16.4.24:8080',
+    dev: 'http://10.16.3.43:8080',
     test: 'http://10.16.4.24:8080',
     prod: 'http://apiemi.aorise.org'
   },
@@ -76,12 +75,13 @@ if (process.env.NODE_ENV === 'production') {
   if (buildEnv && buildEnv.toLowerCase() === 'test') {
     // npm run build -- test
     sENV = 'test';
+  } else if (buildEnv && buildEnv.toLowerCase() === 'dev') {
+    // npm run build -- dev
+    sENV = 'dev';
   } else {
     // npm run build / npm run build -- prod
     sENV = 'prod';
   }
-} else if (process.env.NODE_ENV === 'development') {
-  sENV = 'dev';
 }
 console.log('environment', sENV);
 // ajax default
