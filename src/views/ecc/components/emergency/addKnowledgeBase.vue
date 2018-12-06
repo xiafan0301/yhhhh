@@ -36,7 +36,7 @@
           </el-form-item>
           <el-form-item label="附件" class="defint" style="position: relative"   prop="url">
             <div style="display: inline-block; width: 220px; height: 37px; border: 1px solid #dcdfe6; border-radius: 4px; vertical-align: middle;"></div>
-            <span style="display: inline-block; position: absolute; left:10px; top: 19px; font-size: 12.5px; font-weight: 400; color: #999999;">{{form.attachmentName}}</span>
+            <span style="display: inline-block; position: absolute; left:10px; top: 19px; font-size: 12.5px; font-weight: 400; color: #999999;text-overflow: ellipsis">{{form.attachmentName.slice(0, 15)}}<span v-show="form.attachmentName.length > 15">...</span></span>
             <el-upload style="display: inline-block"
                        :action="uploadUrl + '/upload/new'"
                        :data="imgParam"
