@@ -1,2 +1,2 @@
-env.PROJECTNAME = "vis-web-back"
+env.PROJECTNAME = "web-vis-back"
 env.VERSION = "0.1"
