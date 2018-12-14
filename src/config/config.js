@@ -25,24 +25,23 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://10.16.4.18:8080',
-    // dev: 'http://10.16.4.18:8080',
-    test: 'http://10.16.4.18:8080',
-    prod: 'http://emi.aorise.org'
+    dev: 'http://apidev.aorise.org/visual-vis',
+    test: 'http://apidev.aorise.org/visual-vis',
+    prod: 'http://apidev.aorise.org/visual-vis'
   },
   // ajax开发地址
   domain2: {
     // 本地配置 localhost:8902
     // dev: 'http://10.116.64.169:8084',
-    dev: 'http://10.16.3.43:8080',
-    test: 'http://10.16.4.24:8080',
-    prod: 'http://apiemi.aorise.org'
+    dev: 'http://apidev.aorise.org/visual-his',
+    test: 'http://apidev.aorise.org/visual-his',
+    prod: 'http://apidev.aorise.org/visual-his'
   },
   // 查看事件分布地址
   domain3: {
-    dev: 'http://10.16.4.37:8071',
-    test: 'http://10.16.4.37:8071',
-    prod: 'http://emi.aorise.org/user'
+    dev: 'http://webdev.aorise.org/web-vis',
+    test: 'http://webdev.aorise.org/web-vis',
+    prod: 'http://webdev.aorise.org/web-vis'
   },
   // 智慧城市公共服务（用于APP版本管理服务、）
   commonDomain: {
