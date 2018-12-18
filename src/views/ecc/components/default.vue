@@ -15,9 +15,11 @@ export default {
         let sp = aList[0].children[0].path;
         if (sp && sp.length > 0) {
           this.$router.push({path: sp});
+          return false;
         }
       }
     }
+    this.$router.push({name: 'login'});
   },
   methods: {
   }
