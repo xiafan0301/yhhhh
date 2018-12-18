@@ -25,17 +25,17 @@ const oDomains = {
   domain: {
     // 本地配置 localhost:8902
     // test http://10.16.3.40:8080  dev http://10.16.3.40:8080
-    dev: 'http://apidev.aorise.org/visual-vis',
-    test: 'http://apidev.aorise.org/visual-vis',
-    prod: 'http://apidev.aorise.org/visual-vis'
+    dev: 'http://apirel.aorise.org/visual-vis',
+    test: 'http://apirel.aorise.org/visual-vis',
+    prod: 'http://apirel.aorise.org/visual-vis'
   },
   // ajax开发地址
   domain2: {
     // 本地配置 localhost:8902
     // dev: 'http://10.116.64.169:8084',
-    dev: 'http://apidev.aorise.org/visual-his',
-    test: 'http://apidev.aorise.org/visual-his',
-    prod: 'http://apidev.aorise.org/visual-his'
+    dev: 'http://apirel.aorise.org/visual-emi',
+    test: 'http://apirel.aorise.org/visual-emi',
+    prod: 'http://apirel.aorise.org/visual-emi'
   },
   // 查看事件分布地址
   domain3: {
@@ -45,9 +45,9 @@ const oDomains = {
   },
   // 智慧城市公共服务（用于APP版本管理服务、）
   commonDomain: {
-    dev: 'http://10.16.4.41:8083',
-    test: 'http://10.16.4.41:8083',
-    prod: 'http://newsemi.aorise.org'
+    dev: 'http://apidev.aorise.org/smart-city-common',
+    test: 'http://apidev.aorise.org/smart-city-common',
+    prod: 'http://apidev.aorise.org/smart-city-common'
   },
   // 文件/图片/CDN地址
   fileDomain: {
