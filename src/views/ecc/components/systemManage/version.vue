@@ -236,7 +236,7 @@ export default {
         orderBy: 'soft_pubversion',
         order: 'desc'
       };
-      this.axios.get('A4/appUpdate/softwaredVersion?' + $.param(params))
+      this.axios.get('A4/InfSoftwareVersionController/softwaredVersion?' + $.param(params))
         .then((res) => {
           if (res && res.data) {
             this.tableData = res.data.list;
@@ -250,7 +250,7 @@ export default {
       let params = {
         pageSize: 99999999
       }
-      this.axios.get('A4/appUpdate/softwaredVersion', {params})
+      this.axios.get('A4/InfSoftwareVersionController/softwaredVersion', {params})
         .then((res) => {
           if (res && res.data) {
             this.tableDataSp = res.data.list;
@@ -296,7 +296,7 @@ export default {
             } else if (params.minVersion && this.checked === true) {
               params.forceUpdate = 1
             }
-            this.axios.put('A4/appUpdate/softwaredVersion/modify', params)
+            this.axios.put('A4/InfSoftwareVersionController/softwaredVersion/modify', params)
               .then((res) => {
                 if (res && res.data) {
                   this.editSubmitLoading = false;
@@ -314,7 +314,7 @@ export default {
               params.forceUpdate = 1
             }
             this.editSubmitLoading = true;
-            this.axios.post('A4/appUpdate/softwaredVersion', params)
+            this.axios.post('A4/InfSoftwareVersionController/softwaredVersion', params)
               .then((res) => {
                 this.editSubmitLoading = false;
                 this.dialogVisible = false;
