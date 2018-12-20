@@ -90,7 +90,7 @@ export const ajaxCtx2 = oDomains.domain2[sENV] + '/api/emi';
 export const ajaxCtx4 = oDomains.domain2[sENV] + '/api/auth';
 export const ajaxCtx3 = oDomains.domain3[sENV] + '/views/ecc.html#';
 // 智慧城市公共服务（用于APP版本管理服务、）
-export const ajaxCtxCommon = oDomains.commonDomain[sENV] + '/api';
+export const ajaxCtxCommon = oDomains.commonDomain[sENV];
 // 文件上传地址
 export const fileUploadUrl = oDomains.uploadDomain[sENV] + '/api/vis';
 // 图片所在域名地址
