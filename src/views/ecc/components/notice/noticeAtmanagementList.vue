@@ -22,12 +22,12 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item >
-          <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
-            <el-option label="全部状态" value=''></el-option>
-            <el-option label="待发送" :value="1"></el-option>
-            <el-option label="发送成功" :value="2"></el-option>
-            <el-option label="已撤销" :value="3"></el-option>
-          </el-select>
+          <!--<el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">-->
+            <!--<el-option label="全部状态" value=''></el-option>-->
+            <!--<el-option label="待发送" :value="1"></el-option>-->
+            <!--<el-option label="发送成功" :value="2"></el-option>-->
+            <!--<el-option label="已撤销" :value="3"></el-option>-->
+          <!--</el-select>-->
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
@@ -119,6 +119,23 @@ import {getCookie} from '@/utils/util.js';
 export default {
   data () {
     return {
+      tableData1: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }],
       resourceBtn: {},
       resouceData: resouceData,
       searchForm: {
