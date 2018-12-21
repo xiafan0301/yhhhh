@@ -100,6 +100,7 @@
 <script>
 import {formatDate} from '@/utils/method.js';
 import {resouceData} from '@/config/data.js';
+import {getCookie} from '@/utils/util.js';
 export default {
   data () {
     return {
@@ -144,6 +145,7 @@ export default {
         pageNum: this.pageNum,
         pageSize: this.pageSize
       };
+      params['where.owner'] = getCookie('cookieDepartmentId')
       if (this.searchForm.publishUnitId) {
         params['where.publishUnitId'] = this.searchForm.publishUnitId
       }

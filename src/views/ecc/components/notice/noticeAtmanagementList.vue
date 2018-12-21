@@ -22,12 +22,12 @@
           ></el-date-picker>
         </el-form-item>
         <el-form-item >
-          <!--<el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">-->
-            <!--<el-option label="全部状态" value=''></el-option>-->
-            <!--<el-option label="待发送" :value="1"></el-option>-->
-            <!--<el-option label="发送成功" :value="2"></el-option>-->
-            <!--<el-option label="已撤销" :value="3"></el-option>-->
-          <!--</el-select>-->
+          <el-select v-model="searchForm.publishState" style="width: 140px;" placeholder="发布状态">
+            <el-option label="全部状态" value=''></el-option>
+            <el-option label="待发送" :value="1"></el-option>
+            <el-option label="发送成功" :value="2"></el-option>
+            <el-option label="已撤销" :value="3"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item >
           <el-select v-model="searchForm.publishUnitId" style="width: 140px;" placeholder="发布单位">
