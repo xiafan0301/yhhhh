@@ -84,7 +84,7 @@
             <div slot="tip" style="padding-top: 0; margin-top: 10px; font-weight: 400; font-size: 12px; color: #999999">只能上传APK格式文件，文件不能超过100MB</div>
           </el-upload>
           <div style="position: absolute; top: 0; left: 27%">
-            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333; word-wrap: break-word;">{{fileName.slice(0,19)}}<span v-if="fileName.length > 19">....</span></span>
+            <span style="display: inline-block; margin-left: 10px; font-weight: 400; font-size: 14px; color: #333333; word-wrap: break-word;">{{fileName&&fileName.slice(0,19)}}<span v-if="fileName&&fileName.length > 19">....</span></span>
             <span style="display: inline-block; margin-left: 10px; color: #0785FD; cursor: pointer" @click="delfile" v-if="fileName">删除</span>
           </div>
         </el-form-item>
